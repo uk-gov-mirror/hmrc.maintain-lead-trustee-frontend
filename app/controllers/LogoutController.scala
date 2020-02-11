@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    main_template: MainTemplate
-)
+package controllers
 
-@()(implicit request: Request[_], messages: Messages)
+import com.google.inject.{Inject, Singleton}
+import config.FrontendAppConfig
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
-@main_template(
-    title = messages("session_expired.title")
-    ) {
+@Singleton
+class LogoutController @Inject()(appConfig: FrontendAppConfig, val controllerComponents: MessagesControllerComponents) extends FrontendBaseController {
 
-    @components.heading("session_expired.heading")
-
-    <p>@messages("session_expired.guidance")</p>
+  def logout: Action[AnyContent] = Action {
+    implicit request =>
+      Redirect(appConfig.logoutUrl).withNewSession
+  }
 }
