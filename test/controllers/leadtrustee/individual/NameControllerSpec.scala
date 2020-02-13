@@ -41,7 +41,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new NameFormProvider()
   val form = formProvider()
 
-  lazy val nameRoute = routes.NameController.onPageLoad(NormalMode).url
+  lazy val nameRoute = routes.NameController.onPageLoad().url
 
 
   val userAnswers = UserAnswers(
@@ -67,7 +67,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(request, messages).toString
+        view(form)(request, messages).toString
 
       application.stop()
     }
@@ -85,7 +85,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Name("value 1", "value 2")), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(Name("value 1", "value 2")))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -135,7 +135,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm)(fakeRequest, messages).toString
 
        application.stop()
     }

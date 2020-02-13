@@ -19,7 +19,7 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.leadtrustee.individual.routes
-import models.{CheckMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import pages.leadtrustee.individual._
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
@@ -34,7 +34,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       AnswerRow(
         HtmlFormat.escape(messages("ukAddress.checkYourAnswersLabel")),
         HtmlFormat.escape(s"${x.line1} ${x.line2}"),
-        routes.UkAddressController.onPageLoad(CheckMode).url
+        routes.UkAddressController.onPageLoad().url
       )
   }
 
@@ -43,7 +43,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       AnswerRow(
         HtmlFormat.escape(messages("passportYesNoPage.checkYourAnswersLabel")),
         yesOrNo(x),
-        routes.PassportYesNoPageController.onPageLoad(CheckMode).url
+        routes.PassportYesNoPageController.onPageLoad().url
       )
   }
 
@@ -52,7 +52,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       AnswerRow(
         HtmlFormat.escape(messages("passportDetails.checkYourAnswersLabel")),
         HtmlFormat.escape(x),
-        routes.PassportDetailsController.onPageLoad(CheckMode).url
+        routes.PassportDetailsController.onPageLoad().url
       )
   }
 
@@ -61,7 +61,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       AnswerRow(
         HtmlFormat.escape(messages("nonUkAddress.checkYourAnswersLabel")),
         HtmlFormat.escape(s"${x.line1} ${x.line2}"),
-        routes.NonUkAddressController.onPageLoad(CheckMode).url
+        routes.NonUkAddressController.onPageLoad().url
       )
   }
 
@@ -70,7 +70,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       AnswerRow(
         HtmlFormat.escape(messages("nationalInsuranceNumberyesNoPage.checkYourAnswersLabel")),
         yesOrNo(x),
-        routes.NationalInsuranceNumberyesNoPageController.onPageLoad(CheckMode).url
+        routes.NationalInsuranceNumberyesNoPageController.onPageLoad().url
       )
   }
 
@@ -79,7 +79,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       AnswerRow(
         HtmlFormat.escape(messages("nationalInsuranceNumber.checkYourAnswersLabel")),
         HtmlFormat.escape(x),
-        routes.NationalInsuranceNumberController.onPageLoad(CheckMode).url
+        routes.NationalInsuranceNumberController.onPageLoad().url
       )
   }
 
@@ -88,7 +88,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       AnswerRow(
         HtmlFormat.escape(messages("name.checkYourAnswersLabel")),
         HtmlFormat.escape(s"${x.firstName} ${x.lastName}"),
-        routes.NameController.onPageLoad(CheckMode).url
+        routes.NameController.onPageLoad().url
       )
   }
 
@@ -97,7 +97,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       AnswerRow(
         HtmlFormat.escape(messages("liveInTheUkYesNoPage.checkYourAnswersLabel")),
         yesOrNo(x),
-        routes.LiveInTheUkYesNoPageController.onPageLoad(CheckMode).url
+        routes.LiveInTheUkYesNoPageController.onPageLoad().url
       )
   }
 
@@ -106,7 +106,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       AnswerRow(
         HtmlFormat.escape(messages("idCardYesNoPage.checkYourAnswersLabel")),
         yesOrNo(x),
-        routes.IdCardYesNoPageController.onPageLoad(CheckMode).url
+        routes.IdCardYesNoPageController.onPageLoad().url
       )
   }
 
@@ -115,7 +115,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       AnswerRow(
         HtmlFormat.escape(messages("idCardDetails.checkYourAnswersLabel")),
         HtmlFormat.escape(x),
-        routes.IdCardDetailsController.onPageLoad(CheckMode).url
+        routes.IdCardDetailsController.onPageLoad().url
       )
   }
 
@@ -124,7 +124,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       AnswerRow(
         HtmlFormat.escape(messages("dateOfBirthYesNoPage.checkYourAnswersLabel")),
         yesOrNo(x),
-        routes.DateOfBirthYesNoPageController.onPageLoad(CheckMode).url
+        routes.DateOfBirthYesNoPageController.onPageLoad().url
       )
   }
 
@@ -133,7 +133,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       AnswerRow(
         HtmlFormat.escape(messages("dateOfBirth.checkYourAnswersLabel")),
         HtmlFormat.escape(x.format(dateFormatter)),
-        routes.DateOfBirthController.onPageLoad(CheckMode).url
+        routes.DateOfBirthController.onPageLoad().url
       )
   }
 
@@ -142,7 +142,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       AnswerRow(
         HtmlFormat.escape(messages("addressYesNoPage.checkYourAnswersLabel")),
         yesOrNo(x),
-        routes.AddressYesNoPageController.onPageLoad(CheckMode).url
+        routes.AddressYesNoPageController.onPageLoad().url
       )
   }
 

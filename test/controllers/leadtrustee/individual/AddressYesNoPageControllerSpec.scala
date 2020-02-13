@@ -39,7 +39,7 @@ class AddressYesNoPageControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new AddressYesNoPageFormProvider()
   val form = formProvider()
 
-  lazy val addressYesNoPageRoute = routes.AddressYesNoPageController.onPageLoad(NormalMode).url
+  lazy val addressYesNoPageRoute = routes.AddressYesNoPageController.onPageLoad().url
 
   "AddressYesNoPage Controller" must {
 
@@ -56,7 +56,7 @@ class AddressYesNoPageControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -76,7 +76,7 @@ class AddressYesNoPageControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(true))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -125,7 +125,7 @@ class AddressYesNoPageControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm)(fakeRequest, messages).toString
 
       application.stop()
     }

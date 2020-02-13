@@ -35,12 +35,12 @@ class LiveInTheUkYesNoPageViewSpec extends YesNoViewBehaviours {
     val view = viewFor[LiveInTheUkYesNoPageView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.LiveInTheUkYesNoPageController.onSubmit(NormalMode).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.LiveInTheUkYesNoPageController.onSubmit().url)
   }
 }

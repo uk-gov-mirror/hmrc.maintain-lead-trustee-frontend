@@ -36,7 +36,7 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
     val view = viewFor[NameView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form)(fakeRequest, messages)
 
 
     behave like normalPage(applyView(form), messageKeyPrefix)
@@ -47,7 +47,7 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
       form,
       applyView,
       messageKeyPrefix,
-      routes.NameController.onSubmit(NormalMode).url,
+      routes.NameController.onSubmit().url,
       "firstName", "lastName"
     )
   }

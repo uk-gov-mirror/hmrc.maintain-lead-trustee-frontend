@@ -40,7 +40,7 @@ class NationalInsuranceNumberyesNoPageControllerSpec extends SpecBase with Mocki
   val formProvider = new NationalInsuranceNumberyesNoPageFormProvider()
   val form = formProvider()
 
-  lazy val nationalInsuranceNumberyesNoPageRoute = routes.NationalInsuranceNumberyesNoPageController.onPageLoad(NormalMode).url
+  lazy val nationalInsuranceNumberyesNoPageRoute = routes.NationalInsuranceNumberyesNoPageController.onPageLoad().url
 
   "NationalInsuranceNumberyesNoPage Controller" must {
 
@@ -57,7 +57,7 @@ class NationalInsuranceNumberyesNoPageControllerSpec extends SpecBase with Mocki
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -77,7 +77,7 @@ class NationalInsuranceNumberyesNoPageControllerSpec extends SpecBase with Mocki
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(true))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -126,7 +126,7 @@ class NationalInsuranceNumberyesNoPageControllerSpec extends SpecBase with Mocki
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm)(fakeRequest, messages).toString
 
       application.stop()
     }

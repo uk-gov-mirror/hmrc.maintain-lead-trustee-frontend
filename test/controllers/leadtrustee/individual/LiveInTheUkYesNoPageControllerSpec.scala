@@ -40,7 +40,7 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new LiveInTheUkYesNoPageFormProvider()
   val form = formProvider()
 
-  lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoPageController.onPageLoad(NormalMode).url
+  lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoPageController.onPageLoad().url
 
   "LiveInTheUkYesNoPage Controller" must {
 
@@ -57,7 +57,7 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -77,7 +77,7 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(true))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -126,7 +126,7 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm)(fakeRequest, messages).toString
 
       application.stop()
     }

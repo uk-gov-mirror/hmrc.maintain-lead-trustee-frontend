@@ -40,7 +40,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new IdCardDetailsFormProvider()
   val form = formProvider()
 
-  lazy val idCardDetailsRoute = routes.IdCardDetailsController.onPageLoad(NormalMode).url
+  lazy val idCardDetailsRoute = routes.IdCardDetailsController.onPageLoad().url
 
   "IdCardDetails Controller" must {
 
@@ -57,7 +57,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -77,7 +77,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), NormalMode)(fakeRequest, messages).toString
+        view(form.fill("answer"))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -125,7 +125,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm)(fakeRequest, messages).toString
 
       application.stop()
     }
