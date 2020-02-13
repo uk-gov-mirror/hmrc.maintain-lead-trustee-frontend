@@ -21,12 +21,26 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
+import pages.leadtrustee.individual.{AddressYesNoPagePage, DateOfBirthPage, DateOfBirthYesNoPagePage, IdCardDetailsPage, IdCardYesNoPagePage, LiveInTheUkYesNoPagePage, NamePage, NationalInsuranceNumberPage, NationalInsuranceNumberyesNoPagePage, NonUkAddressPage, PassportDetailsPage, PassportYesNoPagePage, UkAddressPage}
 import play.api.libs.json.{JsPath, JsValue, Json}
 
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+    arbitrary[(UkAddressPage.type, JsValue)] ::
+    arbitrary[(PassportYesNoPagePage.type, JsValue)] ::
+    arbitrary[(PassportDetailsPage.type, JsValue)] ::
+    arbitrary[(NonUkAddressPage.type, JsValue)] ::
+    arbitrary[(NationalInsuranceNumberyesNoPagePage.type, JsValue)] ::
+    arbitrary[(NationalInsuranceNumberPage.type, JsValue)] ::
+    arbitrary[(NamePage.type, JsValue)] ::
+    arbitrary[(LiveInTheUkYesNoPagePage.type, JsValue)] ::
+    arbitrary[(IdCardYesNoPagePage.type, JsValue)] ::
+    arbitrary[(IdCardDetailsPage.type, JsValue)] ::
+    arbitrary[(DateOfBirthYesNoPagePage.type, JsValue)] ::
+    arbitrary[(DateOfBirthPage.type, JsValue)] ::
+    arbitrary[(AddressYesNoPagePage.type, JsValue)] ::
     Nil
 
   implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {

@@ -13,3 +13,5 @@ GET        /check-your-answers                          controllers.CheckYourAns
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
 GET        /logout                                      controllers.LogoutController.logout()
+
+->         /leadTrustee/individual                      individualLeadTrustee.Routes

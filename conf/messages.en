@@ -43,3 +43,89 @@ site.sign_out = Sign out
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+leadtrustee.individual.addressYesNoPage.title = addressYesNoPage
+leadtrustee.individual.addressYesNoPage.heading = addressYesNoPage
+leadtrustee.individual.addressYesNoPage.checkYourAnswersLabel = addressYesNoPage
+leadtrustee.individual.addressYesNoPage.error.required = Select yes if addressYesNoPage
+
+leadtrustee.individual.dateOfBirth.title = DateOfBirth
+leadtrustee.individual.dateOfBirth.heading = DateOfBirth
+leadtrustee.individual.dateOfBirth.checkYourAnswersLabel = DateOfBirth
+leadtrustee.individual.dateOfBirth.error.required.all = Enter the dateOfBirth
+leadtrustee.individual.dateOfBirth.error.required.two = The dateOfBirth must include {0} and {1}
+leadtrustee.individual.dateOfBirth.error.required = The dateOfBirth must include {0}
+leadtrustee.individual.dateOfBirth.error.invalid = Enter a real DateOfBirth
+
+leadtrustee.individual.dateOfBirthYesNoPage.title = dateOfBirthYesNoPage
+leadtrustee.individual.dateOfBirthYesNoPage.heading = dateOfBirthYesNoPage
+leadtrustee.individual.dateOfBirthYesNoPage.checkYourAnswersLabel = dateOfBirthYesNoPage
+leadtrustee.individual.dateOfBirthYesNoPage.error.required = Select yes if dateOfBirthYesNoPage
+
+leadtrustee.individual.idCardDetails.title = idCardDetails
+leadtrustee.individual.idCardDetails.heading = idCardDetails
+leadtrustee.individual.idCardDetails.checkYourAnswersLabel = idCardDetails
+leadtrustee.individual.idCardDetails.error.required = Enter idCardDetails
+leadtrustee.individual.idCardDetails.error.length = IdCardDetails must be 100 characters or less
+
+leadtrustee.individual.idCardYesNoPage.title = idCardYesNoPage
+leadtrustee.individual.idCardYesNoPage.heading = idCardYesNoPage
+leadtrustee.individual.idCardYesNoPage.checkYourAnswersLabel = idCardYesNoPage
+leadtrustee.individual.idCardYesNoPage.error.required = Select yes if idCardYesNoPage
+
+leadtrustee.individual.liveInTheUkYesNoPage.title = liveInTheUkYesNoPage
+leadtrustee.individual.liveInTheUkYesNoPage.heading = liveInTheUkYesNoPage
+leadtrustee.individual.liveInTheUkYesNoPage.checkYourAnswersLabel = liveInTheUkYesNoPage
+leadtrustee.individual.liveInTheUkYesNoPage.error.required = Select yes if liveInTheUkYesNoPage
+
+leadtrustee.individual.name.title = name
+leadtrustee.individual.name.heading = name
+leadtrustee.individual.name.firstName = firstName
+leadtrustee.individual.name.lastName = lastName
+leadtrustee.individual.name.checkYourAnswersLabel = name
+leadtrustee.individual.name.error.firstName.required = Enter firstName
+leadtrustee.individual.name.error.lastName.required = Enter lastName
+leadtrustee.individual.name.error.firstName.length = firstName must be 100 characters or less
+leadtrustee.individual.name.error.lastName.length = lastName must be 100 characters or less
+
+leadtrustee.individual.nationalInsuranceNumber.title = nationalInsuranceNumber
+leadtrustee.individual.nationalInsuranceNumber.heading = nationalInsuranceNumber
+leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel = nationalInsuranceNumber
+leadtrustee.individual.nationalInsuranceNumber.error.required = Enter nationalInsuranceNumber
+leadtrustee.individual.nationalInsuranceNumber.error.length = NationalInsuranceNumber must be 10 characters or less
+
+leadtrustee.individual.nationalInsuranceNumberyesNoPage.title = nationalInsuranceNumberyesNoPage
+leadtrustee.individual.nationalInsuranceNumberyesNoPage.heading = nationalInsuranceNumberyesNoPage
+leadtrustee.individual.nationalInsuranceNumberyesNoPage.checkYourAnswersLabel = nationalInsuranceNumberyesNoPage
+leadtrustee.individual.nationalInsuranceNumberyesNoPage.error.required = Select yes if nationalInsuranceNumberyesNoPage
+
+leadtrustee.individual.nonUkAddress.title = nonUkAddress
+leadtrustee.individual.nonUkAddress.heading = nonUkAddress
+leadtrustee.individual.nonUkAddress.line1 = line1
+leadtrustee.individual.nonUkAddress.line2 = line2
+leadtrustee.individual.nonUkAddress.checkYourAnswersLabel = nonUkAddress
+leadtrustee.individual.nonUkAddress.error.line1.required = Enter line1
+leadtrustee.individual.nonUkAddress.error.line2.required = Enter line2
+leadtrustee.individual.nonUkAddress.error.line1.length = line1 must be line2 characters or less
+leadtrustee.individual.nonUkAddress.error.line2.length = line2 must be 100 characters or less
+
+leadtrustee.individual.passportDetails.title = passportDetails
+leadtrustee.individual.passportDetails.heading = passportDetails
+leadtrustee.individual.passportDetails.checkYourAnswersLabel = passportDetails
+leadtrustee.individual.passportDetails.error.required = Enter passportDetails
+leadtrustee.individual.passportDetails.error.length = PassportDetails must be 100 characters or less
+
+leadtrustee.individual.passportYesNoPage.title = passportYesNoPage
+leadtrustee.individual.passportYesNoPage.heading = passportYesNoPage
+leadtrustee.individual.passportYesNoPage.checkYourAnswersLabel = passportYesNoPage
+leadtrustee.individual.passportYesNoPage.error.required = Select yes if passportYesNoPage
+
+leadtrustee.individual.ukAddress.title = ukAddress
+leadtrustee.individual.ukAddress.heading = ukAddress
+leadtrustee.individual.ukAddress.line1 = line1
+leadtrustee.individual.ukAddress.line2 = line2
+leadtrustee.individual.ukAddress.checkYourAnswersLabel = ukAddress
+leadtrustee.individual.ukAddress.error.line1.required = Enter line1
+leadtrustee.individual.ukAddress.error.line2.required = Enter line2
+leadtrustee.individual.ukAddress.error.line1.length = line1 must be line2 characters or less
+leadtrustee.individual.ukAddress.error.line2.length = line2 must be 100 characters or less
