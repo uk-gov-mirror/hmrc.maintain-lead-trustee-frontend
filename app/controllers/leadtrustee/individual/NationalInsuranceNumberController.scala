@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import forms.NationalInsuranceNumberFormProvider
+import forms.leadtrustee.individual.NationalInsuranceNumberFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator

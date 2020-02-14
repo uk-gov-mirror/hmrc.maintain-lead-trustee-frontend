@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import forms.IdCardDetailsFormProvider
+import forms.leadtrustee.individual.IdCardDetailsFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator

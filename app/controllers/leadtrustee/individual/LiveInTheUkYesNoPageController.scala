@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import forms.LiveInTheUkYesNoPageFormProvider
+import forms.leadtrustee.individual.LiveInTheUkYesNoPageFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator

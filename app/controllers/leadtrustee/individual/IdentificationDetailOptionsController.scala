@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import forms.IdentificationDetailOptionsFormProvider
+import forms.leadtrustee.individual.IdentificationDetailOptionsFormProvider
 import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.IdentificationDetailOptionsPage

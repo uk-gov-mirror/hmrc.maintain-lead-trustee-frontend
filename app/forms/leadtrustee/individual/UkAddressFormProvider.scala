@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.leadtrustee.individual
 
 import forms.mappings.Mappings
+import models.UkAddress
 import play.api.data.Form
 import play.api.data.Forms._
-import models.UkAddress
+import javax.inject.Inject
 
 class UkAddressFormProvider @Inject() extends Mappings {
 

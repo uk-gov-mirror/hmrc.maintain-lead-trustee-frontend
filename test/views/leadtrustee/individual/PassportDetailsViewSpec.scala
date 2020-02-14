@@ -17,7 +17,7 @@
 package views.leadtrustee.individual
 
 import controllers.leadtrustee.individual.routes
-import forms.PassportDetailsFormProvider
+import forms.leadtrustee.individual.PassportDetailsFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat

@@ -16,7 +16,7 @@
 
 package views.leadtrustee.individual
 
-import forms.IdentificationDetailOptionsFormProvider
+import forms.leadtrustee.individual.IdentificationDetailOptionsFormProvider
 import models.{IdentificationDetailOptions, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat

@@ -17,7 +17,7 @@
 package views.leadtrustee.individual
 
 import controllers.routes
-import forms.UkCitizenFormProvider
+import forms.leadtrustee.individual.UkCitizenFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat

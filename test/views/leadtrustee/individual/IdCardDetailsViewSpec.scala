@@ -16,13 +16,12 @@
 
 package views.leadtrustee.individual
 
-import forms.IdCardDetailsFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours
 import controllers.leadtrustee.individual.routes
-
+import forms.leadtrustee.individual.IdCardDetailsFormProvider
 import views.html.leadtrustee.individual.IdCardDetailsView
 
 class IdCardDetailsViewSpec extends StringViewBehaviours {

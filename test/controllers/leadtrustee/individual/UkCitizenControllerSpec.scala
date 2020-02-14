@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import forms.UkCitizenFormProvider
+import forms.leadtrustee.individual.UkCitizenFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
@@ -30,6 +30,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.leadtrustee.individual.UkCitizenView
+
 import scala.concurrent.Future
 
 class UkCitizenControllerSpec extends SpecBase with MockitoSugar {

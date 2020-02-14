@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import forms.EmailAddressYesNoFormProvider
+import forms.leadtrustee.individual.EmailAddressYesNoFormProvider
 import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.EmailAddressYesNoPage

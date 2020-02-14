@@ -19,7 +19,7 @@ package controllers.leadtrustee.individual
 import java.time.{LocalDate, ZoneOffset}
 
 import base.SpecBase
-import forms.DateOfBirthFormProvider
+import forms.leadtrustee.individual.DateOfBirthFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any

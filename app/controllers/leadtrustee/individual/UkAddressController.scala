@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import forms.UkAddressFormProvider
+import forms.leadtrustee.individual.UkAddressFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator

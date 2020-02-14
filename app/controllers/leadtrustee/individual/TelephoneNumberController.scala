@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import forms.TelephoneNumberFormProvider
+import forms.leadtrustee.individual.TelephoneNumberFormProvider
 import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.TelephoneNumberPage

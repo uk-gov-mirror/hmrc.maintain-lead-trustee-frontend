@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package forms.leadtrustee.individual
 
 import forms.behaviours.OptionFieldBehaviours
 import models.IdentificationDetailOptions
