@@ -47,7 +47,8 @@ trait ModelGenerators {
     Arbitrary {
       for {
         firstName <- arbitrary[String]
+        middleName <- arbitrary[Option[String]]
         lastName <- arbitrary[String]
-      } yield Name(firstName, lastName)
+      } yield Name(firstName, middleName, lastName)
     }
 }

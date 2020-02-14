@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package controllers.leadtrustee.individual.actions
 
-import javax.inject.Inject
+import models.UserAnswers
 import models.requests.DataRequest
-import play.api.mvc.{ActionBuilder, AnyContent}
+import play.api.mvc.WrappedRequest
 
-class StandardActionSets @Inject()(identify: IdentifierAction,
-                                   getData: DataRetrievalAction,
-                                   requireData: DataRequiredAction){
-  val IdentifiedUserWithData: ActionBuilder[DataRequest, AnyContent] = identify andThen getData andThen requireData
+case class LeadTrusteeNameRequest[T](request: DataRequest[T], leadTrusteeName: String) extends WrappedRequest[T](request) {
+  val userAnswers:UserAnswers = request.userAnswers
 }

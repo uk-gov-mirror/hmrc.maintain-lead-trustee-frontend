@@ -16,7 +16,8 @@
 
 package controllers.leadtrustee.individual
 
-import controllers.actions._
+import controllers.actions.StandardActionSets
+import controllers.leadtrustee.individual.actions.{LeadTrusteeNameRequest, NameRequiredAction}
 import forms.leadtrustee.individual.DateOfBirthFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -35,6 +36,7 @@ class DateOfBirthController @Inject()(
                                         sessionRepository: SessionRepository,
                                         navigator: Navigator,
                                         standardActionSets: StandardActionSets,
+                                        nameAction: NameRequiredAction,
                                         formProvider: DateOfBirthFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: DateOfBirthView
@@ -42,23 +44,25 @@ class DateOfBirthController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
-    implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction) {
+    request =>
 
       val preparedForm = request.userAnswers.get(DateOfBirthPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm))
+      implicit val r = request
+
+      Ok(view(preparedForm, request.leadTrusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
 
         value =>
           for {

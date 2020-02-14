@@ -85,7 +85,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Name("value 1", "value 2")))(fakeRequest, messages).toString
+        view(form.fill(Name("value 1", None, "value 2")))(fakeRequest, messages).toString
 
       application.stop()
     }

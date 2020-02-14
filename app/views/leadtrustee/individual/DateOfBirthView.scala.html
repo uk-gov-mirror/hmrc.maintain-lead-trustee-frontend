@@ -22,10 +22,10 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], leadTrusteeName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("dateOfBirth.title")}"
+    title = s"${errorPrefix(form)} ${messages("dateOfBirth.title", leadTrusteeName)}"
 ) {
 
     @formHelper(action = DateOfBirthController.onSubmit(), 'autoComplete -> "off") {

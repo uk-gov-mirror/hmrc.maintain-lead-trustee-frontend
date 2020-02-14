@@ -39,7 +39,7 @@ class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
     val view = application.injector.instanceOf[DateOfBirthView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form)(fakeRequest, messages)
+      view.apply(form, "LeadTrusteeName")(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

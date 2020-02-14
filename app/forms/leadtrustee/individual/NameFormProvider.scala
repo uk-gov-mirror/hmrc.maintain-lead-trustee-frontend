@@ -28,6 +28,8 @@ class NameFormProvider @Inject() extends Mappings {
      mapping(
       "firstName" -> text("name.error.firstName.required")
         .verifying(maxLength(100, "name.error.firstName.length")),
+       "middleName" -> optional(text()
+        .verifying(maxLength(100, "name.error.firstName.length"))),
       "lastName" -> text("name.error.lastName.required")
         .verifying(maxLength(100, "name.error.lastName.length"))
     )(Name.apply)(Name.unapply)

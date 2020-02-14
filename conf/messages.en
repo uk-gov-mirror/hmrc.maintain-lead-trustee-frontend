@@ -44,7 +44,9 @@ site.sign_out = Sign out
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-leadtrustee.individual.dateOfBirth.title = DateOfBirth
+leadTrusteeName.defaultText = the lead trustee
+
+leadtrustee.individual.dateOfBirth.title = What is {0}’s date of birth?
 leadtrustee.individual.dateOfBirth.heading = DateOfBirth
 leadtrustee.individual.dateOfBirth.checkYourAnswersLabel = DateOfBirth
 leadtrustee.individual.dateOfBirth.error.required.all = Enter the dateOfBirth
