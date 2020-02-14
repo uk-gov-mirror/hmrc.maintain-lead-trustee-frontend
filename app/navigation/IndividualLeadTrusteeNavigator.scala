@@ -32,6 +32,7 @@ object IndividualLeadTrusteeNavigator {
     case NationalInsuranceNumberPage => rts.LiveInTheUkYesNoPageController.onPageLoad()
     case UkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
     case NonUkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
+    case EmailAddressPage => rts.TelephoneNumberController.onPageLoad()
     case TelephoneNumberPage => controllers.routes.CheckYourAnswersController.onPageLoad()
   }
 
