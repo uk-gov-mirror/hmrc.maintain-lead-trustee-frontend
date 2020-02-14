@@ -20,7 +20,7 @@ import models._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.leadtrustee.individual.{AddressYesNoPagePage, DateOfBirthPage, EmailAddressPage, EmailAddressYesNoPage, IdCardDetailsPage, IdCardYesNoPagePage, IdentificationDetailOptionsPage, LiveInTheUkYesNoPagePage, NamePage, NationalInsuranceNumberPage, NationalInsuranceNumberyesNoPagePage, NonUkAddressPage, PassportDetailsPage, PassportYesNoPagePage, TelephoneNumberPage, UkAddressPage, UkCitizenPage}
+import pages.leadtrustee.individual._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
@@ -73,14 +73,6 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryPassportYesNoPageUserAnswersEntry: Arbitrary[(PassportYesNoPagePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[PassportYesNoPagePage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
   implicit lazy val arbitraryPassportDetailsUserAnswersEntry: Arbitrary[(PassportDetailsPage.type, JsValue)] =
     Arbitrary {
       for {
@@ -94,14 +86,6 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       for {
         page  <- arbitrary[NonUkAddressPage.type]
         value <- arbitrary[NonUkAddress].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryNationalInsuranceNumberyesNoPageUserAnswersEntry: Arbitrary[(NationalInsuranceNumberyesNoPagePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[NationalInsuranceNumberyesNoPagePage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
 
@@ -129,14 +113,6 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryIdCardYesNoPageUserAnswersEntry: Arbitrary[(IdCardYesNoPagePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[IdCardYesNoPagePage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
   implicit lazy val arbitraryIdCardDetailsUserAnswersEntry: Arbitrary[(IdCardDetailsPage.type, JsValue)] =
     Arbitrary {
       for {
@@ -153,11 +129,4 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryAddressYesNoPageUserAnswersEntry: Arbitrary[(AddressYesNoPagePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[AddressYesNoPagePage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
 }

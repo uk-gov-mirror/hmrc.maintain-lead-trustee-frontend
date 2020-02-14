@@ -82,15 +82,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       )
   }
 
-  def passportYesNoPage: Option[AnswerRow] = userAnswers.get(PassportYesNoPagePage) map {
-    x =>
-      AnswerRow(
-        HtmlFormat.escape(messages("passportYesNoPage.checkYourAnswersLabel")),
-        yesOrNo(x),
-        individualLeadtrusteeRoutes.PassportYesNoPageController.onPageLoad().url
-      )
-  }
-
   def passportDetails: Option[AnswerRow] = userAnswers.get(PassportDetailsPage) map {
     x =>
       AnswerRow(
@@ -106,15 +97,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         HtmlFormat.escape(messages("nonUkAddress.checkYourAnswersLabel")),
         HtmlFormat.escape(s"${x.line1} ${x.line2}"),
         individualLeadtrusteeRoutes.NonUkAddressController.onPageLoad().url
-      )
-  }
-
-  def nationalInsuranceNumberyesNoPage: Option[AnswerRow] = userAnswers.get(NationalInsuranceNumberyesNoPagePage) map {
-    x =>
-      AnswerRow(
-        HtmlFormat.escape(messages("nationalInsuranceNumberyesNoPage.checkYourAnswersLabel")),
-        yesOrNo(x),
-        individualLeadtrusteeRoutes.NationalInsuranceNumberyesNoPageController.onPageLoad().url
       )
   }
 
@@ -145,15 +127,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       )
   }
 
-  def idCardYesNoPage: Option[AnswerRow] = userAnswers.get(IdCardYesNoPagePage) map {
-    x =>
-      AnswerRow(
-        HtmlFormat.escape(messages("idCardYesNoPage.checkYourAnswersLabel")),
-        yesOrNo(x),
-        individualLeadtrusteeRoutes.IdCardYesNoPageController.onPageLoad().url
-      )
-  }
-
   def idCardDetails: Option[AnswerRow] = userAnswers.get(IdCardDetailsPage) map {
     x =>
       AnswerRow(
@@ -169,15 +142,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         HtmlFormat.escape(messages("dateOfBirth.checkYourAnswersLabel")),
         HtmlFormat.escape(x.format(dateFormatter)),
         individualLeadtrusteeRoutes.DateOfBirthController.onPageLoad().url
-      )
-  }
-
-  def addressYesNoPage: Option[AnswerRow] = userAnswers.get(AddressYesNoPagePage) map {
-    x =>
-      AnswerRow(
-        HtmlFormat.escape(messages("addressYesNoPage.checkYourAnswersLabel")),
-        yesOrNo(x),
-        individualLeadtrusteeRoutes.AddressYesNoPageController.onPageLoad().url
       )
   }
 

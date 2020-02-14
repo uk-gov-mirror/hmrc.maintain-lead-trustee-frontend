@@ -44,11 +44,6 @@ site.sign_out = Sign out
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-leadtrustee.individual.addressYesNoPage.title = addressYesNoPage
-leadtrustee.individual.addressYesNoPage.heading = addressYesNoPage
-leadtrustee.individual.addressYesNoPage.checkYourAnswersLabel = addressYesNoPage
-leadtrustee.individual.addressYesNoPage.error.required = Select yes if addressYesNoPage
-
 leadtrustee.individual.dateOfBirth.title = DateOfBirth
 leadtrustee.individual.dateOfBirth.heading = DateOfBirth
 leadtrustee.individual.dateOfBirth.checkYourAnswersLabel = DateOfBirth
@@ -62,11 +57,6 @@ leadtrustee.individual.idCardDetails.heading = idCardDetails
 leadtrustee.individual.idCardDetails.checkYourAnswersLabel = idCardDetails
 leadtrustee.individual.idCardDetails.error.required = Enter idCardDetails
 leadtrustee.individual.idCardDetails.error.length = IdCardDetails must be 100 characters or less
-
-leadtrustee.individual.idCardYesNoPage.title = idCardYesNoPage
-leadtrustee.individual.idCardYesNoPage.heading = idCardYesNoPage
-leadtrustee.individual.idCardYesNoPage.checkYourAnswersLabel = idCardYesNoPage
-leadtrustee.individual.idCardYesNoPage.error.required = Select yes if idCardYesNoPage
 
 leadtrustee.individual.liveInTheUkYesNoPage.title = liveInTheUkYesNoPage
 leadtrustee.individual.liveInTheUkYesNoPage.heading = liveInTheUkYesNoPage
@@ -89,11 +79,6 @@ leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel = nationalI
 leadtrustee.individual.nationalInsuranceNumber.error.required = Enter nationalInsuranceNumber
 leadtrustee.individual.nationalInsuranceNumber.error.length = NationalInsuranceNumber must be 10 characters or less
 
-leadtrustee.individual.nationalInsuranceNumberyesNoPage.title = nationalInsuranceNumberyesNoPage
-leadtrustee.individual.nationalInsuranceNumberyesNoPage.heading = nationalInsuranceNumberyesNoPage
-leadtrustee.individual.nationalInsuranceNumberyesNoPage.checkYourAnswersLabel = nationalInsuranceNumberyesNoPage
-leadtrustee.individual.nationalInsuranceNumberyesNoPage.error.required = Select yes if nationalInsuranceNumberyesNoPage
-
 leadtrustee.individual.nonUkAddress.title = nonUkAddress
 leadtrustee.individual.nonUkAddress.heading = nonUkAddress
 leadtrustee.individual.nonUkAddress.line1 = line1
@@ -109,11 +94,6 @@ leadtrustee.individual.passportDetails.heading = passportDetails
 leadtrustee.individual.passportDetails.checkYourAnswersLabel = passportDetails
 leadtrustee.individual.passportDetails.error.required = Enter passportDetails
 leadtrustee.individual.passportDetails.error.length = PassportDetails must be 100 characters or less
-
-leadtrustee.individual.passportYesNoPage.title = passportYesNoPage
-leadtrustee.individual.passportYesNoPage.heading = passportYesNoPage
-leadtrustee.individual.passportYesNoPage.checkYourAnswersLabel = passportYesNoPage
-leadtrustee.individual.passportYesNoPage.error.required = Select yes if passportYesNoPage
 
 leadtrustee.individual.ukAddress.title = ukAddress
 leadtrustee.individual.ukAddress.heading = ukAddress

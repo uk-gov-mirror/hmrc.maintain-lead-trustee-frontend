@@ -14,17 +14,11 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /logout                                      controllers.LogoutController.logout()
 
-GET        /leadTrustee/individual/addressYesNoPage                        controllers.leadtrustee.individual.AddressYesNoPageController.onPageLoad(mode: Mode = NormalMode)
-POST       /leadTrustee/individual/addressYesNoPage                        controllers.leadtrustee.individual.AddressYesNoPageController.onSubmit(mode: Mode = NormalMode)
-
 GET        /leadTrustee/individual/dateOfBirth                  controllers.leadtrustee.individual.DateOfBirthController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/dateOfBirth                  controllers.leadtrustee.individual.DateOfBirthController.onSubmit(mode: Mode = NormalMode)
 
 GET        /leadTrustee/individual/idCardDetails                        controllers.leadtrustee.individual.IdCardDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/idCardDetails                        controllers.leadtrustee.individual.IdCardDetailsController.onSubmit(mode: Mode = NormalMode)
-
-GET        /leadTrustee/individual/idCardYesNoPage                        controllers.leadtrustee.individual.IdCardYesNoPageController.onPageLoad(mode: Mode = NormalMode)
-POST       /leadTrustee/individual/idCardYesNoPage                        controllers.leadtrustee.individual.IdCardYesNoPageController.onSubmit(mode: Mode = NormalMode)
 
 GET        /leadTrustee/individual/liveInTheUkYesNoPage                        controllers.leadtrustee.individual.LiveInTheUkYesNoPageController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/liveInTheUkYesNoPage                        controllers.leadtrustee.individual.LiveInTheUkYesNoPageController.onSubmit(mode: Mode = NormalMode)
@@ -35,17 +29,11 @@ POST       /leadTrustee/individual/name                        controllers.leadt
 GET        /leadTrustee/individual/nationalInsuranceNumber                        controllers.leadtrustee.individual.NationalInsuranceNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/nationalInsuranceNumber                        controllers.leadtrustee.individual.NationalInsuranceNumberController.onSubmit(mode: Mode = NormalMode)
 
-GET        /leadTrustee/individual/nationalInsuranceNumberyesNoPage                        controllers.leadtrustee.individual.NationalInsuranceNumberyesNoPageController.onPageLoad(mode: Mode = NormalMode)
-POST       /leadTrustee/individual/nationalInsuranceNumberyesNoPage                        controllers.leadtrustee.individual.NationalInsuranceNumberyesNoPageController.onSubmit(mode: Mode = NormalMode)
-
 GET        /leadTrustee/individual/nonUkAddress                        controllers.leadtrustee.individual.NonUkAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/nonUkAddress                        controllers.leadtrustee.individual.NonUkAddressController.onSubmit(mode: Mode = NormalMode)
 
 GET        /leadTrustee/individual/passportDetails                        controllers.leadtrustee.individual.PassportDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/passportDetails                        controllers.leadtrustee.individual.PassportDetailsController.onSubmit(mode: Mode = NormalMode)
-
-GET        /leadTrustee/individual/passportYesNoPage                        controllers.leadtrustee.individual.PassportYesNoPageController.onPageLoad(mode: Mode = NormalMode)
-POST       /leadTrustee/individual/passportYesNoPage                        controllers.leadtrustee.individual.PassportYesNoPageController.onSubmit(mode: Mode = NormalMode)
 
 GET        /leadTrustee/individual/ukAddress                        controllers.leadtrustee.individual.UkAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/ukAddress                        controllers.leadtrustee.individual.UkAddressController.onSubmit(mode: Mode = NormalMode)

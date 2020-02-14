@@ -40,17 +40,11 @@ trait PageGenerators {
   implicit lazy val arbitraryUkAddressPage: Arbitrary[UkAddressPage.type] =
     Arbitrary(UkAddressPage)
 
-  implicit lazy val arbitraryPassportYesNoPagePage: Arbitrary[PassportYesNoPagePage.type] =
-    Arbitrary(PassportYesNoPagePage)
-
   implicit lazy val arbitraryPassportDetailsPage: Arbitrary[PassportDetailsPage.type] =
     Arbitrary(PassportDetailsPage)
 
   implicit lazy val arbitraryNonUkAddressPage: Arbitrary[NonUkAddressPage.type] =
     Arbitrary(NonUkAddressPage)
-
-  implicit lazy val arbitraryNationalInsuranceNumberyesNoPagePage: Arbitrary[NationalInsuranceNumberyesNoPagePage.type] =
-    Arbitrary(NationalInsuranceNumberyesNoPagePage)
 
   implicit lazy val arbitraryNationalInsuranceNumberPage: Arbitrary[NationalInsuranceNumberPage.type] =
     Arbitrary(NationalInsuranceNumberPage)
@@ -61,15 +55,9 @@ trait PageGenerators {
   implicit lazy val arbitraryLiveInTheUkYesNoPagePage: Arbitrary[LiveInTheUkYesNoPagePage.type] =
     Arbitrary(LiveInTheUkYesNoPagePage)
 
-  implicit lazy val arbitraryIdCardYesNoPagePage: Arbitrary[IdCardYesNoPagePage.type] =
-    Arbitrary(IdCardYesNoPagePage)
-
   implicit lazy val arbitraryIdCardDetailsPage: Arbitrary[IdCardDetailsPage.type] =
     Arbitrary(IdCardDetailsPage)
 
   implicit lazy val arbitraryDateOfBirthPage: Arbitrary[DateOfBirthPage.type] =
     Arbitrary(DateOfBirthPage)
-
-  implicit lazy val arbitraryAddressYesNoPagePage: Arbitrary[AddressYesNoPagePage.type] =
-    Arbitrary(AddressYesNoPagePage)
 }
