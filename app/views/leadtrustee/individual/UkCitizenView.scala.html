@@ -22,13 +22,13 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("dateOfBirthYesNoPage.title")}"
+    title = s"${errorPrefix(form)} ${messages("ukCitizen.title")}"
     ) {
 
-    @formHelper(action = DateOfBirthYesNoPageController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = UkCitizenController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
@@ -36,7 +36,7 @@
 
         @components.input_yes_no(
             field = form("value"),
-            legend = messages("dateOfBirthYesNoPage.heading"),
+            legend = messages("ukCitizen.heading"),
             headingIsLegend = true
         )
 

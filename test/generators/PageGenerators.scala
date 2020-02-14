@@ -18,9 +18,12 @@ package generators
 
 import org.scalacheck.Arbitrary
 import pages._
-import pages.leadtrustee.individual.{AddressYesNoPagePage, DateOfBirthPage, DateOfBirthYesNoPagePage, IdCardDetailsPage, IdCardYesNoPagePage, LiveInTheUkYesNoPagePage, NamePage, NationalInsuranceNumberPage, NationalInsuranceNumberyesNoPagePage, NonUkAddressPage, PassportDetailsPage, PassportYesNoPagePage, UkAddressPage}
+import pages.leadtrustee.individual._
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryUkCitizenPage: Arbitrary[UkCitizenPage.type] =
+    Arbitrary(UkCitizenPage)
 
   implicit lazy val arbitraryUkAddressPage: Arbitrary[UkAddressPage.type] =
     Arbitrary(UkAddressPage)
@@ -51,9 +54,6 @@ trait PageGenerators {
 
   implicit lazy val arbitraryIdCardDetailsPage: Arbitrary[IdCardDetailsPage.type] =
     Arbitrary(IdCardDetailsPage)
-
-  implicit lazy val arbitraryDateOfBirthYesNoPagePage: Arbitrary[DateOfBirthYesNoPagePage.type] =
-    Arbitrary(DateOfBirthYesNoPagePage)
 
   implicit lazy val arbitraryDateOfBirthPage: Arbitrary[DateOfBirthPage.type] =
     Arbitrary(DateOfBirthPage)

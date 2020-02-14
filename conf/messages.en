@@ -57,11 +57,6 @@ leadtrustee.individual.dateOfBirth.error.required.two = The dateOfBirth must inc
 leadtrustee.individual.dateOfBirth.error.required = The dateOfBirth must include {0}
 leadtrustee.individual.dateOfBirth.error.invalid = Enter a real DateOfBirth
 
-leadtrustee.individual.dateOfBirthYesNoPage.title = dateOfBirthYesNoPage
-leadtrustee.individual.dateOfBirthYesNoPage.heading = dateOfBirthYesNoPage
-leadtrustee.individual.dateOfBirthYesNoPage.checkYourAnswersLabel = dateOfBirthYesNoPage
-leadtrustee.individual.dateOfBirthYesNoPage.error.required = Select yes if dateOfBirthYesNoPage
-
 leadtrustee.individual.idCardDetails.title = idCardDetails
 leadtrustee.individual.idCardDetails.heading = idCardDetails
 leadtrustee.individual.idCardDetails.checkYourAnswersLabel = idCardDetails
@@ -129,3 +124,8 @@ leadtrustee.individual.ukAddress.error.line1.required = Enter line1
 leadtrustee.individual.ukAddress.error.line2.required = Enter line2
 leadtrustee.individual.ukAddress.error.line1.length = line1 must be line2 characters or less
 leadtrustee.individual.ukAddress.error.line2.length = line2 must be 100 characters or less
+
+leadtrustee.individual.ukCitizen.title = ukCitizen
+leadtrustee.individual.ukCitizen.heading = ukCitizen
+leadtrustee.individual.ukCitizen.checkYourAnswersLabel = ukCitizen
+leadtrustee.individual.ukCitizen.error.required = Select yes if ukCitizen

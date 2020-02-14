@@ -17,67 +17,66 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import forms.DateOfBirthYesNoPageFormProvider
+import forms.UkCitizenFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.DateOfBirthYesNoPagePage
+import pages.leadtrustee.individual.UkCitizenPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.leadtrustee.individual.DateOfBirthYesNoPageView
-
+import views.html.leadtrustee.individual.UkCitizenView
 import scala.concurrent.Future
 
-class DateOfBirthYesNoPageControllerSpec extends SpecBase with MockitoSugar {
+class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new DateOfBirthYesNoPageFormProvider()
+  val formProvider = new UkCitizenFormProvider()
   val form = formProvider()
 
-  lazy val dateOfBirthYesNoPageRoute = routes.DateOfBirthYesNoPageController.onPageLoad().url
+  lazy val ukCitizenRoute = routes.UkCitizenController.onPageLoad().url
 
-  "DateOfBirthYesNoPage Controller" must {
+  "UkCitizen Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, dateOfBirthYesNoPageRoute)
+      val request = FakeRequest(GET, ukCitizenRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[DateOfBirthYesNoPageView]
+      val view = application.injector.instanceOf[UkCitizenView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(fakeRequest, messages).toString
+        view(form, NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(DateOfBirthYesNoPagePage, true).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(UkCitizenPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, dateOfBirthYesNoPageRoute)
+      val request = FakeRequest(GET, ukCitizenRoute)
 
-      val view = application.injector.instanceOf[DateOfBirthYesNoPageView]
+      val view = application.injector.instanceOf[UkCitizenView]
 
       val result = route(application, request).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true))(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -97,7 +96,7 @@ class DateOfBirthYesNoPageControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
       val request =
-        FakeRequest(POST, dateOfBirthYesNoPageRoute)
+        FakeRequest(POST, ukCitizenRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
@@ -114,19 +113,19 @@ class DateOfBirthYesNoPageControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, dateOfBirthYesNoPageRoute)
+        FakeRequest(POST, ukCitizenRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[DateOfBirthYesNoPageView]
+      val view = application.injector.instanceOf[UkCitizenView]
 
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm, NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -135,7 +134,7 @@ class DateOfBirthYesNoPageControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, dateOfBirthYesNoPageRoute)
+      val request = FakeRequest(GET, ukCitizenRoute)
 
       val result = route(application, request).value
 
@@ -151,7 +150,7 @@ class DateOfBirthYesNoPageControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, dateOfBirthYesNoPageRoute)
+        FakeRequest(POST, ukCitizenRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value

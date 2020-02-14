@@ -19,15 +19,23 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.leadtrustee.individual.routes
-import models.{NormalMode, UserAnswers}
-import pages.leadtrustee.individual._
+import models.UserAnswers
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import viewmodels.AnswerRow
 import CheckYourAnswersHelper._
-import pages.leadtrustee.individual.{AddressYesNoPagePage, DateOfBirthPage, DateOfBirthYesNoPagePage, IdCardDetailsPage, IdCardYesNoPagePage, LiveInTheUkYesNoPagePage, NamePage, NationalInsuranceNumberPage, NationalInsuranceNumberyesNoPagePage, NonUkAddressPage, PassportDetailsPage, PassportYesNoPagePage, UkAddressPage}
+import pages.leadtrustee.individual._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+
+  def ukCitizen: Option[AnswerRow] = userAnswers.get(UkCitizenPage) map {
+    x =>
+      AnswerRow(
+        HtmlFormat.escape(messages("ukCitizen.checkYourAnswersLabel")),
+        yesOrNo(x),
+        routes.UkCitizenController.onPageLoad().url
+      )
+  }
 
   def ukAddress: Option[AnswerRow] = userAnswers.get(UkAddressPage) map {
     x =>
@@ -116,15 +124,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         HtmlFormat.escape(messages("idCardDetails.checkYourAnswersLabel")),
         HtmlFormat.escape(x),
         routes.IdCardDetailsController.onPageLoad().url
-      )
-  }
-
-  def dateOfBirthYesNoPage: Option[AnswerRow] = userAnswers.get(DateOfBirthYesNoPagePage) map {
-    x =>
-      AnswerRow(
-        HtmlFormat.escape(messages("dateOfBirthYesNoPage.checkYourAnswersLabel")),
-        yesOrNo(x),
-        routes.DateOfBirthYesNoPageController.onPageLoad().url
       )
   }
 

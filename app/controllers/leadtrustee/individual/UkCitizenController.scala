@@ -16,28 +16,28 @@
 
 package controllers.leadtrustee.individual
 
-import controllers.actions._
-import forms.DateOfBirthYesNoPageFormProvider
 import javax.inject.Inject
+import controllers.actions._
+import forms.UkCitizenFormProvider
 import models.Mode
 import navigation.Navigator
-import pages.leadtrustee.individual.DateOfBirthYesNoPagePage
+import pages.leadtrustee.individual.UkCitizenPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.leadtrustee.individual.DateOfBirthYesNoPageView
+import views.html.leadtrustee.individual.UkCitizenView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DateOfBirthYesNoPageController @Inject()(
+class UkCitizenController @Inject()(
                                          override val messagesApi: MessagesApi,
                                          sessionRepository: SessionRepository,
                                          navigator: Navigator,
-                                         standardActionSets: StandardActionSets,
-                                         formProvider: DateOfBirthYesNoPageFormProvider,
+                                        standardActionSets: StandardActionSets,
+                                         formProvider: UkCitizenFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
-                                         view: DateOfBirthYesNoPageView
+                                         view: UkCitizenView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
@@ -45,12 +45,12 @@ class DateOfBirthYesNoPageController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(DateOfBirthYesNoPagePage) match {
+      val preparedForm = request.userAnswers.get(UkCitizenPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm))
+      Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
@@ -58,13 +58,13 @@ class DateOfBirthYesNoPageController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfBirthYesNoPagePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(UkCitizenPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DateOfBirthYesNoPagePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(UkCitizenPage, mode, updatedAnswers))
       )
   }
 }

@@ -33,7 +33,7 @@ class NavigatorSpec extends SpecBase  {
         import controllers.leadtrustee.individual.routes._
 
         "navigating away from the tustee name question should go to the Do you know Date of birth question" in {
-          val value1 = DateOfBirthYesNoPageController.onPageLoad()
+          val value1 = DateOfBirthController.onPageLoad()
           navigator.nextPage(NamePage, NormalMode, UserAnswers("id")) mustBe value1
         }
       }

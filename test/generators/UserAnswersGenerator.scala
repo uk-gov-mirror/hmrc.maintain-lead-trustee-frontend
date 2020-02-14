@@ -21,13 +21,14 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
-import pages.leadtrustee.individual.{AddressYesNoPagePage, DateOfBirthPage, DateOfBirthYesNoPagePage, IdCardDetailsPage, IdCardYesNoPagePage, LiveInTheUkYesNoPagePage, NamePage, NationalInsuranceNumberPage, NationalInsuranceNumberyesNoPagePage, NonUkAddressPage, PassportDetailsPage, PassportYesNoPagePage, UkAddressPage}
+import pages.leadtrustee.individual._
 import play.api.libs.json.{JsPath, JsValue, Json}
 
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+    arbitrary[(UkCitizenPage.type, JsValue)] ::
     arbitrary[(UkAddressPage.type, JsValue)] ::
     arbitrary[(PassportYesNoPagePage.type, JsValue)] ::
     arbitrary[(PassportDetailsPage.type, JsValue)] ::
@@ -38,7 +39,6 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(LiveInTheUkYesNoPagePage.type, JsValue)] ::
     arbitrary[(IdCardYesNoPagePage.type, JsValue)] ::
     arbitrary[(IdCardDetailsPage.type, JsValue)] ::
-    arbitrary[(DateOfBirthYesNoPagePage.type, JsValue)] ::
     arbitrary[(DateOfBirthPage.type, JsValue)] ::
     arbitrary[(AddressYesNoPagePage.type, JsValue)] ::
     Nil

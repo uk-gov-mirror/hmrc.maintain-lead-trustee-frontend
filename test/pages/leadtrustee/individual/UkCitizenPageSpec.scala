@@ -18,14 +18,14 @@ package pages.leadtrustee.individual
 
 import pages.behaviours.PageBehaviours
 
-class DateOfBirthYesNoPagePageSpec extends PageBehaviours {
+class UkCitizenPageSpec extends PageBehaviours {
 
-  "DateOfBirthYesNoPagePage" must {
+  "UkCitizenPage" must {
 
-    beRetrievable[Boolean](DateOfBirthYesNoPagePage)
+    beRetrievable[Boolean](UkCitizenPage)
 
-    beSettable[Boolean](DateOfBirthYesNoPagePage)
+    beSettable[Boolean](UkCitizenPage)
 
-    beRemovable[Boolean](DateOfBirthYesNoPagePage)
+    beRemovable[Boolean](UkCitizenPage)
   }
 }

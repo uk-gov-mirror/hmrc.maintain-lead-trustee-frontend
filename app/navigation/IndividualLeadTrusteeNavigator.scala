@@ -24,7 +24,8 @@ import pages.leadtrustee.individual._
 
 object IndividualLeadTrusteeNavigator {
   private val simpleNavigations : PartialFunction[Page, Call] = {
-    case NamePage =>  DateOfBirthYesNoPageController.onPageLoad()
+    case NamePage =>  DateOfBirthController.onPageLoad()
+
     case DateOfBirthPage => NationalInsuranceNumberyesNoPageController.onPageLoad()
     case NationalInsuranceNumberPage => controllers.routes.CheckYourAnswersController.onPageLoad()
     case UkAddressPage => PassportYesNoPageController.onPageLoad()
@@ -34,7 +35,6 @@ object IndividualLeadTrusteeNavigator {
   }
 
   private val yesNoNavigations : PartialFunction[Page, UserAnswers => Call] =
-    yesNoNav(DateOfBirthYesNoPagePage, DateOfBirthController.onPageLoad(), NationalInsuranceNumberyesNoPageController.onPageLoad()) orElse
     yesNoNav(NationalInsuranceNumberyesNoPagePage, NationalInsuranceNumberController.onPageLoad(), AddressYesNoPageController.onPageLoad()) orElse
     yesNoNav(AddressYesNoPagePage, LiveInTheUkYesNoPageController.onPageLoad(), controllers.routes.CheckYourAnswersController.onPageLoad()) orElse
     yesNoNav(LiveInTheUkYesNoPagePage, UkAddressController.onPageLoad(), NonUkAddressController.onPageLoad()) orElse

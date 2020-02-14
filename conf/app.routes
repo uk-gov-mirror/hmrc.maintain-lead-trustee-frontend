@@ -20,9 +20,6 @@ POST       /leadTrustee/individual/addressYesNoPage                        contr
 GET        /leadTrustee/individual/dateOfBirth                  controllers.leadtrustee.individual.DateOfBirthController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/dateOfBirth                  controllers.leadtrustee.individual.DateOfBirthController.onSubmit(mode: Mode = NormalMode)
 
-GET        /leadTrustee/individual/dateOfBirthYesNoPage                        controllers.leadtrustee.individual.DateOfBirthYesNoPageController.onPageLoad(mode: Mode = NormalMode)
-POST       /leadTrustee/individual/dateOfBirthYesNoPage                        controllers.leadtrustee.individual.DateOfBirthYesNoPageController.onSubmit(mode: Mode = NormalMode)
-
 GET        /leadTrustee/individual/idCardDetails                        controllers.leadtrustee.individual.IdCardDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/idCardDetails                        controllers.leadtrustee.individual.IdCardDetailsController.onSubmit(mode: Mode = NormalMode)
 
@@ -52,3 +49,6 @@ POST       /leadTrustee/individual/passportYesNoPage                        cont
 
 GET        /leadTrustee/individual/ukAddress                        controllers.leadtrustee.individual.UkAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/ukAddress                        controllers.leadtrustee.individual.UkAddressController.onSubmit(mode: Mode = NormalMode)
+
+GET        /leadTrustee/individual/ukCitizen                        controllers.leadtrustee.individual.UkCitizenController.onPageLoad(mode: Mode = NormalMode)
+POST       /leadTrustee/individual/ukCitizen                        controllers.leadtrustee.individual.UkCitizenController.onSubmit(mode: Mode = NormalMode)

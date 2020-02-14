@@ -16,33 +16,31 @@
 
 package views.leadtrustee.individual
 
-import controllers.leadtrustee.individual.routes
-import forms.DateOfBirthYesNoPageFormProvider
+import controllers.routes
+import forms.UkCitizenFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.leadtrustee.individual.DateOfBirthYesNoPageView
-import controllers.leadtrustee.individual.routes
+import views.html.leadtrustee.individual.UkCitizenView
 
+class UkCitizenViewSpec extends YesNoViewBehaviours {
 
-class DateOfBirthYesNoPageViewSpec extends YesNoViewBehaviours {
+  val messageKeyPrefix = "ukCitizen"
 
-  val messageKeyPrefix = "dateOfBirthYesNoPage"
+  val form = new UkCitizenFormProvider()()
 
-  val form = new DateOfBirthYesNoPageFormProvider()()
+  "UkCitizen view" must {
 
-  "DateOfBirthYesNoPage view" must {
-
-    val view = viewFor[DateOfBirthYesNoPageView](Some(emptyUserAnswers))
+    val view = viewFor[UkCitizenView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form)(fakeRequest, messages)
+      view.apply(form, NormalMode)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.DateOfBirthYesNoPageController.onSubmit().url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, controllers.leadtrustee.individual.routes.UkCitizenController.onSubmit().url)
   }
 }
