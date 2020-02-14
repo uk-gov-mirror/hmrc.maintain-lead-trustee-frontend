@@ -14,10 +14,27 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.pages
 
-import play.api.mvc.{Request, WrappedRequest}
+import models.{Enumerable, WithName}
+import viewmodels.RadioOption
 
-case class IdentifierRequest[A](request: Request[A],
-                                user: User
-                               ) extends WrappedRequest[A](request)
+sealed trait ShareType
+
+object ShareType extends Enumerable.Implicits {
+
+  case object Quoted extends WithName("Quoted") with ShareType
+  case object Unquoted extends WithName("Unquoted") with ShareType
+
+  val values: List[ShareType] = List(
+    Quoted, Unquoted
+  )
+
+  val options: List[RadioOption] = values.map {
+    value =>
+      RadioOption("shareType", value.toString)
+  }
+
+  implicit val enumerable: Enumerable[ShareType] =
+    Enumerable(values.map(v => v.toString -> v): _*)
+}
