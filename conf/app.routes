@@ -52,3 +52,15 @@ POST       /leadTrustee/individual/ukAddress                        controllers.
 
 GET        /leadTrustee/individual/ukCitizen                        controllers.leadtrustee.individual.UkCitizenController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/ukCitizen                        controllers.leadtrustee.individual.UkCitizenController.onSubmit(mode: Mode = NormalMode)
+
+GET        /leadTrustee/individual/emailAddress                        controllers.leadtrustee.individual.EmailAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /leadTrustee/individual/emailAddress                        controllers.leadtrustee.individual.EmailAddressController.onSubmit(mode: Mode = NormalMode)
+
+GET        /leadTrustee/individual/emailAddressYesNo                        controllers.leadtrustee.individual.EmailAddressYesNoController.onPageLoad(mode: Mode = NormalMode)
+POST       /leadTrustee/individual/emailAddressYesNo                        controllers.leadtrustee.individual.EmailAddressYesNoController.onSubmit(mode: Mode = NormalMode)
+
+GET        /leadTrustee/individual/identificationDetailOptions                        controllers.leadtrustee.individual.IdentificationDetailOptionsController.onPageLoad(mode: Mode = NormalMode)
+POST       /leadTrustee/individual/identificationDetailOptions                        controllers.leadtrustee.individual.IdentificationDetailOptionsController.onSubmit(mode: Mode = NormalMode)
+
+GET        /leadTrustee/individual/telephoneNumber                        controllers.leadtrustee.individual.TelephoneNumberController.onPageLoad(mode: Mode = NormalMode)
+POST       /leadTrustee/individual/telephoneNumber                        controllers.leadtrustee.individual.TelephoneNumberController.onSubmit(mode: Mode = NormalMode)

@@ -20,10 +20,42 @@ import models._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.leadtrustee.individual.{AddressYesNoPagePage, DateOfBirthPage, IdCardDetailsPage, IdCardYesNoPagePage, LiveInTheUkYesNoPagePage, NamePage, NationalInsuranceNumberPage, NationalInsuranceNumberyesNoPagePage, NonUkAddressPage, PassportDetailsPage, PassportYesNoPagePage, UkAddressPage, UkCitizenPage}
+import pages.leadtrustee.individual.{AddressYesNoPagePage, DateOfBirthPage, EmailAddressPage, EmailAddressYesNoPage, IdCardDetailsPage, IdCardYesNoPagePage, IdentificationDetailOptionsPage, LiveInTheUkYesNoPagePage, NamePage, NationalInsuranceNumberPage, NationalInsuranceNumberyesNoPagePage, NonUkAddressPage, PassportDetailsPage, PassportYesNoPagePage, TelephoneNumberPage, UkAddressPage, UkCitizenPage}
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+
+  implicit lazy val arbitraryTelephoneNumberUserAnswersEntry: Arbitrary[(TelephoneNumberPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[TelephoneNumberPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryIdentificationDetailOptionsUserAnswersEntry: Arbitrary[(IdentificationDetailOptionsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[IdentificationDetailOptionsPage.type]
+        value <- arbitrary[IdentificationDetailOptions].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryEmailAddressYesNoUserAnswersEntry: Arbitrary[(EmailAddressYesNoPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[EmailAddressYesNoPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryEmailAddressUserAnswersEntry: Arbitrary[(EmailAddressPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[EmailAddressPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
 
   implicit lazy val arbitraryUkCitizenUserAnswersEntry: Arbitrary[(UkCitizenPage.type, JsValue)] =
     Arbitrary {

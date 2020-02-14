@@ -129,3 +129,27 @@ leadtrustee.individual.ukCitizen.title = ukCitizen
 leadtrustee.individual.ukCitizen.heading = ukCitizen
 leadtrustee.individual.ukCitizen.checkYourAnswersLabel = ukCitizen
 leadtrustee.individual.ukCitizen.error.required = Select yes if ukCitizen
+
+leadtrustee.individual.emailAddress.title = emailAddress
+leadtrustee.individual.emailAddress.heading = emailAddress
+leadtrustee.individual.emailAddress.checkYourAnswersLabel = emailAddress
+leadtrustee.individual.emailAddress.error.required = Enter emailAddress
+leadtrustee.individual.emailAddress.error.length = EmailAddress must be 512 characters or less
+
+leadtrustee.individual.emailAddressYesNo.title = emailAddressYesNo
+leadtrustee.individual.emailAddressYesNo.heading = emailAddressYesNo
+leadtrustee.individual.emailAddressYesNo.checkYourAnswersLabel = emailAddressYesNo
+leadtrustee.individual.emailAddressYesNo.error.required = Select yes if emailAddressYesNo
+
+leadtrustee.individual.identificationDetailOptions.title = identificationDetailOptions
+leadtrustee.individual.identificationDetailOptions.heading = identificationDetailOptions
+leadtrustee.individual.identificationDetailOptions.idCard = ID Card
+leadtrustee.individual.identificationDetailOptions.passport = Passport
+leadtrustee.individual.identificationDetailOptions.checkYourAnswersLabel = identificationDetailOptions
+leadtrustee.individual.identificationDetailOptions.error.required = Select identificationDetailOptions
+
+leadtrustee.individual.telephoneNumber.title = telephoneNumber
+leadtrustee.individual.telephoneNumber.heading = telephoneNumber
+leadtrustee.individual.telephoneNumber.checkYourAnswersLabel = telephoneNumber
+leadtrustee.individual.telephoneNumber.error.required = Enter telephoneNumber
+leadtrustee.individual.telephoneNumber.error.length = TelephoneNumber must be 100 characters or less

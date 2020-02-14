@@ -22,6 +22,18 @@ import pages.leadtrustee.individual._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryTelephoneNumberPage: Arbitrary[TelephoneNumberPage.type] =
+    Arbitrary(TelephoneNumberPage)
+
+  implicit lazy val arbitraryIdentificationDetailOptionsPage: Arbitrary[IdentificationDetailOptionsPage.type] =
+    Arbitrary(IdentificationDetailOptionsPage)
+
+  implicit lazy val arbitraryEmailAddressYesNoPage: Arbitrary[EmailAddressYesNoPage.type] =
+    Arbitrary(EmailAddressYesNoPage)
+
+  implicit lazy val arbitraryEmailAddressPage: Arbitrary[EmailAddressPage.type] =
+    Arbitrary(EmailAddressPage)
+
   implicit lazy val arbitraryUkCitizenPage: Arbitrary[UkCitizenPage.type] =
     Arbitrary(UkCitizenPage)
 
