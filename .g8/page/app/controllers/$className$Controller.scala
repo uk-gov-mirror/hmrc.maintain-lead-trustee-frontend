@@ -18,7 +18,7 @@ class $className$Controller @Inject()(
                                        view: $className$View
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
     implicit request =>
       Ok(view())
   }

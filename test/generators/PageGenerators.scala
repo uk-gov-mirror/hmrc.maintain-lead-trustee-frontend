@@ -18,6 +18,46 @@ package generators
 
 import org.scalacheck.Arbitrary
 import pages._
+import pages.leadtrustee.individual._
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryTelephoneNumberPage: Arbitrary[TelephoneNumberPage.type] =
+    Arbitrary(TelephoneNumberPage)
+
+  implicit lazy val arbitraryIdentificationDetailOptionsPage: Arbitrary[IdentificationDetailOptionsPage.type] =
+    Arbitrary(IdentificationDetailOptionsPage)
+
+  implicit lazy val arbitraryEmailAddressYesNoPage: Arbitrary[EmailAddressYesNoPage.type] =
+    Arbitrary(EmailAddressYesNoPage)
+
+  implicit lazy val arbitraryEmailAddressPage: Arbitrary[EmailAddressPage.type] =
+    Arbitrary(EmailAddressPage)
+
+  implicit lazy val arbitraryUkCitizenPage: Arbitrary[UkCitizenPage.type] =
+    Arbitrary(UkCitizenPage)
+
+  implicit lazy val arbitraryUkAddressPage: Arbitrary[UkAddressPage.type] =
+    Arbitrary(UkAddressPage)
+
+  implicit lazy val arbitraryPassportDetailsPage: Arbitrary[PassportDetailsPage.type] =
+    Arbitrary(PassportDetailsPage)
+
+  implicit lazy val arbitraryNonUkAddressPage: Arbitrary[NonUkAddressPage.type] =
+    Arbitrary(NonUkAddressPage)
+
+  implicit lazy val arbitraryNationalInsuranceNumberPage: Arbitrary[NationalInsuranceNumberPage.type] =
+    Arbitrary(NationalInsuranceNumberPage)
+
+  implicit lazy val arbitraryNamePage: Arbitrary[NamePage.type] =
+    Arbitrary(NamePage)
+
+  implicit lazy val arbitraryLiveInTheUkYesNoPagePage: Arbitrary[LiveInTheUkYesNoPagePage.type] =
+    Arbitrary(LiveInTheUkYesNoPagePage)
+
+  implicit lazy val arbitraryIdCardDetailsPage: Arbitrary[IdCardDetailsPage.type] =
+    Arbitrary(IdCardDetailsPage)
+
+  implicit lazy val arbitraryDateOfBirthPage: Arbitrary[DateOfBirthPage.type] =
+    Arbitrary(DateOfBirthPage)
 }
