@@ -27,6 +27,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
   val form: Form[A]
 
+  //noinspection ScalaStyle
   def pageWithTextFields(form: Form[A],
                          createView: Form[A] => HtmlFormat.Appendable,
                          messageKeyPrefix: String,
@@ -74,9 +75,13 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
           s"show an error associated with the field '$field'" in {
 
             val doc = asDocument(createView(form.withError(FormError(field, "error"))))
-            val errorSpan = doc.getElementsByClass("error-message").first
-            doc.getElementById(field).attr("aria-describedby") contains errorSpan.attr("id")
-            errorSpan.parent.attr("for") mustBe field
+            val inputField = doc.getElementById(field)
+            inputField.attr("aria-describedby").split(" ").foreach { idOfDescribedByTarget =>
+              doc.getElementById(idOfDescribedByTarget) mustNot be(null)
+            }
+
+
+            doc.select(s"label[for='$field']").size() mustBe 1
           }
         }
       }
