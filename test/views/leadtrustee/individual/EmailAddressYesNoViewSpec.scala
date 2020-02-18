@@ -17,6 +17,7 @@
 package views.leadtrustee.individual
 
 import controllers.leadtrustee.individual.routes
+import forms.YesNoFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -28,7 +29,7 @@ class EmailAddressYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "emailAddressYesNo"
 
-  val form = new EmailAddressYesNoFormProvider()()
+  val form = (new YesNoFormProvider).withPrefix("prefix")
 
   "EmailAddressYesNo view" must {
 

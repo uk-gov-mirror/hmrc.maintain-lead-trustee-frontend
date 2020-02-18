@@ -17,8 +17,7 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import models.{NormalMode, UserAnswers}
-import forms.leadtrustee.individual.LiveInTheUkYesNoPageFormProvider
+import forms.YesNoFormProvider
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -37,8 +36,8 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new LiveInTheUkYesNoPageFormProvider()
-  val form = formProvider()
+  val formProvider = new YesNoFormProvider()
+  val form = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNoPage")
 
   lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoPageController.onPageLoad().url
 
