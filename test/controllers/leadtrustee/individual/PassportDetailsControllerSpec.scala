@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import forms.leadtrustee.individual.PassportDetailsFormProvider
+import forms.PassportDetailsFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any

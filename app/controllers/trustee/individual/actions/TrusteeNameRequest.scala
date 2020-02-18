@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package controllers.trustee.individual.actions
 
-import forms.mappings.Mappings
-import play.api.data.Form
-import javax.inject.Inject
+import models.UserAnswers
+import models.requests.DataRequest
+import play.api.mvc.WrappedRequest
 
-class EmailAddressFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("emailAddress.error.required")
-        .verifying(maxLength(512, "emailAddress.error.length"))
-    )
+case class TrusteeNameRequest[T](request: DataRequest[T], trusteeName: String) extends WrappedRequest[T](request) {
+  val userAnswers:UserAnswers = request.userAnswers
 }

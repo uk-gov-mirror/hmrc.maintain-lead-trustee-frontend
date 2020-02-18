@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
 import forms.mappings.Mappings
-import play.api.data.Form
 import javax.inject.Inject
+import models.IndividualOrBusiness
+import play.api.data.Form
 
-class NationalInsuranceNumberFormProvider @Inject() extends Mappings {
+class IndividualOrBusinessFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(messagePrefix: String): Form[IndividualOrBusiness] =
     Form(
-      "value" -> text("nationalInsuranceNumber.error.required")
-        .verifying(maxLength(10, "nationalInsuranceNumber.error.length"))
+      "value" -> enumerable[IndividualOrBusiness](s"$messagePrefix.error.required")
     )
 }

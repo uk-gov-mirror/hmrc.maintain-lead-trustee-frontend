@@ -16,6 +16,7 @@
 
 package forms.leadtrustee.individual
 
+import forms.UkCitizenFormProvider
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 

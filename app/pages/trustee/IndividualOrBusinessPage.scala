@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package pages.trustee
 
-import forms.mappings.Mappings
-import play.api.data.Form
-import javax.inject.Inject
+import models.IndividualOrBusiness
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import sections.Trustees
 
-class PassportDetailsFormProvider @Inject() extends Mappings {
+case class IndividualOrBusinessPage(index: Int) extends QuestionPage[IndividualOrBusiness] {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("passportDetails.error.required")
-        .verifying(maxLength(100, "passportDetails.error.length"))
-    )
+  override def path: JsPath = Trustees.path \ index \ toString
+
+  override def toString: String = "individualOrBusiness"
+
 }

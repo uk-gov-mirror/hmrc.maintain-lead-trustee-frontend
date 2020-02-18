@@ -18,7 +18,7 @@ package controllers.leadtrustee.individual
 
 import javax.inject.Inject
 import controllers.actions._
-import forms.leadtrustee.individual.UkCitizenFormProvider
+import forms.UkCitizenFormProvider
 import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.UkCitizenPage

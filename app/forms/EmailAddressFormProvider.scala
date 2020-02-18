@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
-
-import java.time.LocalDate
+package forms
 
 import forms.mappings.Mappings
-import play.api.data.Form
 import javax.inject.Inject
+import play.api.data.Form
 
-class DateOfBirthFormProvider @Inject() extends Mappings {
+class EmailAddressFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[LocalDate] =
+  def apply(): Form[String] =
     Form(
-      "value" -> localDate(
-        invalidKey     = "dateOfBirth.error.invalid",
-        allRequiredKey = "dateOfBirth.error.required.all",
-        twoRequiredKey = "dateOfBirth.error.required.two",
-        requiredKey    = "dateOfBirth.error.required"
-      )
+      "value" -> text("emailAddress.error.required")
+        .verifying(maxLength(512, "emailAddress.error.length"))
     )
 }

@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
 import forms.mappings.Mappings
-import models.UkAddress
-import play.api.data.Form
-import play.api.data.Forms._
 import javax.inject.Inject
+import play.api.data.Form
 
-class UkAddressFormProvider @Inject() extends Mappings {
+class TelephoneNumberFormProvider @Inject() extends Mappings {
 
-   def apply(): Form[UkAddress] = Form(
-     mapping(
-      "line1" -> text("ukAddress.error.line1.required")
-        .verifying(maxLength(100, "ukAddress.error.line1.length")),
-      "line2" -> text("ukAddress.error.line2.required")
-        .verifying(maxLength(100, "ukAddress.error.line2.length"))
-    )(UkAddress.apply)(UkAddress.unapply)
-   )
- }
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("telephoneNumber.error.required")
+        .verifying(maxLength(100, "telephoneNumber.error.length"))
+    )
+}

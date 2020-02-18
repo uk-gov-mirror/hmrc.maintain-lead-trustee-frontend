@@ -18,6 +18,7 @@ package forms.leadtrustee.individual
 
 import java.time.{LocalDate, ZoneOffset}
 
+import forms.DateOfBirthFormProvider
 import forms.behaviours.DateBehaviours
 
 class DateOfBirthFormProviderSpec extends DateBehaviours {

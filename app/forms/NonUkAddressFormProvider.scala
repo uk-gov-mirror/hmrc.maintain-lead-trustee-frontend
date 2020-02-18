@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
 import forms.mappings.Mappings
-import play.api.data.Form
 import javax.inject.Inject
+import models.NonUkAddress
+import play.api.data.Form
+import play.api.data.Forms._
 
-class LiveInTheUkYesNoPageFormProvider @Inject() extends Mappings {
+class NonUkAddressFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("liveInTheUkYesNoPage.error.required")
-    )
-}
+   def apply(): Form[NonUkAddress] = Form(
+     mapping(
+      "line1" -> text("nonUkAddress.error.line1.required")
+        .verifying(maxLength(100, "nonUkAddress.error.line1.length")),
+      "line2" -> text("nonUkAddress.error.line2.required")
+        .verifying(maxLength(100, "nonUkAddress.error.line2.length"))
+    )(NonUkAddress.apply)(NonUkAddress.unapply)
+   )
+ }

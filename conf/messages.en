@@ -45,6 +45,7 @@ unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
 leadTrusteeName.defaultText = the lead trustee
+trusteeName.defaultText = the trustee
 
 leadtrustee.individual.dateOfBirth.title = What is {0}’s date of birth?
 leadtrustee.individual.dateOfBirth.heading = DateOfBirth
@@ -135,3 +136,7 @@ leadtrustee.individual.telephoneNumber.heading = telephoneNumber
 leadtrustee.individual.telephoneNumber.checkYourAnswersLabel = telephoneNumber
 leadtrustee.individual.telephoneNumber.error.required = Enter telephoneNumber
 leadtrustee.individual.telephoneNumber.error.length = TelephoneNumber must be 100 characters or less
+
+trustee.individualOrBusiness.title = Is the trustee an individual or a business?
+trustee.individualOrBusiness.heading = Is the trustee an individual or a business?
+trustee.individualOrBusiness.error.required = Select if the trustee is an individual or a business

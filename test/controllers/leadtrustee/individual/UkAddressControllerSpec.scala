@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import forms.leadtrustee.individual.UkAddressFormProvider
+import forms.UkAddressFormProvider
 import models.{NormalMode, UkAddress, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any

@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
 import forms.mappings.Mappings
-import play.api.data.Form
 import javax.inject.Inject
+import play.api.data.Form
 
-class EmailAddressYesNoFormProvider @Inject() extends Mappings {
+class NationalInsuranceNumberFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(): Form[String] =
     Form(
-      "value" -> boolean("emailAddressYesNo.error.required")
+      "value" -> text("nationalInsuranceNumber.error.required")
+        .verifying(maxLength(10, "nationalInsuranceNumber.error.length"))
     )
 }

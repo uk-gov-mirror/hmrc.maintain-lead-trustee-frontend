@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import forms.leadtrustee.individual.NameFormProvider
+import forms.NameFormProvider
 import models.{Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any

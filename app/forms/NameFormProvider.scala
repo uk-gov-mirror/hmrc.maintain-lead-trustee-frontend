@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
 import forms.mappings.Mappings
-import play.api.data.Form
 import javax.inject.Inject
+import models.Name
+import play.api.data.Form
+import play.api.data.Forms._
 
-class IdCardDetailsFormProvider @Inject() extends Mappings {
+class NameFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("idCardDetails.error.required")
-        .verifying(maxLength(100, "idCardDetails.error.length"))
-    )
-}
+   def apply(): Form[Name] = Form(
+     mapping(
+      "firstName" -> text("name.error.firstName.required")
+        .verifying(maxLength(100, "name.error.firstName.length")),
+       "middleName" -> optional(text()
+        .verifying(maxLength(100, "name.error.firstName.length"))),
+      "lastName" -> text("name.error.lastName.required")
+        .verifying(maxLength(100, "name.error.lastName.length"))
+    )(Name.apply)(Name.unapply)
+   )
+ }

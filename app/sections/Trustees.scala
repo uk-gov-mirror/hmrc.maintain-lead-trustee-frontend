@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package sections
 
-import forms.mappings.Mappings
-import models.IdentificationDetailOptions
-import play.api.data.Form
-import javax.inject.Inject
+import pages.QuestionPage
+import play.api.libs.json.{JsArray, JsPath}
 
-class IdentificationDetailOptionsFormProvider @Inject() extends Mappings {
+case object Trustees extends QuestionPage[JsArray]{
 
-  def apply(): Form[IdentificationDetailOptions] =
-    Form(
-      "value" -> enumerable[IdentificationDetailOptions]("identificationDetailOptions.error.required")
-    )
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "trustees"
+
 }

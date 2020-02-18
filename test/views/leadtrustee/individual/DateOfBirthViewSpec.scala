@@ -19,7 +19,7 @@ package views.leadtrustee.individual
 import java.time.LocalDate
 
 import controllers.leadtrustee.individual.routes
-import forms.leadtrustee.individual.DateOfBirthFormProvider
+import forms.DateOfBirthFormProvider
 import models.{NormalMode, UserAnswers}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat

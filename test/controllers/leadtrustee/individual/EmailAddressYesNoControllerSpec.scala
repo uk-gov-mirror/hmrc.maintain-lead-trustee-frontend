@@ -17,7 +17,6 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import forms.leadtrustee.individual.EmailAddressYesNoFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any

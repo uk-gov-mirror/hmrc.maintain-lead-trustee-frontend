@@ -17,7 +17,7 @@
 package views.leadtrustee.individual
 
 import controllers.leadtrustee.individual.routes
-import forms.leadtrustee.individual.NameFormProvider
+import forms.NameFormProvider
 import models.{Name, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat

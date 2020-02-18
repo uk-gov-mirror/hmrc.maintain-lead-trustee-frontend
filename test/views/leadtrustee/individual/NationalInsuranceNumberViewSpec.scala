@@ -17,7 +17,7 @@
 package views.leadtrustee.individual
 
 import controllers.leadtrustee.individual.routes
-import forms.leadtrustee.individual.NationalInsuranceNumberFormProvider
+import forms.NationalInsuranceNumberFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
