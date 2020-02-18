@@ -1,7 +1,5 @@
 # microservice specific routes
 
-GET        /                                            controllers.IndexController.onPageLoad
-
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
 GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
@@ -61,3 +59,5 @@ POST       /leadTrustee/individual/telephoneNumber                        contro
 
 GET        /trustee/:index/individual-or-business                          controllers.trustee.IndividualOrBusinessController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/:index/individual-or-business                          controllers.trustee.IndividualOrBusinessController.onSubmit(mode: Mode = NormalMode, index: Int)
+
+GET        /:utr                                        controllers.IndexController.onPageLoad(utr: String)

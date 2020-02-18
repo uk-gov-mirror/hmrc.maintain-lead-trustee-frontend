@@ -45,6 +45,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   val userAnswers = UserAnswers(
     "fakeId",
+    "UTRUTRUTR",
     Json.obj().transform(UkAddressPage.path.json.put(Json.obj(
       "line1" -> "value 1",
       "line2" -> "value 2",
