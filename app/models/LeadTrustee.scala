@@ -18,6 +18,7 @@ package models
 
 import org.joda.time.DateTime
 import play.api.libs.json.{Format, JsResult, JsValue, Json, Reads, Writes}
+import play.api.libs.json.{JodaReads, JodaWrites}
 
 case class PassportType(number: String,
                         expirationDate: DateTime,
@@ -25,7 +26,7 @@ case class PassportType(number: String,
 
 object PassportType {
 
-  implicit val dateFormat: Format[DateTime] = Format[DateTime]( Reads.jodaDateReads(dateTimePattern), Writes.jodaDateWrites(dateTimePattern) )
+  implicit val dateFormat: Format[DateTime] = Format[DateTime]( JodaReads.jodaDateReads(dateTimePattern), JodaWrites.jodaDateWrites(dateTimePattern) )
   implicit val passportTypeFormat: Format[PassportType] = Json.format[PassportType]
 }
 
@@ -59,7 +60,7 @@ case class DisplayTrustLeadTrusteeIndType(
 
 object DisplayTrustLeadTrusteeIndType {
 
-  implicit val dateFormat: Format[DateTime] = Format[DateTime](Reads.jodaDateReads(dateTimePattern), Writes.jodaDateWrites(dateTimePattern))
+  implicit val dateFormat: Format[DateTime] = Format[DateTime](JodaReads.jodaDateReads(dateTimePattern), JodaWrites.jodaDateWrites(dateTimePattern))
   implicit val leadTrusteeIndTypeFormat: Format[DisplayTrustLeadTrusteeIndType] = Json.format[DisplayTrustLeadTrusteeIndType]
 
 }
@@ -85,7 +86,7 @@ case class DisplayTrustLeadTrusteeType(
 
 object DisplayTrustLeadTrusteeType {
 
-  implicit val dateFormat: Format[DateTime] = Format[DateTime](Reads.jodaDateReads(dateTimePattern), Writes.jodaDateWrites(dateTimePattern))
+  implicit val dateFormat: Format[DateTime] = Format[DateTime](JodaReads.jodaDateReads(dateTimePattern), JodaWrites.jodaDateWrites(dateTimePattern))
 
   implicit val writes: Writes[DisplayTrustLeadTrusteeType] = Json.writes[DisplayTrustLeadTrusteeType]
 

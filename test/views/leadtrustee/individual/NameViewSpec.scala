@@ -26,7 +26,7 @@ import views.html.leadtrustee.individual.NameView
 
 class NameViewSpec extends QuestionViewBehaviours[Name] {
 
-  val messageKeyPrefix = "name"
+  val messageKeyPrefix = "leadtrustee.individual.name"
 
   override val form = new NameFormProvider()()
 

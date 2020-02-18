@@ -28,7 +28,7 @@ import views.html.leadtrustee.individual.DateOfBirthView
 
 class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 
-  val messageKeyPrefix = "dateOfBirth"
+  val messageKeyPrefix = "leadtrustee.individual.dateOfBirth"
 
   val form = new DateOfBirthFormProvider()()
 
@@ -41,7 +41,7 @@ class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, "LeadTrusteeName")(fakeRequest, messages)
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, "LeadTrusteeName")
 
     behave like pageWithBackLink(applyView(form))
   }
