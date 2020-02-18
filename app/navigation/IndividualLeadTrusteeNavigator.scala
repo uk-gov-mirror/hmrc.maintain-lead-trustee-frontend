@@ -38,7 +38,7 @@ object IndividualLeadTrusteeNavigator {
 
   private val yesNoNavigations : PartialFunction[Page, UserAnswers => Call] =
     yesNoNav(UkCitizenPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.IdentificationDetailOptionsController.onPageLoad()) orElse
-    yesNoNav(LiveInTheUkYesNoPagePage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad()) orElse
+    yesNoNav(LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad()) orElse
     yesNoNav(EmailAddressYesNoPage, rts.EmailAddressController.onPageLoad(), rts.TelephoneNumberController.onPageLoad())
 
 

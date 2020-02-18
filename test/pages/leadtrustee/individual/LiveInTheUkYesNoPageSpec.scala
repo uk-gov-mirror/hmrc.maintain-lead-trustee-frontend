@@ -16,37 +16,33 @@
 
 package pages.leadtrustee.individual
 
-import models.IdentificationDetailOptions.Passport
+import models.{NonUkAddress, UkAddress}
 import pages.behaviours.PageBehaviours
 
-class UkCitizenPageSpec extends PageBehaviours {
+class LiveInTheUkYesNoPageSpec extends PageBehaviours {
 
-  "UkCitizenPage" must {
+  "LiveInTheUkYesNoPagePage" must {
 
-    beRetrievable[Boolean](UkCitizenPage)
+    beRetrievable[Boolean](LiveInTheUkYesNoPage)
 
-    beSettable[Boolean](UkCitizenPage)
+    beSettable[Boolean](LiveInTheUkYesNoPage)
 
-    beRemovable[Boolean](UkCitizenPage)
+    beRemovable[Boolean](LiveInTheUkYesNoPage)
 
     "implement cleanup logic when YES selected" in {
       val userAnswers = emptyUserAnswers
-        .set(IdentificationDetailOptionsPage, Passport)
-        .flatMap(_.set(IdCardDetailsPage, "id card"))
-        .flatMap(_.set(PassportDetailsPage, "passport"))
-        .flatMap(_.set(UkCitizenPage, true))
+        .set(NonUkAddressPage, NonUkAddress("Line 1", "Line 2"))
+        .flatMap(_.set(LiveInTheUkYesNoPage, true))
 
-      userAnswers.get.get(IdentificationDetailOptionsPage) mustNot be(defined)
-      userAnswers.get.get(IdCardDetailsPage) mustNot be(defined)
-      userAnswers.get.get(PassportDetailsPage) mustNot be(defined)
+      userAnswers.get.get(NonUkAddressPage) mustNot be(defined)
     }
 
     "implement cleanup logic when NO selected" in {
       val userAnswers = emptyUserAnswers
-        .set(NationalInsuranceNumberPage, "nino")
-        .flatMap(_.set(UkCitizenPage, false))
+        .set(UkAddressPage, UkAddress("Line 1", "Line 2"))
+        .flatMap(_.set(LiveInTheUkYesNoPage, false))
 
-      userAnswers.get.get(NationalInsuranceNumberPage) mustNot be(defined)
+      userAnswers.get.get(UkAddressPage) mustNot be(defined)
     }
   }
 }

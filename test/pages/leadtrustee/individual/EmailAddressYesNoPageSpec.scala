@@ -27,5 +27,13 @@ class EmailAddressYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](EmailAddressYesNoPage)
 
     beRemovable[Boolean](EmailAddressYesNoPage)
+
+    "implement cleanup logic when NO selected" in {
+      val userAnswers = emptyUserAnswers
+        .set(EmailAddressPage, "email")
+        .flatMap(_.set(EmailAddressYesNoPage, false))
+
+      userAnswers.get.get(EmailAddressPage) mustNot be(defined)
+    }
   }
 }
