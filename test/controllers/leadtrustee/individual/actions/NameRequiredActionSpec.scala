@@ -47,7 +47,7 @@ class NameRequiredActionSpec extends WordSpec with MockitoSugar with ScalaFuture
 
     when(sourceRequest.userAnswers).thenReturn(ua)
     whenReady(OUT.callTransform(sourceRequest)) { transformedRequest =>
-      transformedRequest.leadTrusteeName mustBe "testFirstName testMiddleName testLastName"
+      transformedRequest.leadTrusteeName mustBe "testFirstName testLastName"
     }
   }
 

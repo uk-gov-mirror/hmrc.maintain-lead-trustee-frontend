@@ -21,7 +21,7 @@ import forms.leadtrustee.individual.LiveInTheUkYesNoPageFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.leadtrustee.individual.LiveInTheUkYesNoPagePage
+import pages.leadtrustee.individual.LiveInTheUkYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -45,7 +45,7 @@ class LiveInTheUkYesNoPageController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(LiveInTheUkYesNoPagePage) match {
+      val preparedForm = request.userAnswers.get(LiveInTheUkYesNoPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -62,9 +62,9 @@ class LiveInTheUkYesNoPageController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(LiveInTheUkYesNoPagePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(LiveInTheUkYesNoPage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(LiveInTheUkYesNoPagePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(LiveInTheUkYesNoPage, mode, updatedAnswers))
       )
   }
 }

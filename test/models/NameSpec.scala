@@ -25,15 +25,7 @@ class NameSpec extends WordSpec with MustMatchers with ScalaCheckPropertyChecks 
     forAll(arbitraryName.arbitrary) { (name:Name) =>
       name.displayName must startWith(name.firstName + " ")
       name.displayName must endWith(" " + name.lastName)
-
-      if (name.middleName.isDefined) {
-        name.middleName.foreach(mn => {
-          name.displayName must include(mn)
-          name.displayName.size mustBe name.firstName.size + mn.size + name.lastName.size + 2
-        })
-      } else {
-        name.displayName.size mustBe name.firstName.size + name.lastName.size + 1
-      }
+      name.displayName.length mustBe name.firstName.length + name.lastName.length + 1
     }
   }
 }

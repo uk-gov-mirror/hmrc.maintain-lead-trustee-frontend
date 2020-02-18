@@ -23,11 +23,11 @@ sealed trait IdentificationDetailOptions
 
 object IdentificationDetailOptions extends Enumerable.Implicits {
 
-  case object Idcard extends WithName("idCard") with IdentificationDetailOptions
+  case object IdCard extends WithName("idCard") with IdentificationDetailOptions
   case object Passport extends WithName("passport") with IdentificationDetailOptions
 
   val values: Seq[IdentificationDetailOptions] = Seq(
-    Idcard, Passport
+    IdCard, Passport
   )
 
   val options: Seq[RadioOption] = values.map {
