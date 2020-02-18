@@ -29,7 +29,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import views.html.leadtrustee.individual.NonUkAddressView
 
 import scala.concurrent.Future
@@ -44,7 +44,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
   lazy val nonUkAddressRoute = routes.NonUkAddressController.onPageLoad().url
 
   val userAnswers = UserAnswers(
-    userAnswersId,
+    "fakeId",
     Json.obj().transform(NonUkAddressPage.path.json.put(Json.obj(
       "line1" -> "value 1",
       "line2" -> "value 2")
@@ -91,15 +91,14 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+      val mockSessionRepository = mock[PlaybackRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
           )
           .build()
 

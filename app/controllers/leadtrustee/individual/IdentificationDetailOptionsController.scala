@@ -23,7 +23,7 @@ import navigation.Navigator
 import pages.leadtrustee.individual.IdentificationDetailOptionsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.leadtrustee.individual.IdentificationDetailOptionsView
 import javax.inject.Inject
@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IdentificationDetailOptionsController @Inject()(
                                        override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
+                                       playbackRepository: PlaybackRepository,
                                        navigator: Navigator,
                                        standardActionSets: StandardActionSets,
                                        formProvider: IdentificationDetailOptionsFormProvider,
@@ -63,7 +63,7 @@ class IdentificationDetailOptionsController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IdentificationDetailOptionsPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _              <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(IdentificationDetailOptionsPage, mode, updatedAnswers))
       )
   }

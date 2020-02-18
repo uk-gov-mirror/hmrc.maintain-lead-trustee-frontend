@@ -34,7 +34,7 @@ class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   "DateOfBirthView view" must {
 
-    val application = applicationBuilder(userAnswers = Some(UserAnswers(userAnswersId))).build()
+    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
     val view = application.injector.instanceOf[DateOfBirthView]
 
