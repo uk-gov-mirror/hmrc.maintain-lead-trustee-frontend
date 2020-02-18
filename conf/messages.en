@@ -60,11 +60,13 @@ leadtrustee.individual.name.error.lastName.length = Lead trustee’s last name m
 
 leadtrustee.individual.dateOfBirth.title = What is {0}’s date of birth?
 leadtrustee.individual.dateOfBirth.heading = What is {0}’s date of birth?
-leadtrustee.individual.dateOfBirth.checkYourAnswersLabel = DateOfBirth
-leadtrustee.individual.dateOfBirth.error.required.all = Enter the dateOfBirth
-leadtrustee.individual.dateOfBirth.error.required.two = The dateOfBirth must include {0} and {1}
-leadtrustee.individual.dateOfBirth.error.required = The dateOfBirth must include {0}
-leadtrustee.individual.dateOfBirth.error.invalid = Enter a real DateOfBirth
+leadtrustee.individual.dateOfBirth.checkYourAnswersLabel = What is {0}’s date of birth?
+leadtrustee.individual.dateOfBirth.error.required.all = Enter a date of birth
+leadtrustee.individual.dateOfBirth.error.required.two = Date of birth must include a {0} and a {1}
+leadtrustee.individual.dateOfBirth.error.required = Date of birth must include a {0}
+leadtrustee.individual.dateOfBirth.error.invalid = Enter a real date of birth
+leadtrustee.individual.dateOfBirth.error.future = Date of birth must be today or in the past
+leadtrustee.individual.dateOfBirth.error.past = Date of birth must be after 31 December 1499
 
 leadtrustee.individual.idCardDetails.title = idCardDetails
 leadtrustee.individual.idCardDetails.heading = idCardDetails
