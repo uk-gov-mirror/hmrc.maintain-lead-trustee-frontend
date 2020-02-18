@@ -17,13 +17,14 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
+import forms.YesNoFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.LiveInTheUkYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.leadtrustee.individual.LiveInTheUkYesNoPageView
 
@@ -31,15 +32,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class LiveInTheUkYesNoPageController @Inject()(
                                          override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
+                                         playbackRepository: PlaybackRepository,
                                          navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                         formProvider: LiveInTheUkYesNoPageFormProvider,
+                                         standardActionSets: StandardActionSets,
+                                         formProvider: YesNoFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: LiveInTheUkYesNoPageView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNoPage")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
     implicit request =>
@@ -62,7 +63,7 @@ class LiveInTheUkYesNoPageController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(LiveInTheUkYesNoPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _              <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(LiveInTheUkYesNoPage, mode, updatedAnswers))
       )
   }

@@ -24,7 +24,7 @@ import navigation.Navigator
 import pages.leadtrustee.individual.PassportDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.leadtrustee.individual.PassportDetailsView
 
@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PassportDetailsController @Inject()(
                                         override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
+                                        sessionRepository: PlaybackRepository,
                                         navigator: Navigator,
                                         standardActionSets: StandardActionSets,
                                         formProvider: PassportDetailsFormProvider,

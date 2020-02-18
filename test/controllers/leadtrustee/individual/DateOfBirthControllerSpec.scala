@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import views.html.leadtrustee.individual.DateOfBirthView
 
 import scala.concurrent.Future
@@ -45,8 +45,6 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
   val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
   lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad().url
-
-  override val emptyUserAnswers = UserAnswers(userAnswersId)
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, dateOfBirthRoute)
@@ -79,7 +77,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(DateOfBirthPage, validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set(DateOfBirthPage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -97,15 +95,14 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+      val mockPlaybackRepository = mock[PlaybackRepository]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
           )
           .build()
 

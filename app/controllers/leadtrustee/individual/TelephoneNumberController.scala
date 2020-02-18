@@ -23,7 +23,7 @@ import navigation.Navigator
 import pages.leadtrustee.individual.TelephoneNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.leadtrustee.individual.TelephoneNumberView
 import javax.inject.Inject
@@ -32,13 +32,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TelephoneNumberController @Inject()(
                                         override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
+                                        playbackRepository: PlaybackRepository,
                                         navigator: Navigator,
                                         standardActionSets: StandardActionSets,
                                         formProvider: TelephoneNumberFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: TelephoneNumberView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
@@ -63,7 +63,7 @@ class TelephoneNumberController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(TelephoneNumberPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _              <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(TelephoneNumberPage, mode, updatedAnswers))
       )
   }

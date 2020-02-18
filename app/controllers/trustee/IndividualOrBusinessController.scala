@@ -18,23 +18,23 @@ package controllers.trustee
 
 import controllers.actions.StandardActionSets
 import controllers.trustee.individual.actions.NameRequiredAction
-import forms.{DateOfBirthFormProvider, IndividualOrBusinessFormProvider}
+import forms.IndividualOrBusinessFormProvider
 import javax.inject.Inject
-import models.Mode
+import models.{IndividualOrBusiness, Mode}
 import navigation.Navigator
 import pages.leadtrustee.individual.DateOfBirthPage
 import pages.trustee.IndividualOrBusinessPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.leadtrustee.individual.DateOfBirthView
+import views.trustee.IndividualOrBusinessView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualOrBusinessController @Inject()(
                                                 override val messagesApi: MessagesApi,
-                                                sessionRepository: SessionRepository,
+                                                sessionRepository: PlaybackRepository,
                                                 navigator: Navigator,
                                                 standardActionSets: StandardActionSets,
                                                 nameAction: NameRequiredAction,
@@ -53,19 +53,21 @@ class IndividualOrBusinessController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.trusteeName))
+      Ok("view")
   }
+
+
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
+          Future.successful(BadRequest("view")),
 
-        value =>
+        (value: IndividualOrBusiness) =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfBirthPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set[IndividualOrBusiness](IndividualOrBusinessPage, value))
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(DateOfBirthPage, mode, updatedAnswers))
       )

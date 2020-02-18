@@ -17,13 +17,14 @@
 package controllers.trustee.individual
 
 import controllers.actions._
+import forms.YesNoFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.EmailAddressYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.leadtrustee.individual.EmailAddressYesNoView
 
@@ -31,15 +32,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EmailAddressYesNoController @Inject()(
                                          override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
+                                         sessionRepository: PlaybackRepository,
                                          navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                         formProvider: EmailAddressYesNoFormProvider,
+                                         standardActionSets: StandardActionSets,
+                                         formProvider: YesNoFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: EmailAddressYesNoView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form = formProvider.withPrefix("trustee.individual.emailAddressYesNo")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
     implicit request =>

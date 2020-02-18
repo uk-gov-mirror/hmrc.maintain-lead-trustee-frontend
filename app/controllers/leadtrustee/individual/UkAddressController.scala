@@ -24,21 +24,21 @@ import navigation.Navigator
 import pages.leadtrustee.individual.UkAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.leadtrustee.individual.UkAddressView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class UkAddressController @Inject()(
-                                      override val messagesApi: MessagesApi,
-                                      sessionRepository: SessionRepository,
-                                      navigator: Navigator,
-                                      standardActionSets: StandardActionSets,
-                                      formProvider: UkAddressFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      view: UkAddressView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                    override val messagesApi: MessagesApi,
+                                    playbackRepository: PlaybackRepository,
+                                    navigator: Navigator,
+                                    standardActionSets: StandardActionSets,
+                                    formProvider: UkAddressFormProvider,
+                                    val controllerComponents: MessagesControllerComponents,
+                                    view: UkAddressView
+                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
@@ -63,7 +63,7 @@ class UkAddressController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UkAddressPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _              <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(UkAddressPage, mode, updatedAnswers))
       )
   }

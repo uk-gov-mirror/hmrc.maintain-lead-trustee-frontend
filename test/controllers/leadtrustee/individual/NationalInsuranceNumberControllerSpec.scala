@@ -28,7 +28,7 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import views.html.leadtrustee.individual.NationalInsuranceNumberView
 
 import scala.concurrent.Future
@@ -64,7 +64,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(NationalInsuranceNumberPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(NationalInsuranceNumberPage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -84,15 +84,14 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+      val mockPlaybackRepository = mock[PlaybackRepository]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
           )
           .build()
 
