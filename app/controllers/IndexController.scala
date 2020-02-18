@@ -16,7 +16,6 @@
 
 package controllers
 
-import controllers.actions.AuthenticateForPlayback
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,7 +26,6 @@ import scala.concurrent.Future
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
-                                 actions: AuthenticateForPlayback,
                                  view: IndexView
                                ) extends FrontendBaseController with I18nSupport {
 
