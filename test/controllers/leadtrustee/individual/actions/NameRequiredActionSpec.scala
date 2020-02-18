@@ -53,7 +53,7 @@ class NameRequiredActionSpec extends WordSpec with MockitoSugar with ScalaFuture
 
   "Provides default text when the name isn't in userAnswers" in {
     val sourceRequest = mock[DataRequest[AnyContent]]
-    val messagesApi = mock[MessagesApi](Mockito.withSettings().verboseLogging())
+    val messagesApi = mock[MessagesApi]
     val messages = mock[Messages]
     when(messagesApi.preferred(any[Request[AnyContent]])).thenReturn(messages)
     when(messages("leadTrusteeName.defaultText")).thenReturn("defaultValue")
