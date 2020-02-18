@@ -16,14 +16,22 @@
 
 package controllers.actions
 
+import javax.inject.Inject
 import controllers.routes
-import com.google.inject.Inject
+import models.UserAnswers
 import models.requests.{DataRequest, OptionalDataRequest}
+import play.api.libs.json.Json
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
+
+
+
+trait DataRequiredAction extends ActionRefiner[OptionalDataRequest, DataRequest]
+
 
 class DataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionContext) extends DataRequiredAction {
 
@@ -40,4 +48,18 @@ class DataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionC
   }
 }
 
-trait DataRequiredAction extends ActionRefiner[OptionalDataRequest, DataRequest]
+class EnsureDataActionImpl @Inject()(val playbackRepository: PlaybackRepository)(implicit val executionContext: ExecutionContext) extends DataRequiredAction {
+
+  override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
+
+    implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+
+    request.userAnswers match {
+      case None =>
+        val answers = UserAnswers(request.user.internalId, Json.obj())
+        playbackRepository.set(answers).map {_ => Right(DataRequest(request.request, answers, request.user))}
+      case Some(data) =>
+        Future.successful(Right(DataRequest(request.request, data, request.user)))
+    }
+  }
+}

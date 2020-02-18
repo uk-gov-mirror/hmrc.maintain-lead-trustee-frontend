@@ -17,32 +17,32 @@
 package navigation
 
 import base.SpecBase
-import controllers.routes
 import pages._
 import models._
 
-class NavigatorSpec extends SpecBase {
+class NavigatorSpec extends SpecBase  {
 
   val navigator = new Navigator
 
+
+
   "Navigator" when {
 
-    "in Normal mode" must {
+      "navigating individual lead trustee change journey" when {
+        import pages.leadtrustee.individual._
+        import controllers.leadtrustee.individual.routes._
+
+        "navigating away from the tustee name question should go to the Do you know Date of birth question" in {
+          val value1 = DateOfBirthController.onPageLoad()
+          navigator.nextPage(NamePage, NormalMode, UserAnswers("id")) mustBe value1
+        }
+      }
+
 
       "go to Index from a page that doesn't exist in the route map" in {
 
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.IndexController.onPageLoad()
+        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe controllers.routes.IndexController.onPageLoad()
       }
     }
-
-    "in Check mode" must {
-
-      "go to CheckYourAnswers from a page that doesn't exist in the edit route map" in {
-
-        case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id")) mustBe routes.CheckYourAnswersController.onPageLoad()
-      }
-    }
-  }
 }

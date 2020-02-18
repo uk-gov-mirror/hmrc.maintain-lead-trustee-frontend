@@ -23,13 +23,15 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.IndexView
 
+import scala.concurrent.Future
+
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  actions: AuthenticateForPlayback,
                                  view: IndexView
                                ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = actions.authWithSession { implicit request =>
-    Ok(view())
+  def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Redirect(controllers.leadtrustee.individual.routes.NameController.onPageLoad()))
   }
 }
