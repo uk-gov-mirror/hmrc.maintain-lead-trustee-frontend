@@ -56,6 +56,6 @@ object Address {
       }
     })
 
-  implicit val writes: Writes[Address] = ???
+  implicit val writes: Writes[Address] = Writes(_ => ???)
 }
 
