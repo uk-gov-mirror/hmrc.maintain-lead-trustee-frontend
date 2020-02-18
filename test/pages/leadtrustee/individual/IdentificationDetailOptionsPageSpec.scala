@@ -17,9 +17,10 @@
 package pages.leadtrustee.individual
 
 import models.IdentificationDetailOptions
+import models.IdentificationDetailOptions._
 import pages.behaviours.PageBehaviours
 
-class IdentificationDetailOptionsSpec extends PageBehaviours {
+class IdentificationDetailOptionsPageSpec extends PageBehaviours {
 
   "IdentificationDetailOptionsPage" must {
 
@@ -28,5 +29,21 @@ class IdentificationDetailOptionsSpec extends PageBehaviours {
     beSettable[IdentificationDetailOptions](IdentificationDetailOptionsPage)
 
     beRemovable[IdentificationDetailOptions](IdentificationDetailOptionsPage)
+
+    "implement cleanup logic when ID-CARD selected" in {
+      val userAnswers = emptyUserAnswers
+        .set(PassportDetailsPage, "passport")
+        .flatMap(_.set(IdentificationDetailOptionsPage, IdCard))
+
+      userAnswers.get.get(PassportDetailsPage) mustNot be(defined)
+    }
+
+    "implement cleanup logic when PASSPORT selected" in {
+      val userAnswers = emptyUserAnswers
+        .set(IdCardDetailsPage, "id card")
+        .flatMap(_.set(IdentificationDetailOptionsPage, Passport))
+
+      userAnswers.get.get(IdCardDetailsPage) mustNot be(defined)
+    }
   }
 }

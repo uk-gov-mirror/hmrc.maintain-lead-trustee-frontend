@@ -20,7 +20,7 @@ import models.UserAnswers
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 import controllers.leadtrustee.individual.{routes => rts}
-import models.IdentificationDetailOptions.{Idcard, Passport}
+import models.IdentificationDetailOptions.{IdCard, Passport}
 import pages.leadtrustee.individual._
 
 object IndividualLeadTrusteeNavigator {
@@ -38,7 +38,7 @@ object IndividualLeadTrusteeNavigator {
 
   private val yesNoNavigations : PartialFunction[Page, UserAnswers => Call] =
     yesNoNav(UkCitizenPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.IdentificationDetailOptionsController.onPageLoad()) orElse
-    yesNoNav(LiveInTheUkYesNoPagePage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad()) orElse
+    yesNoNav(LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad()) orElse
     yesNoNav(EmailAddressYesNoPage, rts.EmailAddressController.onPageLoad(), rts.TelephoneNumberController.onPageLoad())
 
 
@@ -54,7 +54,7 @@ object IndividualLeadTrusteeNavigator {
   private   def idOptionsNavigation(userAnswers: UserAnswers): Call = {
     userAnswers.get(IdentificationDetailOptionsPage).map {
       case Passport => rts.PassportDetailsController.onPageLoad()
-      case Idcard => rts.IdCardDetailsController.onPageLoad()
+      case IdCard => rts.IdCardDetailsController.onPageLoad()
     }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
 

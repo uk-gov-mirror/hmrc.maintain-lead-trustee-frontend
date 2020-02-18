@@ -16,13 +16,27 @@
 
 package pages.leadtrustee.individual
 
-import models.IdentificationDetailOptions
+import models.IdentificationDetailOptions._
+import models.{IdentificationDetailOptions, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object IdentificationDetailOptionsPage extends QuestionPage[IdentificationDetailOptions] {
 
   override def path: JsPath = basePath \ toString
 
   override def toString: String = "identificationDetailOptions"
+
+  override def cleanup(value: Option[IdentificationDetailOptions], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(IdCard) =>
+        userAnswers.remove(PassportDetailsPage)
+      case Some(Passport) =>
+        userAnswers.remove(IdCardDetailsPage)
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
+  }
 }

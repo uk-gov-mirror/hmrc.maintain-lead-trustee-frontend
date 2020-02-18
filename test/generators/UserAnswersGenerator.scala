@@ -38,7 +38,7 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(NonUkAddressPage.type, JsValue)] ::
     arbitrary[(NationalInsuranceNumberPage.type, JsValue)] ::
     arbitrary[(NamePage.type, JsValue)] ::
-    arbitrary[(LiveInTheUkYesNoPagePage.type, JsValue)] ::
+    arbitrary[(LiveInTheUkYesNoPage.type, JsValue)] ::
     arbitrary[(IdCardDetailsPage.type, JsValue)] ::
     arbitrary[(DateOfBirthPage.type, JsValue)] ::
     Nil

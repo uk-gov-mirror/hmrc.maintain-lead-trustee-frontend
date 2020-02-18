@@ -118,7 +118,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       )
   }
 
-  def liveInTheUkYesNoPage: Option[AnswerRow] = userAnswers.get(LiveInTheUkYesNoPagePage) map {
+  def liveInTheUkYesNoPage: Option[AnswerRow] = userAnswers.get(LiveInTheUkYesNoPage) map {
     x =>
       AnswerRow(
         HtmlFormat.escape(messages("liveInTheUkYesNoPage.checkYourAnswersLabel")),
