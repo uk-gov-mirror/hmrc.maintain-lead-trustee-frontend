@@ -47,7 +47,8 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
     userAnswersId,
     Json.obj().transform(UkAddressPage.path.json.put(Json.obj(
       "line1" -> "value 1",
-      "line2" -> "value 2")
+      "line2" -> "value 2",
+      "postCode" -> "postCode")
     )).get
   )
 
@@ -84,7 +85,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(UkAddress("value 1", "value 2")))(fakeRequest, messages).toString
+        view(form.fill(UkAddress("value 1", "value 2", None, None, "postCode")))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -106,7 +107,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
       val request =
         FakeRequest(POST, ukAddressRoute)
-          .withFormUrlEncodedBody(("line1", "value 1"), ("line2", "value 2"))
+          .withFormUrlEncodedBody(("line1", "value 1"), ("line2", "value 2"), ("postcode", "postCode"))
 
       val result = route(application, request).value
 

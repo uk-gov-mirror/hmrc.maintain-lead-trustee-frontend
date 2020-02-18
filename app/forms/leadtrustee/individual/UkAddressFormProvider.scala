@@ -29,7 +29,13 @@ class UkAddressFormProvider @Inject() extends Mappings {
       "line1" -> text("ukAddress.error.line1.required")
         .verifying(maxLength(100, "ukAddress.error.line1.length")),
       "line2" -> text("ukAddress.error.line2.required")
-        .verifying(maxLength(100, "ukAddress.error.line2.length"))
+        .verifying(maxLength(100, "ukAddress.error.line2.length")),
+       "line3" -> optional(text()
+         .verifying(maxLength(100, "nonUkAddress.error.line3.length"))),
+       "line4" -> optional(text()
+         .verifying(maxLength(100, "nonUkAddress.error.line4.length"))),
+       "postcode" -> text("nonUkAddress.error.postcode.required")
+         .verifying(maxLength(100, "nonUkAddress.error.postcode.length"))
     )(UkAddress.apply)(UkAddress.unapply)
    )
  }
