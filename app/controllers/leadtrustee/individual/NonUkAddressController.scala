@@ -17,14 +17,14 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import forms.leadtrustee.individual.NonUkAddressFormProvider
+import forms.NonUkAddressFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.NonUkAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.leadtrustee.individual.NonUkAddressView
 
@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class NonUkAddressController @Inject()(
                                       override val messagesApi: MessagesApi,
-                                      sessionRepository: SessionRepository,
+                                      playbackRepository: PlaybackRepository,
                                       navigator: Navigator,
                                       standardActionSets: StandardActionSets,
                                       formProvider: NonUkAddressFormProvider,
@@ -63,7 +63,7 @@ class NonUkAddressController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NonUkAddressPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _              <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(NonUkAddressPage, mode, updatedAnswers))
       )
   }

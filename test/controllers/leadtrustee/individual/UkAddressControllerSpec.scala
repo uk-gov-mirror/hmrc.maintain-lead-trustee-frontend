@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import forms.leadtrustee.individual.UkAddressFormProvider
+import forms.UkAddressFormProvider
 import models.{NormalMode, UkAddress, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
@@ -29,7 +29,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import views.html.leadtrustee.individual.UkAddressView
 
 import scala.concurrent.Future
@@ -44,7 +44,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
   lazy val ukAddressRoute = routes.UkAddressController.onPageLoad().url
 
   val userAnswers = UserAnswers(
-    userAnswersId,
+    "fakeId",
     Json.obj().transform(UkAddressPage.path.json.put(Json.obj(
       "line1" -> "value 1",
       "line2" -> "value 2",
@@ -92,15 +92,14 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+      val mockPlaybackRepository = mock[PlaybackRepository]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
           )
           .build()
 

@@ -19,7 +19,7 @@ package views.leadtrustee.individual
 import java.time.LocalDate
 
 import controllers.leadtrustee.individual.routes
-import forms.leadtrustee.individual.DateOfBirthFormProvider
+import forms.DateOfBirthFormProvider
 import models.{NormalMode, UserAnswers}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -34,7 +34,7 @@ class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   "DateOfBirthView view" must {
 
-    val application = applicationBuilder(userAnswers = Some(UserAnswers(userAnswersId))).build()
+    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
     val view = application.injector.instanceOf[DateOfBirthView]
 

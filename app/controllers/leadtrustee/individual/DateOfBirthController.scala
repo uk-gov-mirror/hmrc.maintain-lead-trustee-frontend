@@ -18,14 +18,14 @@ package controllers.leadtrustee.individual
 
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.individual.actions.{LeadTrusteeNameRequest, NameRequiredAction}
-import forms.leadtrustee.individual.DateOfBirthFormProvider
+import forms.DateOfBirthFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.DateOfBirthPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.leadtrustee.individual.DateOfBirthView
 
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DateOfBirthController @Inject()(
                                         override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
+                                        playbackRepository: PlaybackRepository,
                                         navigator: Navigator,
                                         standardActionSets: StandardActionSets,
                                         nameAction: NameRequiredAction,
@@ -67,7 +67,7 @@ class DateOfBirthController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfBirthPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _              <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(DateOfBirthPage, mode, updatedAnswers))
       )
   }

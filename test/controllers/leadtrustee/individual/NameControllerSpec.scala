@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import forms.leadtrustee.individual.NameFormProvider
+import forms.NameFormProvider
 import models.{Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
@@ -29,7 +29,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import views.html.leadtrustee.individual.NameView
 
 import scala.concurrent.Future
@@ -45,7 +45,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
 
 
   val userAnswers = UserAnswers(
-    userAnswersId,
+    "fakeId",
     Json.obj().transform(NamePage.path.json.put(Json.obj(
       "firstName" -> "value 1",
       "lastName" -> "value 2")
@@ -92,15 +92,14 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+      val mockPlaybackRepository = mock[PlaybackRepository]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
           )
           .build()
 

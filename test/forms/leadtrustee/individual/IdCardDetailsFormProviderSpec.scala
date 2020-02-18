@@ -16,6 +16,7 @@
 
 package forms.leadtrustee.individual
 
+import forms.IdCardDetailsFormProvider
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 

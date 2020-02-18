@@ -14,6 +14,12 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /logout                                      controllers.LogoutController.logout()
 
+GET        /create-agent-services-account               controllers.CreateAgentServicesAccountController.onPageLoad()
+
+GET        /trust-not-claimed                           controllers.TrustNotClaimedController.onPageLoad()
+
+GET        /agent-not-authorised                        controllers.AgentNotAuthorisedController.onPageLoad()
+
 GET        /leadTrustee/individual/name                        controllers.leadtrustee.individual.NameController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/name                        controllers.leadtrustee.individual.NameController.onSubmit(mode: Mode = NormalMode)
 
@@ -52,3 +58,6 @@ POST       /leadTrustee/individual/identificationDetailOptions                  
 
 GET        /leadTrustee/individual/telephoneNumber                        controllers.leadtrustee.individual.TelephoneNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/telephoneNumber                        controllers.leadtrustee.individual.TelephoneNumberController.onSubmit(mode: Mode = NormalMode)
+
+GET        /trustee/:index/individual-or-business                          controllers.trustee.IndividualOrBusinessController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/:index/individual-or-business                          controllers.trustee.IndividualOrBusinessController.onSubmit(mode: Mode = NormalMode, index: Int)

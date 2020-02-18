@@ -22,14 +22,14 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
 import models.{DisplayTrustIdentificationOrgType, DisplayTrustLeadTrusteeOrgType, DisplayTrustLeadTrusteeType}
-import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures with Inside with BeforeAndAfterAll with BeforeAndAfterEach {
+class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures with Inside with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   private def getLeadTrusteeUrl(utr: String): String = s"/trusts/$utr/transformed/leadTrustee"

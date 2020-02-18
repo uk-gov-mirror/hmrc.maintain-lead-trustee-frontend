@@ -23,7 +23,7 @@ import models.requests.{DataRequest, OptionalDataRequest}
 import play.api.libs.json.Json
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,12 +43,12 @@ class DataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionC
       case None =>
         Future.successful(Left(Redirect(routes.SessionExpiredController.onPageLoad())))
       case Some(data) =>
-        Future.successful(Right(DataRequest(request.request, request.internalId, data)))
+        Future.successful(Right(DataRequest(request.request, data, request.user)))
     }
   }
 }
 
-class EnsureDataActionImpl @Inject()(val sessionRepository: SessionRepository)(implicit val executionContext: ExecutionContext) extends DataRequiredAction {
+class EnsureDataActionImpl @Inject()(val playbackRepository: PlaybackRepository)(implicit val executionContext: ExecutionContext) extends DataRequiredAction {
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
 
@@ -56,10 +56,10 @@ class EnsureDataActionImpl @Inject()(val sessionRepository: SessionRepository)(i
 
     request.userAnswers match {
       case None =>
-        val answers = UserAnswers(request.internalId, Json.obj())
-        sessionRepository.set(answers).map {_ => Right(DataRequest(request.request, request.internalId, answers))}
+        val answers = UserAnswers(request.user.internalId, Json.obj())
+        playbackRepository.set(answers).map {_ => Right(DataRequest(request.request, answers, request.user))}
       case Some(data) =>
-        Future.successful(Right(DataRequest(request.request, request.internalId, data)))
+        Future.successful(Right(DataRequest(request.request, data, request.user)))
     }
   }
 }

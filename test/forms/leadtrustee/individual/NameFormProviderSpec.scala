@@ -16,6 +16,7 @@
 
 package forms.leadtrustee.individual
 
+import forms.NameFormProvider
 import forms.behaviours.{OptionalFieldBehaviours, StringFieldBehaviours}
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen

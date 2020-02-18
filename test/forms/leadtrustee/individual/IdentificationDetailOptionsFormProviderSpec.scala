@@ -16,6 +16,7 @@
 
 package forms.leadtrustee.individual
 
+import forms.IdentificationDetailOptionsFormProvider
 import forms.behaviours.OptionFieldBehaviours
 import models.IdentificationDetailOptions
 import play.api.data.FormError

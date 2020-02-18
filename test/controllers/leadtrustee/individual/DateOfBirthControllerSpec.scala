@@ -19,8 +19,8 @@ package controllers.leadtrustee.individual
 import java.time.{LocalDate, ZoneOffset}
 
 import base.SpecBase
-import forms.leadtrustee.individual.DateOfBirthFormProvider
-import models.{Name, NormalMode, UserAnswers}
+import forms.DateOfBirthFormProvider
+import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import views.html.leadtrustee.individual.DateOfBirthView
 
 import scala.concurrent.Future
@@ -48,7 +48,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
   val name = Name("Lead", None, "Trustee")
 
-  override val emptyUserAnswers = UserAnswers(userAnswersId)
+  override val emptyUserAnswers = UserAnswers("id")
     .set(NamePage, name)
     .success.value
 
@@ -83,7 +83,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId)
+      val userAnswers = emptyUserAnswers
         .set(DateOfBirthPage, validAnswer).success.value
         .set(NamePage, name).success.value
 
@@ -103,15 +103,14 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+      val mockPlaybackRepository = mock[PlaybackRepository]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
           )
           .build()
 
