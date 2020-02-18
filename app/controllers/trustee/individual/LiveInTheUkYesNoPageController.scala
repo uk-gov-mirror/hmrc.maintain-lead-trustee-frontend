@@ -17,6 +17,7 @@
 package controllers.trustee.individual
 
 import controllers.actions._
+import forms.YesNoFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
@@ -34,12 +35,12 @@ class LiveInTheUkYesNoPageController @Inject()(
                                          sessionRepository: SessionRepository,
                                          navigator: Navigator,
                                         standardActionSets: StandardActionSets,
-                                         formProvider: LiveInTheUkYesNoPageFormProvider,
+                                         formProvider: YesNoFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: LiveInTheUkYesNoPageView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form = formProvider.withPrefix("trustee.individual.liveInTheUkYesNoPage")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
     implicit request =>

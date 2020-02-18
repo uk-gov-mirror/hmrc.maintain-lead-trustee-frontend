@@ -52,3 +52,6 @@ POST       /leadTrustee/individual/identificationDetailOptions                  
 
 GET        /leadTrustee/individual/telephoneNumber                        controllers.leadtrustee.individual.TelephoneNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/telephoneNumber                        controllers.leadtrustee.individual.TelephoneNumberController.onSubmit(mode: Mode = NormalMode)
+
+GET        /trustee/:index/individual-or-business                          controllers.trustee.IndividualOrBusinessController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/:index/individual-or-business                          controllers.trustee.IndividualOrBusinessController.onSubmit(mode: Mode = NormalMode, index: Int)

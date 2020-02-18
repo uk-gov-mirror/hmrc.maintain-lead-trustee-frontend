@@ -17,18 +17,16 @@
 package controllers.trustee
 
 import controllers.actions.StandardActionSets
-import controllers.trustee.individual.actions.NameRequiredAction
-import forms.{DateOfBirthFormProvider, IndividualOrBusinessFormProvider}
+import forms.IndividualOrBusinessFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.leadtrustee.individual.DateOfBirthPage
 import pages.trustee.IndividualOrBusinessPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.leadtrustee.individual.DateOfBirthView
+import views.html.trustee.IndividualOrBusinessView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,7 +35,6 @@ class IndividualOrBusinessController @Inject()(
                                                 sessionRepository: SessionRepository,
                                                 navigator: Navigator,
                                                 standardActionSets: StandardActionSets,
-                                                nameAction: NameRequiredAction,
                                                 formProvider: IndividualOrBusinessFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: IndividualOrBusinessView
@@ -45,7 +42,7 @@ class IndividualOrBusinessController @Inject()(
 
   val form = formProvider("trustee.individualOrBusiness")
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(IndividualOrBusinessPage(index)) match {
@@ -53,21 +50,21 @@ class IndividualOrBusinessController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.trusteeName))
+      Ok(view(preparedForm, mode, index))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction).async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, mode, index))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfBirthPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(IndividualOrBusinessPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DateOfBirthPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(IndividualOrBusinessPage(index), mode, updatedAnswers))
       )
   }
 }

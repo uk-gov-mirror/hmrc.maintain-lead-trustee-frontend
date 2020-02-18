@@ -40,6 +40,7 @@ site.continue = Continue
 site.service_name = maintain-lead-trustee-frontend
 site.textarea.char_limit = (Limit is {0} characters)
 site.sign_out = Sign out
+site.save.continue = Save and continue
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -140,3 +141,7 @@ leadtrustee.individual.telephoneNumber.error.length = TelephoneNumber must be 10
 trustee.individualOrBusiness.title = Is the trustee an individual or a business?
 trustee.individualOrBusiness.heading = Is the trustee an individual or a business?
 trustee.individualOrBusiness.error.required = Select if the trustee is an individual or a business
+
+trustee.individual.liveInTheUkYesNoPage.title = Does {0} live in the UK?
+trustee.individual.liveInTheUkYesNoPage.heading = Does {0} live in the UK?
+trustee.individual.liveInTheUkYesNoPage.error.required = Select yes if the trustee lives in the UK

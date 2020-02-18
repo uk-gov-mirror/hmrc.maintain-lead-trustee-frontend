@@ -17,6 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
+import forms.YesNoFormProvider
 import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.EmailAddressYesNoPage
@@ -34,12 +35,12 @@ class EmailAddressYesNoController @Inject()(
                                          sessionRepository: SessionRepository,
                                          navigator: Navigator,
                                         standardActionSets: StandardActionSets,
-                                         formProvider: EmailAddressYesNoFormProvider,
+                                         formProvider: YesNoFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: EmailAddressYesNoView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form = formProvider.withPrefix("leadtrustee.individual.emailAddressYesNo")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
     implicit request =>
