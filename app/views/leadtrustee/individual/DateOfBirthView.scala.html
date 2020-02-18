@@ -25,7 +25,7 @@
 @(form: Form[_], leadTrusteeName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("dateOfBirth.title", leadTrusteeName)}"
+    title = s"${errorPrefix(form)} ${messages("leadtrustee.individual.dateOfBirth.title", leadTrusteeName)}"
 ) {
 
     @formHelper(action = DateOfBirthController.onSubmit(), 'autoComplete -> "off") {
@@ -36,7 +36,7 @@
 
         @components.input_date(
             field = form("value"),
-            legend = messages("dateOfBirth.heading"),
+            legend = messages("leadtrustee.individual.dateOfBirth.heading", leadTrusteeName),
             headingIsLegend = true
         )
 

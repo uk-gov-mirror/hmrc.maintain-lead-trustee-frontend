@@ -16,6 +16,7 @@
 
 package forms.leadtrustee.individual
 
+import forms.Validation
 import forms.mappings.Mappings
 import models.Name
 import play.api.data.Form
@@ -24,14 +25,30 @@ import javax.inject.Inject
 
 class NameFormProvider @Inject() extends Mappings {
 
-   def apply(): Form[Name] = Form(
-     mapping(
-      "firstName" -> text("name.error.firstName.required")
-        .verifying(maxLength(100, "name.error.firstName.length")),
-       "middleName" -> optional(text()
-        .verifying(maxLength(100, "name.error.firstName.length"))),
-      "lastName" -> text("name.error.lastName.required")
-        .verifying(maxLength(100, "name.error.lastName.length"))
+  def apply(): Form[Name] =   Form(
+    mapping(
+      "firstName" -> text("leadtrustee.individual.name.error.firstName.required")
+        .verifying(
+          firstError(
+            maxLength(35, "leadtrustee.individual.name.error.firstName.length"),
+            nonEmptyString("firstName", "leadtrustee.individual.name.error.firstName.required"),
+            regexp(Validation.nameRegex, "leadtrustee.individual.name.error.firstName.invalid")
+          )
+        ),
+      "middleName" -> optional(text()
+        .verifying(
+          firstError(
+            maxLength(35, "leadtrustee.individual.name.error.middleName.length"),
+            regexp(Validation.nameRegex, "leadtrustee.individual.name.error.middleName.invalid"))
+        )
+      ),
+      "lastName" -> text("leadtrustee.individual.name.error.lastName.required")
+        .verifying(
+          firstError(
+            maxLength(35, "leadtrustee.individual.name.error.lastName.length"),
+            nonEmptyString("lastName", "leadtrustee.individual.name.error.lastName.required"),
+            regexp(Validation.nameRegex, "leadtrustee.individual.name.error.lastName.invalid")
+          )
+        )
     )(Name.apply)(Name.unapply)
-   )
- }
+  ) }

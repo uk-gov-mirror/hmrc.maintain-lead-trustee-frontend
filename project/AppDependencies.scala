@@ -22,6 +22,7 @@ object AppDependencies {
     "org.pegdown"                 %  "pegdown"            % "1.6.0",
     "org.jsoup"                   %  "jsoup"              % "1.10.3",
     "com.typesafe.play"           %% "play-test"          % PlayVersion.current,
+    "wolfendale"                  %% "scalacheck-gen-regexp" % "0.1.1",
     "org.mockito"                 %  "mockito-all"        % "1.10.19",
     "org.scalacheck"              %% "scalacheck"         % "1.14.0"
   ).map(_ % Test)

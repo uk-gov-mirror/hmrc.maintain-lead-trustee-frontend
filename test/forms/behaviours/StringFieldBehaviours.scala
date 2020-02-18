@@ -34,4 +34,16 @@ trait StringFieldBehaviours extends FieldBehaviours {
       }
     }
   }
+
+  def nonEmptyField(form: Form[_],
+                    fieldName: String,
+                    requiredError: FormError): Unit = {
+
+    "not bind spaces" in {
+
+      val result = form.bind(Map(fieldName -> "    ")).apply(fieldName)
+      result.errors shouldBe Seq(requiredError)
+    }
+  }
+
 }

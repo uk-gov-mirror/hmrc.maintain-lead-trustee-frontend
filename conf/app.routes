@@ -14,6 +14,9 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /logout                                      controllers.LogoutController.logout()
 
+GET        /leadTrustee/individual/name                        controllers.leadtrustee.individual.NameController.onPageLoad(mode: Mode = NormalMode)
+POST       /leadTrustee/individual/name                        controllers.leadtrustee.individual.NameController.onSubmit(mode: Mode = NormalMode)
+
 GET        /leadTrustee/individual/dateOfBirth                  controllers.leadtrustee.individual.DateOfBirthController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/dateOfBirth                  controllers.leadtrustee.individual.DateOfBirthController.onSubmit(mode: Mode = NormalMode)
 
@@ -22,9 +25,6 @@ POST       /leadTrustee/individual/idCardDetails                        controll
 
 GET        /leadTrustee/individual/liveInTheUkYesNoPage                        controllers.leadtrustee.individual.LiveInTheUkYesNoPageController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/liveInTheUkYesNoPage                        controllers.leadtrustee.individual.LiveInTheUkYesNoPageController.onSubmit(mode: Mode = NormalMode)
-
-GET        /leadTrustee/individual/name                        controllers.leadtrustee.individual.NameController.onPageLoad(mode: Mode = NormalMode)
-POST       /leadTrustee/individual/name                        controllers.leadtrustee.individual.NameController.onSubmit(mode: Mode = NormalMode)
 
 GET        /leadTrustee/individual/nationalInsuranceNumber                        controllers.leadtrustee.individual.NationalInsuranceNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/nationalInsuranceNumber                        controllers.leadtrustee.individual.NationalInsuranceNumberController.onSubmit(mode: Mode = NormalMode)

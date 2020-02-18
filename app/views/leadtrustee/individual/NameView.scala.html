@@ -25,7 +25,7 @@
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("name.title")}"
+    title = s"${errorPrefix(form)} ${messages("leadtrustee.individual.name.title")}"
     ) {
 
     @formHelper(action = NameController.onSubmit(), 'autoComplete -> "off") {
@@ -34,16 +34,16 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("name.heading")
+        @components.heading("leadtrustee.individual.name.heading")
 
         @components.input_text(
             field = form("firstName"),
-            label = messages("name.firstName")
+            label = messages("leadtrustee.individual.name.firstName")
         )
 
         @components.input_text(
             field = form("lastName"),
-            label = messages("name.lastName")
+            label = messages("leadtrustee.individual.name.lastName")
         )
 
         @components.submit_button()

@@ -46,8 +46,20 @@ unauthorised.heading = You can’t access this service with this account
 
 leadTrusteeName.defaultText = the lead trustee
 
+leadtrustee.individual.name.title = What is the lead trustee’s name?
+leadtrustee.individual.name.heading = What is the lead trustee’s name?
+leadtrustee.individual.name.firstName = First name
+leadtrustee.individual.name.middleName = Middle names (optional)
+leadtrustee.individual.name.lastName = Last name
+leadtrustee.individual.name.checkYourAnswersLabel = What is the lead trustee’s name?
+leadtrustee.individual.name.error.firstName.required = Enter the lead trustee’s first name
+leadtrustee.individual.name.error.lastName.required = Enter the lead trustee’s last name
+leadtrustee.individual.name.error.firstName.length = Lead trustee’s first name must be 35 characters or less
+leadtrustee.individual.name.error.middleName.length = Lead trustee’s middle names must be 35 characters or less
+leadtrustee.individual.name.error.lastName.length = Lead trustee’s last name must be 35 characters or less
+
 leadtrustee.individual.dateOfBirth.title = What is {0}’s date of birth?
-leadtrustee.individual.dateOfBirth.heading = DateOfBirth
+leadtrustee.individual.dateOfBirth.heading = What is {0}’s date of birth?
 leadtrustee.individual.dateOfBirth.checkYourAnswersLabel = DateOfBirth
 leadtrustee.individual.dateOfBirth.error.required.all = Enter the dateOfBirth
 leadtrustee.individual.dateOfBirth.error.required.two = The dateOfBirth must include {0} and {1}
@@ -64,17 +76,6 @@ leadtrustee.individual.liveInTheUkYesNoPage.title = liveInTheUkYesNoPage
 leadtrustee.individual.liveInTheUkYesNoPage.heading = liveInTheUkYesNoPage
 leadtrustee.individual.liveInTheUkYesNoPage.checkYourAnswersLabel = liveInTheUkYesNoPage
 leadtrustee.individual.liveInTheUkYesNoPage.error.required = Select yes if liveInTheUkYesNoPage
-
-leadtrustee.individual.name.title = name
-leadtrustee.individual.name.heading = name
-leadtrustee.individual.name.firstName = firstName
-leadtrustee.individual.name.lastName = lastName
-leadtrustee.individual.name.checkYourAnswersLabel = name
-leadtrustee.individual.name.error.firstName.required = Enter firstName
-leadtrustee.individual.name.error.lastName.required = Enter lastName
-leadtrustee.individual.name.error.firstName.length = firstName must be 100 characters or less
-leadtrustee.individual.name.error.lastName.length = lastName must be 100 characters or less
-
 leadtrustee.individual.nationalInsuranceNumber.title = nationalInsuranceNumber
 leadtrustee.individual.nationalInsuranceNumber.heading = nationalInsuranceNumber
 leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel = nationalInsuranceNumber
