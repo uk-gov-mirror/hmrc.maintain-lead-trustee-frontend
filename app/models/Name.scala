@@ -19,7 +19,7 @@ package models
 import play.api.libs.json._
 
 case class Name (firstName: String, middleName: Option[String], lastName: String) {
-  lazy val displayName : String = firstName + " " + middleName.map(_ + " ").getOrElse("") + lastName
+  lazy val displayName : String = firstName + " " + lastName
 }
 
 object Name {
