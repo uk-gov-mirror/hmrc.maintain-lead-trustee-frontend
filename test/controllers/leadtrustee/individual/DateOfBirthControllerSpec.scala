@@ -48,7 +48,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
   val name = Name("Lead", None, "Trustee")
 
-  override val emptyUserAnswers = UserAnswers("id")
+  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR")
     .set(NamePage, name)
     .success.value
 
