@@ -29,7 +29,13 @@ class NonUkAddressFormProvider @Inject() extends Mappings {
       "line1" -> text("nonUkAddress.error.line1.required")
         .verifying(maxLength(100, "nonUkAddress.error.line1.length")),
       "line2" -> text("nonUkAddress.error.line2.required")
-        .verifying(maxLength(100, "nonUkAddress.error.line2.length"))
+        .verifying(maxLength(100, "nonUkAddress.error.line2.length")),
+       "line3" -> optional(text()
+         .verifying(maxLength(100, "nonUkAddress.error.line3.length"))),
+       "line4" -> optional(text()
+         .verifying(maxLength(100, "nonUkAddress.error.line4.length"))),
+       "country" -> text("nonUkAddress.error.country.required")
+         .verifying(maxLength(100, "nonUkAddress.error.country.length"))
     )(NonUkAddress.apply)(NonUkAddress.unapply)
    )
  }
