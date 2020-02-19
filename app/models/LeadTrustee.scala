@@ -16,17 +16,18 @@
 
 package models
 
-import org.joda.time.DateTime
-import play.api.libs.json.{Format, JsResult, JsValue, Json, Reads, Writes}
-import play.api.libs.json.{JodaReads, JodaWrites}
+import java.time.LocalDate
+
+import play.api.libs.json._
+
+sealed trait LeadTrustee
 
 case class PassportType(number: String,
-                        expirationDate: DateTime,
+                        expirationDate: LocalDate,
                         countryOfIssue: String)
 
 object PassportType {
 
-  implicit val dateFormat: Format[DateTime] = Format[DateTime]( JodaReads.jodaDateReads(dateTimePattern), JodaWrites.jodaDateWrites(dateTimePattern) )
   implicit val passportTypeFormat: Format[PassportType] = Json.format[PassportType]
 }
 
@@ -41,7 +42,7 @@ object DisplayTrustIdentificationType {
 
 case class DisplayTrustIdentificationOrgType(safeId: Option[String],
                                              utr: Option[String],
-                                             address: Option[Address])
+                                             address: Option[Address]) extends LeadTrustee
 
 object DisplayTrustIdentificationOrgType {
   implicit val trustBeneficiaryIdentificationFormat: Format[DisplayTrustIdentificationOrgType] = Json.format[DisplayTrustIdentificationOrgType]
@@ -51,16 +52,15 @@ case class DisplayTrustLeadTrusteeIndType(
                                            lineNo: String,
                                            bpMatchStatus: Option[String],
                                            name: Name,
-                                           dateOfBirth: DateTime,
+                                           dateOfBirth: LocalDate,
                                            phoneNumber: String,
                                            email: Option[String] = None,
                                            identification: DisplayTrustIdentificationType,
                                            entityStart: String
-                                         )
+                                         ) extends LeadTrustee
 
 object DisplayTrustLeadTrusteeIndType {
 
-  implicit val dateFormat: Format[DateTime] = Format[DateTime](JodaReads.jodaDateReads(dateTimePattern), JodaWrites.jodaDateWrites(dateTimePattern))
   implicit val leadTrusteeIndTypeFormat: Format[DisplayTrustLeadTrusteeIndType] = Json.format[DisplayTrustLeadTrusteeIndType]
 
 }
@@ -85,8 +85,6 @@ case class DisplayTrustLeadTrusteeType(
                                       )
 
 object DisplayTrustLeadTrusteeType {
-
-  implicit val dateFormat: Format[DateTime] = Format[DateTime](JodaReads.jodaDateReads(dateTimePattern), JodaWrites.jodaDateWrites(dateTimePattern))
 
   implicit val writes: Writes[DisplayTrustLeadTrusteeType] = Json.writes[DisplayTrustLeadTrusteeType]
 

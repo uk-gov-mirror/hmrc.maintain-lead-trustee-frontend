@@ -17,28 +17,49 @@
 package controllers.leadtrustee
 
 import com.google.inject.Inject
+import connectors.TrustConnector
 import controllers.actions.StandardActionSets
+import mapping.LeadTrusteesExtractor
+import models.{DisplayTrustLeadTrusteeIndType, DisplayTrustLeadTrusteeType}
+import pages.trustee.individual.DateOfBirthPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.CheckYourAnswersHelper
 import viewmodels.AnswerSection
 import views.html.leadtrustee.LeadTrusteeDetailsView
 
+import scala.concurrent.{ExecutionContext, Future}
+
 class DetailsController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             standardActionSets: StandardActionSets,
                                             val controllerComponents: MessagesControllerComponents,
-                                            view: LeadTrusteeDetailsView
-                                          ) extends FrontendBaseController with I18nSupport {
+                                            view: LeadTrusteeDetailsView,
+                                            connector: TrustConnector,
+                                            extractor: LeadTrusteesExtractor,
+                                            repository: PlaybackRepository
+                                          ) (implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
     implicit request =>
 
-      val checkYourAnswersHelper = new CheckYourAnswersHelper(request.userAnswers)
+      connector.getLeadTrustee(request.userAnswers.utr).flatMap {
+        case DisplayTrustLeadTrusteeType(Some(trusteeInd), None) =>
+          val answers = extractor.extractLeadTrusteeIndividual(request.userAnswers, trusteeInd)
+          for {
+            updatedAnswers <- Future.fromTry(answers)
+            _ <- repository.set(updatedAnswers)
+          } yield {
+            val sections = Seq(AnswerSection(None, Seq()))
 
-      val sections = Seq(AnswerSection(None, Seq()))
+            Ok(view(sections))
+          }
+        case _ => val sections = Seq(AnswerSection(None, Seq()))
 
-      Ok(view(sections))
+          Future.successful(Ok(view(sections)))
+      }
   }
 }
