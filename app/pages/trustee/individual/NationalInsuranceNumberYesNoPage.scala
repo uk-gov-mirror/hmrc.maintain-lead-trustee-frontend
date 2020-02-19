@@ -24,7 +24,7 @@ import scala.util.Try
 
 case class NationalInsuranceNumberYesNoPage(index: Int) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = basePath \ toString
+  override def path: JsPath = basePath \ index \ toString
 
   override def toString: String = "nationalInsuranceNumberYesNo"
 

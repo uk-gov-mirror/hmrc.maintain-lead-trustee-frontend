@@ -21,16 +21,16 @@ import forms.YesNoFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.trustee.individual.NationalInsuranceNumberYesNoPage
+import pages.trustee.individual.AddressYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.trustee.individual.NationalInsuranceNumberYesNoView
+import views.html.trustee.individual.AddressYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NationalInsuranceNumberYesNoController @Inject()(
+class AddressYesNoController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             sessionRepository: PlaybackRepository,
                                             navigator: Navigator,
@@ -38,15 +38,15 @@ class NationalInsuranceNumberYesNoController @Inject()(
                                             nameAction: actions.NameRequiredAction,
                                             formProvider: YesNoFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
-                                            view: NationalInsuranceNumberYesNoView
+                                            view: AddressYesNoView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("trustee.individual.nationalInsuranceNumberYesNo")
+  val form = formProvider.withPrefix("trustee.individual.addressYesNo")
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(NationalInsuranceNumberYesNoPage(index)) match {
+      val preparedForm = request.userAnswers.get(AddressYesNoPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -63,9 +63,9 @@ class NationalInsuranceNumberYesNoController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberYesNoPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddressYesNoPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NationalInsuranceNumberYesNoPage(index), mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(AddressYesNoPage(index), mode, updatedAnswers))
       )
   }
 }
