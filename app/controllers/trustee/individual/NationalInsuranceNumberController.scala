@@ -21,12 +21,12 @@ import forms.NationalInsuranceNumberFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.leadtrustee.individual.NationalInsuranceNumberPage
+import pages.trustee.individual.NationalInsuranceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.leadtrustee.individual.NationalInsuranceNumberView
+import views.html.trustee.individual.NationalInsuranceNumberView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,36 +35,37 @@ class NationalInsuranceNumberController @Inject()(
                                         sessionRepository: PlaybackRepository,
                                         navigator: Navigator,
                                         standardActionSets: StandardActionSets,
+                                        nameAction: actions.NameRequiredAction,
                                         formProvider: NationalInsuranceNumberFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: NationalInsuranceNumberView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form = formProvider.withPrefix("trustee.individual")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(NationalInsuranceNumberPage) match {
+      val preparedForm = request.userAnswers.get(NationalInsuranceNumberPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm))
+      Ok(view(preparedForm, index, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, index, request.trusteeName))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NationalInsuranceNumberPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NationalInsuranceNumberPage(index), mode, updatedAnswers))
       )
   }
 }

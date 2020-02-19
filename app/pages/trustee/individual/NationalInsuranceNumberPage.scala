@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package pages.trustee.individual
 
-import javax.inject.Inject
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-import forms.mappings.Mappings
-import play.api.data.Form
+case class NationalInsuranceNumberPage(index:Int) extends QuestionPage[String] {
 
-class NationalInsuranceNumberFormProvider @Inject() extends Mappings {
+  override def path: JsPath = basePath \ toString
 
-  def withPrefix(messagePrefix: String): Form[String] =
-    Form(
-      "value" -> nino(s"$messagePrefix.error.required")
-        .verifying(
-          firstError(
-            nonEmptyString("value", s"$messagePrefix.error.required"),
-            isNinoValid("value", s"$messagePrefix.error.invalidFormat")
-          ))
-    )
+  override def toString: String = "nationalInsuranceNumber"
 }
-

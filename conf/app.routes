@@ -57,16 +57,22 @@ POST       /leadTrustee/individual/identificationDetailOptions              cont
 GET        /leadTrustee/individual/telephoneNumber                          controllers.leadtrustee.individual.TelephoneNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/telephoneNumber                          controllers.leadtrustee.individual.TelephoneNumberController.onSubmit(mode: Mode = NormalMode)
 
-GET        /trustee/:index/individual-or-business                           controllers.trustee.IndividualOrBusinessController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/:index/individual-or-business                           controllers.trustee.IndividualOrBusinessController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/individual-or-business                controllers.trustee.IndividualOrBusinessController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/individual-or-business                controllers.trustee.IndividualOrBusinessController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/:index/trustee-name                                     controllers.trustee.individual.NameController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/:index/trustee-name                                     controllers.trustee.individual.NameController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/trustee-name                          controllers.trustee.individual.NameController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/trustee-name                          controllers.trustee.individual.NameController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/:index/date-of-birth-yes-no                             controllers.trustee.individual.DateOfBirthYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/:index/date-of-birth-yes-no                             controllers.trustee.individual.DateOfBirthYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/date-of-birth-yes-no                  controllers.trustee.individual.DateOfBirthYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/date-of-birth-yes-no                  controllers.trustee.individual.DateOfBirthYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/:index/date-of-birth                                    controllers.trustee.individual.DateOfBirthYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/:index/date-of-birth                                    controllers.trustee.individual.DateOfBirthController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/date-of-birth                         controllers.trustee.individual.DateOfBirthYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/date-of-birth                         controllers.trustee.individual.DateOfBirthController.onSubmit(mode: Mode = NormalMode, index: Int)
+
+GET        /trustee/individual/:index/nino-yes-no                           controllers.trustee.individual.NationalInsuranceNumberYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/nino-yes-no                           controllers.trustee.individual.NationalInsuranceNumberYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
+
+GET        /trustee/individual/:index/nino                                  controllers.trustee.individual.NationalInsuranceNumberController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/nino                                  controllers.trustee.individual.NationalInsuranceNumberController.onSubmit(mode: Mode = NormalMode, index: Int)
 
 GET        /:utr                                                            controllers.IndexController.onPageLoad(utr: String)
