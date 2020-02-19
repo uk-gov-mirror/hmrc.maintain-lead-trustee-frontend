@@ -16,11 +16,10 @@
 
 package pages.leadtrustee.individual
 
-import models.IdentificationDetailOptions
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object IdCardDetailsPage extends QuestionPage[IdentificationDetailOptions] {
+case object IdCardDetailsPage extends QuestionPage[String] {
 
   override def path: JsPath = basePath \ toString
 

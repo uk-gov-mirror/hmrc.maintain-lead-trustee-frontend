@@ -23,10 +23,10 @@ class IdCardDetailsPageSpec extends PageBehaviours {
 
   "IdCardDetailsPage" must {
 
-    beRetrievable[IdentificationDetailOptions](IdCardDetailsPage)
+    beRetrievable[String](IdCardDetailsPage)
 
-    beSettable[IdentificationDetailOptions](IdCardDetailsPage)
+    beSettable[String](IdCardDetailsPage)
 
-    beRemovable[IdentificationDetailOptions](IdCardDetailsPage)
+    beRemovable[String](IdCardDetailsPage)
   }
 }

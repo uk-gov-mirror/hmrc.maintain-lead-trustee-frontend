@@ -18,13 +18,13 @@ package forms
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.IdentificationDetailOptions
 import play.api.data.Form
 
 class IdCardDetailsFormProvider @Inject() extends Mappings {
 
-  def withPrefix(prefix: String): Form[IdentificationDetailOptions] =
+  def withPrefix(prefix: String): Form[String] =
     Form(
-      "value" -> enumerable[IdentificationDetailOptions](s"$prefix.individual.idCardDetails.error.required")
+      "value" -> text(s"$prefix.individual.idCardDetails.error.required")
+        .verifying(maxLength(100, s"$prefix.individual.idCardDetails.error.length"))
     )
 }

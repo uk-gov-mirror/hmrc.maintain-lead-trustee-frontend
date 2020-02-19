@@ -16,21 +16,20 @@
 
 package views.leadtrustee.individual
 
+import controllers.leadtrustee.individual.routes
 import forms.IdCardDetailsFormProvider
-import models.IdentificationDetailOptions
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.QuestionViewBehaviours
+import views.behaviours.StringViewBehaviours
 import views.html.leadtrustee.individual.IdCardDetailsView
 
-class IdCardDetailsViewSpec extends QuestionViewBehaviours[IdentificationDetailOptions] {
+class IdCardDetailsViewSpec extends StringViewBehaviours {
 
   val messageKeyPrefix = "leadtrustee.individual.idCardDetails"
 
-  val formProvider = new IdCardDetailsFormProvider()
-  val form: Form[IdentificationDetailOptions] = formProvider.withPrefix("leadtrustee")
-
   val name = "Lead Trustee"
+
+  val form = new IdCardDetailsFormProvider().withPrefix("leadtrustee")
 
   "IdCardDetailsView view" must {
 
@@ -43,5 +42,6 @@ class IdCardDetailsViewSpec extends QuestionViewBehaviours[IdentificationDetailO
 
     behave like pageWithBackLink(applyView(form))
 
+    behave like stringPage(form, applyView, messageKeyPrefix, None, routes.IdCardDetailsController.onSubmit().url)
   }
 }
