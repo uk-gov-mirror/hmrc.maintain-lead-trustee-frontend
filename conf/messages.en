@@ -117,9 +117,9 @@ leadtrustee.individual.ukCitizen.checkYourAnswersLabel = Does {0} have a Nationa
 leadtrustee.individual.ukCitizen.error.required = Select yes if you know the trustee’s National Insurance number
 leadtrustee.individual.ukCitizen.error.required = Select yes if you know the lead trustee’s National Insurance number
 
-leadtrustee.individual.nationalInsuranceNumber.title = What is {0}}’s National Insurance number?
-leadtrustee.individual.nationalInsuranceNumber.heading = What is {0}}’s National Insurance number?
-leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel = What is {0}}’s National Insurance number?
+leadtrustee.individual.nationalInsuranceNumber.title = What is {0}’s National Insurance number?
+leadtrustee.individual.nationalInsuranceNumber.heading = What is {0}’s National Insurance number?
+leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel = What is {0}’s National Insurance number?
 leadtrustee.individual.nationalInsuranceNumber.error.required = Enter the lead trustee’s National Insurance number
 leadtrustee.individual.nationalInsuranceNumber.error.invalidFormat = Enter the lead trustee’s National Insurance number in the correct format
 
