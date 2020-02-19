@@ -37,8 +37,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new NationalInsuranceNumberFormProvider()
-  val form = formProvider()
+  val form = new NationalInsuranceNumberFormProvider().withPrefix("leadtrustee")
 
   lazy val nationalInsuranceNumberRoute = routes.NationalInsuranceNumberController.onPageLoad().url
 

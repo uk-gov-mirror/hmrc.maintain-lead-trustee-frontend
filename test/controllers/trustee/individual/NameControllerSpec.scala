@@ -49,7 +49,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
   val userAnswers = UserAnswers(
     "fakeId",
     "UTRUTRUTR",
-    Json.obj().transform(NamePage.path.json.put(Json.obj(
+    Json.obj().transform(NamePage(0).path.json.put(Json.obj(
       "firstName" -> "FirstName",
       "lastName" -> "LastName")
     )).get

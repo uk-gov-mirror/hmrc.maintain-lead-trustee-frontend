@@ -24,7 +24,7 @@ import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.individual.{DateOfBirthPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
@@ -45,10 +45,9 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
   val validAnswer = LocalDate.now(ZoneOffset.UTC)
   val index = 0
   val trusteeName = "FirstName LastName"
+  val name = Name("FirstName", None, "LastName")
 
   lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad(index).url
-
-  val name = Name("Lead", None, "Trustee")
 
   override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR")
     .set(NamePage(index), name)
