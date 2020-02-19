@@ -22,6 +22,11 @@ import play.api.mvc.{ActionBuilder, AnyContent}
 
 class StandardActionSets @Inject()(identify: IdentifierAction,
                                    getData: DataRetrievalAction,
-                                   requireData: DataRequiredAction){
+                                   requireData: DataRequiredAction,
+                                   playbackIdentifier: PlaybackIdentifierAction
+                                  ){
   val IdentifiedUserWithData: ActionBuilder[DataRequest, AnyContent] = identify andThen getData andThen requireData
+
+  val verifiedForUtr: ActionBuilder[DataRequest, AnyContent] = IdentifiedUserWithData andThen playbackIdentifier
+
 }

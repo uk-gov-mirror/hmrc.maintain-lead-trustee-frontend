@@ -24,20 +24,20 @@ import navigation.Navigator
 import pages.leadtrustee.individual.UkCitizenPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.leadtrustee.individual.UkCitizenView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class UkCitizenController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                         formProvider: UkCitizenFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: UkCitizenView
+                                   override val messagesApi: MessagesApi,
+                                   playbackRepository: PlaybackRepository,
+                                   navigator: Navigator,
+                                   standardActionSets: StandardActionSets,
+                                   formProvider: UkCitizenFormProvider,
+                                   val controllerComponents: MessagesControllerComponents,
+                                   view: UkCitizenView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
@@ -63,7 +63,7 @@ class UkCitizenController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UkCitizenPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _              <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(UkCitizenPage, mode, updatedAnswers))
       )
   }

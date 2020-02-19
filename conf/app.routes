@@ -14,6 +14,16 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /logout                                      controllers.LogoutController.logout()
 
+GET        /create-agent-services-account               controllers.CreateAgentServicesAccountController.onPageLoad()
+
+GET        /trust-not-claimed                           controllers.TrustNotClaimedController.onPageLoad()
+
+GET        /agent-not-authorised                        controllers.AgentNotAuthorisedController.onPageLoad()
+
+GET        /trustee/add                                 controllers.trustee.AddATrusteeController.onPageLoad(mode: Mode = NormalMode)
+POST       /trustee/add                                 controllers.trustee.AddATrusteeController.submitOne(mode: Mode = NormalMode)
+POST       /trustee/add-another                         controllers.trustee.AddATrusteeController.submitAnother(mode: Mode = NormalMode)
+
 GET        /trustee/:index/remove                        controllers.trustee.RemoveIndividualTrusteeController.onPageLoad(index : Int)
 POST       /trustee/:index/remove                        controllers.trustee.RemoveIndividualTrusteeController.onSubmit(index : Int)
 

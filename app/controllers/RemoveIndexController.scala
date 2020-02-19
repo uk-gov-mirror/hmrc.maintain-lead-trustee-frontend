@@ -25,7 +25,7 @@ import play.twirl.api.HtmlFormat
 import queries.Settable
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.RemoveIndexView
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import models.requests.DataRequest
 
 import scala.concurrent.Future
@@ -42,7 +42,7 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
 
   def page(index: Int) : QuestionPage[_]
 
-  def repository : SessionRepository
+  def repository : PlaybackRepository
 
   def actions(index: Int) : ActionBuilder[DataRequest, AnyContent]
 

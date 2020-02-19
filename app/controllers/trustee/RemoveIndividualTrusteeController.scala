@@ -26,7 +26,7 @@ import pages.QuestionPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Call, MessagesControllerComponents}
 import queries.{RemoveTrusteeQuery, Settable}
-import repositories.SessionRepository
+import repositories.PlaybackRepository
 import views.html.RemoveIndexView
 import pages.leadtrustee.individual.NamePage
 
@@ -34,7 +34,7 @@ import scala.concurrent.ExecutionContext
 
 class RemoveIndividualTrusteeController @Inject()(
                                          override val messagesApi: MessagesApi,
-                                         override val repository: SessionRepository,
+                                         override val repository: PlaybackRepository,
                                          standardActionSets: StandardActionSets,
                                          val formProvider: RemoveIndexFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
