@@ -21,7 +21,7 @@ import forms.RemoveIndexFormProvider
 import models.Name
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.prop.PropertyChecks
-import pages.leadtrustee.individual.NamePage
+import pages.trustee.individual.NamePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.RemoveIndexView
@@ -67,7 +67,7 @@ class RemoveIndividualTrusteeControllerSpec extends SpecBase with PropertyChecks
       "return OK and the correct view for a GET" in {
 
         val userAnswers = emptyUserAnswers
-          .set(NamePage, Name("John", None, "Smith")).success.value //TODO index NamePage
+          .set(NamePage(0), Name("John", None, "Smith")).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -88,7 +88,7 @@ class RemoveIndividualTrusteeControllerSpec extends SpecBase with PropertyChecks
     "redirect to the next page when valid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, Name("John", None, "Smith")).success.value //TODO index NamePage
+        .set(NamePage(0), Name("John", None, "Smith")).success.value
 
       forAll(arbitrary[Boolean]) {
         value =>
@@ -114,7 +114,7 @@ class RemoveIndividualTrusteeControllerSpec extends SpecBase with PropertyChecks
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, Name("John", None, "Smith")).success.value //TODO index NamePage
+        .set(NamePage(0), Name("John", None, "Smith")).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 

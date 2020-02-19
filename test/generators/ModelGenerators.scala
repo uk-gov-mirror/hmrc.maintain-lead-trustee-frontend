@@ -16,6 +16,8 @@
 
 package generators
 
+import java.time.LocalDate
+
 import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -51,4 +53,10 @@ trait ModelGenerators {
         lastName <- arbitrary[String]
       } yield Name(firstName, middleName, lastName)
     }
+
+  implicit lazy val arbitraryLocalDate : Arbitrary[LocalDate] =
+    Arbitrary {
+      Gen.const(LocalDate.of(2010, 10, 10))
+    }
+
 }

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package pages.trustee
 
-import play.api.libs.json._
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import sections.Trustees
 
-case class Name (firstName: String, middleName: Option[String], lastName: String) {
-  lazy val displayName : String = firstName + " " + lastName
-  override def toString = s"$firstName $lastName"
-}
+final case class IsThisLeadTrusteePage(index : Int) extends QuestionPage[Boolean] {
 
-object Name {
-//  implicit val format = Json.format[Name]
-  implicit lazy val formats: OFormat[Name] = Json.format[Name]
+  override def path: JsPath = Trustees.path \ index \ toString
+
+  override def toString: String = "isThisLeadTrustee"
+
 }

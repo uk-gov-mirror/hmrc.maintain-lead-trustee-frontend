@@ -28,7 +28,7 @@ import play.api.mvc.{AnyContent, Call, MessagesControllerComponents}
 import queries.{RemoveTrusteeQuery, Settable}
 import repositories.PlaybackRepository
 import views.html.RemoveIndexView
-import pages.leadtrustee.individual.NamePage
+import pages.trustee.individual.NamePage
 
 import scala.concurrent.ExecutionContext
 
@@ -43,12 +43,13 @@ class RemoveIndividualTrusteeController @Inject()(
 
   override val messagesPrefix : String = "removeATrustee"
 
-  override def page(index: Int) : QuestionPage[Name] = NamePage //TODO NamePage for individual trustee needs to be indexed ?
+  override def page(index: Int) : QuestionPage[Name] = NamePage(index)
 
   override def actions(index: Int) =
     standardActionSets.IdentifiedUserWithData
 
-  override def redirect : Call = ??? // TODO
+  override def redirect : Call =
+    controllers.trustee.routes.AddATrusteeController.onPageLoad()
 
   override def formRoute(index: Int): Call =
     controllers.trustee.routes.RemoveIndividualTrusteeController.onSubmit(index)
