@@ -17,54 +17,61 @@
 package controllers.trustee.individual
 
 import controllers.actions._
-import forms.IdCardDetailsFormProvider
+import forms.PassportOrIdCardFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.leadtrustee.individual.IdCardDetailsPage
+import pages.trustee.individual.{IdCardDetailsPage, NamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.leadtrustee.individual.IdCardDetailsView
+import utils.countryOptions.CountryOptions
+import views.html.trustee.individual.IdCardDetailsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class IdCardDetailsController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: PlaybackRepository,
-                                        navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                        formProvider: IdCardDetailsFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: IdCardDetailsView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                           override val messagesApi: MessagesApi,
+                                           sessionRepository: PlaybackRepository,
+                                           navigator: Navigator,
+                                           standardActionSets: StandardActionSets,
+                                           nameAction: actions.NameRequiredAction,
+                                           formProvider: PassportOrIdCardFormProvider,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           view: IdCardDetailsView,
+                                           val countryOptions: CountryOptions
+                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form = formProvider("trustee.individual.idCardDetails")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(IdCardDetailsPage) match {
+      val name = request.userAnswers.get(NamePage(index)).get
+
+      val preparedForm = request.userAnswers.get(IdCardDetailsPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm))
+      Ok(view(preparedForm, countryOptions.options, index, name.displayName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction).async {
     implicit request =>
+
+      val name = request.userAnswers.get(NamePage(index)).get
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, index, name.displayName))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(IdCardDetailsPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(IdCardDetailsPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IdCardDetailsPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(IdCardDetailsPage(index), mode, updatedAnswers))
       )
   }
 }

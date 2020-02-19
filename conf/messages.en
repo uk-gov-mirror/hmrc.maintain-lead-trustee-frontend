@@ -199,3 +199,47 @@ trustee.individual.name.error.lastName.length = Trustee’s last name must be 35
 trustee.individual.liveInTheUkYesNoPage.title = Does {0} live in the UK?
 trustee.individual.liveInTheUkYesNoPage.heading = Does {0} live in the UK?
 trustee.individual.liveInTheUkYesNoPage.error.required = Select yes if the trustee lives in the UK
+
+trustee.individual.passportDetailsYesNo.title = Do you know the trustee’s passport details?
+trustee.individual.passportDetailsYesNo.heading = Do you know {0}’s passport details?
+trustee.individual.passportDetailsYesNo.error.required = Select yes if you know the trustee’s passport details
+
+trustee.individual.passportDetails.title = What are the trustee’s passport details?
+trustee.individual.passportDetails.heading = What are {0}’s passport details?
+trustee.individual.passportDetails.country = Passport country of issue
+trustee.individual.passportDetails.country.error.required = Enter the trustee’s passport country of issue
+trustee.individual.passportDetails.country.error.length = The trustee’s passport country must be 100 characters or less
+trustee.individual.passportDetails.number = Passport number
+trustee.individual.passportDetails.number.error.required = Enter the trustee’s passport number
+trustee.individual.passportDetails.number.error.length = The trustee’s passport number must be 30 characters or less
+trustee.individual.passportDetails.number.error.invalid = Passport number can only include letters and numbers
+trustee.individual.passportDetails.expiryDate = Expiry date
+trustee.individual.passportDetails.expiryDate.hint = Expiry date can be in the past. For example, 31 3 1980
+trustee.individual.passportDetails.expiryDate.error.required.all = Enter the passport expiry date
+trustee.individual.passportDetails.expiryDate.error.required.two = Passport expiry date must include a {0} and {1}
+trustee.individual.passportDetails.expiryDate.error.required = Passport expiry date must include {0}
+trustee.individual.passportDetails.expiryDate.error.invalid = Enter a real date when the trustee’s passport expires
+trustee.individual.passportDetails.expiryDate.error.future = Passport expiry date must be after 31 December 1499 and before 01 January 2100
+trustee.individual.passportDetails.expiryDate.error.past = Passport expiry date must be after 31 December 1499 and before 01 January 2100
+
+trustee.individual.idCardDetailsYesNo.title = Do you know the trustee’s ID card details?
+trustee.individual.idCardDetailsYesNo.heading = Do you know {0}’s ID card details?
+trustee.individual.idCardDetailsYesNo.error.required = Select yes if you know the trustee’s ID card details
+
+trustee.individual.idCardDetails.title = What are the trustee’s ID card details?
+trustee.individual.idCardDetails.heading = What are {0}’s ID card details?
+trustee.individual.idCardDetails.country = ID card country of issue
+trustee.individual.idCardDetails.country.error.required = Enter the trustee’s ID card country of issue
+trustee.individual.idCardDetails.country.error.length = The trustee’s ID card country must be 100 characters or less
+trustee.individual.idCardDetails.number = ID card number
+trustee.individual.idCardDetails.number.error.required = Enter the trustee’s ID card number
+trustee.individual.idCardDetails.number.error.length = The trustee’s ID card number must be 30 characters or less
+trustee.individual.idCardDetails.number.error.invalid = ID card number can only include letters and numbers
+trustee.individual.idCardDetails.expiryDate = Expiry date
+trustee.individual.idCardDetails.expiryDate.hint = Expiry date can be in the past. For example, 31 3 1980
+trustee.individual.idCardDetails.expiryDate.error.required.all = Enter the ID card expiry date
+trustee.individual.idCardDetails.expiryDate.error.required.two = ID card expiry date must include a {0} and {1}
+trustee.individual.idCardDetails.expiryDate.error.required = ID card expiry date must include a {0}
+trustee.individual.idCardDetails.expiryDate.error.invalid = Enter a real date when the trustee’s ID card expires
+trustee.individual.idCardDetails.expiryDate.error.future = ID card expiry date must be after 31 December 1499 and before 01 January 2100
+trustee.individual.idCardDetails.expiryDate.error.past = ID card expiry date must be after 31 December 1499 and before 01 January 2100
