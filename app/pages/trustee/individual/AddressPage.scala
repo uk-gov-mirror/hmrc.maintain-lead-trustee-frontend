@@ -16,24 +16,12 @@
 
 package pages.trustee.individual
 
-import models.UserAnswers
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-import scala.util.Try
-
-case class DateOfBirthYesNoPage(index: Int) extends QuestionPage[Boolean] {
+case class AddressPage(index:Int) extends QuestionPage[String] {
 
   override def path: JsPath = basePath \ index \ toString
 
-  override def toString: String = "dateOfBirthYesNo"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    value match {
-      case Some(false) =>
-        userAnswers.remove(DateOfBirthPage(index))
-      case _ =>
-        super.cleanup(value, userAnswers)
-    }
-  }
+  override def toString: String = "address"
 }

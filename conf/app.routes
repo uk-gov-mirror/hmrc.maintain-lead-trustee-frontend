@@ -75,6 +75,9 @@ POST       /trustee/individual/:index/nino-yes-no                           cont
 GET        /trustee/individual/:index/nino                                  controllers.trustee.individual.NationalInsuranceNumberController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/individual/:index/nino                                  controllers.trustee.individual.NationalInsuranceNumberController.onSubmit(mode: Mode = NormalMode, index: Int)
 
+GET        /trustee/individual/:index/address-yes-no                        controllers.trustee.individual.AddressYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/address-yes-no                        controllers.trustee.individual.AddressYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
+
 GET        /trustee/:index/individual/passport-yes-no                       controllers.trustee.individual.PassportDetailsYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/:index/individual/passport-yes-no                       controllers.trustee.individual.PassportDetailsYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
 

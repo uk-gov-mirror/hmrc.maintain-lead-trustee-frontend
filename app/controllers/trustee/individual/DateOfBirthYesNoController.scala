@@ -56,8 +56,6 @@ class DateOfBirthYesNoController @Inject()(
       Ok(view(preparedForm, mode, index, request.trusteeName))
   }
 
-
-
   def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction).async {
     implicit request =>
 
