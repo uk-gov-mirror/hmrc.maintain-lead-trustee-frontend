@@ -22,11 +22,11 @@ import play.api.data.FormError
 
 class IdCardDetailsFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "idCardDetails.error.required"
-  val lengthKey = "idCardDetails.error.length"
+  val requiredKey = "leadtrustee.individual.idCardDetails.error.required"
+  val lengthKey = "leadtrustee.individual.idCardDetails.error.length"
   val maxLength = 100
 
-  val form = new IdCardDetailsFormProvider()()
+  val form = new IdCardDetailsFormProvider().withPrefix("leadtrustee")
 
   ".value" must {
 

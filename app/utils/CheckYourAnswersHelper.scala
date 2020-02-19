@@ -131,7 +131,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     x =>
       AnswerRow(
         HtmlFormat.escape(messages("idCardDetails.checkYourAnswersLabel")),
-        HtmlFormat.escape(x),
+        HtmlFormat.escape(messages(s"idCardDetails.$x")),
         individualLeadtrusteeRoutes.IdCardDetailsController.onPageLoad().url
       )
   }

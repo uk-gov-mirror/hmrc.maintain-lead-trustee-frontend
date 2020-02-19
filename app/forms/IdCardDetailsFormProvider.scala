@@ -22,9 +22,9 @@ import play.api.data.Form
 
 class IdCardDetailsFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def withPrefix(prefix: String): Form[String] =
     Form(
-      "value" -> text("idCardDetails.error.required")
-        .verifying(maxLength(100, "idCardDetails.error.length"))
+      "value" -> text(s"$prefix.individual.idCardDetails.error.required")
+        .verifying(maxLength(100, s"$prefix.individual.idCardDetails.error.length"))
     )
 }

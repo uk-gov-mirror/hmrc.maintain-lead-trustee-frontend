@@ -123,6 +123,13 @@ leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel = What is {
 leadtrustee.individual.nationalInsuranceNumber.error.required = Enter the lead trustee’s National Insurance number
 leadtrustee.individual.nationalInsuranceNumber.error.invalidFormat = Enter the lead trustee’s National Insurance number in the correct format
 
+leadtrustee.individual.identificationDetailOptions.title = Which of {0}’s details can you provide?
+leadtrustee.individual.identificationDetailOptions.heading = Which of {0}’s details can you provide?
+leadtrustee.individual.identificationDetailOptions.idCard = ID Card
+leadtrustee.individual.identificationDetailOptions.passport = Passport
+leadtrustee.individual.identificationDetailOptions.checkYourAnswersLabel = Which of {0}’s details can you provide?
+leadtrustee.individual.identificationDetailOptions.error.required = Select which of these details you can provide
+
 leadtrustee.individual.idCardDetails.title = idCardDetails
 leadtrustee.individual.idCardDetails.heading = idCardDetails
 leadtrustee.individual.idCardDetails.checkYourAnswersLabel = idCardDetails
@@ -170,13 +177,6 @@ leadtrustee.individual.emailAddressYesNo.title = emailAddressYesNo
 leadtrustee.individual.emailAddressYesNo.heading = emailAddressYesNo
 leadtrustee.individual.emailAddressYesNo.checkYourAnswersLabel = emailAddressYesNo
 leadtrustee.individual.emailAddressYesNo.error.required = Select yes if emailAddressYesNo
-
-leadtrustee.individual.identificationDetailOptions.title = identificationDetailOptions
-leadtrustee.individual.identificationDetailOptions.heading = identificationDetailOptions
-leadtrustee.individual.identificationDetailOptions.idCard = ID Card
-leadtrustee.individual.identificationDetailOptions.passport = Passport
-leadtrustee.individual.identificationDetailOptions.checkYourAnswersLabel = identificationDetailOptions
-leadtrustee.individual.identificationDetailOptions.error.required = Select identificationDetailOptions
 
 leadtrustee.individual.telephoneNumber.title = telephoneNumber
 leadtrustee.individual.telephoneNumber.heading = telephoneNumber
