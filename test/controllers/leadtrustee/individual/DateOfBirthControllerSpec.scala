@@ -31,25 +31,23 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.DateOfBirthView
+import views.html.leadtrustee.individual.DateOfBirthView
 
 import scala.concurrent.Future
 
 class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new DateOfBirthFormProvider()
-  private def form = formProvider()
+  val form = new DateOfBirthFormProvider().withPrefix("leadtrustee")
 
   def onwardRoute = Call("GET", "/foo")
 
   val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
   lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad().url
-  lazy val dateOfBirthSubmitRoute = routes.DateOfBirthController.onSubmit()
 
   val name = Name("Lead", None, "Trustee")
 
-  override val emptyUserAnswers = UserAnswers("id")
+  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR")
     .set(NamePage, name)
     .success.value
 
@@ -77,7 +75,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName, dateOfBirthSubmitRoute)(fakeRequest, messages).toString
+        view(form, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -97,7 +95,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), name.displayName, dateOfBirthSubmitRoute)(getRequest(), messages).toString
+        view(form.fill(validAnswer), name.displayName)(getRequest(), messages).toString
 
       application.stop()
     }
@@ -141,7 +139,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName, dateOfBirthSubmitRoute)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }

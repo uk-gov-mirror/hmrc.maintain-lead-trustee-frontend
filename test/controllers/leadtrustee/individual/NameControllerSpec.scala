@@ -38,14 +38,14 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new NameFormProvider()
-  val form = formProvider()
+  val form = new NameFormProvider().withPrefix("leadtrustee")
 
   lazy val nameRoute = routes.NameController.onPageLoad().url
 
 
   val userAnswers = UserAnswers(
     "fakeId",
+    "UTRUTRUTR",
     Json.obj().transform(NamePage.path.json.put(Json.obj(
       "firstName" -> "value 1",
       "lastName" -> "value 2")

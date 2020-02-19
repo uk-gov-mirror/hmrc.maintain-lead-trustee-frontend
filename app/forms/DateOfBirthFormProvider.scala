@@ -24,16 +24,16 @@ import play.api.data.Form
 
 class DateOfBirthFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[LocalDate] =
+  def withPrefix(prefix: String): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidKey     = "leadtrustee.individual.dateOfBirth.error.invalid",
-        allRequiredKey = "leadtrustee.individual.dateOfBirth.error.required.all",
-        twoRequiredKey = "leadtrustee.individual.dateOfBirth.error.required.two",
-        requiredKey    = "leadtrustee.individual.dateOfBirth.error.required"
+        invalidKey     = s"$prefix.individual.dateOfBirth.error.invalid",
+        allRequiredKey = s"$prefix.individual.dateOfBirth.error.required.all",
+        twoRequiredKey = s"$prefix.individual.dateOfBirth.error.required.two",
+        requiredKey    = s"$prefix.individual.dateOfBirth.error.required"
       ).verifying(firstError(
-        maxDate(LocalDate.now, "leadtrustee.individual.dateOfBirth.error.future", "day", "month", "year"),
-        minDate(LocalDate.of(1500,1,1), "leadtrustee.individual.dateOfBirth.error.past", "day", "month", "year")
+        maxDate(LocalDate.now, s"$prefix.individual.dateOfBirth.error.future", "day", "month", "year"),
+        minDate(LocalDate.of(1500,1,1), s"$prefix.individual.dateOfBirth.error.past", "day", "month", "year")
       ))
     )
 }

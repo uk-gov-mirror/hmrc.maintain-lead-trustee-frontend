@@ -24,7 +24,7 @@ import wolfendale.scalacheck.regexp.RegexpGen
 class NameFormProviderSpec extends StringFieldBehaviours with OptionalFieldBehaviours {
 
   val messageKeyPrefix = "leadtrustee.individual.name"
-  val form = new NameFormProvider()()
+  val form = new NameFormProvider().withPrefix("leadtrustee")
 
   val maxLength = 35
   val minLength = 1

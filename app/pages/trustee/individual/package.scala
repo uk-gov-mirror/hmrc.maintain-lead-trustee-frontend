@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-package utils
+package pages.trustee
 
-import org.scalatest.TryValues
+import play.api.libs.json.JsPath
 
-object TestUserAnswers extends TryValues {
-
-  lazy val draftId = "id"
-  lazy val userInternalId = "internalId"
-
-  def emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR")
-  
+package object individual {
+  val basePath = JsPath \ 'trustee \ 'individual
 }

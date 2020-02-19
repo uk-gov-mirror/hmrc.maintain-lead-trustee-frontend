@@ -39,7 +39,9 @@ class NameRequiredActionSpec extends WordSpec with MockitoSugar with ScalaFuture
     val OUT = new Harness(mock[MessagesApi])
     val sourceRequest = mock[DataRequest[AnyContent]]
 
-    val ua = UserAnswers("id", Json.obj().transform(pages.leadtrustee.individual.NamePage.path.json.put(Json.obj(
+    val ua = UserAnswers("id",
+      "UTRUTRUTR",
+      Json.obj().transform(pages.leadtrustee.individual.NamePage.path.json.put(Json.obj(
       "firstName" -> "testFirstName",
       "middleName" -> "testMiddleName",
       "lastName" -> "testLastName"
@@ -60,7 +62,7 @@ class NameRequiredActionSpec extends WordSpec with MockitoSugar with ScalaFuture
 
     val OUT = new Harness(messagesApi)
 
-    val ua = UserAnswers("id", Json.obj())
+    val ua = UserAnswers("id", "UTRUTRUTR", Json.obj())
 
     when(sourceRequest.userAnswers).thenReturn(ua)
     whenReady(OUT.callTransform(sourceRequest)) { transformedRequest =>

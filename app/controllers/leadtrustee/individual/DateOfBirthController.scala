@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.DateOfBirthView
+import views.html.leadtrustee.individual.DateOfBirthView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,7 +42,7 @@ class DateOfBirthController @Inject()(
                                         view: DateOfBirthView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form = formProvider.withPrefix("leadtrustee")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction) {
     implicit request =>
@@ -52,7 +52,7 @@ class DateOfBirthController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.leadTrusteeName, routes.DateOfBirthController.onSubmit()))
+      Ok(view(preparedForm, request.leadTrusteeName))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction).async {
@@ -60,7 +60,7 @@ class DateOfBirthController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, routes.DateOfBirthController.onSubmit()))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
 
         value =>
           for {

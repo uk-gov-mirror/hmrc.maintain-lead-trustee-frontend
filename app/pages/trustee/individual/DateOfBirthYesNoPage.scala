@@ -14,15 +14,26 @@
  * limitations under the License.
  */
 
-package utils
+package pages.trustee.individual
 
-import org.scalatest.TryValues
+import models.UserAnswers
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-object TestUserAnswers extends TryValues {
+import scala.util.Try
 
-  lazy val draftId = "id"
-  lazy val userInternalId = "internalId"
+case class DateOfBirthYesNoPage(index: Int) extends QuestionPage[Boolean] {
 
-  def emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR")
-  
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "dateOfBirthYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(false) =>
+        userAnswers.remove(DateOfBirthPage(index))
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
+  }
 }

@@ -14,27 +14,31 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.leadtrustee
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import controllers.actions.StandardActionSets
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.TrustNotClaimedView
+import utils.CheckYourAnswersHelper
+import viewmodels.AnswerSection
+import views.html.leadtrustee.LeadTrusteeDetailsView
 
-import scala.concurrent.ExecutionContext
-
-@Singleton
-class TrustNotClaimedController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           standardActionSets: StandardActionSets,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: TrustNotClaimedView
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class DetailsController @Inject()(
+                                            override val messagesApi: MessagesApi,
+                                            standardActionSets: StandardActionSets,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            view: LeadTrusteeDetailsView
+                                          ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
     implicit request =>
-        Ok(view(request.userAnswers.utr))
-      }
+
+      val checkYourAnswersHelper = new CheckYourAnswersHelper(request.userAnswers)
+
+      val sections = Seq(AnswerSection(None, Seq()))
+
+      Ok(view(sections))
+  }
 }

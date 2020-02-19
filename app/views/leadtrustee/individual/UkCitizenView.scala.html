@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.leadtrustee.individual.routes._
 @import models.Mode
 
 @this(
@@ -21,13 +22,13 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, name: String, onSubmit: Call)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("trustee.individual.ukCitizen.title", name)}"
+    title = s"${errorPrefix(form)} ${messages("leadtrustee.individual.ukCitizen.title", name)}"
     ) {
 
-    @formHelper(action = onSubmit, 'autoComplete -> "off") {
+    @formHelper(action = UkCitizenController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
@@ -35,7 +36,7 @@
 
         @components.input_yes_no(
             field = form("value"),
-            legend = messages("trustee.individual.ukCitizen.heading", name),
+            legend = messages("leadtrustee.individual.ukCitizen.heading", name),
             headingIsLegend = true
         )
 

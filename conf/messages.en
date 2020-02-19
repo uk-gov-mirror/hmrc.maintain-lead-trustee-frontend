@@ -101,6 +101,20 @@ leadtrustee.individual.name.error.firstName.length = Lead trustee’s first name
 leadtrustee.individual.name.error.middleName.length = Lead trustee’s middle names must be 35 characters or less
 leadtrustee.individual.name.error.lastName.length = Lead trustee’s last name must be 35 characters or less
 
+leadtrustee.individual.dateOfBirth.title = What is {0}’s date of birth?
+leadtrustee.individual.dateOfBirth.heading = What is {0}’s date of birth?
+leadtrustee.individual.dateOfBirth.checkYourAnswersLabel = What is {0}’s date of birth?
+leadtrustee.individual.dateOfBirth.error.required.all = Enter a date of birth
+leadtrustee.individual.dateOfBirth.error.required.two = Date of birth must include a {0} and a {1}
+leadtrustee.individual.dateOfBirth.error.required = Date of birth must include a {0}
+leadtrustee.individual.dateOfBirth.error.invalid = Enter a real date of birth
+leadtrustee.individual.dateOfBirth.error.future = Date of birth must be today or in the past
+leadtrustee.individual.dateOfBirth.error.past = Date of birth must be after 31 December 1499
+
+leadtrustee.individual.ukCitizen.title = Does {0} have a National Insurance number?
+leadtrustee.individual.ukCitizen.heading = Does {0} have a National Insurance number?
+leadtrustee.individual.ukCitizen.checkYourAnswersLabel = Does {0} have a National Insurance number?
+leadtrustee.individual.ukCitizen.error.required = Select yes if you know the trustee’s National Insurance number
 leadtrustee.individual.ukCitizen.error.required = Select yes if you know the lead trustee’s National Insurance number
 
 leadtrustee.individual.idCardDetails.title = idCardDetails
@@ -187,6 +201,28 @@ trustee.individual.ukCitizen.error.required = Select yes if you know the trustee
 trustee.individualOrBusiness.title = Is the trustee an individual or a business?
 trustee.individualOrBusiness.heading = Is the trustee an individual or a business?
 trustee.individualOrBusiness.error.required = Select if the trustee is an individual or a business
+
+trustee.individual.name.title = What is the trustee’s name?
+trustee.individual.name.heading = What is the trustee’s name?
+trustee.individual.name.firstName = First name
+trustee.individual.name.middleName = Middle names (optional)
+trustee.individual.name.lastName = Last name
+trustee.individual.name.checkYourAnswersLabel = What is the trustee’s name?
+trustee.individual.name.error.firstName.required = Enter the trustee’s first name
+trustee.individual.name.error.lastName.required = Enter the trustee’s last name
+trustee.individual.name.error.firstName.length = Trustee’s first name must be 35 characters or less
+trustee.individual.name.error.middleName.length = Trustee’s middle names must be 35 characters or less
+trustee.individual.name.error.lastName.length = Trustee’s last name must be 35 characters or less
+
+trustee.individual.dateOfBirth.title = What is {0}’s date of birth?
+trustee.individual.dateOfBirth.heading = What is {0}’s date of birth?
+trustee.individual.dateOfBirth.checkYourAnswersLabel = What is {0}’s date of birth?
+trustee.individual.dateOfBirth.error.required.all = Enter a date of birth
+trustee.individual.dateOfBirth.error.required.two = Date of birth must include a {0} and a {1}
+trustee.individual.dateOfBirth.error.required = Date of birth must include a {0}
+trustee.individual.dateOfBirth.error.invalid = Enter a real date of birth
+trustee.individual.dateOfBirth.error.future = Date of birth must be today or in the past
+trustee.individual.dateOfBirth.error.past = Date of birth must be after 31 December 1499
 
 trustee.individual.liveInTheUkYesNoPage.title = Does {0} live in the UK?
 trustee.individual.liveInTheUkYesNoPage.heading = Does {0} live in the UK?

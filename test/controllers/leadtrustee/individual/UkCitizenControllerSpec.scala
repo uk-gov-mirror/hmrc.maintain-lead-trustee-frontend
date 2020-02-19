@@ -29,7 +29,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.UkCitizenView
+import views.html.leadtrustee.individual.UkCitizenView
 
 import scala.concurrent.Future
 
@@ -43,7 +43,6 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
   val name = Name("Lead", None, "Trustee")
 
   lazy val ukCitizenRoute = routes.UkCitizenController.onPageLoad().url
-  lazy val ukCitizenSubmitRoute = routes.UkCitizenController.onSubmit()
 
   override val emptyUserAnswers = super.emptyUserAnswers
     .set(NamePage, name)
@@ -64,7 +63,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, name.displayName, ukCitizenSubmitRoute)(fakeRequest, messages).toString
+        view(form, NormalMode, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -84,7 +83,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, name.displayName, ukCitizenSubmitRoute)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -132,7 +131,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, name.displayName, ukCitizenSubmitRoute)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }

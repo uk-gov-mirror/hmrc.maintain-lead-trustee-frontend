@@ -24,10 +24,10 @@ import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.UkCitizenPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.UkCitizenView
+import views.html.leadtrustee.individual.UkCitizenView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -52,7 +52,7 @@ class UkCitizenController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, request.trusteeName, Call("", "")))
+      Ok(view(preparedForm, mode, request.trusteeName))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction).async {
@@ -60,7 +60,7 @@ class UkCitizenController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName, Call("", "")))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
 
         value =>
           for {

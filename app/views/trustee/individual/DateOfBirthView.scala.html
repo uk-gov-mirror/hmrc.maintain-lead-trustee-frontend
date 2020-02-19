@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.trustee.individual.routes._
 @import models.Mode
 
 @this(
@@ -21,13 +22,13 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], name: String, onSubmit: Call)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], index: Int, trusteeName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("trustee.individual.dateOfBirth.title", name)}"
+    title = s"${errorPrefix(form)} ${messages("trustee.individual.dateOfBirth.title", trusteeName)}"
 ) {
 
-    @formHelper(action = onSubmit, 'autoComplete -> "off") {
+    @formHelper(action = DateOfBirthController.onSubmit(index), 'autoComplete -> "off") {
 
         @components.back_link()
 
@@ -35,9 +36,8 @@
 
         @components.input_date(
             field = form("value"),
-            legend = messages("trustee.individual.dateOfBirth.heading", name),
-            headingIsLegend = true,
-            hint = Some(messages(s"site.date.hint"))
+            legend = messages("trustee.individual.dateOfBirth.heading", trusteeName),
+            headingIsLegend = true
         )
 
         @components.submit_button()
