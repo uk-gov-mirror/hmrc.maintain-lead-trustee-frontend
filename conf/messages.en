@@ -117,6 +117,12 @@ leadtrustee.individual.ukCitizen.checkYourAnswersLabel = Does {0} have a Nationa
 leadtrustee.individual.ukCitizen.error.required = Select yes if you know the trustee’s National Insurance number
 leadtrustee.individual.ukCitizen.error.required = Select yes if you know the lead trustee’s National Insurance number
 
+leadtrustee.individual.nationalInsuranceNumber.title = What is {0}}’s National Insurance number?
+leadtrustee.individual.nationalInsuranceNumber.heading = What is {0}}’s National Insurance number?
+leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel = What is {0}}’s National Insurance number?
+leadtrustee.individual.nationalInsuranceNumber.error.required = Enter the lead trustee’s National Insurance number
+leadtrustee.individual.nationalInsuranceNumber.error.invalidFormat = Enter the lead trustee’s National Insurance number in the correct format
+
 leadtrustee.individual.idCardDetails.title = idCardDetails
 leadtrustee.individual.idCardDetails.heading = idCardDetails
 leadtrustee.individual.idCardDetails.checkYourAnswersLabel = idCardDetails
@@ -127,11 +133,6 @@ leadtrustee.individual.liveInTheUkYesNoPage.title = liveInTheUkYesNoPage
 leadtrustee.individual.liveInTheUkYesNoPage.heading = liveInTheUkYesNoPage
 leadtrustee.individual.liveInTheUkYesNoPage.checkYourAnswersLabel = liveInTheUkYesNoPage
 leadtrustee.individual.liveInTheUkYesNoPage.error.required = Select yes if liveInTheUkYesNoPage
-leadtrustee.individual.nationalInsuranceNumber.title = nationalInsuranceNumber
-leadtrustee.individual.nationalInsuranceNumber.heading = nationalInsuranceNumber
-leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel = nationalInsuranceNumber
-leadtrustee.individual.nationalInsuranceNumber.error.required = Enter nationalInsuranceNumber
-leadtrustee.individual.nationalInsuranceNumber.error.length = NationalInsuranceNumber must be 10 characters or less
 
 leadtrustee.individual.nonUkAddress.title = nonUkAddress
 leadtrustee.individual.nonUkAddress.heading = nonUkAddress
