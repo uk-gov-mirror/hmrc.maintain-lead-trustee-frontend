@@ -26,7 +26,7 @@ class NationalInsuranceNumberFormProviderSpec extends StringFieldBehaviours {
   val requiredKey = "leadtrustee.individual.nationalInsuranceNumber.error.required"
   val invalidFormatKey = "leadtrustee.individual.nationalInsuranceNumber.error.invalidFormat"
 
-  val form = new NationalInsuranceNumberFormProvider().withPrefix("leadtrustee")
+  val form = new NationalInsuranceNumberFormProvider().withPrefix("leadtrustee.individual")
 
   ".value" must {
 

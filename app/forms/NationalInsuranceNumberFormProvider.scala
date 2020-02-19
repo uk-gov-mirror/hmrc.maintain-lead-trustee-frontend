@@ -25,11 +25,11 @@ class NationalInsuranceNumberFormProvider @Inject() extends Mappings {
 
   def withPrefix(messagePrefix: String): Form[String] =
     Form(
-      "value" -> nino(s"$messagePrefix.individual.nationalInsuranceNumber.error.required")
+      "value" -> nino(s"$messagePrefix.nationalInsuranceNumber.error.required")
         .verifying(
           firstError(
-            nonEmptyString("value", s"$messagePrefix.individual.nationalInsuranceNumber.error.required"),
-            isNinoValid("value", s"$messagePrefix.individual.nationalInsuranceNumber.error.invalidFormat")
+            nonEmptyString("value", s"$messagePrefix.nationalInsuranceNumber.error.required"),
+            isNinoValid("value", s"$messagePrefix.nationalInsuranceNumber.error.invalidFormat")
           ))
     )
 }

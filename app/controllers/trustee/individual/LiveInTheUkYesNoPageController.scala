@@ -34,7 +34,7 @@ class LiveInTheUkYesNoPageController @Inject()(
                                          override val messagesApi: MessagesApi,
                                          sessionRepository: PlaybackRepository,
                                          navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
+                                         standardActionSets: StandardActionSets,
                                          formProvider: YesNoFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: LiveInTheUkYesNoPageView
