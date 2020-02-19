@@ -66,7 +66,7 @@ POST       /trustee/individual/:index/trustee-name                          cont
 GET        /trustee/individual/:index/date-of-birth-yes-no                  controllers.trustee.individual.DateOfBirthYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/individual/:index/date-of-birth-yes-no                  controllers.trustee.individual.DateOfBirthYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/individual/:index/date-of-birth                         controllers.trustee.individual.DateOfBirthYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/date-of-birth                         controllers.trustee.individual.DateOfBirthController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/individual/:index/date-of-birth                         controllers.trustee.individual.DateOfBirthController.onSubmit(mode: Mode = NormalMode, index: Int)
 
 GET        /trustee/individual/:index/nino-yes-no                           controllers.trustee.individual.NationalInsuranceNumberYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)

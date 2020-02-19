@@ -28,7 +28,7 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
 
   val messageKeyPrefix = "leadtrustee.individual.name"
 
-  override val form = new NameFormProvider()()
+  override val form = new NameFormProvider().withPrefix(messageKeyPrefix)
 
   "NameView" must {
 

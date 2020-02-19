@@ -46,14 +46,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
   lazy val nameRoute = routes.NameController.onPageLoad(index).url
 
 
-  val userAnswers = UserAnswers(
-    "fakeId",
-    "UTRUTRUTR",
-    Json.obj().transform(NamePage.path.json.put(Json.obj(
-      "firstName" -> "FirstName",
-      "lastName" -> "LastName")
-    )).get
-  )
+  val userAnswers = emptyUserAnswers.set(NamePage(index), Name("FirstName", None, "LastName")).success.value
 
   "Name Controller" must {
 

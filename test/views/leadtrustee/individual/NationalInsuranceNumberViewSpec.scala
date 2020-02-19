@@ -28,7 +28,7 @@ class NationalInsuranceNumberViewSpec extends StringViewBehaviours {
 
   val messageKeyPrefix = "nationalInsuranceNumber"
 
-  val form = new NationalInsuranceNumberFormProvider()()
+  val form = new NationalInsuranceNumberFormProvider().withPrefix("leadtrustee.individual")
 
   "NationalInsuranceNumberView view" must {
 

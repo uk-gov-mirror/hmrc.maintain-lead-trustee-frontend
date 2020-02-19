@@ -26,7 +26,7 @@ class NationalInsuranceNumberFormProviderSpec extends StringFieldBehaviours {
   val lengthKey = "nationalInsuranceNumber.error.length"
   val maxLength = 10
 
-  val form = new NationalInsuranceNumberFormProvider()()
+  val form = new NationalInsuranceNumberFormProvider().withPrefix("leadtrustee.individual")
 
   ".value" must {
 
