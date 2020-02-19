@@ -31,18 +31,18 @@ import views.html.leadtrustee.individual.NameView
 import scala.concurrent.{ExecutionContext, Future}
 
 class NameController @Inject()(
-                                      override val messagesApi: MessagesApi,
-                                      sessionRepository: PlaybackRepository,
-                                      navigator: Navigator,
-                                      standardActionSets: StandardActionSets,
-                                      formProvider: NameFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      view: NameView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                override val messagesApi: MessagesApi,
+                                sessionRepository: PlaybackRepository,
+                                navigator: Navigator,
+                                standardActionSets: StandardActionSets,
+                                formProvider: NameFormProvider,
+                                val controllerComponents: MessagesControllerComponents,
+                                view: NameView
+                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form = formProvider.withPrefix("trustee")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(NamePage) match {
@@ -53,7 +53,7 @@ class NameController @Inject()(
       Ok(view(preparedForm))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -63,7 +63,7 @@ class NameController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(NamePage, mode, updatedAnswers))
       )
   }

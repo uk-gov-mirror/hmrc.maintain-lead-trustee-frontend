@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
-package views.trustee
+package pages.trustee.individual
 
-class IndividualOrBusinessView {
+import models.Name
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
+case class NamePage(index: Int) extends QuestionPage[Name] {
+
+  override def path: JsPath = basePath \ index \ toString
+
+  override def toString: String = "name"
 }

@@ -24,29 +24,29 @@ import play.api.data.Forms._
 
 class NameFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Name] =   Form(
+  def withPrefix(prefix: String): Form[Name] =   Form(
     mapping(
-      "firstName" -> text("leadtrustee.individual.name.error.firstName.required")
+      "firstName" -> text(s"$prefix.individual.name.error.firstName.required")
         .verifying(
           firstError(
-            maxLength(35, "leadtrustee.individual.name.error.firstName.length"),
-            nonEmptyString("firstName", "leadtrustee.individual.name.error.firstName.required"),
-            regexp(Validation.nameRegex, "leadtrustee.individual.name.error.firstName.invalid")
+            maxLength(35, s"$prefix.individual.name.error.firstName.length"),
+            nonEmptyString("firstName", s"$prefix.individual.name.error.firstName.required"),
+            regexp(Validation.nameRegex, s"$prefix.individual.name.error.firstName.invalid")
           )
         ),
       "middleName" -> optional(text()
         .verifying(
           firstError(
-            maxLength(35, "leadtrustee.individual.name.error.middleName.length"),
-            regexp(Validation.nameRegex, "leadtrustee.individual.name.error.middleName.invalid"))
+            maxLength(35, s"$prefix.individual.name.error.middleName.length"),
+            regexp(Validation.nameRegex, s"$prefix.individual.name.error.middleName.invalid"))
         )
       ),
-      "lastName" -> text("leadtrustee.individual.name.error.lastName.required")
+      "lastName" -> text(s"$prefix.individual.name.error.lastName.required")
         .verifying(
           firstError(
-            maxLength(35, "leadtrustee.individual.name.error.lastName.length"),
-            nonEmptyString("lastName", "leadtrustee.individual.name.error.lastName.required"),
-            regexp(Validation.nameRegex, "leadtrustee.individual.name.error.lastName.invalid")
+            maxLength(35, s"$prefix.individual.name.error.lastName.length"),
+            nonEmptyString("lastName", s"$prefix.individual.name.error.lastName.required"),
+            regexp(Validation.nameRegex, s"$prefix.individual.name.error.lastName.invalid")
           )
         )
     )(Name.apply)(Name.unapply)
