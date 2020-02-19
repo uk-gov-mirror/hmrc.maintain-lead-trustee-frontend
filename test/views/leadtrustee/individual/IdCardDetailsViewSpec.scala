@@ -16,31 +16,32 @@
 
 package views.leadtrustee.individual
 
-import models.NormalMode
+import forms.IdCardDetailsFormProvider
+import models.IdentificationDetailOptions
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.StringViewBehaviours
-import controllers.leadtrustee.individual.routes
-import forms.IdCardDetailsFormProvider
+import views.behaviours.QuestionViewBehaviours
 import views.html.leadtrustee.individual.IdCardDetailsView
 
-class IdCardDetailsViewSpec extends StringViewBehaviours {
+class IdCardDetailsViewSpec extends QuestionViewBehaviours[IdentificationDetailOptions] {
 
-  val messageKeyPrefix = "idCardDetails"
+  val messageKeyPrefix = "leadtrustee.individual.idCardDetails"
 
-  val form = new IdCardDetailsFormProvider()()
+  val formProvider = new IdCardDetailsFormProvider()
+  val form: Form[IdentificationDetailOptions] = formProvider.withPrefix("leadtrustee")
+
+  val name = "Lead Trustee"
 
   "IdCardDetailsView view" must {
 
     val view = viewFor[IdCardDetailsView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form)(fakeRequest, messages)
+      view.apply(form, name)(fakeRequest, messages)
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPage(form, applyView, messageKeyPrefix, None, routes.IdCardDetailsController.onSubmit().url)
   }
 }

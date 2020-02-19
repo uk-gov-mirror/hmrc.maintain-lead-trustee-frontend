@@ -18,12 +18,13 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import forms.IdCardDetailsFormProvider
-import models.{NormalMode, UserAnswers}
+import models.IdentificationDetailOptions.Passport
+import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.IdCardDetailsPage
+import pages.leadtrustee.individual.{IdCardDetailsPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -37,8 +38,12 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new IdCardDetailsFormProvider()
-  val form = formProvider()
+  val form = new IdCardDetailsFormProvider().withPrefix("leadtrustee")
+
+  val name = Name("Lead", None, "Trustee")
+
+  override val emptyUserAnswers = super.emptyUserAnswers
+    .set(NamePage, name).success.value
 
   lazy val idCardDetailsRoute = routes.IdCardDetailsController.onPageLoad().url
 
@@ -57,14 +62,14 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(fakeRequest, messages).toString
+        view(form, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(IdCardDetailsPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(IdCardDetailsPage, Passport).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -77,7 +82,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"))(fakeRequest, messages).toString
+        view(form.fill(Passport), name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -97,7 +102,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
       val request =
         FakeRequest(POST, idCardDetailsRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", Passport.toString))
 
       val result = route(application, request).value
 
@@ -124,7 +129,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }

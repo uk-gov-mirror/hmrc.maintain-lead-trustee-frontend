@@ -16,7 +16,7 @@
 
 package pages.leadtrustee.individual
 
-import models.IdentificationDetailOptions.Passport
+import models.IdentificationDetailOptions.{IdCard, Passport}
 import pages.behaviours.PageBehaviours
 
 class UkCitizenPageSpec extends PageBehaviours {
@@ -32,7 +32,7 @@ class UkCitizenPageSpec extends PageBehaviours {
     "implement cleanup logic when YES selected" in {
       val userAnswers = emptyUserAnswers
         .set(IdentificationDetailOptionsPage, Passport)
-        .flatMap(_.set(IdCardDetailsPage, "id card"))
+        .flatMap(_.set(IdCardDetailsPage, IdCard))
         .flatMap(_.set(PassportDetailsPage, "passport"))
         .flatMap(_.set(UkCitizenPage, true))
 

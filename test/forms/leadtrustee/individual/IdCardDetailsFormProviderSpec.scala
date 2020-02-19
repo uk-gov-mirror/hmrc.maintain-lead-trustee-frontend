@@ -17,32 +17,25 @@
 package forms.leadtrustee.individual
 
 import forms.IdCardDetailsFormProvider
-import forms.behaviours.StringFieldBehaviours
+import forms.behaviours.OptionFieldBehaviours
+import models.IdentificationDetailOptions
 import play.api.data.FormError
 
-class IdCardDetailsFormProviderSpec extends StringFieldBehaviours {
+class IdCardDetailsFormProviderSpec extends OptionFieldBehaviours {
 
-  val requiredKey = "idCardDetails.error.required"
-  val lengthKey = "idCardDetails.error.length"
-  val maxLength = 100
+  val requiredKey = "leadtrustee.individual.idCardDetails.error.required"
 
-  val form = new IdCardDetailsFormProvider()()
+  val form = new IdCardDetailsFormProvider().withPrefix("leadtrustee")
 
   ".value" must {
 
     val fieldName = "value"
 
-    behave like fieldThatBindsValidData(
+    behave like optionsField[IdentificationDetailOptions](
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      validValues  = IdentificationDetailOptions.values,
+      invalidError = FormError(fieldName, "error.invalid")
     )
 
     behave like mandatoryField(
