@@ -41,6 +41,6 @@ class IdCardDetailsViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPage(form, applyView, messageKeyPrefix, routes.IdCardDetailsController.onSubmit().url)
+    behave like stringPage(form, applyView, messageKeyPrefix, None, routes.IdCardDetailsController.onSubmit().url)
   }
 }
