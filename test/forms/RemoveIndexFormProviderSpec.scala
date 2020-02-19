@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
-import forms.behaviours.OptionFieldBehaviours
-import models.IdentificationDetailOptions
+import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class IdentificationDetailOptionsFormProviderSpec extends OptionFieldBehaviours {
+class RemoveIndexFormProviderSpec extends BooleanFieldBehaviours {
 
-  val form = new IdentificationDetailOptionsFormProvider()()
+  val requiredKey = "removeIndex.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new RemoveIndexFormProvider()("removeIndex")
 
   ".value" must {
 
     val fieldName = "value"
-    val requiredKey = "identificationDetailOptions.error.required"
 
-    behave like optionsField[IdentificationDetailOptions](
+    behave like booleanField(
       form,
       fieldName,
-      validValues  = IdentificationDetailOptions.values.toSet,
-      invalidError = FormError(fieldName, "error.invalid")
+      invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(

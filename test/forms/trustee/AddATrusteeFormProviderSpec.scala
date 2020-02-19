@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms.trustee
 
 import forms.behaviours.OptionFieldBehaviours
-import models.IdentificationDetailOptions
+import models.AddATrustee
 import play.api.data.FormError
 
-class IdentificationDetailOptionsFormProviderSpec extends OptionFieldBehaviours {
+class AddATrusteeFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new IdentificationDetailOptionsFormProvider()()
+  val form = new AddATrusteeFormProvider()()
 
   ".value" must {
 
     val fieldName = "value"
-    val requiredKey = "identificationDetailOptions.error.required"
+    val requiredKey = "addATrustee.error.required"
 
-    behave like optionsField[IdentificationDetailOptions](
+    behave like optionsField[AddATrustee](
       form,
       fieldName,
-      validValues  = IdentificationDetailOptions.values.toSet,
+      validValues  = AddATrustee.values.toSet,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

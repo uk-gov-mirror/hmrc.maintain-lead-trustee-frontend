@@ -104,7 +104,7 @@ class RemoveIndividualTrusteeControllerSpec extends SpecBase with PropertyChecks
 
           status(result) mustEqual SEE_OTHER
 
-//          redirectLocation(result).value mustEqual routes.AddATrusteeController.onPageLoad().url
+          redirectLocation(result).value mustEqual routes.AddATrusteeController.onPageLoad().url
 
           application.stop()
       }

@@ -64,9 +64,6 @@ class AddATrusteeController @Inject()(
 
       val isLeadTrusteeDefined = request.userAnswers.get(Trustees).toList.flatten.exists(trustee => trustee.isLead)
 
-      println("******************************************")
-      println(trustees)
-
       trustees.count match {
         case 0 =>
           Ok(yesNoView(yesNoForm, mode))

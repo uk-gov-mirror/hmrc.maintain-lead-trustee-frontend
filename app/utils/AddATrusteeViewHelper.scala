@@ -51,8 +51,7 @@ class AddATrusteeViewHelper(userAnswers: UserAnswers)(implicit messages: Message
 //        routes.RemoveTrusteeOrgController.onPageLoad(index, draftId).url
         ???
       case _ =>
-        ???
-//        controllers.trustee.routes.RemoveIndividualTrusteeController.onPageLoad(index).url
+        controllers.trustee.routes.RemoveIndividualTrusteeController.onPageLoad(index).url
     }
 
     AddRow(
