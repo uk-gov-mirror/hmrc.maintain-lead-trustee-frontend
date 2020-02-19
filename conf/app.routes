@@ -14,6 +14,9 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /logout                                      controllers.LogoutController.logout()
 
+GET        /trustee/:index/remove                        controllers.trustee.RemoveIndividualTrusteeController.onPageLoad(index : Int)
+POST       /trustee/:index/remove                        controllers.trustee.RemoveIndividualTrusteeController.onSubmit(index : Int)
+
 GET        /leadTrustee/individual/dateOfBirth                  controllers.leadtrustee.individual.DateOfBirthController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/dateOfBirth                  controllers.leadtrustee.individual.DateOfBirthController.onSubmit(mode: Mode = NormalMode)
 

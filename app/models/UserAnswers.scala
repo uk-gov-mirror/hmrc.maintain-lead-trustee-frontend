@@ -20,6 +20,7 @@ import java.time.LocalDateTime
 
 import pages._
 import play.api.libs.json._
+import queries.Settable
 
 import scala.util.{Failure, Success, Try}
 
@@ -48,7 +49,7 @@ final case class UserAnswers(
     }
   }
 
-  def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {
+  def remove[A](page: Settable[A]): Try[UserAnswers] = {
 
     val updatedData = data.setObject(page.path, JsNull) match {
       case JsSuccess(jsValue, _) =>
