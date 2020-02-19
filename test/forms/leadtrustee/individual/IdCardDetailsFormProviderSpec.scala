@@ -16,21 +16,25 @@
 
 package forms.leadtrustee.individual
 
-import forms.IdCardDetailsFormProvider
-import forms.behaviours.StringFieldBehaviours
+import java.time.LocalDate
+
+import forms.behaviours.{DateBehaviours, PassportOrIDCardBehaviours, StringFieldBehaviours}
+import forms.{IdCardDetailsFormProvider, Validation}
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
-class IdCardDetailsFormProviderSpec extends StringFieldBehaviours {
+class IdCardDetailsFormProviderSpec extends StringFieldBehaviours with PassportOrIDCardBehaviours with DateBehaviours {
 
-  val requiredKey = "leadtrustee.individual.idCardDetails.error.required"
-  val lengthKey = "leadtrustee.individual.idCardDetails.error.length"
-  val maxLength = 100
+  val prefix = "passport"
 
-  val form = new IdCardDetailsFormProvider().withPrefix("leadtrustee")
+  val form = new IdCardDetailsFormProvider()(prefix)
 
-  ".value" must {
+  ".country" must {
 
-    val fieldName = "value"
+    val fieldName = "country"
+    val requiredKey = s"$prefix.country.error.required"
+    val lengthKey = s"$prefix.country.error.length"
+    val maxLength = 100
 
     behave like fieldThatBindsValidData(
       form,
@@ -49,6 +53,81 @@ class IdCardDetailsFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like nonEmptyField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey, Seq(fieldName))
+    )
+  }
+
+  ".number" must {
+
+    val fieldName = "number"
+    val requiredKey = s"$prefix.number.error.required"
+    val invalidLengthKey = s"$prefix.number.error.length"
+    val invalidKey = s"$prefix.number.error.invalid"
+    val maxLength = 30
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, invalidLengthKey, Seq(maxLength))
+    )
+
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      RegexpGen.from(Validation.passportOrIdCardNumberRegEx)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like nonEmptyField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, invalidKey, Seq(Validation.passportOrIdCardNumberRegEx))
+    )
+
+    behave like cardNumberField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey, Seq(Validation.passportOrIdCardNumberRegEx))
+    )
+  }
+
+  ".expiryDate" must {
+
+    val key = "expiryDate"
+
+    val min = LocalDate.of(1500, 1, 1)
+    val max = LocalDate.of(2100, 1, 1)
+
+    val requiredBindings = Map("country" -> "country", "number" -> "1234567")
+
+    val validData = datesBetween(
+      min = min,
+      max = max
+    )
+
+    behave like dateFieldForPassportOrIdForm(form, key, validData, requiredBindings)
+
+    behave like mandatoryDateField(form, key, s"$prefix.expiryDate.error.required.all")
+
+    behave like dateFieldWithMax(form, key,
+      max = max,
+      FormError(key, s"$prefix.expiryDate.error.future", List("day", "month", "year"))
+    )
+
+    behave like dateFieldWithMin(form, key,
+      min = min,
+      FormError(key, s"$prefix.expiryDate.error.past", List("day", "month", "year"))
     )
   }
 }
