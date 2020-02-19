@@ -16,14 +16,24 @@
 
 package pages.trustee.individual
 
+import models.UserAnswers
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.Trustees
+
+import scala.util.Try
 
 case class IdCardDetailsYesNoPage(index: Int) extends QuestionPage[Boolean] {
 
   override def path: JsPath = Trustees.path \ index \ toString
 
   override def toString: String = "idCardDetailsYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case Some(false) =>
+      userAnswers.remove(IdCardDetailsPage(index))
+    case _ =>
+      super.cleanup(value, userAnswers)
+  }
 
 }
