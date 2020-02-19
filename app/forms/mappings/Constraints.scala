@@ -19,6 +19,7 @@ package forms.mappings
 import java.time.LocalDate
 
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import uk.gov.hmrc.domain.Nino
 
 trait Constraints {
 
@@ -118,4 +119,11 @@ trait Constraints {
         Invalid(errorKey, value)
     }
 
+  protected def isNinoValid(value: String, errorKey: String): Constraint[String] =
+    Constraint {
+      case str if Nino.isValid(str)=>
+        Valid
+      case _ =>
+        Invalid(errorKey, value)
+    }
 }

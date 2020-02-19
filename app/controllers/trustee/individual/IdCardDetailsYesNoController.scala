@@ -17,45 +17,43 @@
 package controllers.trustee.individual
 
 import controllers.actions._
-import forms.PassportOrIdCardFormProvider
+import forms.YesNoFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.trustee.individual.{NamePage, PassportDetailsPage}
+import pages.trustee.individual.{IdCardDetailsYesNoPage, NamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.countryOptions.CountryOptions
-import views.html.trustee.individual.PassportDetailsView
+import views.html.trustee.individual.IdCardDetailsYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PassportDetailsController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           sessionRepository: PlaybackRepository,
-                                           navigator: Navigator,
-                                           standardActionSets: StandardActionSets,
-                                           nameAction: actions.NameRequiredAction,
-                                           formProvider: PassportOrIdCardFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: PassportDetailsView,
-                                           val countryOptions: CountryOptions
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class IdCardDetailsYesNoController @Inject()(
+                                         override val messagesApi: MessagesApi,
+                                         sessionRepository: PlaybackRepository,
+                                         navigator: Navigator,
+                                         standardActionSets: StandardActionSets,
+                                         nameAction: actions.NameRequiredAction,
+                                         formProvider: YesNoFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         view: IdCardDetailsYesNoView
+                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider("trustee.individual.passportDetails")
+  val form = formProvider.withPrefix("trustee.individual.idCardDetailsYesNo")
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction) {
     implicit request =>
 
       val name = request.userAnswers.get(NamePage(index)).get
 
-      val preparedForm = request.userAnswers.get(PassportDetailsPage(index)) match {
+      val preparedForm = request.userAnswers.get(IdCardDetailsYesNoPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options, index, name.displayName))
+      Ok(view(preparedForm, index, name.displayName))
   }
 
   def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction).async {
@@ -65,13 +63,13 @@ class PassportDetailsController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, index, name.displayName))),
+          Future.successful(BadRequest(view(formWithErrors, index, name.displayName))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportDetailsPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(IdCardDetailsYesNoPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PassportDetailsPage(index), mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(IdCardDetailsYesNoPage(index), mode, updatedAnswers))
       )
   }
 }

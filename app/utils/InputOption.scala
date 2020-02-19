@@ -14,23 +14,6 @@
  * limitations under the License.
  */
 
-package forms
+package utils
 
-import javax.inject.Inject
-
-import forms.mappings.Mappings
-import play.api.data.Form
-
-class NationalInsuranceNumberFormProvider @Inject() extends Mappings {
-
-  def withPrefix(messagePrefix: String): Form[String] =
-    Form(
-      "value" -> nino(s"$messagePrefix.error.required")
-        .verifying(
-          firstError(
-            nonEmptyString("value", s"$messagePrefix.error.required"),
-            isNinoValid("value", s"$messagePrefix.error.invalidFormat")
-          ))
-    )
-}
-
+case class InputOption(value: String, label: String, dataTarget: Option[String] = None)

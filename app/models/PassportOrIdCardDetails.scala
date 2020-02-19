@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import javax.inject.Inject
+import java.time.LocalDate
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import play.api.libs.json.Json
 
-class NationalInsuranceNumberFormProvider @Inject() extends Mappings {
+case class PassportOrIdCardDetails(country: String, cardNumber: String, expiryDate:LocalDate)
 
-  def withPrefix(messagePrefix: String): Form[String] =
-    Form(
-      "value" -> nino(s"$messagePrefix.error.required")
-        .verifying(
-          firstError(
-            nonEmptyString("value", s"$messagePrefix.error.required"),
-            isNinoValid("value", s"$messagePrefix.error.invalidFormat")
-          ))
-    )
+object PassportOrIdCardDetails {
+  implicit val format = Json.format[PassportOrIdCardDetails]
 }
-
