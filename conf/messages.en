@@ -196,6 +196,16 @@ trustee.individual.name.error.firstName.length = Trustee’s first name must be 
 trustee.individual.name.error.middleName.length = Trustee’s middle names must be 35 characters or less
 trustee.individual.name.error.lastName.length = Trustee’s last name must be 35 characters or less
 
+trustee.individual.dateOfBirth.title = What is {0}’s date of birth?
+trustee.individual.dateOfBirth.heading = What is {0}’s date of birth?
+trustee.individual.dateOfBirth.checkYourAnswersLabel = What is {0}’s date of birth?
+trustee.individual.dateOfBirth.error.required.all = Enter a date of birth
+trustee.individual.dateOfBirth.error.required.two = Date of birth must include a {0} and a {1}
+trustee.individual.dateOfBirth.error.required = Date of birth must include a {0}
+trustee.individual.dateOfBirth.error.invalid = Enter a real date of birth
+trustee.individual.dateOfBirth.error.future = Date of birth must be today or in the past
+trustee.individual.dateOfBirth.error.past = Date of birth must be after 31 December 1499
+
 trustee.individual.liveInTheUkYesNoPage.title = Does {0} live in the UK?
 trustee.individual.liveInTheUkYesNoPage.heading = Does {0} live in the UK?
 trustee.individual.liveInTheUkYesNoPage.error.required = Select yes if the trustee lives in the UK

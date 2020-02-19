@@ -63,6 +63,12 @@ POST       /trustee/:index/individual-or-business                           cont
 GET        /trustee/:index/trustee-name                                     controllers.trustee.individual.NameController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/:index/trustee-name                                     controllers.trustee.individual.NameController.onSubmit(mode: Mode = NormalMode, index: Int)
 
+GET        /trustee/:index/date-of-birth-yes-no                             controllers.trustee.individual.DateOfBirthYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/:index/date-of-birth-yes-no                             controllers.trustee.individual.DateOfBirthYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
+
+GET        /trustee/:index/date-of-birth                                    controllers.trustee.individual.DateOfBirthYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/:index/date-of-birth                                    controllers.trustee.individual.DateOfBirthController.onSubmit(mode: Mode = NormalMode, index: Int)
+
 GET        /trustee/:index/individual/passport-yes-no                       controllers.trustee.individual.PassportDetailsYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/:index/individual/passport-yes-no                       controllers.trustee.individual.PassportDetailsYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
 
