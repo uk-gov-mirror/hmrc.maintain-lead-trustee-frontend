@@ -18,17 +18,16 @@ package views.leadtrustee.individual
 
 import java.time.LocalDate
 
-import controllers.leadtrustee.individual.routes
 import forms.DateOfBirthFormProvider
-import models.{NormalMode, UserAnswers}
 import play.api.data.Form
+import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
-import views.html.leadtrustee.individual.DateOfBirthView
+import views.html.DateOfBirthView
 
 class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 
-  val messageKeyPrefix = "leadtrustee.individual.dateOfBirth"
+  val messageKeyPrefix = "trustee.individual.dateOfBirth"
 
   val form = new DateOfBirthFormProvider()()
 
@@ -39,7 +38,7 @@ class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
     val view = application.injector.instanceOf[DateOfBirthView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, "LeadTrusteeName")(fakeRequest, messages)
+      view.apply(form, "LeadTrusteeName", Call("", ""))(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, "LeadTrusteeName")
 

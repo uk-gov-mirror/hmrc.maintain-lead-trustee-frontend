@@ -18,18 +18,18 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import forms.UkCitizenFormProvider
-import models.{NormalMode, UserAnswers}
+import models.{Name, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.UkCitizenPage
+import pages.leadtrustee.individual.{NamePage, UkCitizenPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.leadtrustee.individual.UkCitizenView
+import views.html.UkCitizenView
 
 import scala.concurrent.Future
 
@@ -38,9 +38,16 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new UkCitizenFormProvider()
-  val form = formProvider()
+  val form = formProvider("leadtrustee.individual")
+
+  val name = Name("Lead", None, "Trustee")
 
   lazy val ukCitizenRoute = routes.UkCitizenController.onPageLoad().url
+  lazy val ukCitizenSubmitRoute = routes.UkCitizenController.onSubmit()
+
+  override val emptyUserAnswers = super.emptyUserAnswers
+    .set(NamePage, name)
+    .success.value
 
   "UkCitizen Controller" must {
 
@@ -57,7 +64,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form, NormalMode, name.displayName, ukCitizenSubmitRoute)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -77,7 +84,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode, name.displayName, ukCitizenSubmitRoute)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -125,7 +132,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, name.displayName, ukCitizenSubmitRoute)(fakeRequest, messages).toString
 
       application.stop()
     }

@@ -24,14 +24,14 @@ import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import pages.leadtrustee.individual.{DateOfBirthPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.leadtrustee.individual.DateOfBirthView
+import views.html.DateOfBirthView
 
 import scala.concurrent.Future
 
@@ -45,6 +45,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
   val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
   lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad().url
+  lazy val dateOfBirthSubmitRoute = routes.DateOfBirthController.onSubmit()
 
   val name = Name("Lead", None, "Trustee")
 
@@ -76,7 +77,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName)(fakeRequest, messages).toString
+        view(form, name.displayName, dateOfBirthSubmitRoute)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -96,7 +97,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), name.displayName)(getRequest(), messages).toString
+        view(form.fill(validAnswer), name.displayName, dateOfBirthSubmitRoute)(getRequest(), messages).toString
 
       application.stop()
     }
@@ -140,7 +141,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, name.displayName, dateOfBirthSubmitRoute)(fakeRequest, messages).toString
 
       application.stop()
     }

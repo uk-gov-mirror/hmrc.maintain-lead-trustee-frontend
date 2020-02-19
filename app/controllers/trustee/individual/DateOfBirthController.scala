@@ -23,10 +23,10 @@ import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.DateOfBirthPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.leadtrustee.individual.DateOfBirthView
+import views.html.DateOfBirthView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,16 +44,14 @@ class DateOfBirthController @Inject()(
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction) {
-    request =>
+    implicit request =>
 
       val preparedForm = request.userAnswers.get(DateOfBirthPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      implicit val r = request
-
-      Ok(view(preparedForm, request.trusteeName))
+      Ok(view(preparedForm, request.trusteeName, Call("", "")))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction).async {
@@ -61,7 +59,7 @@ class DateOfBirthController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, request.trusteeName, Call("", "")))),
 
         value =>
           for {

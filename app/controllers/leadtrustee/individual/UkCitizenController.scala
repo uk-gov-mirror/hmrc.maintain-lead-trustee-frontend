@@ -16,9 +16,10 @@
 
 package controllers.leadtrustee.individual
 
-import javax.inject.Inject
 import controllers.actions._
+import controllers.leadtrustee.individual.actions.NameRequiredAction
 import forms.UkCitizenFormProvider
+import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.UkCitizenPage
@@ -26,23 +27,24 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.leadtrustee.individual.UkCitizenView
+import views.html.UkCitizenView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class UkCitizenController @Inject()(
-                                   override val messagesApi: MessagesApi,
-                                   playbackRepository: PlaybackRepository,
-                                   navigator: Navigator,
-                                   standardActionSets: StandardActionSets,
-                                   formProvider: UkCitizenFormProvider,
-                                   val controllerComponents: MessagesControllerComponents,
-                                   view: UkCitizenView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     override val messagesApi: MessagesApi,
+                                     playbackRepository: PlaybackRepository,
+                                     navigator: Navigator,
+                                     standardActionSets: StandardActionSets,
+                                     nameAction: NameRequiredAction,
+                                     formProvider: UkCitizenFormProvider,
+                                     val controllerComponents: MessagesControllerComponents,
+                                     view: UkCitizenView
+                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form = formProvider("leadtrustee.individual")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(UkCitizenPage) match {
@@ -50,20 +52,20 @@ class UkCitizenController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, request.leadTrusteeName, routes.UkCitizenController.onSubmit()))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.leadTrusteeName, routes.UkCitizenController.onSubmit()))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UkCitizenPage, value))
-            _              <- playbackRepository.set(updatedAnswers)
+            _ <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(UkCitizenPage, mode, updatedAnswers))
       )
   }

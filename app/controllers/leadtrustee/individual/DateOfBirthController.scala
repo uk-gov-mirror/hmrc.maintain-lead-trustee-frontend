@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions.StandardActionSets
-import controllers.leadtrustee.individual.actions.{LeadTrusteeNameRequest, NameRequiredAction}
+import controllers.leadtrustee.individual.actions.NameRequiredAction
 import forms.DateOfBirthFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.leadtrustee.individual.DateOfBirthView
+import views.html.DateOfBirthView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,25 +44,23 @@ class DateOfBirthController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction) {
-    request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction) {
+    implicit request =>
 
       val preparedForm = request.userAnswers.get(DateOfBirthPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      implicit val r = request
-
-      Ok(view(preparedForm, request.leadTrusteeName))
+      Ok(view(preparedForm, request.leadTrusteeName, routes.DateOfBirthController.onSubmit()))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, routes.DateOfBirthController.onSubmit()))),
 
         value =>
           for {

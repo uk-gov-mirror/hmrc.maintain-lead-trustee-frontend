@@ -17,8 +17,7 @@
 package models
 
 import org.joda.time.DateTime
-import play.api.libs.json.{Format, JsResult, JsValue, Json, Reads, Writes}
-import play.api.libs.json.{JodaReads, JodaWrites}
+import play.api.libs.json.{Format, JodaReads, JodaWrites, JsResult, JsValue, Json, Reads, Writes}
 
 case class PassportType(number: String,
                         expirationDate: DateTime,

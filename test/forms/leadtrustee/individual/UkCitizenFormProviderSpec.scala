@@ -22,10 +22,10 @@ import play.api.data.FormError
 
 class UkCitizenFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "ukCitizen.error.required"
+  val requiredKey = "leadtrustee.individual.ukCitizen.error.required"
   val invalidKey = "error.boolean"
 
-  val form = new UkCitizenFormProvider()()
+  val form = new UkCitizenFormProvider()("leadtrustee.individual")
 
   ".value" must {
 
