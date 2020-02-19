@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions.StandardActionSets
-import controllers.leadtrustee.individual.actions.{LeadTrusteeNameRequest, NameRequiredAction}
+import controllers.leadtrustee.individual.actions.NameRequiredAction
 import forms.DateOfBirthFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -44,20 +44,18 @@ class DateOfBirthController @Inject()(
 
   val form = formProvider.withPrefix("leadtrustee.individual")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction) {
-    request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction) {
+    implicit request =>
 
       val preparedForm = request.userAnswers.get(DateOfBirthPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      implicit val r = request
-
       Ok(view(preparedForm, request.leadTrusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(

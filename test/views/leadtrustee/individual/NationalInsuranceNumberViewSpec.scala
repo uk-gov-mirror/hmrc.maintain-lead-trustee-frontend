@@ -26,7 +26,7 @@ import views.html.leadtrustee.individual.NationalInsuranceNumberView
 
 class NationalInsuranceNumberViewSpec extends StringViewBehaviours {
 
-  val messageKeyPrefix = "nationalInsuranceNumber"
+  val messageKeyPrefix = "leadtrustee.individual.nationalInsuranceNumber"
 
   val form = new NationalInsuranceNumberFormProvider().withPrefix("leadtrustee.individual")
 
@@ -35,12 +35,12 @@ class NationalInsuranceNumberViewSpec extends StringViewBehaviours {
     val view = viewFor[NationalInsuranceNumberView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form)(fakeRequest, messages)
+      view.apply(form, "Lead Trustee")(fakeRequest, messages)
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, "Lead Trustee")
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPage(form, applyView, messageKeyPrefix, routes.NationalInsuranceNumberController.onSubmit().url)
+    behave like stringPage(form, applyView, messageKeyPrefix, Some("Lead Trustee"), routes.NationalInsuranceNumberController.onSubmit().url)
   }
 }

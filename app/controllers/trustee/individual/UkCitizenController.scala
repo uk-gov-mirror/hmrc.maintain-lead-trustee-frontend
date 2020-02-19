@@ -17,6 +17,7 @@
 package controllers.trustee.individual
 
 import controllers.actions._
+import controllers.trustee.individual.actions.NameRequiredAction
 import forms.UkCitizenFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -31,18 +32,19 @@ import views.html.leadtrustee.individual.UkCitizenView
 import scala.concurrent.{ExecutionContext, Future}
 
 class UkCitizenController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: PlaybackRepository,
-                                         navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                         formProvider: UkCitizenFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: UkCitizenView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     override val messagesApi: MessagesApi,
+                                     sessionRepository: PlaybackRepository,
+                                     navigator: Navigator,
+                                     standardActionSets: StandardActionSets,
+                                     nameAction: NameRequiredAction,
+                                     formProvider: UkCitizenFormProvider,
+                                     val controllerComponents: MessagesControllerComponents,
+                                     view: UkCitizenView
+                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form = formProvider("trustee.individual")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(UkCitizenPage) match {
@@ -50,20 +52,20 @@ class UkCitizenController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UkCitizenPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(UkCitizenPage, mode, updatedAnswers))
       )
   }

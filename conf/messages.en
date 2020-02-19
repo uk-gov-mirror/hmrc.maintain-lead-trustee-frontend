@@ -1,3 +1,18 @@
+
+site.back = Back
+site.delete = Remove
+site.edit = Change
+site.hidden-delete = Delete {0}
+site.hidden-edit = Change {0}
+site.no = No
+site.yes = Yes
+site.continue = Continue
+site.service_name = maintain-lead-trustee-frontend
+site.textarea.char_limit = (Limit is {0} characters)
+site.sign_out = Sign out
+site.save.continue = Save and continue
+site.date.hint = For example, 31 3 1980
+
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
 checkYourAnswers.guidance = Guidance for check your answers
@@ -28,19 +43,6 @@ index.guidance = Welcome to your new frontend. Please see the README file for a 
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.
-
-site.back = Back
-site.delete = Remove
-site.edit = Change
-site.hidden-delete = Delete {0}
-site.hidden-edit = Change {0}
-site.no = No
-site.yes = Yes
-site.continue = Continue
-site.service_name = maintain-lead-trustee-frontend
-site.textarea.char_limit = (Limit is {0} characters)
-site.sign_out = Sign out
-site.save.continue = Save and continue
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -109,6 +111,18 @@ leadtrustee.individual.dateOfBirth.error.invalid = Enter a real date of birth
 leadtrustee.individual.dateOfBirth.error.future = Date of birth must be today or in the past
 leadtrustee.individual.dateOfBirth.error.past = Date of birth must be after 31 December 1499
 
+leadtrustee.individual.ukCitizen.title = Does {0} have a National Insurance number?
+leadtrustee.individual.ukCitizen.heading = Does {0} have a National Insurance number?
+leadtrustee.individual.ukCitizen.checkYourAnswersLabel = Does {0} have a National Insurance number?
+leadtrustee.individual.ukCitizen.error.required = Select yes if you know the trustee’s National Insurance number
+leadtrustee.individual.ukCitizen.error.required = Select yes if you know the lead trustee’s National Insurance number
+
+leadtrustee.individual.nationalInsuranceNumber.title = What is {0}’s National Insurance number?
+leadtrustee.individual.nationalInsuranceNumber.heading = What is {0}’s National Insurance number?
+leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel = What is {0}’s National Insurance number?
+leadtrustee.individual.nationalInsuranceNumber.error.required = Enter the lead trustee’s National Insurance number
+leadtrustee.individual.nationalInsuranceNumber.error.invalidFormat = Enter the lead trustee’s National Insurance number in the correct format
+
 leadtrustee.individual.idCardDetails.title = idCardDetails
 leadtrustee.individual.idCardDetails.heading = idCardDetails
 leadtrustee.individual.idCardDetails.checkYourAnswersLabel = idCardDetails
@@ -119,11 +133,6 @@ leadtrustee.individual.liveInTheUkYesNoPage.title = liveInTheUkYesNoPage
 leadtrustee.individual.liveInTheUkYesNoPage.heading = liveInTheUkYesNoPage
 leadtrustee.individual.liveInTheUkYesNoPage.checkYourAnswersLabel = liveInTheUkYesNoPage
 leadtrustee.individual.liveInTheUkYesNoPage.error.required = Select yes if liveInTheUkYesNoPage
-leadtrustee.individual.nationalInsuranceNumber.title = nationalInsuranceNumber
-leadtrustee.individual.nationalInsuranceNumber.heading = nationalInsuranceNumber
-leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel = nationalInsuranceNumber
-leadtrustee.individual.nationalInsuranceNumber.error.required = Enter nationalInsuranceNumber
-leadtrustee.individual.nationalInsuranceNumber.error.length = NationalInsuranceNumber must be 10 characters or less
 
 leadtrustee.individual.nonUkAddress.title = nonUkAddress
 leadtrustee.individual.nonUkAddress.heading = nonUkAddress
@@ -151,11 +160,6 @@ leadtrustee.individual.ukAddress.error.line2.required = Enter line2
 leadtrustee.individual.ukAddress.error.line1.length = line1 must be line2 characters or less
 leadtrustee.individual.ukAddress.error.line2.length = line2 must be 100 characters or less
 
-leadtrustee.individual.ukCitizen.title = ukCitizen
-leadtrustee.individual.ukCitizen.heading = ukCitizen
-leadtrustee.individual.ukCitizen.checkYourAnswersLabel = ukCitizen
-leadtrustee.individual.ukCitizen.error.required = Select yes if ukCitizen
-
 leadtrustee.individual.emailAddress.title = emailAddress
 leadtrustee.individual.emailAddress.heading = emailAddress
 leadtrustee.individual.emailAddress.checkYourAnswersLabel = emailAddress
@@ -179,6 +183,21 @@ leadtrustee.individual.telephoneNumber.heading = telephoneNumber
 leadtrustee.individual.telephoneNumber.checkYourAnswersLabel = telephoneNumber
 leadtrustee.individual.telephoneNumber.error.required = Enter telephoneNumber
 leadtrustee.individual.telephoneNumber.error.length = TelephoneNumber must be 100 characters or less
+
+trustee.individual.dateOfBirth.title = What is {0}’s date of birth?
+trustee.individual.dateOfBirth.heading = What is {0}’s date of birth?
+trustee.individual.dateOfBirth.checkYourAnswersLabel = What is {0}’s date of birth?
+trustee.individual.dateOfBirth.error.required.all = Enter a date of birth
+trustee.individual.dateOfBirth.error.required.two = Date of birth must include a {0} and a {1}
+trustee.individual.dateOfBirth.error.required = Date of birth must include a {0}
+trustee.individual.dateOfBirth.error.invalid = Enter a real date of birth
+trustee.individual.dateOfBirth.error.future = Date of birth must be today or in the past
+trustee.individual.dateOfBirth.error.past = Date of birth must be after 31 December 1499
+
+trustee.individual.ukCitizen.title = Does {0} have a National Insurance number?
+trustee.individual.ukCitizen.heading = Does {0} have a National Insurance number?
+trustee.individual.ukCitizen.checkYourAnswersLabel = Does {0} have a National Insurance number?
+trustee.individual.ukCitizen.error.required = Select yes if you know the trustee’s National Insurance number
 
 trustee.individualOrBusiness.title = Is the trustee an individual or a business?
 trustee.individualOrBusiness.heading = Is the trustee an individual or a business?

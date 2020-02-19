@@ -41,6 +41,6 @@ class PassportDetailsViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPage(form, applyView, messageKeyPrefix, routes.PassportDetailsController.onSubmit().url)
+    behave like stringPage(form, applyView, messageKeyPrefix, None, routes.PassportDetailsController.onSubmit().url)
   }
 }

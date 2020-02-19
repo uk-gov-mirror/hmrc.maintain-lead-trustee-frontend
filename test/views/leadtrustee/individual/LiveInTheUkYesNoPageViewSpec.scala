@@ -40,6 +40,6 @@ class LiveInTheUkYesNoPageViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.LiveInTheUkYesNoPageController.onSubmit().url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, None, routes.LiveInTheUkYesNoPageController.onSubmit().url)
   }
 }
