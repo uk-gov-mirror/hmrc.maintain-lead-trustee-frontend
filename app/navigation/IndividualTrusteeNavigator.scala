@@ -27,6 +27,7 @@ object IndividualTrusteeNavigator {
     case NamePage(index) => rts.DateOfBirthYesNoController.onPageLoad(index)
     case DateOfBirthPage(index) => rts.NationalInsuranceNumberYesNoController.onPageLoad(index)
     case NationalInsuranceNumberPage(index) => rts.NationalInsuranceNumberController.onPageLoad(index)
+    case UkAddressPage(index) => rts.PassportDetailsYesNoController.onPageLoad(index)
     case NonUkAddressPage(index) => rts.PassportDetailsYesNoController.onPageLoad(index)
     case PassportDetailsPage(index) => rts.PassportDetailsController.onPageLoad(index)
     case IdCardDetailsPage(index) => rts.IdCardDetailsController.onPageLoad(index)
@@ -40,7 +41,7 @@ object IndividualTrusteeNavigator {
     case AddressYesNoPage(index) => ua =>
       yesNoNav(ua, AddressYesNoPage(index), rts.LiveInTheUkYesNoController.onPageLoad(index), rts.AddressYesNoController.onPageLoad(index))
     case LiveInTheUkYesNoPage(index) => ua =>
-      yesNoNav(ua, LiveInTheUkYesNoPage(index), rts.LiveInTheUkYesNoController.onPageLoad(index), rts.NonUkAddressController.onPageLoad(index))
+      yesNoNav(ua, LiveInTheUkYesNoPage(index), rts.UkAddressController.onPageLoad(index), rts.NonUkAddressController.onPageLoad(index))
     case PassportDetailsYesNoPage(index) => ua =>
       yesNoNav(ua, PassportDetailsYesNoPage(index), rts.PassportDetailsController.onPageLoad(index), rts.IdCardDetailsYesNoController.onPageLoad(index))
     case IdCardDetailsYesNoPage(index) => ua =>
