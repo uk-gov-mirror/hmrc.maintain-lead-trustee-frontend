@@ -245,6 +245,7 @@ trustee.individual.passportDetails.country = Passport country of issue
 trustee.individual.passportDetails.country.error.required = Enter the trustee’s passport country of issue
 trustee.individual.passportDetails.country.error.length = The trustee’s passport country must be 100 characters or less
 trustee.individual.passportDetails.number = Passport number
+trustee.individual.passportDetails.number.hint = For example, 502135326
 trustee.individual.passportDetails.number.error.required = Enter the trustee’s passport number
 trustee.individual.passportDetails.number.error.length = The trustee’s passport number must be 30 characters or less
 trustee.individual.passportDetails.number.error.invalid = Passport number can only include letters and numbers
