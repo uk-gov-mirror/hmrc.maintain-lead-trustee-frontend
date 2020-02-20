@@ -27,13 +27,13 @@ class DateOfBirthFormProvider @Inject() extends Mappings {
   def withPrefix(prefix: String): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidKey     = s"$prefix.dateOfBirth.error.invalid",
-        allRequiredKey = s"$prefix.dateOfBirth.error.required.all",
-        twoRequiredKey = s"$prefix.dateOfBirth.error.required.two",
-        requiredKey    = s"$prefix.dateOfBirth.error.required"
+        invalidKey     = s"$prefix.error.invalid",
+        allRequiredKey = s"$prefix.error.required.all",
+        twoRequiredKey = s"$prefix.error.required.two",
+        requiredKey    = s"$prefix.error.required"
       ).verifying(firstError(
-        maxDate(LocalDate.now, s"$prefix.dateOfBirth.error.future", "day", "month", "year"),
-        minDate(LocalDate.of(1500,1,1), s"$prefix.dateOfBirth.error.past", "day", "month", "year")
+        maxDate(LocalDate.now, s"$prefix.error.future", "day", "month", "year"),
+        minDate(LocalDate.of(1500,1,1), s"$prefix.error.past", "day", "month", "year")
       ))
     )
 }

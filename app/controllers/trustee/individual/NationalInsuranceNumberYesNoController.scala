@@ -52,7 +52,7 @@ class NationalInsuranceNumberYesNoController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, index, request.trusteeName))
+      Ok(view(preparedForm, index, request.trusteeName))
   }
 
   def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)).async {
@@ -60,7 +60,7 @@ class NationalInsuranceNumberYesNoController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, index, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, index, request.trusteeName))),
 
         value =>
           for {

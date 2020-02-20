@@ -38,7 +38,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new NameFormProvider()
-  val form = formProvider.withPrefix("trustee.individual")
+  val form = formProvider.withPrefix("trustee.individual.name")
   val index = 0
   val trusteeName = Name("FirstName", None, "LastName")
 
