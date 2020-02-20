@@ -35,6 +35,7 @@ error.non_numeric = Give a value using only numbers
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
+error.postcodeInvalid = Enter a real postcode
 
 index.title = maintain-lead-trustee-frontend
 index.heading = maintain-lead-trustee-frontend
@@ -248,6 +249,27 @@ trustee.individual.addressYesNo.error.required = Select yes if you know the trus
 trustee.individual.liveInTheUkYesNo.title = Does {0} live in the UK?
 trustee.individual.liveInTheUkYesNo.heading = Does {0} live in the UK?
 trustee.individual.liveInTheUkYesNo.error.required = Select yes if the trustee lives in the UK
+
+ukAddress.title = What is {0}’s address?
+ukAddress.heading = What is {0}’s address?
+ukAddress.line1 = Address line 1
+ukAddress.line2 = Address line 2
+ukAddress.line3 = Address line 3 (optional)
+ukAddress.line4 = Address line 4 (optional)
+ukAddress.postcode = Postcode
+ukAddress.postcode.hint = For example AB1 1AB
+ukAddress.error.line1.required = Enter address line 1
+ukAddress.error.line2.required = Enter address line 2
+ukAddress.error.postcode.required = Enter a postcode
+ukAddress.error.line1.length = Address line 1 must be 35 characters or less
+ukAddress.error.line2.length = Address line 2 must be 35 characters or less
+ukAddress.error.line3.length = Address line 3 must be 35 characters or less
+ukAddress.error.line4.length = Address line 4 must be 35 characters or less
+ukAddress.error.line1.invalidCharacters = Address line 1 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+ukAddress.error.line2.invalidCharacters = Address line 2 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+ukAddress.error.line3.invalidCharacters = Address line 3 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+ukAddress.error.line4.invalidCharacters = Address line 4 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+ukAddress.error.postcode.invalidCharacters = Enter a real postcode
 
 trustee.individual.passportDetailsYesNo.title = Do you know the trustee’s passport details?
 trustee.individual.passportDetailsYesNo.heading = Do you know {0}’s passport details?

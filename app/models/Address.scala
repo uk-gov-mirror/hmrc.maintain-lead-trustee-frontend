@@ -25,7 +25,7 @@ case class UkAddress (line1: String,
                       line2: String,
                       line3: Option[String],
                       line4: Option[String],
-                      postCode: String) extends Address
+                      postcode: String) extends Address
 object UkAddress {
   implicit val format = Json.format[UkAddress]
 }
@@ -46,10 +46,10 @@ object Address {
     (__ \ 'line2).read[String] and
     (__ \ 'line3).readNullable[String] and
     (__ \ 'line4).readNullable[String] and
-    (__ \ 'postCode).readNullable[String] and
-      (__ \ 'country).read[String]) ((line1, line2, line3, line4, postCode, country) => {
-      if (postCode.isDefined) {
-        UkAddress(line1, line2, line3, line4, postCode.get)
+    (__ \ 'postcode).readNullable[String] and
+      (__ \ 'country).read[String]) ((line1, line2, line3, line4, postcode, country) => {
+      if (postcode.isDefined) {
+        UkAddress(line1, line2, line3, line4, postcode.get)
       }
       else {
         NonUkAddress(line1, line2, line3, line4, country)

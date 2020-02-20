@@ -36,8 +36,8 @@ trait ModelGenerators {
         line2 <- arbitrary[String]
         line3 <- arbitrary[Option[String]]
         line4 <- arbitrary[Option[String]]
-        postCode <- arbitrary[String]
-      } yield UkAddress(line1, line2, line3, line4, postCode)
+        postcode <- arbitrary[String]
+      } yield UkAddress(line1, line2, line3, line4, postcode)
     }
 
   implicit lazy val arbitrarySettlorIndividualPassport: Arbitrary[PassportOrIdCardDetails] =
