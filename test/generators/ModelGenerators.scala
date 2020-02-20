@@ -16,15 +16,46 @@
 
 package generators
 
+import java.time.{Instant, LocalDate, ZoneOffset}
+
 import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  def datesBetween(min: LocalDate, max: LocalDate): Gen[LocalDate] = {
+
+    def toMillis(date: LocalDate): Long =
+      date.atStartOfDay.atZone(ZoneOffset.UTC).toInstant.toEpochMilli
+
+    Gen.choose(toMillis(min), toMillis(max)).map {
+      millis =>
+        Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC).toLocalDate
+    }
+  }
+
   implicit lazy val arbitraryIdentificationDetailOptions: Arbitrary[IdentificationDetailOptions] =
     Arbitrary {
       Gen.oneOf(IdentificationDetailOptions.values.toSeq)
+    }
+
+  implicit lazy val arbitraryIdCard: Arbitrary[IdCard] =
+    Arbitrary {
+      for {
+        number <- arbitrary[String]
+        expiry <- datesBetween(LocalDate.now, LocalDate.now.plusYears(10))
+        country <- arbitrary[String]
+      } yield IdCard(number, expiry, country)
+    }
+
+  implicit lazy val arbitraryPassport: Arbitrary[Passport] =
+    Arbitrary {
+      for {
+        number <- arbitrary[String]
+        expiry <- datesBetween(LocalDate.now, LocalDate.now.plusYears(10))
+        country <- arbitrary[String]
+      } yield Passport(number, expiry, country)
     }
 
   implicit lazy val arbitraryUkAddress: Arbitrary[UkAddress] =

@@ -16,15 +16,50 @@
 
 package forms
 
+import java.time.LocalDate
+
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.IdCard
 import play.api.data.Form
+import play.api.data.Forms.mapping
+import forms.mappings.Constraints
 
-class IdCardDetailsFormProvider @Inject() extends Mappings {
+class IdCardDetailsFormProvider @Inject() extends Mappings with Constraints {
+  val maxLengthCountyField = 100
+  val maxLengthNumberField = 30
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("idCardDetails.error.required")
-        .verifying(maxLength(100, "idCardDetails.error.length"))
-    )
+  def apply(prefix: String): Form[IdCard] = Form(
+    mapping(
+      "country" -> text(s"$prefix.country.error.required")
+        .verifying(
+          firstError(
+            maxLength(maxLengthCountyField, s"$prefix.country.error.length"),
+            nonEmptyString("country", s"$prefix.country.error.required")
+          )
+        ),
+      "expiryDate" -> localDate(
+        invalidKey     = s"$prefix.expiryDate.error.invalid",
+        allRequiredKey = s"$prefix.expiryDate.error.required.all",
+        twoRequiredKey = s"$prefix.expiryDate.error.required.two",
+        requiredKey    = s"$prefix.expiryDate.error.required"
+      ).verifying(firstError(
+        maxDate(
+          LocalDate.of(2099, 12, 31),
+          s"$prefix.expiryDate.error.future", "day", "month", "year"
+        ),
+        minDate(
+          LocalDate.of(1500,1,1),
+          s"$prefix.expiryDate.error.past", "day", "month", "year"
+        )
+      )),      "number" -> text(s"$prefix.number.error.required")
+        .verifying(
+          firstError(
+            maxLength(maxLengthNumberField, s"$prefix.number.error.length"),
+            regexp(Validation.passportOrIdCardNumberRegEx, s"$prefix.number.error.invalid"),
+            nonEmptyString("number", s"$prefix.number.error.required")
+          )
+        )
+    )(IdCard.apply)(IdCard.unapply)
+  )
 }

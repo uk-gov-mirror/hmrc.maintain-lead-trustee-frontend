@@ -26,7 +26,7 @@ class IdCardDetailsFormProviderSpec extends StringFieldBehaviours {
   val lengthKey = "idCardDetails.error.length"
   val maxLength = 100
 
-  val form = new IdCardDetailsFormProvider()()
+  val form = new IdCardDetailsFormProvider()("leadtrustee.individual.idcard")
 
   ".value" must {
 

@@ -18,7 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.DisplayTrustLeadTrusteeType
+import models.{LeadTrustee}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -28,8 +28,8 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
   def getLeadTrusteeUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/leadTrustee"
 
-  def getLeadTrustee(utr: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[DisplayTrustLeadTrusteeType] = {
-    http.GET[DisplayTrustLeadTrusteeType](getLeadTrusteeUrl(utr))
+  def getLeadTrustee(utr: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[LeadTrustee] = {
+    http.GET[LeadTrustee](getLeadTrusteeUrl(utr))
   }
 
 }

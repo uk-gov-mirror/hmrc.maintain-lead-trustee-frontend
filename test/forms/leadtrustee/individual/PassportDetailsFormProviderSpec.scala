@@ -26,7 +26,7 @@ class PassportDetailsFormProviderSpec extends StringFieldBehaviours {
   val lengthKey = "passportDetails.error.length"
   val maxLength = 100
 
-  val form = new PassportDetailsFormProvider()()
+  val form = new PassportDetailsFormProvider()("leadtrustee.individual.passport")
 
   ".value" must {
 

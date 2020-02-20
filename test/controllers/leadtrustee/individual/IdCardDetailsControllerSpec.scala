@@ -16,9 +16,11 @@
 
 package controllers.leadtrustee.individual
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.IdCardDetailsFormProvider
-import models.{NormalMode, UserAnswers}
+import models.{IdCard, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -38,7 +40,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new IdCardDetailsFormProvider()
-  val form = formProvider()
+  val form = formProvider("leadtrustee.individual")
 
   lazy val idCardDetailsRoute = routes.IdCardDetailsController.onPageLoad().url
 
@@ -64,7 +66,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(IdCardDetailsPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(IdCardDetailsPage, IdCard("NUMBER", LocalDate.of(2040, 12, 31), "GB")).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -77,7 +79,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"))(fakeRequest, messages).toString
+        view(form.fill(IdCard("NUMBER", LocalDate.of(2040, 12, 31), "GB")))(fakeRequest, messages).toString
 
       application.stop()
     }

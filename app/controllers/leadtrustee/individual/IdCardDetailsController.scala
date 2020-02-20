@@ -40,7 +40,7 @@ class IdCardDetailsController @Inject()(
                                         view: IdCardDetailsView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form = formProvider("leadtrustee.individual.idCard")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
     implicit request =>

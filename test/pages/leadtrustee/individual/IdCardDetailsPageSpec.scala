@@ -16,6 +16,7 @@
 
 package pages.leadtrustee.individual
 
+import models.IdCard
 import pages.behaviours.PageBehaviours
 
 
@@ -23,10 +24,10 @@ class IdCardDetailsPageSpec extends PageBehaviours {
 
   "IdCardDetailsPage" must {
 
-    beRetrievable[String](IdCardDetailsPage)
+    beRetrievable[IdCard](IdCardDetailsPage)
 
-    beSettable[String](IdCardDetailsPage)
+    beSettable[IdCard](IdCardDetailsPage)
 
-    beRemovable[String](IdCardDetailsPage)
+    beRemovable[IdCard](IdCardDetailsPage)
   }
 }
