@@ -51,6 +51,8 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   val countryOptions = injector.instanceOf[CountryOptions]
 
+  val idNumber = "87654"
+
   "IdCardDetails Controller" must {
 
     "return OK and the correct view for a GET" in {
@@ -73,7 +75,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(IdCardDetailsPage, PassportOrIdCardDetails("FR", "87654", LocalDate.now())).success.value
+      val userAnswers = emptyUserAnswers.set(IdCardDetailsPage, PassportOrIdCardDetails("FR", idNumber, LocalDate.now())).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -86,7 +88,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(PassportOrIdCardDetails("FR", "98765", LocalDate.now())), name.displayName, countryOptions.options)(fakeRequest, messages).toString
+        view(form.fill(PassportOrIdCardDetails("FR", idNumber, LocalDate.now())), name.displayName, countryOptions.options)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -108,7 +110,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
         FakeRequest(POST, idCardDetailsRoute)
           .withFormUrlEncodedBody(
             "country" -> "country",
-            "number" -> "123456",
+            "number" -> idNumber,
             "expiryDate.day"   -> LocalDate.now().getDayOfMonth.toString,
             "expiryDate.month" -> LocalDate.now().getMonthValue.toString,
             "expiryDate.year"  -> LocalDate.now().getYear.toString

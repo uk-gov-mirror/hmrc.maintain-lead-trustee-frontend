@@ -38,7 +38,7 @@ class UkAddressViewSpec extends QuestionViewBehaviours[UkAddress] {
       view.apply(form)(fakeRequest, messages)
 
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, "Lead Trustee")
 
     behave like pageWithBackLink(applyView(form))
 
@@ -46,6 +46,7 @@ class UkAddressViewSpec extends QuestionViewBehaviours[UkAddress] {
       form,
       applyView,
       messageKeyPrefix,
+      Some("Lead Trustee"),
       routes.UkAddressController.onSubmit().url,
       "line1", "line2"
     )

@@ -59,6 +59,7 @@ class IdCardDetailsViewSpec extends QuestionViewBehaviours[PassportOrIdCardDetai
         form,
         applyView,
         messageKeyPrefix,
+        Some(name),
         controllers.leadtrustee.individual.routes.IdCardDetailsController.onSubmit().url,
         "country", "number"
       )
