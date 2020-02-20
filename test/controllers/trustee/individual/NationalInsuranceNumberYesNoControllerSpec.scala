@@ -50,7 +50,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
   
   lazy val nationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad(index).url
 
-  "LiveInTheUkYesNoPage Controller" must {
+  "NationalInsuranceNumberYesNo Controller" must {
 
     "return OK and the correct view for a GET" in {
 

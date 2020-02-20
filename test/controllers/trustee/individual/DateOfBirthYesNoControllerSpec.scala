@@ -50,7 +50,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val dateOfBirthYesNoRoute = routes.DateOfBirthYesNoController.onPageLoad(index).url
 
-  "LiveInTheUkYesNoPage Controller" must {
+  "DateOfBirthYesNo Controller" must {
 
     "return OK and the correct view for a GET" in {
 
