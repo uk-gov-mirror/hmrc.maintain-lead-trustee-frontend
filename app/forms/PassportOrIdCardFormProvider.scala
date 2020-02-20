@@ -40,7 +40,6 @@ import models.PassportOrIdCardDetails
 import play.api.data.Form
 import play.api.data.Forms._
 
-
 class PassportOrIdCardFormProvider @Inject() extends Mappings {
 
   val maxLengthCountryField = 100
