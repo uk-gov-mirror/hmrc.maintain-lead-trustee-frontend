@@ -16,6 +16,8 @@
 
 package generators
 
+import java.time.LocalDate
+
 import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -38,6 +40,15 @@ trait ModelGenerators {
       } yield UkAddress(line1, line2, line3, line4, postCode)
     }
 
+  implicit lazy val arbitrarySettlorIndividualPassport: Arbitrary[PassportOrIdCardDetails] =
+    Arbitrary {
+      for {
+        field1 <- arbitrary[String]
+        field2 <- arbitrary[String]
+        field3 <- arbitrary[LocalDate]
+      } yield PassportOrIdCardDetails(field1, field2, field3)
+    }
+
   implicit lazy val arbitraryNonUkAddress: Arbitrary[NonUkAddress] =
     Arbitrary {
       for {
@@ -57,4 +68,10 @@ trait ModelGenerators {
         lastName <- arbitrary[String]
       } yield Name(firstName, middleName, lastName)
     }
+
+  implicit lazy val arbitraryLocalDate : Arbitrary[LocalDate] =
+    Arbitrary {
+      Gen.const(LocalDate.of(2010, 10, 10))
+    }
+
 }

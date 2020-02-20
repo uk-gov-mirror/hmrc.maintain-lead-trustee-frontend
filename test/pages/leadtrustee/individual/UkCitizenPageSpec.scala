@@ -16,7 +16,10 @@
 
 package pages.leadtrustee.individual
 
+import java.time.LocalDate
+
 import models.IdentificationDetailOptions.{IdCard, Passport}
+import models.PassportOrIdCardDetails
 import pages.behaviours.PageBehaviours
 
 class UkCitizenPageSpec extends PageBehaviours {
@@ -32,7 +35,7 @@ class UkCitizenPageSpec extends PageBehaviours {
     "implement cleanup logic when YES selected" in {
       val userAnswers = emptyUserAnswers
         .set(IdentificationDetailOptionsPage, Passport)
-        .flatMap(_.set(IdCardDetailsPage, "Id Card"))
+        .flatMap(_.set(IdCardDetailsPage, PassportOrIdCardDetails("FR", "0987654567", LocalDate.now())))
         .flatMap(_.set(PassportDetailsPage, "passport"))
         .flatMap(_.set(UkCitizenPage, true))
 

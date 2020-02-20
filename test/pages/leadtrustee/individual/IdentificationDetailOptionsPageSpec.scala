@@ -16,7 +16,9 @@
 
 package pages.leadtrustee.individual
 
-import models.IdentificationDetailOptions
+import java.time.LocalDate
+
+import models.{IdentificationDetailOptions, PassportOrIdCardDetails}
 import models.IdentificationDetailOptions._
 import pages.behaviours.PageBehaviours
 
@@ -40,7 +42,7 @@ class IdentificationDetailOptionsPageSpec extends PageBehaviours {
 
     "implement cleanup logic when PASSPORT selected" in {
       val userAnswers = emptyUserAnswers
-        .set(IdCardDetailsPage, "IdCard")
+        .set(IdCardDetailsPage, PassportOrIdCardDetails("FR", "987655678", LocalDate.now()))
         .flatMap(_.set(IdentificationDetailOptionsPage, Passport))
 
       userAnswers.get.get(IdCardDetailsPage) mustNot be(defined)

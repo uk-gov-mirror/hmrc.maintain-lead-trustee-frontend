@@ -25,9 +25,9 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class IdCardDetailsFormProviderSpec extends StringFieldBehaviours with PassportOrIDCardBehaviours with DateBehaviours {
 
-  val prefix = "passport"
+  val prefix = "leadtrustee.individual.idCardDetails"
 
-  val form = new IdCardDetailsFormProvider()(prefix)
+  val form = new IdCardDetailsFormProvider().withPrefix(prefix)
 
   ".country" must {
 

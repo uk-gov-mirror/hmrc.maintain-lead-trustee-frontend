@@ -16,9 +16,11 @@
 
 package controllers.leadtrustee.individual
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.IdCardDetailsFormProvider
-import models.{Name, NormalMode, UserAnswers}
+import models.{Name, NormalMode, PassportOrIdCardDetails, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -68,7 +70,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(IdCardDetailsPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(IdCardDetailsPage, PassportOrIdCardDetails("FR", "87654", LocalDate.now())).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -81,7 +83,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), name.displayName)(fakeRequest, messages).toString
+        view(form.fill(PassportOrIdCardDetails("FR", "98765", LocalDate.now())), name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -101,7 +103,13 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
       val request =
         FakeRequest(POST, idCardDetailsRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(
+            "country" -> "country",
+            "number" -> "123456",
+            "expiryDate.day"   -> LocalDate.now().getDayOfMonth.toString,
+            "expiryDate.month" -> LocalDate.now().getMonthValue.toString,
+            "expiryDate.year"  -> LocalDate.now().getYear.toString
+          )
 
       val result = route(application, request).value
 

@@ -16,14 +16,14 @@
 
 package views.leadtrustee.individual
 
-import controllers.leadtrustee.individual.routes
 import forms.IdCardDetailsFormProvider
+import models.PassportOrIdCardDetails
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.StringViewBehaviours
+import views.behaviours.QuestionViewBehaviours
 import views.html.leadtrustee.individual.IdCardDetailsView
 
-class IdCardDetailsViewSpec extends StringViewBehaviours {
+class IdCardDetailsViewSpec extends QuestionViewBehaviours[PassportOrIdCardDetails] {
 
   val messageKeyPrefix = "leadtrustee.individual.idCardDetails"
 
@@ -42,6 +42,25 @@ class IdCardDetailsViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPage(form, applyView, messageKeyPrefix, None, routes.IdCardDetailsController.onSubmit().url)
+    "date fields" must {
+
+      behave like pageWithDateFields(form, applyView,
+        messageKeyPrefix,
+        "expiryDate",
+        name.toString
+      )
+    }
+
+    "text fields" must {
+
+      behave like pageWithTextFields(
+        form,
+        applyView,
+        messageKeyPrefix,
+        controllers.leadtrustee.individual.routes.IdCardDetailsController.onSubmit().url,
+        "country", "number"
+      )
+    }
+
   }
 }
