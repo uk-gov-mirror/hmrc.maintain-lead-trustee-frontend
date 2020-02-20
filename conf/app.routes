@@ -81,8 +81,8 @@ POST       /trustee/individual/:index/national-insurance-number             cont
 GET        /trustee/individual/:index/has-address                           controllers.trustee.individual.AddressYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/individual/:index/has-address                           controllers.trustee.individual.AddressYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/individual/:index/has-uk-address                        controllers.trustee.individual.UkAddressYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/individual/:index/has-uk-address                        controllers.trustee.individual.UkAddressYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/has-uk-address                        controllers.trustee.individual.LiveInTheUkYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/has-uk-address                        controllers.trustee.individual.LiveInTheUkYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
 
 GET        /trustee/:index/individual/has-passport                          controllers.trustee.individual.PassportDetailsYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/:index/individual/has-passport                          controllers.trustee.individual.PassportDetailsYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
