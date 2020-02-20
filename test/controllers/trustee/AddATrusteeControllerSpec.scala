@@ -40,8 +40,8 @@ class AddATrusteeControllerSpec extends SpecBase {
   val yesNoForm = new YesNoFormProvider().withPrefix("addATrusteeYesNo")
 
   val trustee = List(
-    AddRow("First 0 Last 0", typeLabel = "Trustee Individual", "#", "/maintain-lead-trustee/trustee/0/remove"),
-    AddRow("First 1 Last 1", typeLabel = "Trustee Individual", "#", "/maintain-lead-trustee/trustee/1/remove")
+    AddRow("First 0 Last 0", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/0/remove"),
+    AddRow("First 1 Last 1", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/1/remove")
   )
 
   val userAnswersWithTrusteesComplete = emptyUserAnswers
@@ -52,7 +52,7 @@ class AddATrusteeControllerSpec extends SpecBase {
     .set(NamePage(1), Name("First 1", None, "Last 1")).success.value
     .set(TrusteeStatus(1), Completed).success.value
 
-  def onwardRoute = Call("GET", "/maintain-lead-trustee")
+  def onwardRoute = Call("GET", "/maintain-a-trust/trustees")
 
   "AddATrustee Controller" when {
 
@@ -123,7 +123,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual controllers.leadtrustee.individual.routes.NameController.onPageLoad().url
 
         application.stop()
       }

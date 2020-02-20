@@ -22,6 +22,7 @@ import play.api.mvc.Call
 import controllers.leadtrustee.individual.{routes => rts}
 import models.IdentificationDetailOptions.{IdCard, Passport}
 import pages.leadtrustee.individual._
+import pages.trustee.AddATrusteeYesNoPage
 
 object IndividualLeadTrusteeNavigator {
   private val simpleNavigations : PartialFunction[Page, Call] = {
@@ -44,6 +45,7 @@ object IndividualLeadTrusteeNavigator {
 
   private val parameterisedNavigation : PartialFunction[Page, UserAnswers => Call] = {
     case IdentificationDetailOptionsPage => idOptionsNavigation
+    case AddATrusteeYesNoPage => addATrusteeYesNoRoute
   }
 
   val routes: PartialFunction[Page, UserAnswers => Call] =
@@ -64,4 +66,15 @@ object IndividualLeadTrusteeNavigator {
               .map(if (_) yesCall else noCall)
               .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
+
+  private def addATrusteeYesNoRoute(userAnswers: UserAnswers) : Call = {
+    userAnswers.get(AddATrusteeYesNoPage) match {
+      case Some(true) =>
+        rts.NameController.onPageLoad()
+      case Some(false) =>
+        controllers.routes.IndexController.onPageLoad()
+      case _ =>  controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
+
 }
