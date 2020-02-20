@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import forms.leadtrustee.individual.NameFormProvider
+import forms.NameFormProvider
 import models.{Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
@@ -39,13 +39,14 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new NameFormProvider()
-  val form = formProvider()
+  val form = formProvider.withPrefix("leadtrustee.individual.name")
 
   lazy val nameRoute = routes.NameController.onPageLoad().url
 
 
   val userAnswers = UserAnswers(
     "fakeId",
+    "UTRUTRUTR",
     Json.obj().transform(NamePage.path.json.put(Json.obj(
       "firstName" -> "value 1",
       "lastName" -> "value 2")
@@ -92,9 +93,9 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = mock[PlaybackRepository]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))

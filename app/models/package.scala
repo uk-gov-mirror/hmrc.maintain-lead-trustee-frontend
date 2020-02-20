@@ -18,6 +18,8 @@ import play.api.libs.json._
 
 package object models {
 
+  val dateTimePattern = "yyyy-MM-dd"
+
   implicit class RichJsObject(jsObject: JsObject) {
 
     def setObject(path: JsPath, value: JsValue): JsResult[JsObject] =

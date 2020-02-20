@@ -17,13 +17,13 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import forms.leadtrustee.individual.UkCitizenFormProvider
-import models.{NormalMode, UserAnswers}
+import forms.UkCitizenFormProvider
+import models.{Name, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.UkCitizenPage
+import pages.leadtrustee.individual.{NamePage, UkCitizenPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -38,9 +38,15 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new UkCitizenFormProvider()
-  val form = formProvider()
+  val form = formProvider("leadtrustee.individual")
+
+  val name = Name("Lead", None, "Trustee")
 
   lazy val ukCitizenRoute = routes.UkCitizenController.onPageLoad().url
+
+  override val emptyUserAnswers = super.emptyUserAnswers
+    .set(NamePage, name)
+    .success.value
 
   "UkCitizen Controller" must {
 
@@ -57,7 +63,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form, NormalMode, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -77,16 +83,16 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = mock[PlaybackRepository]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -125,7 +131,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }

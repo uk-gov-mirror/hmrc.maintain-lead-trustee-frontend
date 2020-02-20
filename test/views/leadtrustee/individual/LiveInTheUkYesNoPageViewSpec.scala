@@ -17,8 +17,7 @@
 package views.leadtrustee.individual
 
 import controllers.leadtrustee.individual.routes
-import forms.leadtrustee.individual.LiveInTheUkYesNoPageFormProvider
-import models.NormalMode
+import forms.YesNoFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -28,7 +27,7 @@ class LiveInTheUkYesNoPageViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "liveInTheUkYesNoPage"
 
-  val form = new LiveInTheUkYesNoPageFormProvider()()
+  val form = (new YesNoFormProvider).withPrefix("prefix")
 
   "LiveInTheUkYesNoPage view" must {
 
@@ -41,6 +40,6 @@ class LiveInTheUkYesNoPageViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.LiveInTheUkYesNoPageController.onSubmit().url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, None, routes.LiveInTheUkYesNoPageController.onSubmit().url)
   }
 }

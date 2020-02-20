@@ -19,6 +19,7 @@ package navigation
 import base.SpecBase
 import pages._
 import models._
+import controllers.routes.IndexController
 
 class NavigatorSpec extends SpecBase  {
 
@@ -34,7 +35,7 @@ class NavigatorSpec extends SpecBase  {
 
         "navigating away from the tustee name question should go to the Do you know Date of birth question" in {
           val value1 = DateOfBirthController.onPageLoad()
-          navigator.nextPage(NamePage, NormalMode, UserAnswers("id")) mustBe value1
+          navigator.nextPage(NamePage, NormalMode, UserAnswers("id", "UTRUTRUTR")) mustBe value1
         }
       }
 
@@ -42,7 +43,7 @@ class NavigatorSpec extends SpecBase  {
       "go to Index from a page that doesn't exist in the route map" in {
 
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe controllers.routes.IndexController.onPageLoad()
+        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id", "UTRUTRUTR")) mustBe IndexController.onPageLoad("UTRUTRUTR")
       }
     }
 }

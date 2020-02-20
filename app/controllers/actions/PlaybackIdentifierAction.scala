@@ -19,8 +19,6 @@ package controllers.actions
 import com.google.inject.{ImplementedBy, Inject}
 import connectors.EnrolmentStoreConnector
 import models.requests.DataRequest
-import pages.UTRPage
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, BodyParsers, Result}
 import services.AuthenticationService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -34,20 +32,12 @@ class PlaybackIdentifierActionImpl @Inject()(val parser: BodyParsers.Default,
                                             )(override implicit val executionContext: ExecutionContext) extends PlaybackIdentifierAction {
 
   override def refine[A](request: DataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
-
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-
-    request.userAnswers.get(UTRPage) map { utr =>
-      playbackAuthenticationService.authenticate(utr)(request, hc)
-    } getOrElse Future.successful(Left(Redirect(controllers.routes.IndexController.onPageLoad())))
-
+    val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    playbackAuthenticationService.authenticate(request.userAnswers.utr)(request, hc)
   }
-
 }
 
 @ImplementedBy(classOf[PlaybackIdentifierActionImpl])
 trait PlaybackIdentifierAction extends ActionRefiner[DataRequest, DataRequest] {
-
   def refine[A](request: DataRequest[A]): Future[Either[Result, DataRequest[A]]]
-
 }
