@@ -16,20 +16,27 @@
 
 package controllers
 
+import controllers.actions.IdentifierAction
 import javax.inject.Inject
+import models.UserAnswers
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.IndexView
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
-                                 view: IndexView
-                               ) extends FrontendBaseController with I18nSupport {
+                                 identifierAction: IdentifierAction,
+                                 repo : PlaybackRepository)
+                               (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Redirect(controllers.leadtrustee.individual.routes.NameController.onPageLoad()))
+  def onPageLoad(utr: String): Action[AnyContent] = identifierAction.async {request =>
+    repo.set(UserAnswers(
+      request.user.internalId,
+      utr
+    )).map(_ =>
+      Redirect(controllers.leadtrustee.individual.routes.NameController.onPageLoad()))
   }
 }

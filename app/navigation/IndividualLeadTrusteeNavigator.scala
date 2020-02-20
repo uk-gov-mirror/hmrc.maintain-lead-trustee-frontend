@@ -25,6 +25,7 @@ import pages.leadtrustee.individual._
 import pages.trustee.AddATrusteeYesNoPage
 
 object IndividualLeadTrusteeNavigator {
+
   private val simpleNavigations : PartialFunction[Page, Call] = {
     case NamePage => rts.DateOfBirthController.onPageLoad()
     case DateOfBirthPage => rts.UkCitizenController.onPageLoad()
@@ -72,8 +73,9 @@ object IndividualLeadTrusteeNavigator {
       case Some(true) =>
         rts.NameController.onPageLoad()
       case Some(false) =>
-        controllers.routes.IndexController.onPageLoad()
-      case _ =>  controllers.routes.SessionExpiredController.onPageLoad()
+        controllers.routes.IndexController.onPageLoad(userAnswers.utr)
+      case _ =>
+        controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
 

@@ -40,7 +40,7 @@ class IdentificationDetailOptionsPageSpec extends PageBehaviours {
 
     "implement cleanup logic when PASSPORT selected" in {
       val userAnswers = emptyUserAnswers
-        .set(IdCardDetailsPage, "id card")
+        .set(IdCardDetailsPage, "IdCard")
         .flatMap(_.set(IdentificationDetailOptionsPage, Passport))
 
       userAnswers.get.get(IdCardDetailsPage) mustNot be(defined)

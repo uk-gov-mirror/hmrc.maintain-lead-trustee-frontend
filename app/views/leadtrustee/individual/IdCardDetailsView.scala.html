@@ -22,10 +22,10 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("idCardDetails.title")}"
+    title = s"${errorPrefix(form)} ${messages("leadtrustee.individual.idCardDetails.title", name)}"
     ) {
 
     @formHelper(action = IdCardDetailsController.onSubmit(), 'autoComplete -> "off") {
@@ -36,7 +36,7 @@
 
         @components.input_text(
           field = form("value"),
-          label = messages("idCardDetails.heading"),
+          label = messages("leadtrustee.individual.idCardDetails.heading", name),
           headingIsLabel = true
         )
 

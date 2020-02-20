@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import pages.UTRPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.TrustNotClaimedView
@@ -30,9 +29,7 @@ class TrustNotClaimedControllerSpec extends SpecBase {
 
       val utr = "0987654321"
 
-      val answers = emptyUserAnswers
-        .set(UTRPage, utr)
-        .success.value
+      val answers = emptyUserAnswers.copy(utr= utr)
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 

@@ -22,10 +22,10 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("identificationDetailOptions.title")}"
+    title = s"${errorPrefix(form)} ${messages("leadtrustee.individual.identificationDetailOptions.title", name)}"
     ) {
 
     @formHelper(action = IdentificationDetailOptionsController.onSubmit(), 'autoComplete -> "off") {
@@ -36,7 +36,7 @@
 
         @components.input_radio(
             field = form("value"),
-            legend = messages("identificationDetailOptions.heading"),
+            legend = messages("leadtrustee.individual.identificationDetailOptions.heading", name),
             headingIsLegend = true,
             inputs = IdentificationDetailOptions.options.toSeq
         )

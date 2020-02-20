@@ -17,13 +17,13 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import forms.leadtrustee.individual.NationalInsuranceNumberFormProvider
-import models.{NormalMode, UserAnswers}
+import forms.NationalInsuranceNumberFormProvider
+import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.NationalInsuranceNumberPage
+import pages.leadtrustee.individual.{NamePage, NationalInsuranceNumberPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -37,10 +37,14 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new NationalInsuranceNumberFormProvider()
-  val form = formProvider()
+  val form = new NationalInsuranceNumberFormProvider().withPrefix("leadtrustee.individual.nationalInsuranceNumber")
+
+  val name = Name("Lead", None, "Trustee")
 
   lazy val nationalInsuranceNumberRoute = routes.NationalInsuranceNumberController.onPageLoad().url
+
+  override val emptyUserAnswers = super.emptyUserAnswers
+    .set(NamePage, name).success.value
 
   "NationalInsuranceNumber Controller" must {
 
@@ -57,7 +61,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(fakeRequest, messages).toString
+        view(form, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -77,16 +81,16 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"))(fakeRequest, messages).toString
+        view(form.fill("answer"), name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = mock[PlaybackRepository]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -97,7 +101,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
       val request =
         FakeRequest(POST, nationalInsuranceNumberRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "JH123456C"))
 
       val result = route(application, request).value
 
@@ -124,7 +128,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
