@@ -256,7 +256,7 @@ trustee.individual.liveInTheUkYesNo.error.required = Select yes if the trustee l
 trustee.individual.nonUkAddress.title = What is the trustee’s address?
 trustee.individual.nonUkAddress.heading = What is {0}’s address?
 
-ukAddress.title = What is {0}’s address?
+ukAddress.title = What is the trustee’s address?
 ukAddress.heading = What is {0}’s address?
 ukAddress.line1 = Address line 1
 ukAddress.line2 = Address line 2
