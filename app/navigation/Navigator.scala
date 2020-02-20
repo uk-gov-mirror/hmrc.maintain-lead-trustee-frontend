@@ -17,7 +17,7 @@
 package navigation
 
 import javax.inject.{Inject, Singleton}
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import play.api.mvc.Call
 
