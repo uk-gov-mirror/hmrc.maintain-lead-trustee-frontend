@@ -17,15 +17,15 @@
 @import controllers.trustee.individual.routes._
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+        main_template: MainTemplate,
+        formHelper: FormWithCSRF
 )
 
 @(form: Form[_], index: Int, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("trustee.individual.passportDetailsYesNo.title")}"
-    ) {
+) {
 
     @formHelper(action = PassportDetailsYesNoController.onSubmit(index), 'autoComplete -> "off") {
 
