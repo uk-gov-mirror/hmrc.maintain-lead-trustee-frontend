@@ -17,7 +17,7 @@
 package views.leadtrustee.individual
 
 import controllers.leadtrustee.individual.routes
-import forms.leadtrustee.individual.EmailAddressFormProvider
+import forms.EmailAddressFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -41,6 +41,6 @@ class EmailAddressViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPage(form, applyView, messageKeyPrefix, routes.EmailAddressController.onSubmit().url)
+    behave like stringPage(form, applyView, messageKeyPrefix, None, routes.EmailAddressController.onSubmit().url)
   }
 }

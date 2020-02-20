@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import forms.leadtrustee.individual.NameFormProvider
+import forms.NameFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
@@ -40,7 +40,7 @@ class NameController @Inject()(
                                       view: NameView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form = formProvider.withPrefix("leadtrustee.individual.name")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
     implicit request =>

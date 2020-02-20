@@ -34,7 +34,10 @@ trait ModelGenerators {
       for {
         line1 <- arbitrary[String]
         line2 <- arbitrary[String]
-      } yield UkAddress(line1, line2)
+        line3 <- arbitrary[Option[String]]
+        line4 <- arbitrary[Option[String]]
+        postCode <- arbitrary[String]
+      } yield UkAddress(line1, line2, line3, line4, postCode)
     }
 
   implicit lazy val arbitraryNonUkAddress: Arbitrary[NonUkAddress] =
@@ -42,7 +45,10 @@ trait ModelGenerators {
       for {
         line1 <- arbitrary[String]
         line2 <- arbitrary[String]
-      } yield NonUkAddress(line1, line2)
+        line3 <- arbitrary[Option[String]]
+        line4 <- arbitrary[Option[String]]
+        country <- arbitrary[String]
+      } yield NonUkAddress(line1, line2, line3, line4, country)
     }
 
   implicit lazy val arbitraryName: Arbitrary[Name] =

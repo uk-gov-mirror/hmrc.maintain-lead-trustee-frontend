@@ -72,7 +72,7 @@ object IndividualLeadTrusteeNavigator {
       case Some(true) =>
         rts.NameController.onPageLoad()
       case Some(false) =>
-        controllers.routes.IndexController.onPageLoad()
+        controllers.routes.IndexController.onPageLoad(userAnswers.utr)
       case _ =>  controllers.routes.SessionExpiredController.onPageLoad()
     }
   }

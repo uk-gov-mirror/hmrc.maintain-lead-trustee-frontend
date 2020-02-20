@@ -17,7 +17,7 @@
 package views.leadtrustee.individual
 
 import controllers.leadtrustee.individual.routes
-import forms.leadtrustee.individual.NonUkAddressFormProvider
+import forms.NonUkAddressFormProvider
 import models.{NonUkAddress, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat

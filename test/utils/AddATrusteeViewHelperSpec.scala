@@ -18,8 +18,8 @@ package utils
 
 import base.SpecBase
 import models.Name
-import models.core.pages.IndividualOrBusiness
-import models.core.pages.Status.Completed
+import models.IndividualOrBusiness
+import models.Status.Completed
 import pages.trustee.individual.NamePage
 import pages.trustee.{IndividualOrBusinessPage, IsThisLeadTrusteePage, TrusteeStatus}
 import viewmodels.addAnother.AddRow

@@ -16,8 +16,7 @@
 
 package views.leadtrustee.individual
 
-import controllers.routes
-import forms.leadtrustee.individual.UkCitizenFormProvider
+import forms.UkCitizenFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -26,21 +25,23 @@ import views.html.leadtrustee.individual.UkCitizenView
 
 class UkCitizenViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "ukCitizen"
+  val messageKeyPrefix = "leadtrustee.individual.ukCitizen"
 
-  val form = new UkCitizenFormProvider()()
+  val form = new UkCitizenFormProvider()("leadtrustee.individual")
+
+  val name = "Lead Trustee"
 
   "UkCitizen view" must {
 
     val view = viewFor[UkCitizenView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form, NormalMode, name)(fakeRequest, messages)
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, controllers.leadtrustee.individual.routes.UkCitizenController.onSubmit().url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), controllers.leadtrustee.individual.routes.UkCitizenController.onSubmit().url)
   }
 }

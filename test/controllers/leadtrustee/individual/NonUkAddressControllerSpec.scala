@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import forms.leadtrustee.individual.NonUkAddressFormProvider
+import forms.NonUkAddressFormProvider
 import models.{NonUkAddress, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
@@ -45,9 +45,11 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   val userAnswers = UserAnswers(
     "fakeId",
+    "UTRUTRUTR",
     Json.obj().transform(NonUkAddressPage.path.json.put(Json.obj(
       "line1" -> "value 1",
-      "line2" -> "value 2")
+      "line2" -> "value 2",
+      "country" -> "the country")
     )).get
   )
 
@@ -84,16 +86,16 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(NonUkAddress("value 1", "value 2")))(fakeRequest, messages).toString
+        view(form.fill(NonUkAddress("value 1", "value 2", None, None, "the country")))(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = mock[PlaybackRepository]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -105,7 +107,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
       val request =
         FakeRequest(POST, nonUkAddressRoute)
-          .withFormUrlEncodedBody(("line1", "value 1"), ("line2", "value 2"))
+          .withFormUrlEncodedBody(("line1", "value 1"), ("line2", "value 2"), ("country", "the country"))
 
       val result = route(application, request).value
 

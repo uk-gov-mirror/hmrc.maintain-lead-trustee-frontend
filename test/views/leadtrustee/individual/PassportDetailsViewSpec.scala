@@ -17,7 +17,7 @@
 package views.leadtrustee.individual
 
 import controllers.leadtrustee.individual.routes
-import forms.leadtrustee.individual.PassportDetailsFormProvider
+import forms.PassportDetailsFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -41,6 +41,6 @@ class PassportDetailsViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPage(form, applyView, messageKeyPrefix, routes.PassportDetailsController.onSubmit().url)
+    behave like stringPage(form, applyView, messageKeyPrefix, None, routes.PassportDetailsController.onSubmit().url)
   }
 }

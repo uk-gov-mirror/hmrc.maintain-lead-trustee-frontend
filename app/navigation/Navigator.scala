@@ -26,7 +26,7 @@ class Navigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => Call =
     IndividualLeadTrusteeNavigator.routes orElse {
-    case _ => _ => controllers.routes.IndexController.onPageLoad()
+    case _ => ua => controllers.routes.IndexController.onPageLoad(ua.utr)
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {

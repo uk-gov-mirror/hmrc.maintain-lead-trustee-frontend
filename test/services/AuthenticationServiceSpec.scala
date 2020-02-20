@@ -301,7 +301,7 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
             whenReady(service.authenticate[AnyContent](utr)) {
               result =>
                 result.left.value.header.headers(HeaderNames.LOCATION) mustBe
-                  controllers.routes.IndexController.onPageLoad().url
+                  controllers.routes.IndexController.onPageLoad(utr).url
             }
           }
         }

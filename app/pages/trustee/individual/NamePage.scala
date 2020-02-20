@@ -19,11 +19,10 @@ package pages.trustee.individual
 import models.Name
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.Trustees
 
-final case class NamePage(index : Int) extends QuestionPage[Name] {
+final case class NamePage(index: Int) extends QuestionPage[Name] {
 
-  override def path: JsPath = Trustees.path \ index \ toString
+  override def path: JsPath = basePath \ index \ toString
 
   override def toString: String = "name"
 }

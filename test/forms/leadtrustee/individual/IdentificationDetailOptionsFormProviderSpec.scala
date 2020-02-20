@@ -16,18 +16,19 @@
 
 package forms.leadtrustee.individual
 
+import forms.IdentificationDetailOptionsFormProvider
 import forms.behaviours.OptionFieldBehaviours
 import models.IdentificationDetailOptions
 import play.api.data.FormError
 
 class IdentificationDetailOptionsFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new IdentificationDetailOptionsFormProvider()()
+  val form = new IdentificationDetailOptionsFormProvider().withPrefix("leadtrustee")
 
   ".value" must {
 
     val fieldName = "value"
-    val requiredKey = "identificationDetailOptions.error.required"
+    val requiredKey = "leadtrustee.individual.identificationDetailOptions.error.required"
 
     behave like optionsField[IdentificationDetailOptions](
       form,

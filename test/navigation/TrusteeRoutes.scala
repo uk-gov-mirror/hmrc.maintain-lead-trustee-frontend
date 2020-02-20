@@ -29,6 +29,7 @@ trait AddATrusteeRoutes {
   self: PropertyChecks with Generators with SpecBase =>
 
   val index = 0
+  val utr = "UTRUTRUTR"
 
   def addATrusteeRoutes()(implicit navigator: Navigator) = {
 
@@ -67,7 +68,7 @@ trait AddATrusteeRoutes {
               .remove(Trustees).success.value
 
             navigator.nextPage(AddATrusteeYesNoPage, NormalMode, answers)
-              .mustBe(controllers.routes.IndexController.onPageLoad())
+              .mustBe(controllers.routes.IndexController.onPageLoad(utr))
         }
       }
 
@@ -95,7 +96,7 @@ trait AddATrusteeRoutes {
             .set(AddATrusteePage, AddATrustee.YesLater).success.value
 
           navigator.nextPage(AddATrusteePage, NormalMode, answers)
-            .mustBe(controllers.routes.IndexController.onPageLoad())
+            .mustBe(controllers.routes.IndexController.onPageLoad(utr))
       }
     }
 
@@ -107,7 +108,7 @@ trait AddATrusteeRoutes {
             .set(AddATrusteePage, AddATrustee.NoComplete).success.value
 
           navigator.nextPage(AddATrusteePage, NormalMode, answers)
-            .mustBe(controllers.routes.IndexController.onPageLoad())
+            .mustBe(controllers.routes.IndexController.onPageLoad(utr))
       }
     }
 

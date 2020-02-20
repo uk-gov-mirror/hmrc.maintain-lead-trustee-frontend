@@ -20,8 +20,8 @@ import base.SpecBase
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
 import models.{AddATrustee, Name, NormalMode}
-import models.core.pages.IndividualOrBusiness
-import models.core.pages.Status.Completed
+import models.IndividualOrBusiness
+import models.Status.Completed
 import pages.trustee.{IndividualOrBusinessPage, TrusteeStatus}
 import pages.trustee.individual.NamePage
 import play.api.mvc.Call
