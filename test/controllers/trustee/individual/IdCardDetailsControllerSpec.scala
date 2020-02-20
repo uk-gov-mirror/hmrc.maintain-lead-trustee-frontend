@@ -16,68 +16,62 @@
 
 package controllers.trustee.individual
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 
 import base.SpecBase
-import forms.DateOfBirthFormProvider
-import models.{Name, UserAnswers}
+import forms.PassportOrIdCardFormProvider
+import models.{Name, PassportOrIdCardDetails, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.trustee.individual.{DateOfBirthPage, NamePage}
+import pages.trustee.individual.{IdCardDetailsPage, NamePage}
 import play.api.inject.bind
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.trustee.individual.DateOfBirthView
+import utils.InputOption
+import utils.countryOptions.CountryOptions
+import views.html.trustee.individual.IdCardDetailsView
 
 import scala.concurrent.Future
 
-class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
+class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new DateOfBirthFormProvider()
-  private def form = formProvider.withPrefix("trustee.individual.dateOfBirth")
+  val formProvider = new PassportOrIdCardFormProvider()
+  private def form = formProvider.apply("trustee.individual.idCardDetails")
 
-  def onwardRoute = Call("GET", "/foo")
-
-  val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  def onwardRoute: Call = Call("GET", "/foo")
   val index = 0
-  val trusteeName = "FirstName LastName"
-  val name = Name("FirstName", None, "LastName")
+  val name: Name = Name("FirstName", None, "LastName")
 
-  lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad(index).url
-
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR")
+  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR")
     .set(NamePage(index), name)
     .success.value
 
-  def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(GET, dateOfBirthRoute)
+  val idCardDetailsRoute: String = routes.IdCardDetailsController.onPageLoad(index).url
 
-  def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
-    FakeRequest(POST, dateOfBirthRoute)
-      .withFormUrlEncodedBody(
-        "value.day"   -> validAnswer.getDayOfMonth.toString,
-        "value.month" -> validAnswer.getMonthValue.toString,
-        "value.year"  -> validAnswer.getYear.toString
-      )
+  val getRequest = FakeRequest(GET, idCardDetailsRoute)
 
-  "DateOfBirth Controller" must {
+  val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
+
+  val validData: PassportOrIdCardDetails = PassportOrIdCardDetails("country", "card number", LocalDate.of(2020, 1, 1))
+
+  "IdCardDetails Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
-      val view = application.injector.instanceOf[DateOfBirthView]
+      val view = application.injector.instanceOf[IdCardDetailsView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, name.displayName)(fakeRequest, messages).toString
+        view(form, countryOptions, index, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -85,19 +79,19 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(DateOfBirthPage(index), validAnswer).success.value
         .set(NamePage(index), name).success.value
+        .set(IdCardDetailsPage(index), validData).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val view = application.injector.instanceOf[DateOfBirthView]
+      val view = application.injector.instanceOf[IdCardDetailsView]
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), index, name.displayName)(getRequest(), messages).toString
+        view(form.fill(validData), countryOptions, index, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -115,7 +109,17 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
           )
           .build()
 
-      val result = route(application, postRequest()).value
+      val request =
+        FakeRequest(POST, idCardDetailsRoute)
+          .withFormUrlEncodedBody(
+            "country" -> "country",
+            "number" -> "123456",
+            "expiryDate.day"   -> validData.expiryDate.getDayOfMonth.toString,
+            "expiryDate.month" -> validData.expiryDate.getMonthValue.toString,
+            "expiryDate.year"  -> validData.expiryDate.getYear.toString
+          )
+
+      val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -129,19 +133,19 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, dateOfBirthRoute)
+        FakeRequest(POST, idCardDetailsRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[DateOfBirthView]
+      val view = application.injector.instanceOf[IdCardDetailsView]
 
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, countryOptions, index, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -150,7 +154,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
@@ -162,7 +166,17 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val result = route(application, postRequest()).value
+      val request =
+        FakeRequest(POST, idCardDetailsRoute)
+          .withFormUrlEncodedBody(
+            "country" -> "country",
+            "number" -> "123456",
+            "expiryDate.day"   -> validData.expiryDate.getDayOfMonth.toString,
+            "expiryDate.month" -> validData.expiryDate.getMonthValue.toString,
+            "expiryDate.year"  -> validData.expiryDate.getYear.toString
+          )
+
+      val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 

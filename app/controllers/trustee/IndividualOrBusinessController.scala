@@ -40,7 +40,7 @@ class IndividualOrBusinessController @Inject()(
                                                 view: IndividualOrBusinessView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider("trustee.individualOrBusiness")
+  val form = formProvider.withPrefix("trustee.individualOrBusiness")
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
     implicit request =>
@@ -50,7 +50,7 @@ class IndividualOrBusinessController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, index))
+      Ok(view(preparedForm, index))
   }
 
 
@@ -60,7 +60,7 @@ class IndividualOrBusinessController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, index))),
+          Future.successful(BadRequest(view(formWithErrors, index))),
 
         (value: IndividualOrBusiness) =>
           for {

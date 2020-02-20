@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package pages.trustee.individual
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import models.IndividualOrBusiness
-import play.api.data.Form
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class IndividualOrBusinessFormProvider @Inject() extends Mappings {
+case class NonUkAddressPage(index:Int) extends QuestionPage[String] {
 
-  def withPrefix(messagePrefix: String): Form[IndividualOrBusiness] =
-    Form(
-      "value" -> enumerable[IndividualOrBusiness](s"$messagePrefix.error.required")
-    )
+  override def path: JsPath = basePath \ index \ toString
+
+  override def toString: String = "nonUkAddress"
 }
