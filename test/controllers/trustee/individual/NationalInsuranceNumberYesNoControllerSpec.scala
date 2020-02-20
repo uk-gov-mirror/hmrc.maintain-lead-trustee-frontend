@@ -48,7 +48,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
     .set(NamePage(index), name)
     .success.value
   
-  lazy val NationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad(index).url
+  lazy val nationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad(index).url
 
   "LiveInTheUkYesNoPage Controller" must {
 
@@ -56,7 +56,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, NationalInsuranceNumberYesNoRoute)
+      val request = FakeRequest(GET, nationalInsuranceNumberYesNoRoute)
 
       val result = route(application, request).value
 
@@ -74,7 +74,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, NationalInsuranceNumberYesNoRoute)
+      val request = FakeRequest(GET, nationalInsuranceNumberYesNoRoute)
 
       val view = application.injector.instanceOf[NationalInsuranceNumberYesNoView]
 
@@ -100,7 +100,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
           .build()
 
       val request =
-        FakeRequest(POST, NationalInsuranceNumberYesNoRoute)
+        FakeRequest(POST, nationalInsuranceNumberYesNoRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
@@ -115,7 +115,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, NationalInsuranceNumberYesNoRoute)
+        FakeRequest(POST, nationalInsuranceNumberYesNoRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
@@ -134,7 +134,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, NationalInsuranceNumberYesNoRoute)
+      val request = FakeRequest(GET, nationalInsuranceNumberYesNoRoute)
 
       val result = route(application, request).value
 
@@ -148,7 +148,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, NationalInsuranceNumberYesNoRoute)
+        FakeRequest(POST, nationalInsuranceNumberYesNoRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value

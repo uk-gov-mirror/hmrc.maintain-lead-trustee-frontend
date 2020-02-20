@@ -114,7 +114,6 @@ leadtrustee.individual.dateOfBirth.error.past = Date of birth must be after 31 D
 leadtrustee.individual.ukCitizen.title = Does {0} have a National Insurance number?
 leadtrustee.individual.ukCitizen.heading = Does {0} have a National Insurance number?
 leadtrustee.individual.ukCitizen.checkYourAnswersLabel = Does {0} have a National Insurance number?
-leadtrustee.individual.ukCitizen.error.required = Select yes if you know the trustee’s National Insurance number
 leadtrustee.individual.ukCitizen.error.required = Select yes if you know the lead trustee’s National Insurance number
 
 leadtrustee.individual.nationalInsuranceNumber.title = What is {0}’s National Insurance number?
@@ -183,16 +182,6 @@ leadtrustee.individual.telephoneNumber.heading = telephoneNumber
 leadtrustee.individual.telephoneNumber.checkYourAnswersLabel = telephoneNumber
 leadtrustee.individual.telephoneNumber.error.required = Enter telephoneNumber
 leadtrustee.individual.telephoneNumber.error.length = TelephoneNumber must be 100 characters or less
-
-trustee.individual.dateOfBirth.title = What is {0}’s date of birth?
-trustee.individual.dateOfBirth.heading = What is {0}’s date of birth?
-trustee.individual.dateOfBirth.checkYourAnswersLabel = What is {0}’s date of birth?
-trustee.individual.dateOfBirth.error.required.all = Enter a date of birth
-trustee.individual.dateOfBirth.error.required.two = Date of birth must include a {0} and a {1}
-trustee.individual.dateOfBirth.error.required = Date of birth must include a {0}
-trustee.individual.dateOfBirth.error.invalid = Enter a real date of birth
-trustee.individual.dateOfBirth.error.future = Date of birth must be today or in the past
-trustee.individual.dateOfBirth.error.past = Date of birth must be after 31 December 1499
 
 trustee.individual.ukCitizen.title = Does {0} have a National Insurance number?
 trustee.individual.ukCitizen.heading = Does {0} have a National Insurance number?

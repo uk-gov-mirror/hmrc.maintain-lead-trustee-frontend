@@ -48,7 +48,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
     .set(NamePage(index), name)
     .success.value
 
-  lazy val DateOfBirthYesNoRoute = routes.DateOfBirthYesNoController.onPageLoad(index).url
+  lazy val dateOfBirthYesNoRoute = routes.DateOfBirthYesNoController.onPageLoad(index).url
 
   "LiveInTheUkYesNoPage Controller" must {
 
@@ -56,7 +56,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, DateOfBirthYesNoRoute)
+      val request = FakeRequest(GET, dateOfBirthYesNoRoute)
 
       val result = route(application, request).value
 
@@ -74,7 +74,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, DateOfBirthYesNoRoute)
+      val request = FakeRequest(GET, dateOfBirthYesNoRoute)
 
       val view = application.injector.instanceOf[DateOfBirthYesNoView]
 
@@ -100,7 +100,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
       val request =
-        FakeRequest(POST, DateOfBirthYesNoRoute)
+        FakeRequest(POST, dateOfBirthYesNoRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
@@ -115,7 +115,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, DateOfBirthYesNoRoute)
+        FakeRequest(POST, dateOfBirthYesNoRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
@@ -134,7 +134,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, DateOfBirthYesNoRoute)
+      val request = FakeRequest(GET, dateOfBirthYesNoRoute)
 
       val result = route(application, request).value
 
@@ -148,7 +148,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, DateOfBirthYesNoRoute)
+        FakeRequest(POST, dateOfBirthYesNoRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
