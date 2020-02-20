@@ -17,14 +17,14 @@
 package navigation
 
 import base.SpecBase
+import generators.Generators
 import pages._
 import models._
+import org.scalatest.prop.PropertyChecks
 
-class NavigatorSpec extends SpecBase  {
+class NavigatorSpec extends SpecBase with PropertyChecks with Generators with AddATrusteeRoutes {
 
-  val navigator = new Navigator
-
-
+  implicit val navigator = new Navigator
 
   "Navigator" when {
 
@@ -38,11 +38,13 @@ class NavigatorSpec extends SpecBase  {
         }
       }
 
-
       "go to Index from a page that doesn't exist in the route map" in {
 
         case object UnknownPage extends Page
         navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe controllers.routes.IndexController.onPageLoad()
       }
+
+    behave like addATrusteeRoutes
+
     }
 }

@@ -81,7 +81,7 @@ class AddATrusteeViewHelperSpec extends SpecBase {
         )
         rows.inProgress mustBe Nil
       }
-      
+
       "generate rows from user answers for complete and in progress trustees" in {
         val rows = new AddATrusteeViewHelper(userAnswersWithCompleteAndInProgress).rows
         rows.complete mustBe List(

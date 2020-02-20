@@ -24,6 +24,5 @@ case class Name (firstName: String, middleName: Option[String], lastName: String
 }
 
 object Name {
-//  implicit val format = Json.format[Name]
   implicit lazy val formats: OFormat[Name] = Json.format[Name]
 }
