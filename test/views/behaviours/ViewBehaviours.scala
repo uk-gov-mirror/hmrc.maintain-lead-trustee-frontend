@@ -121,4 +121,14 @@ trait ViewBehaviours extends ViewSpecBase {
       }
     }
   }
+
+  def pageWithASubmitButton(view: HtmlFormat.Appendable) = {
+
+    "behave like a page with a submit button" must {
+      "have a submit button" in {
+        val doc = asDocument(view)
+        assertRenderedById(doc, "submit")
+      }
+    }
+  }
 }

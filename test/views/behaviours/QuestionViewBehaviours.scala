@@ -27,7 +27,6 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
   val form: Form[A]
 
-  //noinspection ScalaStyle
   def pageWithTextFields(form: Form[A],
                          createView: Form[A] => HtmlFormat.Appendable,
                          messageKeyPrefix: String,
@@ -88,6 +87,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
     }
   }
 
+<<<<<<< HEAD
   def pageWithDateFields(form: Form[A],
                          createView: Form[A] => HtmlFormat.Appendable,
                          messageKeyPrefix: String,
@@ -101,6 +101,31 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
       "rendered" must {
 
         for (field <- fields) {
+=======
+  def pageWithPassportOrIDCardDetailsFields(form: Form[A],
+                       createView: Form[A] => HtmlFormat.Appendable,
+                       messageKeyPrefix: String,
+                       expectedFormAction: String,
+                       textFields: Seq[(String, Option[String])],
+                       dateKey : String,
+                       args: String*) = {
+
+    val dateFields = Seq(s"${dateKey}_day", s"${dateKey}_month", s"${dateKey}_year")
+
+    "behave like a passportOrIDCard page" when {
+
+      "rendered" must {
+
+        for (field <- textFields) {
+
+          s"contain an input for $field" in {
+            val doc = asDocument(createView(form))
+            assertRenderedById(doc, field._1)
+          }
+        }
+
+        for (field <- dateFields) {
+>>>>>>> 484eba55c6e61fc64499851348c84fee34b19fc6
 
           s"contain an input for $field" in {
             val doc = asDocument(createView(form))
@@ -124,6 +149,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
         }
       }
 
+<<<<<<< HEAD
       s"rendered with an error" must {
 
         "show an error summary" in {
@@ -228,6 +254,49 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
         }
 
       }
+=======
+      for (field <- textFields) {
+
+        s"rendered with an error with field '$field'" must {
+
+          "show an error summary" in {
+
+            val doc = asDocument(createView(form.withError(FormError(field._1, "error"))))
+            assertRenderedById(doc, "error-summary-heading")
+          }
+
+          s"show an error in the label for field '$field'" in {
+
+            val doc = asDocument(createView(form.withError(FormError(field._1, "error"))))
+            val errorSpan = doc.getElementsByClass("error-message").first
+            errorSpan.parent.getElementsByClass("form-label").attr("for") mustBe field._1
+          }
+
+          s"contains a label and optional hint text for the field '$field'" in {
+            val doc = asDocument(createView(form))
+            val fieldName = field._1
+            val fieldHint = field._2 map (k => messages(k))
+            assertContainsLabel(doc, fieldName, messages(s"$messageKeyPrefix.$fieldName"), fieldHint)
+          }
+        }
+      }
+
+      "rendered with any date field error" must {
+
+        "show an error in the legend" in {
+
+          val doc = asDocument(createView(form.withError(FormError(dateKey, "error"))))
+          assertRenderedById(doc, s"error-message-$dateKey-input")
+        }
+
+        "show an error prefix in the browser title" in {
+
+          val doc = asDocument(createView(form.withError(error)))
+          assertEqualsValue(doc, "title", s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", args: _*)}""")
+        }
+      }
+
+>>>>>>> 484eba55c6e61fc64499851348c84fee34b19fc6
     }
   }
 
