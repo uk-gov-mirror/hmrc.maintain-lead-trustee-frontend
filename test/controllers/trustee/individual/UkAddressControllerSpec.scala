@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.leadtrustee.individual
+package controllers.trustee.individual
 
 import base.SpecBase
 import forms.UkAddressFormProvider
-import models.UkAddress
+import models.{Name, NormalMode, UkAddress}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.UkAddressPage
+import pages.trustee.individual.{NamePage, UkAddressPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.leadtrustee.individual.UkAddressView
+import views.html.trustee.individual.UkAddressView
 
 import scala.concurrent.Future
 
@@ -37,41 +37,44 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new UkAddressFormProvider()
-  val form = formProvider()
+  val form = new UkAddressFormProvider()()
   val index = 0
 
+  val trusteeName = Name("FirstName", None, "LastName")
   val validAnswer = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
 
-  lazy val ukAddressRoute = routes.UkAddressController.onPageLoad().url
-
-  val userAnswers = emptyUserAnswers.set(UkAddressPage, validAnswer).success.value
+  lazy val ukAddressControllerRoute = routes.UkAddressController.onPageLoad(index).url
 
   "UkAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswers.set(NamePage(index), trusteeName).success.value
 
-      val request = FakeRequest(GET, ukAddressRoute)
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val view = application.injector.instanceOf[UkAddressView]
+      val request = FakeRequest(GET, ukAddressControllerRoute)
 
       val result = route(application, request).value
+
+      val view = application.injector.instanceOf[UkAddressView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(request, messages).toString
+        view(form, index, trusteeName.displayName)(fakeRequest, messages).toString
 
-      application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
+      val userAnswers = emptyUserAnswers
+        .set(NamePage(index), trusteeName).success.value
+        .set(UkAddressPage(index), validAnswer).success.value
+
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, ukAddressRoute)
+      val request = FakeRequest(GET, ukAddressControllerRoute)
 
       val view = application.injector.instanceOf[UkAddressView]
 
@@ -80,9 +83,8 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(UkAddress("value 1", "value 2", None, None, "AB1 1AB")))(fakeRequest, messages).toString
+        view(form.fill(validAnswer), index, trusteeName.displayName)(fakeRequest, messages).toString
 
-      application.stop()
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -100,7 +102,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
 
       val request =
-        FakeRequest(POST, ukAddressRoute)
+        FakeRequest(POST, ukAddressControllerRoute)
           .withFormUrlEncodedBody(("line1", "value 1"), ("line2", "value 2"), ("postcode", "AB1 1AB"))
 
       val result = route(application, request).value
@@ -108,19 +110,19 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      application.stop()
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswers.set(NamePage(index), trusteeName).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request =
-        FakeRequest(POST, ukAddressRoute)
-          .withFormUrlEncodedBody(("value", "invalid value"))
+        FakeRequest(POST, ukAddressControllerRoute)
+          .withFormUrlEncodedBody(("value", ""))
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val view = application.injector.instanceOf[UkAddressView]
 
@@ -129,20 +131,21 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm, index, trusteeName.displayName)(fakeRequest, messages).toString
 
-       application.stop()
+      application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, ukAddressRoute)
+      val request = FakeRequest(GET, ukAddressControllerRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
@@ -153,8 +156,8 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, ukAddressRoute)
-          .withFormUrlEncodedBody(("line1", "value 1"), ("line2", "value 2"))
+        FakeRequest(POST, ukAddressControllerRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
