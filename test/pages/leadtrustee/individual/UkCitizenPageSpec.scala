@@ -17,7 +17,6 @@
 package pages.leadtrustee.individual
 
 import java.time.LocalDate
-
 import models.{IdCard, IdentificationDetailOptions, Passport}
 import pages.behaviours.PageBehaviours
 

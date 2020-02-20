@@ -18,14 +18,13 @@ package controllers.trustee.individual
 
 import base.SpecBase
 import forms.NameFormProvider
-import models.{Name, UserAnswers}
+import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.individual.NamePage
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -41,7 +40,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new NameFormProvider()
   val form = formProvider.withPrefix("trustee.individual.name")
   val index = 0
-  val trusteeName = "FirstName LastName"
+  val trusteeName = Name("FirstName", None, "LastName")
 
   lazy val nameRoute = routes.NameController.onPageLoad(index).url
 
@@ -111,9 +110,9 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
 
       val request =
         FakeRequest(POST, nameRoute)
-          .withFormUrlEncodedBody(("value", "invalid value"))
+          .withFormUrlEncodedBody(("value", ""))
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val view = application.injector.instanceOf[NameView]
 

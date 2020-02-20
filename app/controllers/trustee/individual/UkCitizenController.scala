@@ -17,7 +17,7 @@
 package controllers.trustee.individual
 
 import controllers.actions._
-import controllers.trustee.individual.actions.NameRequiredAction
+import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.UkCitizenFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -36,7 +36,7 @@ class UkCitizenController @Inject()(
                                      sessionRepository: PlaybackRepository,
                                      navigator: Navigator,
                                      standardActionSets: StandardActionSets,
-                                     nameAction: NameRequiredAction,
+                                     nameAction: TrusteeNameRequiredProvider,
                                      formProvider: UkCitizenFormProvider,
                                      val controllerComponents: MessagesControllerComponents,
                                      view: UkCitizenView

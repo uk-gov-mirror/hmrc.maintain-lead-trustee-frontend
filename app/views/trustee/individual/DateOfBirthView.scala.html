@@ -18,14 +18,14 @@
 @import models.Mode
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+        main_template: MainTemplate,
+        formHelper: FormWithCSRF
 )
 
 @(form: Form[_], index: Int, trusteeName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("trustee.individual.dateOfBirth.title", trusteeName)}"
+    title = s"${errorPrefix(form)} ${messages("trustee.individual.dateOfBirth.title")}"
 ) {
 
     @formHelper(action = DateOfBirthController.onSubmit(index), 'autoComplete -> "off") {

@@ -17,11 +17,12 @@
 package controllers.trustee.individual
 
 import controllers.actions._
+import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.PassportOrIdCardFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.trustee.individual.{NamePage, PassportDetailsPage}
+import pages.trustee.individual.PassportDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -36,7 +37,7 @@ class PassportDetailsController @Inject()(
                                            sessionRepository: PlaybackRepository,
                                            navigator: Navigator,
                                            standardActionSets: StandardActionSets,
-                                           nameAction: actions.NameRequiredAction,
+                                           nameAction: TrusteeNameRequiredProvider,
                                            formProvider: PassportOrIdCardFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: PassportDetailsView,
@@ -48,24 +49,20 @@ class PassportDetailsController @Inject()(
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)) {
     implicit request =>
 
-      val name = request.userAnswers.get(NamePage(index)).get
-
       val preparedForm = request.userAnswers.get(PassportDetailsPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options, index, name.displayName))
+      Ok(view(preparedForm, countryOptions.options, index, request.trusteeName))
   }
 
   def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)).async {
     implicit request =>
 
-      val name = request.userAnswers.get(NamePage(index)).get
-
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, index, name.displayName))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, index, request.trusteeName))),
 
         value =>
           for {

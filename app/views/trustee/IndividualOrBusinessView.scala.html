@@ -19,28 +19,29 @@
 @import models.IndividualOrBusiness
 
 @this(
-main_template: MainTemplate,
-formHelper: FormWithCSRF
+        main_template: MainTemplate,
+        formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, index : Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = s"${errorPrefix(form)} ${messages("trustee.individualOrBusiness.title")}"
+    title = s"${errorPrefix(form)} ${messages("trustee.individualOrBusiness.title")}"
 ) {
 
-@formHelper(action = IndividualOrBusinessController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = IndividualOrBusinessController.onSubmit(index), 'autoComplete -> "off") {
 
-@components.back_link()
+        @components.back_link()
 
-@components.error_summary(form.errors)
+        @components.error_summary(form.errors)
 
-@components.input_radio(
-field = form("value"),
-legend = messages("trustee.individualOrBusiness.heading"),
-inputs = IndividualOrBusiness.options.toSeq
-)
+        @components.input_radio(
+            field = form("value"),
+            legend = messages("trustee.individualOrBusiness.heading"),
+            inputs = IndividualOrBusiness.options.toSeq,
+            headingIsLegend = true
+        )
 
-@components.submit_button()
-}
+        @components.submit_button()
+    }
 }

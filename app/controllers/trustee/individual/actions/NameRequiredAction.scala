@@ -24,18 +24,20 @@ import play.api.mvc.ActionTransformer
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NameRequiredAction @Inject()(val executionContext: ExecutionContext, val messagesApi: MessagesApi) {
-  def apply(index: Int) = new NameRequiredActionInstance(index, executionContext, messagesApi)
-}
-
-class NameRequiredActionInstance(val index: Int, val executionContext: ExecutionContext, val messagesApi: MessagesApi)
+class NameRequiredAction (index: Int)(val executionContext: ExecutionContext, val messagesApi: MessagesApi)
   extends ActionTransformer[DataRequest, TrusteeNameRequest] with I18nSupport {
 
   override protected def transform[A](request: DataRequest[A]): Future[TrusteeNameRequest[A]] = {
     Future.successful(TrusteeNameRequest[A](request,
       request.userAnswers.get(NamePage(index))
-      .map(_.displayName)
-      .getOrElse(request.messages(messagesApi)("trusteeName.defaultText"))
+        .map(_.displayName)
+        .getOrElse(request.messages(messagesApi)("trusteeName.defaultText"))
     ))
   }
+}
+
+class TrusteeNameRequiredProvider @Inject()(implicit ec: ExecutionContext, messagesApi: MessagesApi) {
+
+  def apply[T](index : Int) =
+    new NameRequiredAction(index)(ec, messagesApi)
 }

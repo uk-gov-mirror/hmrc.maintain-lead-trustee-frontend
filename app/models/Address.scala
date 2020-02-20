@@ -25,15 +25,14 @@ case class UkAddress (line1: String,
                       line2: String,
                       line3: Option[String],
                       line4: Option[String],
-                      postCode: String) extends Address
+                      postcode: String) extends Address
 object UkAddress {
   implicit val format = Json.format[UkAddress]
 }
 
 case class NonUkAddress (line1: String,
                          line2: String,
-                         line3: Option[String],
-                         line4: Option[String],
+                         line3: Option[String] = None,
                          country: String) extends Address
 
 object NonUkAddress {

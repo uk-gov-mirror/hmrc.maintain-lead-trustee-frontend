@@ -26,7 +26,7 @@ class IdCardDetailsFormProviderSpec extends StringFieldBehaviours {
   val lengthKey = "idCardDetails.country.error.length"
   val maxLengthCountryField = 100
 
-  val form = new IdCardDetailsFormProvider()("idCardDetails")
+  val form = new IdCardDetailsFormProvider().withPrefix("idCardDetails")
 
   ".country" must {
 

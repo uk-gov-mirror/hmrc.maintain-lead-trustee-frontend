@@ -51,7 +51,7 @@ object IndividualLeadTrusteeNavigator {
     yesNoNavigations orElse
     parameterisedNavigation
 
-  private   def idOptionsNavigation(userAnswers: UserAnswers): Call = {
+  private def idOptionsNavigation(userAnswers: UserAnswers): Call = {
     userAnswers.get(IdentificationDetailOptionsPage).map {
       case Passport => rts.PassportDetailsController.onPageLoad()
       case IdCard => rts.IdCardDetailsController.onPageLoad()

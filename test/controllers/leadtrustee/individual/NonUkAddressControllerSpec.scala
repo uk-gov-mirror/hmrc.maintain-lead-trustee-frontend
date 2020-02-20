@@ -86,7 +86,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(NonUkAddress("value 1", "value 2", None, None, "the country")))(fakeRequest, messages).toString
+        view(form.fill(NonUkAddress("value 1", "value 2", None, "the country")))(fakeRequest, messages).toString
 
       application.stop()
     }

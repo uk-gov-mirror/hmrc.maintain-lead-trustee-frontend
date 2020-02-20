@@ -17,6 +17,7 @@
 package controllers.trustee.individual
 
 import controllers.actions._
+import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.NationalInsuranceNumberFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -35,13 +36,13 @@ class NationalInsuranceNumberController @Inject()(
                                         sessionRepository: PlaybackRepository,
                                         navigator: Navigator,
                                         standardActionSets: StandardActionSets,
-                                        nameAction: actions.NameRequiredAction,
+                                        nameAction: TrusteeNameRequiredProvider,
                                         formProvider: NationalInsuranceNumberFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: NationalInsuranceNumberView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("trustee.individual")
+  val form = formProvider.withPrefix("trustee.individual.nationalInsuranceNumber")
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)) {
     implicit request =>

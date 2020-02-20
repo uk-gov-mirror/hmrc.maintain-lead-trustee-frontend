@@ -17,7 +17,7 @@
 package navigation
 
 import javax.inject.{Inject, Singleton}
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import play.api.mvc.Call
 
@@ -25,7 +25,8 @@ import play.api.mvc.Call
 class Navigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => Call =
-    IndividualLeadTrusteeNavigator.routes orElse {
+    IndividualLeadTrusteeNavigator.routes orElse
+    IndividualTrusteeNavigator.routes orElse {
     case _ => ua => controllers.routes.IndexController.onPageLoad(ua.utr)
   }
 

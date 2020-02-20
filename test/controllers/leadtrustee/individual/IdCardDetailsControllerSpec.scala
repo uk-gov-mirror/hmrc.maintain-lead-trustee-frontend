@@ -20,12 +20,12 @@ import java.time.LocalDate
 
 import base.SpecBase
 import forms.IdCardDetailsFormProvider
-import models.{IdCard, NormalMode, UserAnswers}
+import models.{IdCard, Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.IdCardDetailsPage
+import pages.leadtrustee.individual.{IdCardDetailsPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -39,8 +39,9 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new IdCardDetailsFormProvider()
-  val form = formProvider("leadtrustee.individual.idCard")
+  val form = new IdCardDetailsFormProvider().withPrefix("leadtrustee")
+
+  val name = Name("Lead", None, "Trustee")
 
   lazy val idCardDetailsRoute = routes.IdCardDetailsController.onPageLoad().url
 
@@ -59,7 +60,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(fakeRequest, messages).toString
+        view(form, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -79,7 +80,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(IdCard("NUMBER", LocalDate.of(2040, 12, 31), "GB")))(fakeRequest, messages).toString
+        view(form.fill(IdCard("NUMBER", LocalDate.of(2040, 12, 31), "GB")), name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -132,7 +133,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }

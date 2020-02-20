@@ -17,6 +17,7 @@
 package controllers.trustee.individual
 
 import controllers.actions._
+import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.YesNoFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -35,7 +36,7 @@ class IdCardDetailsYesNoController @Inject()(
                                          sessionRepository: PlaybackRepository,
                                          navigator: Navigator,
                                          standardActionSets: StandardActionSets,
-                                         nameAction: actions.NameRequiredAction,
+                                         nameAction: TrusteeNameRequiredProvider,
                                          formProvider: YesNoFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: IdCardDetailsYesNoView
@@ -46,24 +47,20 @@ class IdCardDetailsYesNoController @Inject()(
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)) {
     implicit request =>
 
-      val name = request.userAnswers.get(NamePage(index)).get
-
       val preparedForm = request.userAnswers.get(IdCardDetailsYesNoPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index, name.displayName))
+      Ok(view(preparedForm, index, request.trusteeName))
   }
 
   def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)).async {
     implicit request =>
 
-      val name = request.userAnswers.get(NamePage(index)).get
-
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, index, name.displayName))),
+          Future.successful(BadRequest(view(formWithErrors, index, request.trusteeName))),
 
         value =>
           for {

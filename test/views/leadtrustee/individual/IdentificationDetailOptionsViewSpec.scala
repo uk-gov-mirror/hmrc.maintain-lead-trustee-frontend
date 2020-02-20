@@ -25,18 +25,20 @@ import views.html.leadtrustee.individual.IdentificationDetailOptionsView
 
 class IdentificationDetailOptionsViewSpec extends ViewBehaviours {
 
-  val messageKeyPrefix = "identificationDetailOptions"
+  val messageKeyPrefix = "leadtrustee.individual.identificationDetailOptions"
 
-  val form = new IdentificationDetailOptionsFormProvider()()
+  val form = new IdentificationDetailOptionsFormProvider().withPrefix("leadtrustee")
 
   val view = viewFor[IdentificationDetailOptionsView](Some(emptyUserAnswers))
 
+  val name = "Lead Trustee"
+
   def applyView(form: Form[_]): HtmlFormat.Appendable =
-    view.apply(form, NormalMode)(fakeRequest, messages)
+    view.apply(form, name)(fakeRequest, messages)
 
   "IdentificationDetailOptionsView" must {
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 
     behave like pageWithBackLink(applyView(form))
   }
