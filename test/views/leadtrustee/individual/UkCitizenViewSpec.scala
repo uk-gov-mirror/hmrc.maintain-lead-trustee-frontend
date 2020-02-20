@@ -27,7 +27,7 @@ class UkCitizenViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "leadtrustee.individual.ukCitizen"
 
-  val form = new UkCitizenFormProvider()("leadtrustee.individual")
+  val form = new UkCitizenFormProvider().withPrefix("leadtrustee.individual")
 
   val name = "Lead Trustee"
 

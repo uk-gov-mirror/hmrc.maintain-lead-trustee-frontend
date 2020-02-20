@@ -40,13 +40,12 @@ import models.PassportOrIdCardDetails
 import play.api.data.Form
 import play.api.data.Forms._
 
-
 class PassportOrIdCardFormProvider @Inject() extends Mappings {
 
   val maxLengthCountryField = 100
   val maxLengthNumberField = 30
 
-  def apply(prefix: String): Form[PassportOrIdCardDetails] = Form(
+  def withPrefix(prefix: String): Form[PassportOrIdCardDetails] = Form(
     mapping(
       "country" -> text(s"$prefix.country.error.required")
         .verifying(

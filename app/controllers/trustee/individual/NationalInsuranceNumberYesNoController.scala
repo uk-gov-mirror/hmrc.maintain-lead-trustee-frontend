@@ -17,6 +17,7 @@
 package controllers.trustee.individual
 
 import controllers.actions.StandardActionSets
+import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.YesNoFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -35,7 +36,7 @@ class NationalInsuranceNumberYesNoController @Inject()(
                                             sessionRepository: PlaybackRepository,
                                             navigator: Navigator,
                                             standardActionSets: StandardActionSets,
-                                            nameAction: actions.NameRequiredAction,
+                                            nameAction: TrusteeNameRequiredProvider,
                                             formProvider: YesNoFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: NationalInsuranceNumberYesNoView
@@ -43,7 +44,7 @@ class NationalInsuranceNumberYesNoController @Inject()(
 
   val form = formProvider.withPrefix("trustee.individual.nationalInsuranceNumberYesNo")
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(NationalInsuranceNumberYesNoPage(index)) match {
@@ -51,15 +52,15 @@ class NationalInsuranceNumberYesNoController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, index, request.trusteeName))
+      Ok(view(preparedForm, index, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction).async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, index, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, index, request.trusteeName))),
 
         value =>
           for {

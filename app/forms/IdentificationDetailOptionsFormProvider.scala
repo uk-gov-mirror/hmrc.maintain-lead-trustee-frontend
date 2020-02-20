@@ -23,8 +23,8 @@ import play.api.data.Form
 
 class IdentificationDetailOptionsFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[IdentificationDetailOptions] =
+  def withPrefix(prefix: String): Form[IdentificationDetailOptions] =
     Form(
-      "value" -> enumerable[IdentificationDetailOptions]("identificationDetailOptions.error.required")
+      "value" -> enumerable[IdentificationDetailOptions](s"$prefix.individual.identificationDetailOptions.error.required")
     )
 }

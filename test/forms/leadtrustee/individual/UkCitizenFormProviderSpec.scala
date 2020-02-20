@@ -25,7 +25,7 @@ class UkCitizenFormProviderSpec extends BooleanFieldBehaviours {
   val requiredKey = "leadtrustee.individual.ukCitizen.error.required"
   val invalidKey = "error.boolean"
 
-  val form = new UkCitizenFormProvider()("leadtrustee.individual")
+  val form = new UkCitizenFormProvider().withPrefix("leadtrustee.individual")
 
   ".value" must {
 

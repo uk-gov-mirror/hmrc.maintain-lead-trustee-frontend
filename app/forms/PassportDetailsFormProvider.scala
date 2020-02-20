@@ -29,7 +29,7 @@ class PassportDetailsFormProvider @Inject() extends Mappings with Constraints {
   val maxLengthCountyField = 100
   val maxLengthNumberField = 30
 
-  def apply(prefix: String): Form[Passport] = Form(
+  def withPrefix(prefix: String): Form[Passport] = Form(
     mapping(
       "country" -> text(s"$prefix.country.error.required")
         .verifying(

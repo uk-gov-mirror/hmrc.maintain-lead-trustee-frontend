@@ -22,7 +22,7 @@ main_template: MainTemplate,
 formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, index : Int, trusteeName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], index : Int, trusteeName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
 title = s"${errorPrefix(form)} ${messages("trustee.individual.addressYesNo.title", trusteeName)}"

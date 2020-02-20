@@ -22,7 +22,7 @@ import play.api.data.Form
 
 class UkCitizenFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String): Form[Boolean] =
+  def withPrefix(prefix: String): Form[Boolean] =
     Form(
       "value" -> boolean(s"$prefix.ukCitizen.error.required")
     )

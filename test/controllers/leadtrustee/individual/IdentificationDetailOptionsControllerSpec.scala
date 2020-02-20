@@ -18,12 +18,12 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import forms.IdentificationDetailOptionsFormProvider
-import models.{IdentificationDetailOptions, NormalMode, UserAnswers}
+import models.{IdentificationDetailOptions, Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.IdentificationDetailOptionsPage
+import pages.leadtrustee.individual.{IdentificationDetailOptionsPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -40,7 +40,12 @@ class IdentificationDetailOptionsControllerSpec extends SpecBase with MockitoSug
   lazy val identificationDetailOptionsRoute = routes.IdentificationDetailOptionsController.onPageLoad().url
 
   val formProvider = new IdentificationDetailOptionsFormProvider()
-  val form = formProvider()
+  val form = formProvider.withPrefix("leadtrustee")
+
+  val name = Name("Lead", None, "Trustee")
+
+  override val emptyUserAnswers = super.emptyUserAnswers
+    .set(NamePage, name).success.value
 
   "IdentificationDetailOptions Controller" must {
 
@@ -57,7 +62,7 @@ class IdentificationDetailOptionsControllerSpec extends SpecBase with MockitoSug
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -77,7 +82,7 @@ class IdentificationDetailOptionsControllerSpec extends SpecBase with MockitoSug
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(IdentificationDetailOptions.values.head), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(IdentificationDetailOptions.values.head), name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -125,7 +130,7 @@ class IdentificationDetailOptionsControllerSpec extends SpecBase with MockitoSug
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }

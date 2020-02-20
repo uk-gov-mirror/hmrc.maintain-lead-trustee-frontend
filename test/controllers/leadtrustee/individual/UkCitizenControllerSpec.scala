@@ -38,7 +38,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new UkCitizenFormProvider()
-  val form = formProvider("leadtrustee.individual")
+  val form = formProvider.withPrefix("leadtrustee.individual")
 
   val name = Name("Lead", None, "Trustee")
 

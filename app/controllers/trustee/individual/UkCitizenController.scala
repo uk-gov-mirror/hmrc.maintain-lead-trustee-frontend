@@ -42,7 +42,7 @@ class UkCitizenController @Inject()(
                                      view: UkCitizenView
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider("trustee.individual")
+  val form = formProvider.withPrefix("trustee.individual")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction) {
     implicit request =>

@@ -114,7 +114,6 @@ leadtrustee.individual.dateOfBirth.error.past = Date of birth must be after 31 D
 leadtrustee.individual.ukCitizen.title = Does {0} have a National Insurance number?
 leadtrustee.individual.ukCitizen.heading = Does {0} have a National Insurance number?
 leadtrustee.individual.ukCitizen.checkYourAnswersLabel = Does {0} have a National Insurance number?
-leadtrustee.individual.ukCitizen.error.required = Select yes if you know the trustee’s National Insurance number
 leadtrustee.individual.ukCitizen.error.required = Select yes if you know the lead trustee’s National Insurance number
 
 leadtrustee.individual.nationalInsuranceNumber.title = What is {0}’s National Insurance number?
@@ -122,6 +121,13 @@ leadtrustee.individual.nationalInsuranceNumber.heading = What is {0}’s Nationa
 leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel = What is {0}’s National Insurance number?
 leadtrustee.individual.nationalInsuranceNumber.error.required = Enter the lead trustee’s National Insurance number
 leadtrustee.individual.nationalInsuranceNumber.error.invalidFormat = Enter the lead trustee’s National Insurance number in the correct format
+
+leadtrustee.individual.identificationDetailOptions.title = Which of {0}’s details can you provide?
+leadtrustee.individual.identificationDetailOptions.heading = Which of {0}’s details can you provide?
+leadtrustee.individual.identificationDetailOptions.idCard = ID Card
+leadtrustee.individual.identificationDetailOptions.passport = Passport
+leadtrustee.individual.identificationDetailOptions.checkYourAnswersLabel = Which of {0}’s details can you provide?
+leadtrustee.individual.identificationDetailOptions.error.required = Select which of these details you can provide
 
 leadtrustee.individual.idCardDetails.title = idCardDetails
 leadtrustee.individual.idCardDetails.heading = idCardDetails
@@ -171,28 +177,11 @@ leadtrustee.individual.emailAddressYesNo.heading = emailAddressYesNo
 leadtrustee.individual.emailAddressYesNo.checkYourAnswersLabel = emailAddressYesNo
 leadtrustee.individual.emailAddressYesNo.error.required = Select yes if emailAddressYesNo
 
-leadtrustee.individual.identificationDetailOptions.title = identificationDetailOptions
-leadtrustee.individual.identificationDetailOptions.heading = identificationDetailOptions
-leadtrustee.individual.identificationDetailOptions.idCard = ID Card
-leadtrustee.individual.identificationDetailOptions.passport = Passport
-leadtrustee.individual.identificationDetailOptions.checkYourAnswersLabel = identificationDetailOptions
-leadtrustee.individual.identificationDetailOptions.error.required = Select identificationDetailOptions
-
 leadtrustee.individual.telephoneNumber.title = telephoneNumber
 leadtrustee.individual.telephoneNumber.heading = telephoneNumber
 leadtrustee.individual.telephoneNumber.checkYourAnswersLabel = telephoneNumber
 leadtrustee.individual.telephoneNumber.error.required = Enter telephoneNumber
 leadtrustee.individual.telephoneNumber.error.length = TelephoneNumber must be 100 characters or less
-
-trustee.individual.dateOfBirth.title = What is {0}’s date of birth?
-trustee.individual.dateOfBirth.heading = What is {0}’s date of birth?
-trustee.individual.dateOfBirth.checkYourAnswersLabel = What is {0}’s date of birth?
-trustee.individual.dateOfBirth.error.required.all = Enter a date of birth
-trustee.individual.dateOfBirth.error.required.two = Date of birth must include a {0} and a {1}
-trustee.individual.dateOfBirth.error.required = Date of birth must include a {0}
-trustee.individual.dateOfBirth.error.invalid = Enter a real date of birth
-trustee.individual.dateOfBirth.error.future = Date of birth must be today or in the past
-trustee.individual.dateOfBirth.error.past = Date of birth must be after 31 December 1499
 
 trustee.individual.ukCitizen.title = Does {0} have a National Insurance number?
 trustee.individual.ukCitizen.heading = Does {0} have a National Insurance number?
@@ -242,9 +231,9 @@ trustee.individual.addressYesNo.title = Do you know {0}’s address?
 trustee.individual.addressYesNo.heading = Do you know {0}’s address?
 trustee.individual.addressYesNo.error.required = Select yes if you know the trustees address
 
-trustee.individual.liveInTheUkYesNoPage.title = Does {0} live in the UK?
-trustee.individual.liveInTheUkYesNoPage.heading = Does {0} live in the UK?
-trustee.individual.liveInTheUkYesNoPage.error.required = Select yes if the trustee lives in the UK
+trustee.individual.liveInTheUkYesNo.title = Does {0} live in the UK?
+trustee.individual.liveInTheUkYesNo.heading = Does {0} live in the UK?
+trustee.individual.liveInTheUkYesNo.error.required = Select yes if the trustee lives in the UK
 
 trustee.individual.passportDetailsYesNo.title = Do you know the trustee’s passport details?
 trustee.individual.passportDetailsYesNo.heading = Do you know {0}’s passport details?
@@ -256,6 +245,7 @@ trustee.individual.passportDetails.country = Passport country of issue
 trustee.individual.passportDetails.country.error.required = Enter the trustee’s passport country of issue
 trustee.individual.passportDetails.country.error.length = The trustee’s passport country must be 100 characters or less
 trustee.individual.passportDetails.number = Passport number
+trustee.individual.passportDetails.number.hint = For example, 502135326
 trustee.individual.passportDetails.number.error.required = Enter the trustee’s passport number
 trustee.individual.passportDetails.number.error.length = The trustee’s passport number must be 30 characters or less
 trustee.individual.passportDetails.number.error.invalid = Passport number can only include letters and numbers
