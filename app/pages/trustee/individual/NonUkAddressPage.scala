@@ -16,10 +16,11 @@
 
 package pages.trustee.individual
 
+import models.NonUkAddress
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case class NonUkAddressPage(index:Int) extends QuestionPage[String] {
+case class NonUkAddressPage(index:Int) extends QuestionPage[NonUkAddress] {
 
   override def path: JsPath = basePath \ index \ toString
 

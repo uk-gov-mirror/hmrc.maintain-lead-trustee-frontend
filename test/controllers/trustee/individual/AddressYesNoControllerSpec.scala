@@ -50,7 +50,7 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
   
   lazy val addressYesNoControllerRoute = routes.AddressYesNoController.onPageLoad(index).url
 
-  "LiveInTheUkYesNoPage Controller" must {
+  "AddressYesNo Controller" must {
 
     "return OK and the correct view for a GET" in {
 

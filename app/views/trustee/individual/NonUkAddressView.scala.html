@@ -15,30 +15,28 @@
  *@
 
 @import controllers.trustee.individual.routes._
-@import models.Mode
+@import utils.InputOption
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
 )
 
-@(form: Form[_], index: Int, trusteeName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], countryOptions: Seq[InputOption], index: Int, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("trustee.individual.dateOfBirth.title")}"
-) {
+    title = s"${errorPrefix(form)} ${messages("trustee.individual.nonUkAddress.title")}"
+    ) {
 
-    @formHelper(action = DateOfBirthController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = NonUkAddressController.onSubmit(index), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.input_date(
-            field = form("value"),
-            legend = messages("trustee.individual.dateOfBirth.heading", trusteeName),
-            headingIsLegend = true
-        )
+        @components.heading(messages("trustee.individual.nonUkAddress.heading", name))
+
+        @components.non_uk_address(form, countryOptions)
 
         @components.submit_button()
     }

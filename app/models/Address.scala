@@ -32,8 +32,7 @@ object UkAddress {
 
 case class NonUkAddress (line1: String,
                          line2: String,
-                         line3: Option[String],
-                         line4: Option[String],
+                         line3: Option[String] = None,
                          country: String) extends Address
 
 object NonUkAddress {
@@ -52,7 +51,7 @@ object Address {
         UkAddress(line1, line2, line3, line4, postcode.get)
       }
       else {
-        NonUkAddress(line1, line2, line3, line4, country)
+        NonUkAddress(line1, line2, line3, country)
       }
     })
 
