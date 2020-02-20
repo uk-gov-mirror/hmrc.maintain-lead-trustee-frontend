@@ -231,6 +231,10 @@ trustee.individual.addressYesNo.title = Do you know {0}’s address?
 trustee.individual.addressYesNo.heading = Do you know {0}’s address?
 trustee.individual.addressYesNo.error.required = Select yes if you know the trustees address
 
+trustee.individual.ukAddressYesNo.title = Does {0} live in the UK?
+trustee.individual.ukAddressYesNo.heading = Does {0} live in the UK?
+trustee.individual.ukAddressYesNo.error.required = Select yes if the trustee lives in the UK
+
 trustee.individual.liveInTheUkYesNoPage.title = Does {0} live in the UK?
 trustee.individual.liveInTheUkYesNoPage.heading = Does {0} live in the UK?
 trustee.individual.liveInTheUkYesNoPage.error.required = Select yes if the trustee lives in the UK

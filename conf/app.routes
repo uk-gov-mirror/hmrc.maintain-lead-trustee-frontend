@@ -4,58 +4,58 @@ GET        /assets/*file                                                    cont
 
 GET        /language/:lang                                                  controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad
+GET        /this-service-has-been-reset                                     controllers.SessionExpiredController.onPageLoad
 
-GET        /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
+GET        /check-your-answers                                              controllers.CheckYourAnswersController.onPageLoad
 
-GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+GET        /unauthorised                                                    controllers.UnauthorisedController.onPageLoad
 
-GET        /logout                                      controllers.LogoutController.logout()
+GET        /logout                                                          controllers.LogoutController.logout()
 
-GET        /create-agent-services-account               controllers.CreateAgentServicesAccountController.onPageLoad()
+GET        /create-agent-services-account                                   controllers.CreateAgentServicesAccountController.onPageLoad()
 
-GET        /trust-not-claimed                           controllers.TrustNotClaimedController.onPageLoad()
+GET        /trust-not-claimed                                               controllers.TrustNotClaimedController.onPageLoad()
 
-GET        /agent-not-authorised                        controllers.AgentNotAuthorisedController.onPageLoad()
+GET        /agent-not-authorised                                            controllers.AgentNotAuthorisedController.onPageLoad()
 
 GET        /leadTrustee/individual/name                                     controllers.leadtrustee.individual.NameController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/name                                     controllers.leadtrustee.individual.NameController.onSubmit(mode: Mode = NormalMode)
 
-GET        /lead-trustee/individual/date-of-birth                              controllers.leadtrustee.individual.DateOfBirthController.onPageLoad(mode: Mode = NormalMode)
-POST       /lead-trustee/individual/date-of-birth                              controllers.leadtrustee.individual.DateOfBirthController.onSubmit(mode: Mode = NormalMode)
+GET        /lead-trustee/individual/date-of-birth                           controllers.leadtrustee.individual.DateOfBirthController.onPageLoad(mode: Mode = NormalMode)
+POST       /lead-trustee/individual/date-of-birth                           controllers.leadtrustee.individual.DateOfBirthController.onSubmit(mode: Mode = NormalMode)
 
-GET        /lead-trustee/individual/id-card                            controllers.leadtrustee.individual.IdCardDetailsController.onPageLoad(mode: Mode = NormalMode)
-POST       /lead-trustee/individual/id-card                            controllers.leadtrustee.individual.IdCardDetailsController.onSubmit(mode: Mode = NormalMode)
+GET        /lead-trustee/individual/id-card                                 controllers.leadtrustee.individual.IdCardDetailsController.onPageLoad(mode: Mode = NormalMode)
+POST       /lead-trustee/individual/id-card                                 controllers.leadtrustee.individual.IdCardDetailsController.onSubmit(mode: Mode = NormalMode)
 
-GET        /lead-trustee/individual/lives-in-uk                     controllers.leadtrustee.individual.LiveInTheUkYesNoPageController.onPageLoad(mode: Mode = NormalMode)
-POST       /lead-trustee/individual/lives-in-uk                     controllers.leadtrustee.individual.LiveInTheUkYesNoPageController.onSubmit(mode: Mode = NormalMode)
+GET        /lead-trustee/individual/lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoPageController.onPageLoad(mode: Mode = NormalMode)
+POST       /lead-trustee/individual/lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoPageController.onSubmit(mode: Mode = NormalMode)
 
-GET        /lead-trustee/individual/name                        controllers.leadtrustee.individual.NameController.onPageLoad(mode: Mode = NormalMode)
-POST       /lead-trustee/individual/name                        controllers.leadtrustee.individual.NameController.onSubmit(mode: Mode = NormalMode)
+GET        /lead-trustee/individual/name                                    controllers.leadtrustee.individual.NameController.onPageLoad(mode: Mode = NormalMode)
+POST       /lead-trustee/individual/name                                    controllers.leadtrustee.individual.NameController.onSubmit(mode: Mode = NormalMode)
 
-GET        /lead-trustee/individual/national-insurance-number                        controllers.leadtrustee.individual.NationalInsuranceNumberController.onPageLoad(mode: Mode = NormalMode)
-POST       /lead-trustee/individual/national-insurance-number                        controllers.leadtrustee.individual.NationalInsuranceNumberController.onSubmit(mode: Mode = NormalMode)
+GET        /lead-trustee/individual/national-insurance-number               controllers.leadtrustee.individual.NationalInsuranceNumberController.onPageLoad(mode: Mode = NormalMode)
+POST       /lead-trustee/individual/national-insurance-number               controllers.leadtrustee.individual.NationalInsuranceNumberController.onSubmit(mode: Mode = NormalMode)
 
-GET        /lead-trustee/individual/international-address                        controllers.leadtrustee.individual.NonUkAddressController.onPageLoad(mode: Mode = NormalMode)
-POST       /lead-trustee/individual/international-address                        controllers.leadtrustee.individual.NonUkAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /lead-trustee/individual/international-address                   controllers.leadtrustee.individual.NonUkAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /lead-trustee/individual/international-address                   controllers.leadtrustee.individual.NonUkAddressController.onSubmit(mode: Mode = NormalMode)
 
-GET        /lead-trustee/individual/passport                        controllers.leadtrustee.individual.PassportDetailsController.onPageLoad(mode: Mode = NormalMode)
-POST       /lead-trustee/individual/passport                        controllers.leadtrustee.individual.PassportDetailsController.onSubmit(mode: Mode = NormalMode)
+GET        /lead-trustee/individual/passport                                controllers.leadtrustee.individual.PassportDetailsController.onPageLoad(mode: Mode = NormalMode)
+POST       /lead-trustee/individual/passport                                controllers.leadtrustee.individual.PassportDetailsController.onSubmit(mode: Mode = NormalMode)
 
-GET        /lead-trustee/individual/uk-address                        controllers.leadtrustee.individual.UkAddressController.onPageLoad(mode: Mode = NormalMode)
-POST       /lead-trustee/individual/uk-address                        controllers.leadtrustee.individual.UkAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /lead-trustee/individual/uk-address                              controllers.leadtrustee.individual.UkAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /lead-trustee/individual/uk-address                              controllers.leadtrustee.individual.UkAddressController.onSubmit(mode: Mode = NormalMode)
 
-GET        /lead-trustee/individual/uk-citizen                        controllers.leadtrustee.individual.UkCitizenController.onPageLoad(mode: Mode = NormalMode)
-POST       /lead-trustee/individual/uk-citizen                        controllers.leadtrustee.individual.UkCitizenController.onSubmit(mode: Mode = NormalMode)
+GET        /lead-trustee/individual/uk-citizen                              controllers.leadtrustee.individual.UkCitizenController.onPageLoad(mode: Mode = NormalMode)
+POST       /lead-trustee/individual/uk-citizen                              controllers.leadtrustee.individual.UkCitizenController.onSubmit(mode: Mode = NormalMode)
 
-GET        /lead-trustee/individual/email                             controllers.leadtrustee.individual.EmailAddressController.onPageLoad(mode: Mode = NormalMode)
-POST       /lead-trustee/individual/email                             controllers.leadtrustee.individual.EmailAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /lead-trustee/individual/email                                   controllers.leadtrustee.individual.EmailAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /lead-trustee/individual/email                                   controllers.leadtrustee.individual.EmailAddressController.onSubmit(mode: Mode = NormalMode)
 
-GET        /lead-trustee/individual/has-email                        controllers.leadtrustee.individual.EmailAddressYesNoController.onPageLoad(mode: Mode = NormalMode)
-POST       /lead-trustee/individual/has-email                        controllers.leadtrustee.individual.EmailAddressYesNoController.onSubmit(mode: Mode = NormalMode)
+GET        /lead-trustee/individual/has-email                               controllers.leadtrustee.individual.EmailAddressYesNoController.onPageLoad(mode: Mode = NormalMode)
+POST       /lead-trustee/individual/has-email                               controllers.leadtrustee.individual.EmailAddressYesNoController.onSubmit(mode: Mode = NormalMode)
 
-GET        /lead-trustee/individual/what-identification                        controllers.leadtrustee.individual.IdentificationDetailOptionsController.onPageLoad(mode: Mode = NormalMode)
-POST       /lead-trustee/individual/what-identification                        controllers.leadtrustee.individual.IdentificationDetailOptionsController.onSubmit(mode: Mode = NormalMode)
+GET        /lead-trustee/individual/what-identification                     controllers.leadtrustee.individual.IdentificationDetailOptionsController.onPageLoad(mode: Mode = NormalMode)
+POST       /lead-trustee/individual/what-identification                     controllers.leadtrustee.individual.IdentificationDetailOptionsController.onSubmit(mode: Mode = NormalMode)
 
 GET        /lead-trustee/individual/telephone-number                        controllers.leadtrustee.individual.TelephoneNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /lead-trustee/individual/telephone-number                        controllers.leadtrustee.individual.TelephoneNumberController.onSubmit(mode: Mode = NormalMode)
@@ -63,32 +63,35 @@ POST       /lead-trustee/individual/telephone-number                        cont
 GET        /trustee/individual/:index/individual-or-business                controllers.trustee.IndividualOrBusinessController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/individual/:index/individual-or-business                controllers.trustee.IndividualOrBusinessController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/individual/:index/name                          controllers.trustee.individual.NameController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/individual/:index/name                          controllers.trustee.individual.NameController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/name                                  controllers.trustee.individual.NameController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/name                                  controllers.trustee.individual.NameController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/individual/:index/know-date-of-birth                  controllers.trustee.individual.DateOfBirthYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/individual/:index/know-date-of-birth                  controllers.trustee.individual.DateOfBirthYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/know-date-of-birth                    controllers.trustee.individual.DateOfBirthYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/know-date-of-birth                    controllers.trustee.individual.DateOfBirthYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
 
 GET        /trustee/individual/:index/date-of-birth                         controllers.trustee.individual.DateOfBirthController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/individual/:index/date-of-birth                         controllers.trustee.individual.DateOfBirthController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/individual/:index/has-national-insurance-number                           controllers.trustee.individual.NationalInsuranceNumberYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/individual/:index/has-national-insurance-number                           controllers.trustee.individual.NationalInsuranceNumberYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/has-national-insurance-number         controllers.trustee.individual.NationalInsuranceNumberYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/has-national-insurance-number         controllers.trustee.individual.NationalInsuranceNumberYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/individual/:index/national-insurance-number                                  controllers.trustee.individual.NationalInsuranceNumberController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/individual/:index/national-insurance-number                                  controllers.trustee.individual.NationalInsuranceNumberController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/national-insurance-number             controllers.trustee.individual.NationalInsuranceNumberController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/national-insurance-number             controllers.trustee.individual.NationalInsuranceNumberController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/individual/:index/has-address                        controllers.trustee.individual.AddressYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/individual/:index/has-address                        controllers.trustee.individual.AddressYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/has-address                           controllers.trustee.individual.AddressYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/has-address                           controllers.trustee.individual.AddressYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/:index/individual/has-passport                       controllers.trustee.individual.PassportDetailsYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/:index/individual/has-passport                       controllers.trustee.individual.PassportDetailsYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/has-uk-address                        controllers.trustee.individual.UkAddressYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/has-uk-address                        controllers.trustee.individual.UkAddressYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
+
+GET        /trustee/:index/individual/has-passport                          controllers.trustee.individual.PassportDetailsYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/:index/individual/has-passport                          controllers.trustee.individual.PassportDetailsYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
 
 GET        /trustee/:index/individual/passport                              controllers.trustee.individual.PassportDetailsController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/:index/individual/passport                              controllers.trustee.individual.PassportDetailsController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/:index/individual/has-id-card                        controllers.trustee.individual.IdCardDetailsYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/:index/individual/has-id-card                        controllers.trustee.individual.IdCardDetailsYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/:index/individual/has-id-card                           controllers.trustee.individual.IdCardDetailsYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/:index/individual/has-id-card                           controllers.trustee.individual.IdCardDetailsYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
 
 GET        /trustee/:index/individual/id-card                               controllers.trustee.individual.IdCardDetailsController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/:index/individual/id-card                               controllers.trustee.individual.IdCardDetailsController.onSubmit(mode: Mode = NormalMode, index: Int)
