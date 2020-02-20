@@ -205,7 +205,7 @@ trustee.individual.name.error.firstName.length = Trustee’s first name must be 
 trustee.individual.name.error.middleName.length = Trustee’s middle names must be 35 characters or less
 trustee.individual.name.error.lastName.length = Trustee’s last name must be 35 characters or less
 
-trustee.individual.dateOfBirth.title = What is {0}’s date of birth?
+trustee.individual.dateOfBirth.title = What is the trustee’s date of birth?
 trustee.individual.dateOfBirth.heading = What is {0}’s date of birth?
 trustee.individual.dateOfBirth.checkYourAnswersLabel = What is {0}’s date of birth?
 trustee.individual.dateOfBirth.error.required.all = Enter a date of birth
@@ -215,24 +215,24 @@ trustee.individual.dateOfBirth.error.invalid = Enter a real date of birth
 trustee.individual.dateOfBirth.error.future = Date of birth must be today or in the past
 trustee.individual.dateOfBirth.error.past = Date of birth must be after 31 December 1499
 
-trustee.individual.dateOfBirthYesNo.title = Do you know {0}’s date of birth?
+trustee.individual.dateOfBirthYesNo.title = Do you know the trustee’s date of birth?
 trustee.individual.dateOfBirthYesNo.heading = Do you know {0}’s date of birth?
 trustee.individual.dateOfBirthYesNo.error.required = Select yes if you know the trustees date of birth
 
-trustee.individual.nationalInsuranceNumberYesNo.title = Do you know {0}’s National Insurance number?
+trustee.individual.nationalInsuranceNumberYesNo.title = Do you know the trustee’s National Insurance number?
 trustee.individual.nationalInsuranceNumberYesNo.heading = Do you know {0}’s National Insurance number?
 trustee.individual.nationalInsuranceNumberYesNo.error.required = Select yes if you know the trustees National Insurance number
 
-trustee.individual.nationalInsuranceNumber.title = What is {0}’s National Insurance number?
+trustee.individual.nationalInsuranceNumber.title = What is the trustee’s National Insurance number?
 trustee.individual.nationalInsuranceNumber.heading = What is {0}’s National Insurance number?
 trustee.individual.nationalInsuranceNumber.error.required = Enter the trustee’s National Insurance number
 trustee.individual.nationalInsuranceNumber.error.invalidFormat = Enter the trustee’s National Insurance number in the correct format
 
-trustee.individual.addressYesNo.title = Do you know {0}’s address?
+trustee.individual.addressYesNo.title = Do you know the trustee’s address?
 trustee.individual.addressYesNo.heading = Do you know {0}’s address?
 trustee.individual.addressYesNo.error.required = Select yes if you know the trustees address
 
-trustee.individual.liveInTheUkYesNo.title = Does {0} live in the UK?
+trustee.individual.liveInTheUkYesNo.title = Does the trustee live in the UK?
 trustee.individual.liveInTheUkYesNo.heading = Does {0} live in the UK?
 trustee.individual.liveInTheUkYesNo.error.required = Select yes if the trustee lives in the UK
 

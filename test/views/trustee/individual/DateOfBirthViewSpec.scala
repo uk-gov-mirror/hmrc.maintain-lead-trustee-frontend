@@ -16,43 +16,44 @@
 
 package views.trustee.individual
 
+import java.time.LocalDate
+
 import controllers.trustee.individual.routes
-import forms.NameFormProvider
+import forms.DateOfBirthFormProvider
 import models.Name
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
-import views.html.trustee.individual.NameView
+import views.html.trustee.individual.DateOfBirthView
 
-class NameViewSpec extends QuestionViewBehaviours[Name] {
+class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 
-  val messageKeyPrefix = "trustee.individual.name"
+  val messageKeyPrefix = "trustee.individual.dateOfBirth"
   val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  override val form: Form[Name] = new NameFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[LocalDate] = new DateOfBirthFormProvider().withPrefix(messageKeyPrefix)
 
-  "Name view" must {
+  "DateOfBirth view" must {
 
-    val view = viewFor[NameView](Some(emptyUserAnswers))
+    val view = viewFor[DateOfBirthView](Some(emptyUserAnswers))
+
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index)(fakeRequest, messages)
-
-    behave like normalPage(applyView(form), messageKeyPrefix)
+      view.apply(form, index, name.displayName)(fakeRequest, messages)
+    
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))
 
     "fields" must {
 
-      behave like pageWithTextFields(
+      behave like pageWithDateFields(
         form,
         applyView,
         messageKeyPrefix,
-        routes.PassportDetailsController.onSubmit(index).url,
-        "firstName",
-        "middleName",
-        "lastName"
+        "value",
+        name.displayName
       )
     }
 

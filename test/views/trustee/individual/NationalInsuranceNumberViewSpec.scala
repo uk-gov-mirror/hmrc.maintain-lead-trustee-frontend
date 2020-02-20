@@ -16,46 +16,38 @@
 
 package views.trustee.individual
 
-import controllers.trustee.individual.routes
-import forms.NameFormProvider
+import forms.NationalInsuranceNumberFormProvider
 import models.Name
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
-import views.html.trustee.individual.NameView
+import views.html.trustee.individual.NationalInsuranceNumberView
 
-class NameViewSpec extends QuestionViewBehaviours[Name] {
+class NationalInsuranceNumberViewSpec extends QuestionViewBehaviours[String] {
 
-  val messageKeyPrefix = "trustee.individual.name"
+  val messageKeyPrefix = "trustee.individual.nationalInsuranceNumber"
   val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  override val form: Form[Name] = new NameFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[String] = new NationalInsuranceNumberFormProvider().withPrefix(messageKeyPrefix)
 
-  "Name view" must {
+  "NationalInsuranceNumber view" must {
 
-    val view = viewFor[NameView](Some(emptyUserAnswers))
+    val view = viewFor[NationalInsuranceNumberView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index)(fakeRequest, messages)
+      view.apply(form, index, name.displayName)(fakeRequest, messages)
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))
 
-    "fields" must {
-
-      behave like pageWithTextFields(
-        form,
-        applyView,
-        messageKeyPrefix,
-        routes.PassportDetailsController.onSubmit(index).url,
-        "firstName",
-        "middleName",
-        "lastName"
-      )
-    }
+    behave like pageWithTextFields(form, applyView,
+      messageKeyPrefix,
+      name.displayName
+    )
 
     behave like pageWithASubmitButton(applyView(form))
+
   }
 }
