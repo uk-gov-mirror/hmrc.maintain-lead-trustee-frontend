@@ -87,7 +87,6 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
     }
   }
 
-<<<<<<< HEAD
   def pageWithDateFields(form: Form[A],
                          createView: Form[A] => HtmlFormat.Appendable,
                          messageKeyPrefix: String,
@@ -101,31 +100,6 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
       "rendered" must {
 
         for (field <- fields) {
-=======
-  def pageWithPassportOrIDCardDetailsFields(form: Form[A],
-                       createView: Form[A] => HtmlFormat.Appendable,
-                       messageKeyPrefix: String,
-                       expectedFormAction: String,
-                       textFields: Seq[(String, Option[String])],
-                       dateKey : String,
-                       args: String*) = {
-
-    val dateFields = Seq(s"${dateKey}_day", s"${dateKey}_month", s"${dateKey}_year")
-
-    "behave like a passportOrIDCard page" when {
-
-      "rendered" must {
-
-        for (field <- textFields) {
-
-          s"contain an input for $field" in {
-            val doc = asDocument(createView(form))
-            assertRenderedById(doc, field._1)
-          }
-        }
-
-        for (field <- dateFields) {
->>>>>>> 484eba55c6e61fc64499851348c84fee34b19fc6
 
           s"contain an input for $field" in {
             val doc = asDocument(createView(form))
@@ -149,7 +123,6 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
         }
       }
 
-<<<<<<< HEAD
       s"rendered with an error" must {
 
         "show an error summary" in {
@@ -254,7 +227,55 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
         }
 
       }
-=======
+    }
+  }
+
+  def pageWithPassportOrIDCardDetailsFields(form: Form[A],
+                       createView: Form[A] => HtmlFormat.Appendable,
+                       messageKeyPrefix: String,
+                       expectedFormAction: String,
+                       textFields: Seq[(String, Option[String])],
+                       dateKey : String,
+                       args: String*) = {
+
+    val dateFields = Seq(s"${dateKey}_day", s"${dateKey}_month", s"${dateKey}_year")
+
+    "behave like a passportOrIDCard page" when {
+
+      "rendered" must {
+
+        for (field <- textFields) {
+
+          s"contain an input for $field" in {
+            val doc = asDocument(createView(form))
+            assertRenderedById(doc, field._1)
+          }
+        }
+
+        for (field <- dateFields) {
+
+          s"contain an input for $field" in {
+            val doc = asDocument(createView(form))
+            assertRenderedById(doc, field)
+          }
+        }
+
+        "not render an error summary" in {
+
+          val doc = asDocument(createView(form))
+          assertNotRenderedById(doc, "error-summary-heading")
+        }
+      }
+
+      "rendered with any error" must {
+
+        "show an error prefix in the browser title" in {
+
+          val doc = asDocument(createView(form.withError(error)))
+          assertEqualsValue(doc, "title", s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", args: _*)}""")
+        }
+      }
+
       for (field <- textFields) {
 
         s"rendered with an error with field '$field'" must {
@@ -296,7 +317,6 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
         }
       }
 
->>>>>>> 484eba55c6e61fc64499851348c84fee34b19fc6
     }
   }
 

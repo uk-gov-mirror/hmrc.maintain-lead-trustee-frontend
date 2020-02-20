@@ -27,6 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.countryOptions.CountryOptions
 import views.html.leadtrustee.individual.IdCardDetailsView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,7 +40,8 @@ class IdCardDetailsController @Inject()(
                                          nameAction: NameRequiredAction,
                                          formProvider: IdCardDetailsFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
-                                         view: IdCardDetailsView
+                                         view: IdCardDetailsView,
+                                         countryOptions: CountryOptions
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("leadtrustee")
@@ -52,7 +54,7 @@ class IdCardDetailsController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.leadTrusteeName))
+      Ok(view(preparedForm, request.leadTrusteeName, countryOptions.options))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction).async {
@@ -60,7 +62,7 @@ class IdCardDetailsController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, countryOptions.options))),
 
         value =>
           for {

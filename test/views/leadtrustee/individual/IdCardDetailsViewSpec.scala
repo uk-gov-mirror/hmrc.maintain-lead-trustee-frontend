@@ -36,7 +36,7 @@ class IdCardDetailsViewSpec extends QuestionViewBehaviours[PassportOrIdCardDetai
     val view = viewFor[IdCardDetailsView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name)(fakeRequest, messages)
+      view.apply(form, name, Seq.empty)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 
@@ -44,7 +44,9 @@ class IdCardDetailsViewSpec extends QuestionViewBehaviours[PassportOrIdCardDetai
 
     "date fields" must {
 
-      behave like pageWithDateFields(form, applyView,
+      behave like pageWithDateFields(
+        form,
+        applyView,
         messageKeyPrefix,
         "expiryDate",
         name.toString

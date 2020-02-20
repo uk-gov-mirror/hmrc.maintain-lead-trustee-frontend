@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import forms.IdCardDetailsFormProvider
-import models.{Name, NormalMode, PassportOrIdCardDetails, UserAnswers}
+import models.{Name, PassportOrIdCardDetails}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -31,6 +31,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
+import utils.countryOptions.CountryOptions
 import views.html.leadtrustee.individual.IdCardDetailsView
 
 import scala.concurrent.Future
@@ -48,6 +49,8 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val idCardDetailsRoute = routes.IdCardDetailsController.onPageLoad().url
 
+  val countryOptions = injector.instanceOf[CountryOptions]
+
   "IdCardDetails Controller" must {
 
     "return OK and the correct view for a GET" in {
@@ -63,7 +66,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName)(fakeRequest, messages).toString
+        view(form, name.displayName, countryOptions.options)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -83,7 +86,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(PassportOrIdCardDetails("FR", "98765", LocalDate.now())), name.displayName)(fakeRequest, messages).toString
+        view(form.fill(PassportOrIdCardDetails("FR", "98765", LocalDate.now())), name.displayName, countryOptions.options)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -136,7 +139,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, name.displayName, countryOptions.options)(fakeRequest, messages).toString
 
       application.stop()
     }

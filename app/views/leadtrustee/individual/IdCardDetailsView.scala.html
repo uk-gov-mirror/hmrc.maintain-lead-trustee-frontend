@@ -16,13 +16,14 @@
 
 @import controllers.leadtrustee.individual.routes._
 @import models.Mode
+@import utils.InputOption
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], name: String, countryOptions:Seq[InputOption])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("leadtrustee.individual.idCardDetails.title", name)}"
@@ -34,10 +35,27 @@
 
         @components.error_summary(form.errors)
 
+        @components.select(
+            field = form("country"),
+            label = messages("leadtrustee.individual.idCardDetails.country"),
+            labelClasses = Set("form-control-1-2 bold"),
+            options = countryOptions,
+            placeholder = Some("address.country.select"),
+            formGroupClasses = Set("autocomplete-wrapper form-control-2-1"),
+            selectAttribute = Set("data-non-uk-countries")
+        )
+
         @components.input_text(
-          field = form("value"),
-          label = messages("leadtrustee.individual.idCardDetails.heading", name),
-          headingIsLabel = true
+            field = form("number"),
+            label = messages("leadtrustee.individual.idCardDetails.number")
+        )
+
+        @components.input_date(
+            field = form("expiryDate"),
+            legend = messages("leadtrustee.individual.idCardDetails.expiryDate.title"),
+            legendClass = "bold",
+            headingIsLegend = false,
+            hint = Some(messages(s"leadtrustee.individual.idCardDetails.expiryDate.hint"))
         )
 
         @components.submit_button()
