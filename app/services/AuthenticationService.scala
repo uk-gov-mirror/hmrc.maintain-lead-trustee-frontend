@@ -36,6 +36,7 @@ class AuthenticationServiceImpl @Inject()(
                                        config: FrontendAppConfig,
                                        errorHandler: ErrorHandler,
                                        trustsIV: TrustsIV,
+                                       delegatedEnrolment: AgentAuthorisedForDelegatedEnrolment,
                                        implicit val ec: ExecutionContext
                                      ) extends AuthenticationService {
 
@@ -87,23 +88,15 @@ class AuthenticationServiceImpl @Inject()(
                                        (implicit request: DataRequest[A],
                                         hc: HeaderCarrier): Future[Either[Result, DataRequest[A]]] =
 
-    enrolmentStoreConnector.checkIfAlreadyClaimed(utr) map {
+    enrolmentStoreConnector.checkIfAlreadyClaimed(utr) flatMap {
       case NotClaimed =>
         Logger.info(s"[PlaybackAuthentication] trust is not claimed")
-        Left(Redirect(controllers.routes.TrustNotClaimedController.onPageLoad()))
+        Future.successful(Left(Redirect(controllers.routes.TrustNotClaimedController.onPageLoad())))
       case AlreadyClaimed =>
 
-        val agentEnrolled = checkForTrustEnrolmentForUTR(utr)
-
-        if (agentEnrolled) {
-          Logger.info(s"[PlaybackAuthentication] agent is authorised")
-          Right(request)
-        } else {
-          Logger.info(s"[PlaybackAuthentication] agent is not authorised")
-          Left(Redirect(routes.AgentNotAuthorisedController.onPageLoad()))
-        }
+        delegatedEnrolment.authenticate(utr)
       case _ =>
-        Left(InternalServerError(errorHandler.internalServerErrorTemplate))
+        Future.successful(Left(InternalServerError(errorHandler.internalServerErrorTemplate)))
     }
 
   private def checkForTrustEnrolmentForUTR[A](utr: String)(implicit request: DataRequest[A]): Boolean =
