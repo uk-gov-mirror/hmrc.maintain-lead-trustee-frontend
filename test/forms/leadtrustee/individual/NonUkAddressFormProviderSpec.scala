@@ -16,9 +16,10 @@
 
 package forms.leadtrustee.individual
 
-import forms.NonUkAddressFormProvider
+import forms.{NonUkAddressFormProvider, Validation}
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class NonUkAddressFormProviderSpec extends StringFieldBehaviours {
 
@@ -29,12 +30,12 @@ class NonUkAddressFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "line1"
     val requiredKey = "nonUkAddress.error.line1.required"
     val lengthKey = "nonUkAddress.error.line1.length"
-    val maxLength = 100
+    val maxLength = 35
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      RegexpGen.from(Validation.addressLineRegex)
     )
 
     behave like fieldWithMaxLength(
@@ -48,6 +49,12 @@ class NonUkAddressFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like nonEmptyField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey, Seq(fieldName))
     )
   }
 
@@ -56,12 +63,12 @@ class NonUkAddressFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "line2"
     val requiredKey = "nonUkAddress.error.line2.required"
     val lengthKey = "nonUkAddress.error.line2.length"
-    val maxLength = 100
+    val maxLength = 35
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      RegexpGen.from(Validation.addressLineRegex)
     )
 
     behave like fieldWithMaxLength(
@@ -75,6 +82,60 @@ class NonUkAddressFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like nonEmptyField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey, Seq(fieldName))
+    )
+  }
+
+  ".line3" must {
+
+    val fieldName = "line3"
+    val lengthKey = "nonUkAddress.error.line3.length"
+    val maxLength = 35
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+    )
+
+    behave like optionalField(
+      form,
+      fieldName,
+      validDataGenerator = RegexpGen.from(Validation.addressLineRegex)
+    )
+
+  }
+
+  ".country" must {
+
+    val fieldName = "country"
+    val requiredKey = "nonUkAddress.error.country.required"
+    val lengthKey = "nonUkAddress.error.country.length"
+    val maxLength = 35
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like nonEmptyField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey, Seq(fieldName))
     )
   }
 }

@@ -84,6 +84,9 @@ POST       /trustee/individual/:index/has-address                           cont
 GET        /trustee/individual/:index/has-uk-address                        controllers.trustee.individual.LiveInTheUkYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/individual/:index/has-uk-address                        controllers.trustee.individual.LiveInTheUkYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
 
+GET        /trustee/individual/:index/non-uk-address                        controllers.trustee.individual.NonUkAddressController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/non-uk-address                        controllers.trustee.individual.NonUkAddressController.onSubmit(mode: Mode = NormalMode, index: Int)
+
 GET        /trustee/:index/individual/has-passport                          controllers.trustee.individual.PassportDetailsYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/:index/individual/has-passport                          controllers.trustee.individual.PassportDetailsYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
 

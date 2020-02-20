@@ -21,7 +21,7 @@ import play.api.data.{Form, FormError}
 import uk.gov.hmrc.domain.Nino
 import wolfendale.scalacheck.regexp.RegexpGen
 
-trait StringFieldBehaviours extends FieldBehaviours {
+trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours {
 
     def fieldWithMaxLength(form: Form[_],
                            fieldName: String,
