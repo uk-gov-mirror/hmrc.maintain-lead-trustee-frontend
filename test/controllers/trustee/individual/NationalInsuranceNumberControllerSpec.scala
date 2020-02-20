@@ -101,7 +101,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
       val request =
         FakeRequest(POST, nationalInsuranceNumberRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "AA000000B"))
 
       val result = route(application, request).value
 
@@ -128,7 +128,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, trusteeName)(fakeRequest, messages).toString
+        view(boundForm, index, messages("trusteeName.defaultText"))(fakeRequest, messages).toString
 
       application.stop()
     }

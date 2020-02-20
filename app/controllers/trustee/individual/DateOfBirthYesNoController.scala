@@ -45,7 +45,7 @@ class DateOfBirthYesNoController @Inject()(
 
   val form = formProvider.withPrefix("trustee.individual.dateOfBirthYesNo")
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(DateOfBirthYesNoPage(index)) match {
@@ -56,7 +56,7 @@ class DateOfBirthYesNoController @Inject()(
       Ok(view(preparedForm, mode, index, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction).async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)).async {
     implicit request =>
 
       form.bindFromRequest().fold(

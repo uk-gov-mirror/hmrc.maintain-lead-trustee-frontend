@@ -42,19 +42,8 @@ object NonUkAddress {
 
 object Address {
   implicit val reads: Reads[Address] =
-    ((__ \ 'line1).read[String] and
-    (__ \ 'line2).read[String] and
-    (__ \ 'line3).readNullable[String] and
-    (__ \ 'line4).readNullable[String] and
-    (__ \ 'postCode).readNullable[String] and
-      (__ \ 'country).read[String]) ((line1, line2, line3, line4, postCode, country) => {
-      if (postCode.isDefined) {
-        UkAddress(line1, line2, line3, line4, postCode.get)
-      }
-      else {
-        NonUkAddress(line1, line2, line3, line4, country)
-      }
-    })
+    __.read[UkAddress].widen[Address] orElse
+    __.read[NonUkAddress].widen[Address]
 
   implicit val writes: Writes[Address] = Writes(_ => ???)
 }

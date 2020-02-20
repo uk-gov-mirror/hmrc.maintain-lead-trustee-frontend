@@ -26,8 +26,8 @@ import viewmodels.AnswerRow
 import javax.inject.Inject
 import pages.leadtrustee.individual._
 
-class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters)(implicit messages: Messages) {
-  def bind(userAnswers: UserAnswers): Bound = new Bound(formatter, userAnswers)
+class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
+  def bind(userAnswers: UserAnswers)(implicit messages: Messages): Bound = new Bound(formatter, userAnswers)
 
   class Bound(formatter: CheckAnswersFormatters, userAnswers: UserAnswers)(implicit messages: Messages) {
 

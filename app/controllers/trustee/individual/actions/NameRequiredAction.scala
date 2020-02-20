@@ -18,18 +18,22 @@ package controllers.trustee.individual.actions
 
 import javax.inject.Inject
 import models.requests.DataRequest
-import pages.leadtrustee.individual.NamePage
+import pages.trustee.individual.NamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.ActionTransformer
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NameRequiredAction @Inject()(val executionContext: ExecutionContext, val messagesApi: MessagesApi)
+class NameRequiredAction @Inject()(val executionContext: ExecutionContext, val messagesApi: MessagesApi) {
+  def apply(index: Int) = new NameRequiredActionInstance(index, executionContext, messagesApi)
+}
+
+class NameRequiredActionInstance(val index: Int, val executionContext: ExecutionContext, val messagesApi: MessagesApi)
   extends ActionTransformer[DataRequest, TrusteeNameRequest] with I18nSupport {
 
   override protected def transform[A](request: DataRequest[A]): Future[TrusteeNameRequest[A]] = {
     Future.successful(TrusteeNameRequest[A](request,
-      request.userAnswers.get(NamePage)
+      request.userAnswers.get(NamePage(index))
       .map(_.displayName)
       .getOrElse(request.messages(messagesApi)("trusteeName.defaultText"))
     ))

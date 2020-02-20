@@ -99,7 +99,13 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
 
       val request =
         FakeRequest(POST, passportDetailsRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(
+            "country"-> "GB",
+            "expiryDate.day" -> "21",
+            "expiryDate.month" -> "3",
+            "expiryDate.year" -> "2079",
+            "number" -> "PASSPORTNUMBER"
+          )
 
       val result = route(application, request).value
 

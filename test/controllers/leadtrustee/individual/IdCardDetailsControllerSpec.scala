@@ -40,7 +40,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new IdCardDetailsFormProvider()
-  val form = formProvider("leadtrustee.individual")
+  val form = formProvider("leadtrustee.individual.idCard")
 
   lazy val idCardDetailsRoute = routes.IdCardDetailsController.onPageLoad().url
 
@@ -99,7 +99,13 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
       val request =
         FakeRequest(POST, idCardDetailsRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(
+            "country"-> "DE",
+            "expiryDate.day" -> "21",
+            "expiryDate.month" -> "3",
+            "expiryDate.year" -> "2079",
+            "number" -> "PASSPORTNUMBER"
+          )
 
       val result = route(application, request).value
 

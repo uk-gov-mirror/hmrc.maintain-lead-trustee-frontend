@@ -43,7 +43,7 @@ class PassportDetailsYesNoController @Inject()(
 
   val form = formProvider.withPrefix("trustee.individual.passportDetailsYesNo")
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)) {
     implicit request =>
 
       val name = request.userAnswers.get(NamePage(index)).get
@@ -56,7 +56,7 @@ class PassportDetailsYesNoController @Inject()(
       Ok(view(preparedForm, index, name.displayName))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction).async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)).async {
     implicit request =>
 
       val name = request.userAnswers.get(NamePage(index)).get

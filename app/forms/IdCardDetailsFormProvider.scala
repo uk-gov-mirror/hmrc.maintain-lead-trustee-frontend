@@ -26,7 +26,7 @@ import play.api.data.Forms.mapping
 import forms.mappings.Constraints
 
 class IdCardDetailsFormProvider @Inject() extends Mappings with Constraints {
-  val maxLengthCountyField = 100
+  val maxLengthCountryField = 100
   val maxLengthNumberField = 30
 
   def apply(prefix: String): Form[IdCard] = Form(
@@ -34,7 +34,7 @@ class IdCardDetailsFormProvider @Inject() extends Mappings with Constraints {
       "country" -> text(s"$prefix.country.error.required")
         .verifying(
           firstError(
-            maxLength(maxLengthCountyField, s"$prefix.country.error.length"),
+            maxLength(maxLengthCountryField, s"$prefix.country.error.length"),
             nonEmptyString("country", s"$prefix.country.error.required")
           )
         ),
