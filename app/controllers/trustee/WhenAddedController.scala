@@ -42,7 +42,7 @@ class WhenAddedController @Inject()(
                                      view: WhenAddedView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("trustee.whenAdded.date")
+  val form = formProvider.withPrefix("trustee.whenAdded")
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)) {
     implicit request =>

@@ -324,10 +324,10 @@ trustee.individual.idCardDetails.expiryDate.error.past = ID card expiry date mus
 
 trustee.whenAdded.title = When was the trustee added as a trustee?
 trustee.whenAdded.heading = When was {0} added as a trustee?
-trustee.whenAdded.date.hint = Check the trust deed or the power of appointment document. For example, 31 3 1980
-trustee.whenAdded.date.error.required.all = Enter the passport expiry date
-trustee.whenAdded.date.error.required.two = Passport expiry date must include a {0} and {1}
-trustee.whenAdded.date.error.required = Passport expiry date must include {0}
-trustee.whenAdded.date.error.invalid = Enter a real date when the trustee’s passport expires
-trustee.whenAdded.date.error.future = Passport expiry date must be after 31 December 1499 and before 01 January 2100
-trustee.whenAdded.date.error.past = Passport expiry date must be after 31 December 1499 and before 01 January 2100
+trustee.whenAdded.hint = Check the trust deed or the power of appointment document. For example, 31 3 1980
+trustee.whenAdded.error.required.all = Enter the passport expiry date
+trustee.whenAdded.error.required.two = Passport expiry date must include a {0} and {1}
+trustee.whenAdded.error.required = Passport expiry date must include {0}
+trustee.whenAdded.error.invalid = Enter a real date when the trustee’s passport expires
+trustee.whenAdded.error.future = Passport expiry date must be after 31 December 1499 and before 01 January 2100
+trustee.whenAdded.error.past = Passport expiry date must be after 31 December 1499 and before 01 January 2100
