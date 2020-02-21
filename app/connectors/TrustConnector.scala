@@ -26,7 +26,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
-  def getLeadTrusteeUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/leadTrustee"
+  def getLeadTrusteeUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/lead-trustee"
 
   def getLeadTrustee(utr: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[LeadTrustee] = {
     http.GET[LeadTrustee](getLeadTrusteeUrl(utr))
