@@ -51,7 +51,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages("ukAddress.heading", trusteeName))
+        @components.heading("ukAddress.heading", Some(trusteeName))
 
         @components.uk_address(form)
 

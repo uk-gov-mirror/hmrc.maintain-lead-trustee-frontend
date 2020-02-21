@@ -105,4 +105,7 @@ POST       /trustee/individual/:index/id-card                               cont
 GET        /trustee/:index/when-was-trustee-added                           controllers.trustee.WhenAddedController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/:index/when-was-trustee-added                           controllers.trustee.WhenAddedController.onSubmit(mode: Mode = NormalMode, index: Int)
 
+GET        /trustee/:index/check-details                                    controllers.trustee.CheckDetailsController.onPageLoad(mode: Mode = NormalMode, index: Int)
+#POST       /trustee/:index/check-details                                    controllers.trustee.CheckDetailsController.onSubmit(mode: Mode = NormalMode, index: Int)
+
 GET        /:utr                                                            controllers.IndexController.onPageLoad(utr: String)

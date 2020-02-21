@@ -25,7 +25,7 @@ import play.api.mvc.Call
 object TrusteeNavigator {
 
   private val simpleNavigation: PartialFunction[Page, Call] = {
-    case WhenAddedPage(index) => controllers.trustee.routes.WhenAddedController.onPageLoad(index)
+    case WhenAddedPage(index) => controllers.trustee.routes.CheckDetailsController.onPageLoad(index)
   }
 
   private val parameterisedNavigation : PartialFunction[Page, UserAnswers => Call] = {

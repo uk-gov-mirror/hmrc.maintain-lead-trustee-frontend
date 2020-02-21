@@ -37,8 +37,9 @@
         @components.input_date(
             field = form("value"),
             legend = messages("trustee.whenAdded.heading", trusteeName),
-            hint = Some(messages("trustee.whenAdded.hint")),
-            headingIsLegend = true
+            legendClass = "heading-large",
+            headingIsLegend = true,
+            hint = Some(messages("trustee.whenAdded.hint"))
         )
 
         @components.submit_button(Some(messages("site.continue")))

@@ -352,3 +352,6 @@ trustee.whenAdded.error.required = The date the trustee was added to the trust m
 trustee.whenAdded.error.invalid = Enter a real date when the trustee was added to the trust
 trustee.whenAdded.error.future = The date the trustee was added to the trust must be today or in the past
 trustee.whenAdded.error.past = The date the trustee was added to the trust cannot be before the start date of the trust
+
+trustee.checkDetails.title = Check trustee details
+trustee.checkDetails.heading = Check trustee details
