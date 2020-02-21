@@ -46,7 +46,7 @@ class IdCardDetailsController @Inject()(
 
   val form = formProvider.withPrefix("leadtrustee")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(IdCardDetailsPage) match {
@@ -57,7 +57,7 @@ class IdCardDetailsController @Inject()(
       Ok(view(preparedForm, request.leadTrusteeName, countryOptions.options))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(

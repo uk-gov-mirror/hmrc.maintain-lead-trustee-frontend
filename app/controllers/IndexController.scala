@@ -40,14 +40,14 @@ class IndexController @Inject()(
 
     identifierAction.async {
       implicit request =>
-
-        connector.getTrustStartDate(utr) flatMap { date =>
+        (connector.getTrustStartDate(utr) flatMap { date =>
           repo.set(UserAnswers(
             request.user.internalId,
             utr,
             LocalDate.parse(date.startDate)
           )).map(_ =>
-            Redirect(controllers.leadtrustee.individual.routes.NameController.onPageLoad()))
-        }
+            Redirect(controllers.leadtrustee.routes.DetailsController.onPageLoad())
+          )
+        }).recover {case _ => InternalServerError}
     }
 }

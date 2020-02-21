@@ -46,7 +46,7 @@ class DetailsController @Inject()(
                                           ) (implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameRequiredAction).async {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameRequiredAction).async {
     implicit request =>
 
       connector.getLeadTrustee(request.userAnswers.utr).flatMap {
@@ -64,7 +64,7 @@ class DetailsController @Inject()(
       }
   }
 
-  def onPageLoadUpdated(): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameRequiredAction) {
+  def onPageLoadUpdated(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameRequiredAction) {
     implicit request => renderPage(request.userAnswers)
   }
 
@@ -89,7 +89,7 @@ class DetailsController @Inject()(
     Ok(view(sections))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
         ???
   }
