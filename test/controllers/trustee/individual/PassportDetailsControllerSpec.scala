@@ -46,9 +46,8 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
   val index = 0
   val name: Name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR")
-    .set(NamePage(index), name)
-    .success.value
+  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
+    .set(NamePage(index), name).success.value
 
   val passportDetailsRoute: String = routes.PassportDetailsController.onPageLoad(index).url
 

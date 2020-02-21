@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package utils
+package models
 
-import java.time.LocalDate
+import play.api.libs.json.{Json, OFormat}
 
-import org.scalatest.TryValues
+object TrustStartDate {
 
-object TestUserAnswers extends TryValues {
-
-  lazy val draftId = "id"
-  lazy val userInternalId = "internalId"
-
-  def emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR", LocalDate.now())
-  
+  implicit val formats: OFormat[TrustStartDate] = Json.format[TrustStartDate]
 }
+
+case class TrustStartDate(startDate: String)
+
+

@@ -16,14 +16,16 @@
 
 package controllers.leadtrustee.individual
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.NonUkAddressFormProvider
-import models.{NonUkAddress, NormalMode, UserAnswers}
+import models.{Name, NonUkAddress, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.NonUkAddressPage
+import pages.leadtrustee.individual.{NamePage, NonUkAddressPage}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -43,15 +45,9 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val nonUkAddressRoute = routes.NonUkAddressController.onPageLoad().url
 
-  val userAnswers = UserAnswers(
-    "fakeId",
-    "UTRUTRUTR",
-    Json.obj().transform(NonUkAddressPage.path.json.put(Json.obj(
-      "line1" -> "value 1",
-      "line2" -> "value 2",
-      "country" -> "the country")
-    )).get
-  )
+  val userAnswers = UserAnswers("fakeId", "UTRUTRUTR", LocalDate.now())
+    .set(NamePage, Name("value 1", None, "value 2")).success.value
+    .set(NonUkAddressPage, NonUkAddress("value 1", "value 2", None, "the country")).success.value
 
   "NonUkAddress Controller" must {
 

@@ -16,7 +16,7 @@
 
 package models
 
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 
 import play.api.Logger
 import play.api.libs.json._
@@ -27,6 +27,7 @@ import scala.util.{Failure, Success, Try}
 final case class UserAnswers(
                               internalAuthId: String,
                               utr: String,
+                              whenTrustSetup: LocalDate,
                               data: JsObject = Json.obj(),
                               updatedAt: LocalDateTime = LocalDateTime.now
                             ) {
@@ -93,6 +94,7 @@ object UserAnswers {
     (
       (__ \ "internalId").read[String] and
         (__ \ "utr").read[String] and
+        (__ \ "whenTrustSetup").read[LocalDate] and
         (__ \ "data").read[JsObject] and
         (__ \ "updatedAt").read(MongoDateTimeFormats.localDateTimeRead)
       ) (UserAnswers.apply _)
@@ -105,6 +107,7 @@ object UserAnswers {
     (
       (__ \ "internalId").write[String] and
         (__ \ "utr").write[String] and
+        (__ \ "whenTrustSetup").write[LocalDate] and
         (__ \ "data").write[JsObject] and
         (__ \ "updatedAt").write(MongoDateTimeFormats.localDateTimeWrite)
       ) (unlift(UserAnswers.unapply))

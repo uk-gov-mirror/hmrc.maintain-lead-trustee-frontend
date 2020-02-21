@@ -16,6 +16,8 @@
 
 package controllers.trustee.individual
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.YesNoFormProvider
 import models.{Name, UserAnswers}
@@ -42,9 +44,8 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
   val index = 0
   val name: Name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR")
-    .set(NamePage(index), name)
-    .success.value
+  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
+    .set(NamePage(index), name).success.value
 
   val idCardDetailsYesNoRoute: String = routes.IdCardDetailsYesNoController.onPageLoad(index).url
 
