@@ -45,5 +45,10 @@ class TrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks  {
       navigator.nextPage(IndividualOrBusinessPage(index), NormalMode, answers)
         .mustBe(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(index))
     }
+
+    "When added page -> Check your answers page" in {
+      navigator.nextPage(WhenAddedPage(index), NormalMode, emptyUserAnswers)
+        .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad(index))
+    }
   }
 }

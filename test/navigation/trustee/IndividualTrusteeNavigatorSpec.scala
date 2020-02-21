@@ -65,7 +65,7 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
     "NINO page -> When added as trustee page" in {
       navigator.nextPage(NationalInsuranceNumberPage(index), NormalMode, emptyUserAnswers)
-        .mustBe(controllers.trustee.individual.routes.NationalInsuranceNumberController.onPageLoad(index))
+        .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad(index))
     }
 
     "Do you know NINO page -> No -> Do you know address page" in {
@@ -89,7 +89,7 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         .set(AddressYesNoPage(index), false).success.value
 
       navigator.nextPage(AddressYesNoPage(index), NormalMode, answers)
-        .mustBe(controllers.trustee.individual.routes.AddressYesNoController.onPageLoad(index))
+        .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad(index))
     }
 
     "Is address in UK page -> Yes -> UK address page" in {
@@ -128,7 +128,7 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
     "Passport details page -> When added as trustee page" in {
       navigator.nextPage(PassportDetailsPage(index), NormalMode, emptyUserAnswers)
-        .mustBe(controllers.trustee.individual.routes.PassportDetailsController.onPageLoad(index))
+        .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad(index))
     }
 
     "Do you know passport details page -> No -> Do you know ID card details page" in {
@@ -149,7 +149,7 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
     "ID card details page -> When added as trustee page" in {
       navigator.nextPage(IdCardDetailsPage(index), NormalMode, emptyUserAnswers)
-        .mustBe(controllers.trustee.individual.routes.IdCardDetailsController.onPageLoad(index))
+        .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad(index))
     }
 
     "Do you know ID card details page -> No -> When added as trustee page" in {
@@ -157,7 +157,7 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         .set(IdCardDetailsYesNoPage(index), false).success.value
 
       navigator.nextPage(IdCardDetailsYesNoPage(index), NormalMode, answers)
-        .mustBe(controllers.trustee.individual.routes.IdCardDetailsYesNoController.onPageLoad(index))
+        .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad(index))
     }
   }
 }

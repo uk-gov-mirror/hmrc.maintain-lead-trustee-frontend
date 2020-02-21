@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(headingKey: String, msgParam: Option[String] = None, headingSize: String = "heading-xlarge")(implicit messages: Messages)
+package pages.trustee
 
-<h1 class="@headingSize">@messages(headingKey, msgParam.getOrElse(""))</h1>
+import java.time.LocalDate
+
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import sections.Trustees
+
+case class WhenAddedPage(index: Int) extends QuestionPage[LocalDate] {
+
+  override def path: JsPath = Trustees.path \ index \ toString
+
+  override def toString: String = "dateAddedToTrust"
+}

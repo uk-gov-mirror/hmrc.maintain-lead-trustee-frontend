@@ -14,46 +14,46 @@
  * limitations under the License.
  */
 
-package views.trustee.individual
+package views.trustee
 
-import controllers.trustee.individual.routes
-import forms.NameFormProvider
+import java.time.LocalDate
+
+import forms.DateAddedToTrustFormProvider
 import models.Name
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
-import views.html.trustee.individual.NameView
+import views.html.trustee.WhenAddedView
 
-class NameViewSpec extends QuestionViewBehaviours[Name] {
+class WhenAddedViewSpec extends QuestionViewBehaviours[LocalDate] {
 
-  val messageKeyPrefix = "trustee.individual.name"
+  val messageKeyPrefix = "trustee.whenAdded"
   val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  override val form: Form[Name] = new NameFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[LocalDate] = new DateAddedToTrustFormProvider().withPrefix(messageKeyPrefix)
 
-  "Name view" must {
+  "WhenAdded view" must {
 
-    val view = viewFor[NameView](Some(emptyUserAnswers))
+    val view = viewFor[WhenAddedView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index)(fakeRequest, messages)
-
-    behave like normalPage(applyView(form), messageKeyPrefix)
+      view.apply(form, index, name.displayName)(fakeRequest, messages)
+    
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))
 
+    behave like pageWithHint(form, applyView, messageKeyPrefix + ".hint")
+
     "fields" must {
 
-      behave like pageWithTextFields(
+      behave like pageWithDateFields(
         form,
         applyView,
         messageKeyPrefix,
-        None,
-        routes.PassportDetailsController.onSubmit(index).url,
-        "firstName",
-        "middleName",
-        "lastName"
+        "value",
+        name.displayName
       )
     }
 

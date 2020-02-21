@@ -90,16 +90,19 @@ POST       /trustee/individual/:index/uk-address                            cont
 GET        /trustee/individual/:index/non-uk-address                        controllers.trustee.individual.NonUkAddressController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/individual/:index/non-uk-address                        controllers.trustee.individual.NonUkAddressController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/:index/individual/has-passport                          controllers.trustee.individual.PassportDetailsYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/:index/individual/has-passport                          controllers.trustee.individual.PassportDetailsYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/has-passport                          controllers.trustee.individual.PassportDetailsYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/has-passport                          controllers.trustee.individual.PassportDetailsYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/:index/individual/passport                              controllers.trustee.individual.PassportDetailsController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/:index/individual/passport                              controllers.trustee.individual.PassportDetailsController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/passport                              controllers.trustee.individual.PassportDetailsController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/passport                              controllers.trustee.individual.PassportDetailsController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/:index/individual/has-id-card                           controllers.trustee.individual.IdCardDetailsYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/:index/individual/has-id-card                           controllers.trustee.individual.IdCardDetailsYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/has-id-card                           controllers.trustee.individual.IdCardDetailsYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/has-id-card                           controllers.trustee.individual.IdCardDetailsYesNoController.onSubmit(mode: Mode = NormalMode, index: Int)
 
-GET        /trustee/:index/individual/id-card                               controllers.trustee.individual.IdCardDetailsController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/:index/individual/id-card                               controllers.trustee.individual.IdCardDetailsController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/individual/:index/id-card                               controllers.trustee.individual.IdCardDetailsController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/individual/:index/id-card                               controllers.trustee.individual.IdCardDetailsController.onSubmit(mode: Mode = NormalMode, index: Int)
+
+GET        /trustee/:index/when-was-trustee-added                           controllers.trustee.WhenAddedController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/:index/when-was-trustee-added                           controllers.trustee.WhenAddedController.onSubmit(mode: Mode = NormalMode, index: Int)
 
 GET        /:utr                                                            controllers.IndexController.onPageLoad(utr: String)
