@@ -60,8 +60,8 @@ POST       /lead-trustee/individual/what-identification                     cont
 GET        /lead-trustee/individual/telephone-number                        controllers.leadtrustee.individual.TelephoneNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /lead-trustee/individual/telephone-number                        controllers.leadtrustee.individual.TelephoneNumberController.onSubmit(mode: Mode = NormalMode)
 
-GET        /trustee/individual/:index/individual-or-business                controllers.trustee.IndividualOrBusinessController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/individual/:index/individual-or-business                controllers.trustee.IndividualOrBusinessController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/:index/individual-or-business                           controllers.trustee.IndividualOrBusinessController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/:index/individual-or-business                           controllers.trustee.IndividualOrBusinessController.onSubmit(mode: Mode = NormalMode, index: Int)
 
 GET        /trustee/individual/:index/name                                  controllers.trustee.individual.NameController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/individual/:index/name                                  controllers.trustee.individual.NameController.onSubmit(mode: Mode = NormalMode, index: Int)

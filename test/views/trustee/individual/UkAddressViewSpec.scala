@@ -26,7 +26,7 @@ import views.html.trustee.individual.UkAddressView
 
 class UkAddressViewSpec extends UkAddressViewBehaviours {
 
-  val messageKeyPrefix = "ukAddress"
+  val messageKeyPrefix = "trustee.individual.ukAddress"
   val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 

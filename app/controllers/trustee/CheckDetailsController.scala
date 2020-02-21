@@ -17,15 +17,19 @@
 package controllers.trustee
 
 import controllers.actions._
+import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import javax.inject.Inject
 import models.IndividualOrBusiness._
-import models.Mode
+import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.trustee.IndividualOrBusinessPage
+import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
+import pages.trustee.individual._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.countryOptions.CountryOptions
+import utils.print.AnswerRowConverter
 import viewmodels.AnswerSection
 import views.html.trustee.CheckDetailsView
 
@@ -37,14 +41,38 @@ class CheckDetailsController @Inject()(
                                 navigator: Navigator,
                                 standardActionSets: StandardActionSets,
                                 val controllerComponents: MessagesControllerComponents,
-                                view: CheckDetailsView
+                                view: CheckDetailsView,
+                                answerRowConverter: AnswerRowConverter,
+                                nameAction: TrusteeNameRequiredProvider,
+                                val countryOptions: CountryOptions
                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)) {
     implicit request =>
 
-      val section = request.userAnswers.get(IndividualOrBusinessPage(index)) match {
-        case Some(Individual) => AnswerSection(None, Seq())
+      val bound = answerRowConverter.bind(request.userAnswers, request.trusteeName, countryOptions)
+
+      val section: AnswerSection = request.userAnswers.get(IndividualOrBusinessPage(index)) match {
+        case Some(Individual) =>
+          AnswerSection(
+            None,
+            Seq(
+              bound.nameQuestion(NamePage(index), "trustee.individual.name", controllers.trustee.individual.routes.NameController.onPageLoad(index).url),
+              bound.yesNoQuestion(DateOfBirthYesNoPage(index), "trustee.individual.dateOfBirthYesNo", controllers.trustee.individual.routes.DateOfBirthYesNoController.onPageLoad(index).url),
+              bound.dateQuestion(DateOfBirthPage(index), "trustee.individual.dateOfBirth", controllers.trustee.individual.routes.DateOfBirthController.onPageLoad(index).url),
+              bound.yesNoQuestion(NationalInsuranceNumberYesNoPage(index), "trustee.individual.nationalInsuranceNumberYesNo", controllers.trustee.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad(index).url),
+              bound.ninoQuestion(NationalInsuranceNumberPage(index), "trustee.individual.nationalInsuranceNumber", controllers.trustee.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad(index).url),
+              bound.yesNoQuestion(AddressYesNoPage(index), "trustee.individual.addressYesNo", controllers.trustee.individual.routes.AddressYesNoController.onPageLoad(index).url),
+              bound.yesNoQuestion(LiveInTheUkYesNoPage(index), "trustee.individual.liveInTheUkYesNo", controllers.trustee.individual.routes.LiveInTheUkYesNoController.onPageLoad(index).url),
+              bound.addressQuestion(UkAddressPage(index), "trustee.individual.ukAddress", controllers.trustee.individual.routes.UkAddressController.onPageLoad(index).url),
+              bound.addressQuestion(NonUkAddressPage(index), "trustee.individual.nonUkAddress", controllers.trustee.individual.routes.NonUkAddressController.onPageLoad(index).url),
+              bound.yesNoQuestion(PassportDetailsYesNoPage(index), "trustee.individual.passportDetailsYesNo", controllers.trustee.individual.routes.PassportDetailsYesNoController.onPageLoad(index).url),
+              bound.passportDetailsQuestion(PassportDetailsPage(index), "trustee.individual.passportDetails", controllers.trustee.individual.routes.PassportDetailsController.onPageLoad(index).url),
+              bound.yesNoQuestion(IdCardDetailsYesNoPage(index), "trustee.individual.idCardDetailsYesNo", controllers.trustee.individual.routes.IdCardDetailsYesNoController.onPageLoad(index).url),
+              bound.idCardDetailsQuestion(IdCardDetailsPage(index), "trustee.individual.idCardDetails", controllers.trustee.individual.routes.IdCardDetailsController.onPageLoad(index).url),
+              bound.dateQuestion(WhenAddedPage(index), "trustee.whenAdded", controllers.trustee.routes.WhenAddedController.onPageLoad(index).url)
+            ).flatten
+          )
         case _ => AnswerSection(None, Seq())
       }
 

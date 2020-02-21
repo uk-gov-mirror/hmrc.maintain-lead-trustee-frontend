@@ -40,9 +40,8 @@
 
 @(form: Form[_], index: Int, trusteeName: String)(implicit request: Request[_], messages: Messages)
 
-
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("ukAddress.title")}"
+    title = s"${errorPrefix(form)} ${messages("trustee.individual.ukAddress.title")}"
 ) {
 
     @formHelper(action = UkAddressController.onSubmit(index), 'autoComplete -> "off") {
@@ -51,7 +50,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("ukAddress.heading", Some(trusteeName))
+        @components.heading("trustee.individual.ukAddress.heading", Some(trusteeName))
 
         @components.uk_address(form)
 
