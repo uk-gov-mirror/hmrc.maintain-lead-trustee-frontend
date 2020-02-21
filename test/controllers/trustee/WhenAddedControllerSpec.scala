@@ -39,7 +39,7 @@ import scala.concurrent.Future
 class WhenAddedControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new DateAddedToTrustFormProvider()
-  private def form = formProvider.withPrefix("trustee.whenAdded")
+  private def form = formProvider.withPrefixAndTrustStartDate("trustee.whenAdded", LocalDate.now())
 
   def onwardRoute = Call("GET", "/foo")
 

@@ -16,6 +16,8 @@
 
 package base
 
+import java.time.LocalDate
+
 import controllers.actions._
 import org.scalatest.{BeforeAndAfter, TestSuite, TryValues}
 import org.scalatestplus.play.PlaySpec
@@ -30,7 +32,7 @@ import utils.TestUserAnswers
 trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked with BeforeAndAfter with FakeTrustsApp {
   this: TestSuite =>
 
-  def emptyUserAnswers = models.UserAnswers(TestUserAnswers.userInternalId, "UTRUTRUTR")
+  def emptyUserAnswers = models.UserAnswers(TestUserAnswers.userInternalId, "UTRUTRUTR", LocalDate.now())
 
   val bodyParsers = injector.instanceOf[BodyParsers.Default]
 

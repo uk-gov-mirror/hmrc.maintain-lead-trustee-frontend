@@ -16,6 +16,9 @@
 
 package controllers
 
+import java.time.LocalDate
+
+import connectors.TrustConnector
 import controllers.actions.IdentifierAction
 import javax.inject.Inject
 import models.UserAnswers
@@ -24,19 +27,27 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  identifierAction: IdentifierAction,
-                                 repo : PlaybackRepository)
+                                 repo : PlaybackRepository,
+                                 connector: TrustConnector)
                                (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(utr: String): Action[AnyContent] = identifierAction.async {request =>
-    repo.set(UserAnswers(
-      request.user.internalId,
-      utr
-    )).map(_ =>
-      Redirect(controllers.leadtrustee.individual.routes.NameController.onPageLoad()))
-  }
+  def onPageLoad(utr: String): Action[AnyContent] =
+
+    identifierAction.async {
+      implicit request =>
+
+        connector.getTrustStartDate(utr) flatMap { date =>
+          repo.set(UserAnswers(
+            request.user.internalId,
+            utr,
+            LocalDate.parse(date.startDate)
+          )).map(_ =>
+            Redirect(controllers.leadtrustee.individual.routes.NameController.onPageLoad()))
+        }
+    }
 }
