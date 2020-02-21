@@ -198,7 +198,7 @@ leadtrustee.individual.passportDetails.expiryDate.error.past = Passport expiry d
 leadtrustee.individual.liveInTheUkYesNoPage.title = Does {0} live in the UK?
 leadtrustee.individual.liveInTheUkYesNoPage.heading = Does {0} live in the UK?
 leadtrustee.individual.liveInTheUkYesNoPage.checkYourAnswersLabel = Does {0} live in the UK?
-leadtrustee.individual.liveInTheUkYesNoPage.error.required = Select yes if the lead trustee lives in the UK?
+leadtrustee.individual.liveInTheUkYesNoPage.error.required = Select yes if the lead trustee lives in the UK
 
 leadtrustee.individual.nonUkAddress.title = What is {0}’s address?
 leadtrustee.individual.nonUkAddress.heading = What is {0}’s address?
