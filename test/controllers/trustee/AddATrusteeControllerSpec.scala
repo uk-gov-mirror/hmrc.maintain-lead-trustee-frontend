@@ -52,8 +52,6 @@ class AddATrusteeControllerSpec extends SpecBase {
     .set(NamePage(1), Name("First 1", None, "Last 1")).success.value
     .set(TrusteeStatus(1), Completed).success.value
 
-  def onwardRoute = Call("GET", "/maintain-a-trust/trustees")
-
   "AddATrustee Controller" when {
 
     "no data" must {
@@ -123,7 +121,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.leadtrustee.individual.routes.NameController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.trustee.individual.routes.NameController.onPageLoad(0).url
 
         application.stop()
       }
@@ -184,7 +182,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual controllers.trustee.individual.routes.NameController.onPageLoad(2).url
 
         application.stop()
       }

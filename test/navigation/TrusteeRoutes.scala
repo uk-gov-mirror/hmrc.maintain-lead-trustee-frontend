@@ -29,7 +29,6 @@ trait AddATrusteeRoutes {
   self: PropertyChecks with Generators with SpecBase =>
 
   val index = 0
-  val utr = "UTRUTRUTR"
 
   def addATrusteeRoutes()(implicit navigator: Navigator) = {
 
@@ -44,7 +43,7 @@ trait AddATrusteeRoutes {
               .remove(Trustees).success.value
 
             navigator.nextPage(AddATrusteePage, NormalMode, answers)
-              .mustBe(controllers.leadtrustee.individual.routes.NameController.onPageLoad())
+              .mustBe(controllers.trustee.individual.routes.NameController.onPageLoad(index))
         }
       }
 
@@ -56,7 +55,7 @@ trait AddATrusteeRoutes {
                 .remove(Trustees).success.value
 
             navigator.nextPage(AddATrusteeYesNoPage, NormalMode, answers)
-              .mustBe(controllers.leadtrustee.individual.routes.NameController.onPageLoad())
+              .mustBe(controllers.trustee.individual.routes.NameController.onPageLoad(index))
         }
       }
 
@@ -68,7 +67,7 @@ trait AddATrusteeRoutes {
               .remove(Trustees).success.value
 
             navigator.nextPage(AddATrusteeYesNoPage, NormalMode, answers)
-              .mustBe(controllers.routes.IndexController.onPageLoad(utr))
+              .mustBe(controllers.routes.IndexController.onPageLoad(answers.utr))
         }
       }
 
@@ -83,7 +82,7 @@ trait AddATrusteeRoutes {
               .set(AddATrusteePage, AddATrustee.YesNow).success.value
 
             navigator.nextPage(AddATrusteePage, NormalMode, answers)
-              .mustBe(controllers.leadtrustee.individual.routes.NameController.onPageLoad())
+              .mustBe(controllers.trustee.individual.routes.NameController.onPageLoad(1))
       }
 
     }
@@ -96,7 +95,7 @@ trait AddATrusteeRoutes {
             .set(AddATrusteePage, AddATrustee.YesLater).success.value
 
           navigator.nextPage(AddATrusteePage, NormalMode, answers)
-            .mustBe(controllers.routes.IndexController.onPageLoad(utr))
+            .mustBe(controllers.routes.IndexController.onPageLoad(answers.utr))
       }
     }
 
@@ -108,7 +107,7 @@ trait AddATrusteeRoutes {
             .set(AddATrusteePage, AddATrustee.NoComplete).success.value
 
           navigator.nextPage(AddATrusteePage, NormalMode, answers)
-            .mustBe(controllers.routes.IndexController.onPageLoad(utr))
+            .mustBe(controllers.routes.IndexController.onPageLoad(answers.utr))
       }
     }
 
