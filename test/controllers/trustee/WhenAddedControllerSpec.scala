@@ -14,72 +14,88 @@
  * limitations under the License.
  */
 
-package controllers.leadtrustee.individual
+package controllers.trustee
 
-import java.time.LocalDate
+import java.time.{LocalDate, ZoneOffset}
 
 import base.SpecBase
-import forms.PassportDetailsFormProvider
-import models.{IdCard, NormalMode, Passport, UserAnswers}
+import forms.DateAddedToTrustFormProvider
+import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.PassportDetailsPage
+import pages.trustee.WhenAddedPage
+import pages.trustee.individual.NamePage
 import play.api.inject.bind
-import play.api.mvc.Call
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.leadtrustee.individual.PassportDetailsView
+import views.html.trustee.WhenAddedView
 
 import scala.concurrent.Future
 
-class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
+class WhenAddedControllerSpec extends SpecBase with MockitoSugar {
+
+  val formProvider = new DateAddedToTrustFormProvider()
+  private def form = formProvider.withPrefix("trustee.whenAdded")
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new PassportDetailsFormProvider()
-  val form = formProvider("leadtrustee.individual.passport")
+  val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  val index = 0
+  val name: Name = Name("FirstName", None, "LastName")
 
-  lazy val passportDetailsRoute = routes.PassportDetailsController.onPageLoad().url
+  lazy val dateAddedToTrustRoute = routes.WhenAddedController.onPageLoad(index).url
 
-  "PassportDetails Controller" must {
+  val userAnswersWithName = emptyUserAnswers.set(NamePage(index), name).success.value
+
+  def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
+    FakeRequest(GET, dateAddedToTrustRoute)
+
+  def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
+    FakeRequest(POST, dateAddedToTrustRoute)
+      .withFormUrlEncodedBody(
+        "value.day"   -> validAnswer.getDayOfMonth.toString,
+        "value.month" -> validAnswer.getMonthValue.toString,
+        "value.year"  -> validAnswer.getYear.toString
+      )
+
+  "WhenAdded Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithName)).build()
 
-      val request = FakeRequest(GET, passportDetailsRoute)
+      val result = route(application, getRequest()).value
 
-      val result = route(application, request).value
-
-      val view = application.injector.instanceOf[PassportDetailsView]
+      val view = application.injector.instanceOf[WhenAddedView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(fakeRequest, messages).toString
+        view(form, index, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PassportDetailsPage, Passport("NUMBER", LocalDate.of(2040, 12, 31), "GB")).success.value
+      val userAnswers = emptyUserAnswers
+        .set(NamePage(index), name).success.value
+        .set(WhenAddedPage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, passportDetailsRoute)
+      val view = application.injector.instanceOf[WhenAddedView]
 
-      val view = application.injector.instanceOf[PassportDetailsView]
-
-      val result = route(application, request).value
+      val result = route(application, getRequest()).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Passport("NUMBER", LocalDate.of(2040, 12, 31), "GB")))(fakeRequest, messages).toString
+        view(form.fill(validAnswer), index, name.displayName)(getRequest(), messages).toString
 
       application.stop()
     }
@@ -97,19 +113,10 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
           )
           .build()
 
-      val request =
-        FakeRequest(POST, passportDetailsRoute)
-          .withFormUrlEncodedBody(
-            "country"-> "GB",
-            "expiryDate.day" -> "21",
-            "expiryDate.month" -> "3",
-            "expiryDate.year" -> "2079",
-            "number" -> "PASSPORTNUMBER"
-          )
-
-      val result = route(application, request).value
+      val result = route(application, postRequest()).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -117,22 +124,22 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithName)).build()
 
       val request =
-        FakeRequest(POST, passportDetailsRoute)
+        FakeRequest(POST, dateAddedToTrustRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[PassportDetailsView]
+      val view = application.injector.instanceOf[WhenAddedView]
 
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm, index, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -141,12 +148,9 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, passportDetailsRoute)
-
-      val result = route(application, request).value
+      val result = route(application, getRequest()).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
@@ -156,11 +160,7 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request =
-        FakeRequest(POST, passportDetailsRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
-
-      val result = route(application, request).value
+      val result = route(application, postRequest()).value
 
       status(result) mustEqual SEE_OTHER
 

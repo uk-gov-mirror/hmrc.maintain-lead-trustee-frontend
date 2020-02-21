@@ -29,15 +29,22 @@ class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             standardActionSets: StandardActionSets,
                                             val controllerComponents: MessagesControllerComponents,
+                                            checkYourAnswersHelper: CheckYourAnswersHelper,
                                             view: CheckYourAnswersView
                                           ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
     implicit request =>
 
-      val checkYourAnswersHelper = new CheckYourAnswersHelper(request.userAnswers)
+      val cya =  checkYourAnswersHelper.bind(request.userAnswers)
 
-      val sections = Seq(AnswerSection(None, Seq()))
+      val sections = Seq(AnswerSection(
+        None,
+        Seq(
+          cya.liveInTheUkYesNoPage,
+          cya.name
+        ).flatten
+      ))
 
       Ok(view(sections))
   }

@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import connectors.TrustConnector
 import controllers.actions.StandardActionSets
 import mapping.LeadTrusteesExtractor
-import models.{DisplayTrustLeadTrusteeIndType, DisplayTrustLeadTrusteeType}
+import models.{LeadTrusteeIndividual}
 import pages.trustee.individual.DateOfBirthPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -47,7 +47,7 @@ class DetailsController @Inject()(
     implicit request =>
 
       connector.getLeadTrustee(request.userAnswers.utr).flatMap {
-        case DisplayTrustLeadTrusteeType(Some(trusteeInd), None) =>
+        case trusteeInd: LeadTrusteeIndividual =>
           val answers = extractor.extractLeadTrusteeIndividual(request.userAnswers, trusteeInd)
           for {
             updatedAnswers <- Future.fromTry(answers)

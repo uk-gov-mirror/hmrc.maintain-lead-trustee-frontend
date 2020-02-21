@@ -22,27 +22,28 @@ import play.api.data.FormError
 
 class PassportDetailsFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "passportDetails.error.required"
-  val lengthKey = "passportDetails.error.length"
-  val maxLength = 100
+  val requiredKey = "passportDetails.country.error.required"
+  val lengthKey = "passportDetails.country.error.length"
+  val maxLengthCountryField = 100
+  val maxLengthNumberField = 30
 
-  val form = new PassportDetailsFormProvider()()
+  val form = new PassportDetailsFormProvider()("passportDetails")
 
-  ".value" must {
+  ".country" must {
 
-    val fieldName = "value"
+    val fieldName = "country"
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(maxLengthCountryField)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      maxLength = maxLengthCountryField,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLengthCountryField))
     )
 
     behave like mandatoryField(
@@ -51,4 +52,6 @@ class PassportDetailsFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
+
 }

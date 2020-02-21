@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import forms.IdCardDetailsFormProvider
-import models.{Name, PassportOrIdCardDetails}
+import models.{IdCard, Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -44,14 +44,12 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   val name = Name("Lead", None, "Trustee")
 
-  override val emptyUserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
-
   lazy val idCardDetailsRoute = routes.IdCardDetailsController.onPageLoad().url
 
   val countryOptions = injector.instanceOf[CountryOptions]
 
-  val idNumber = "87654"
+  override val emptyUserAnswers = super.emptyUserAnswers
+    .set(NamePage, name).success.value
 
   "IdCardDetails Controller" must {
 
@@ -75,7 +73,9 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(IdCardDetailsPage, PassportOrIdCardDetails("FR", idNumber, LocalDate.now())).success.value
+      val userAnswers = emptyUserAnswers
+        .set(IdCardDetailsPage, IdCard("NUMBER", LocalDate.of(2040, 12, 31), "GB")).success.value
+        .set(NamePage, name).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -88,7 +88,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(PassportOrIdCardDetails("FR", idNumber, LocalDate.now())), name.displayName, countryOptions.options)(fakeRequest, messages).toString
+        view(form.fill(IdCard("NUMBER", LocalDate.of(2040, 12, 31), "GB")), name.displayName, countryOptions.options)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -109,11 +109,11 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       val request =
         FakeRequest(POST, idCardDetailsRoute)
           .withFormUrlEncodedBody(
-            "country" -> "country",
-            "number" -> idNumber,
-            "expiryDate.day"   -> LocalDate.now().getDayOfMonth.toString,
-            "expiryDate.month" -> LocalDate.now().getMonthValue.toString,
-            "expiryDate.year"  -> LocalDate.now().getYear.toString
+            "country"-> "DE",
+            "expiryDate.day" -> "21",
+            "expiryDate.month" -> "3",
+            "expiryDate.year" -> "2079",
+            "number" -> "PASSPORTNUMBER"
           )
 
       val result = route(application, request).value

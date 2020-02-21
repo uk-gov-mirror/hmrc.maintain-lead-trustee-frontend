@@ -16,54 +16,31 @@
 
 package views.leadtrustee.individual
 
-import forms.IdCardDetailsFormProvider
-import models.PassportOrIdCardDetails
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.QuestionViewBehaviours
+import views.behaviours.StringViewBehaviours
+import controllers.leadtrustee.individual.routes
+import forms.IdCardDetailsFormProvider
 import views.html.leadtrustee.individual.IdCardDetailsView
 
-class IdCardDetailsViewSpec extends QuestionViewBehaviours[PassportOrIdCardDetails] {
-
-  val messageKeyPrefix = "leadtrustee.individual.idCardDetails"
-
-  val name = "Lead Trustee"
-
-  val form = new IdCardDetailsFormProvider().withPrefix("leadtrustee")
-
-  "IdCardDetailsView view" must {
-
-    val view = viewFor[IdCardDetailsView](Some(emptyUserAnswers))
-
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name, Seq.empty)(fakeRequest, messages)
-
-    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
-
-    behave like pageWithBackLink(applyView(form))
-
-    "date fields" must {
-
-      behave like pageWithDateFields(
-        form,
-        applyView,
-        messageKeyPrefix,
-        "expiryDate",
-        name.toString
-      )
-    }
-
-    "text fields" must {
-
-      behave like pageWithTextFields(
-        form,
-        applyView,
-        messageKeyPrefix,
-        Some(name),
-        controllers.leadtrustee.individual.routes.IdCardDetailsController.onSubmit().url,
-        "country", "number"
-      )
-    }
-
-  }
-}
+//class IdCardDetailsViewSpec extends StringViewBehaviours {
+//
+//  val messageKeyPrefix = "idCardDetails"
+//
+//  val form = new IdCardDetailsFormProvider()("leadtrustee.individual.idcard")
+//
+//  "IdCardDetailsView view" must {
+//
+//    val view = viewFor[IdCardDetailsView](Some(emptyUserAnswers))
+//
+//    def applyView(form: Form[_]): HtmlFormat.Appendable =
+//      view.apply(form)(fakeRequest, messages)
+//
+//    behave like normalPage(applyView(form), messageKeyPrefix)
+//
+//    behave like pageWithBackLink(applyView(form))
+//
+//    //behave like stringPage(form, applyView, messageKeyPrefix, None, routes.IdCardDetailsController.onSubmit().url)
+//  }
+//}

@@ -24,14 +24,14 @@ import play.api.mvc.ActionTransformer
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NameRequiredAction @Inject()(index: Int)(val executionContext: ExecutionContext, val messagesApi: MessagesApi)
+class NameRequiredAction (index: Int)(val executionContext: ExecutionContext, val messagesApi: MessagesApi)
   extends ActionTransformer[DataRequest, TrusteeNameRequest] with I18nSupport {
 
   override protected def transform[A](request: DataRequest[A]): Future[TrusteeNameRequest[A]] = {
     Future.successful(TrusteeNameRequest[A](request,
       request.userAnswers.get(NamePage(index))
-      .map(_.displayName)
-      .getOrElse(request.messages(messagesApi)("trusteeName.defaultText"))
+        .map(_.displayName)
+        .getOrElse(request.messages(messagesApi)("trusteeName.defaultText"))
     ))
   }
 }

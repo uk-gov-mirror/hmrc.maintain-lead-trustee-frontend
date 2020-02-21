@@ -49,8 +49,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad(index).url
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR")
-    .set(NamePage(index), name)
+  val userAnswersWithName = emptyUserAnswers.set(NamePage(index), name)
     .success.value
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
@@ -77,7 +76,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, name.displayName)(fakeRequest, messages).toString
+        view(form, index, messages("trusteeName.defaultText"))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -126,7 +125,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithName)).build()
 
       val request =
         FakeRequest(POST, dateOfBirthRoute)

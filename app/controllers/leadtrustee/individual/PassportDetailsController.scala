@@ -40,7 +40,7 @@ class PassportDetailsController @Inject()(
                                         view: PassportDetailsView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form = formProvider("leadtrustee.individual.passport")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
     implicit request =>

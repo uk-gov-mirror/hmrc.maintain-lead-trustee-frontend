@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package pages.leadtrustee.individual
+package pages.trustee
 
-import models.Passport
-import pages.behaviours.PageBehaviours
+import java.time.LocalDate
 
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import sections.Trustees
 
-class PassportDetailsPageSpec extends PageBehaviours {
+case class WhenAddedPage(index: Int) extends QuestionPage[LocalDate] {
 
-  "PassportDetailsPage" must {
+  override def path: JsPath = Trustees.path \ index \ toString
 
-    beRetrievable[Passport](PassportDetailsPage)
-
-    beSettable[Passport](PassportDetailsPage)
-
-    beRemovable[Passport](PassportDetailsPage)
-  }
+  override def toString: String = "dateAddedToTrust"
 }

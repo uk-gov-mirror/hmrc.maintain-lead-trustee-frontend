@@ -17,92 +17,66 @@
 package models
 
 import java.time.LocalDate
-
 import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 sealed trait LeadTrustee
 
-case class PassportType(number: String,
-                        expirationDate: LocalDate,
-                        countryOfIssue: String)
+object LeadTrustee {
 
-object PassportType {
+  implicit val writes: Writes[LeadTrustee] = Writes[LeadTrustee](_ => ???)
 
-  implicit val passportTypeFormat: Format[PassportType] = Json.format[PassportType]
+  implicit val reads : Reads[LeadTrustee] = Reads(json =>
+    json.validate[LeadTrusteeIndividual] orElse
+      json.validate[LeadTrusteeOrganisation])
 }
 
-case class DisplayTrustIdentificationType(safeId: Option[String],
-                                          nino: Option[String],
-                                          passport: Option[PassportType],
-                                          address: Option[Address])
+case class LeadTrusteeIndividual(
+                                  lineNo: String,
+                                  bpMatchStatus: Option[String],
+                                  name: Name,
+                                  dateOfBirth: LocalDate,
+                                  phoneNumber: String,
+                                  email: Option[String] = None,
+                                  identification: IndividualIdentification,
+                                  address: Address,
+                                  entityStart: String
+                                ) extends LeadTrustee
 
-object DisplayTrustIdentificationType {
-  implicit val identificationTypeFormat: Format[DisplayTrustIdentificationType] = Json.format[DisplayTrustIdentificationType]
+object LeadTrusteeIndividual {
+  implicit val reads: Reads[LeadTrusteeIndividual] =
+    ((__ \ 'lineNo).read[String] and
+    (__ \ 'bpMatchStatus).readNullable[String] and
+    (__ \ 'name).read[Name] and
+    (__ \ 'dateOfBirth).read[LocalDate] and
+    (__ \ 'phoneNumber).read[String] and
+    (__ \ 'email).readNullable[String] and
+    (__ \ 'identification).read[IndividualIdentification] and
+    (__ \ 'identification \ 'address).read[Address] and
+    (__ \ 'entityStart).read[String]).apply(LeadTrusteeIndividual.apply _)
 }
 
-case class DisplayTrustIdentificationOrgType(safeId: Option[String],
-                                             utr: Option[String],
-                                             address: Option[Address]) extends LeadTrustee
+case class LeadTrusteeOrganisation(
+                                    lineNo: String,
+                                    bpMatchStatus: Option[String],
+                                    name: String,
+                                    phoneNumber: String,
+                                    email: Option[String] = None,
+                                    utr: Option[String],
+                                    address: Address,
+                                    entityStart: String
+                                  ) extends LeadTrustee
 
-object DisplayTrustIdentificationOrgType {
-  implicit val trustBeneficiaryIdentificationFormat: Format[DisplayTrustIdentificationOrgType] = Json.format[DisplayTrustIdentificationOrgType]
+object LeadTrusteeOrganisation {
+  implicit val reads : Reads[LeadTrusteeOrganisation] =
+    ((__ \ 'lineNo).read[String] and
+    (__ \ 'bpMatchStatus).readNullable[String] and
+    (__ \ 'name).read[String] and
+    (__ \ 'phoneNumber).read[String] and
+    (__ \ 'email).readNullable[String] and
+    (__ \ 'identification \ 'utr).readNullable[String] and
+    (__ \ 'identification \ 'address).read[Address] and
+    (__ \ 'entityStart).read[String]).apply(LeadTrusteeOrganisation.apply _)
 }
 
-case class DisplayTrustLeadTrusteeIndType(
-                                           lineNo: String,
-                                           bpMatchStatus: Option[String],
-                                           name: Name,
-                                           dateOfBirth: LocalDate,
-                                           phoneNumber: String,
-                                           email: Option[String] = None,
-                                           identification: DisplayTrustIdentificationType,
-                                           entityStart: String
-                                         ) extends LeadTrustee
 
-object DisplayTrustLeadTrusteeIndType {
-
-  implicit val leadTrusteeIndTypeFormat: Format[DisplayTrustLeadTrusteeIndType] = Json.format[DisplayTrustLeadTrusteeIndType]
-
-}
-
-case class DisplayTrustLeadTrusteeOrgType(
-                                           lineNo: String,
-                                           bpMatchStatus: Option[String],
-                                           name: String,
-                                           phoneNumber: String,
-                                           email: Option[String] = None,
-                                           identification: DisplayTrustIdentificationOrgType,
-                                           entityStart: String
-                                         )
-
-object DisplayTrustLeadTrusteeOrgType {
-  implicit val leadTrusteeOrgTypeFormat: Format[DisplayTrustLeadTrusteeOrgType] = Json.format[DisplayTrustLeadTrusteeOrgType]
-}
-
-case class DisplayTrustLeadTrusteeType(
-                                        leadTrusteeInd: Option[DisplayTrustLeadTrusteeIndType] = None,
-                                        leadTrusteeOrg: Option[DisplayTrustLeadTrusteeOrgType] = None
-                                      )
-
-object DisplayTrustLeadTrusteeType {
-
-  implicit val writes: Writes[DisplayTrustLeadTrusteeType] = Json.writes[DisplayTrustLeadTrusteeType]
-
-  object LeadTrusteeReads extends Reads[DisplayTrustLeadTrusteeType] {
-
-    override def reads(json: JsValue): JsResult[DisplayTrustLeadTrusteeType] = {
-
-      json.validate[DisplayTrustLeadTrusteeIndType].map {
-        leadTrusteeInd =>
-          DisplayTrustLeadTrusteeType(leadTrusteeInd = Some(leadTrusteeInd))
-      }.orElse {
-        json.validate[DisplayTrustLeadTrusteeOrgType].map {
-          org =>
-            DisplayTrustLeadTrusteeType(leadTrusteeOrg = Some(org))
-        }
-      }
-    }
-  }
-
-  implicit val reads : Reads[DisplayTrustLeadTrusteeType] = LeadTrusteeReads
-}

@@ -24,6 +24,7 @@ import pages.leadtrustee.individual._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+  this : Generators =>
 
   implicit lazy val arbitraryTelephoneNumberUserAnswersEntry: Arbitrary[(TelephoneNumberPage.type, JsValue)] =
     Arbitrary {

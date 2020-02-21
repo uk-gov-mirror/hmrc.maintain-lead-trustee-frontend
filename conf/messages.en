@@ -270,7 +270,7 @@ trustee.individual.liveInTheUkYesNo.error.required = Select yes if the trustee l
 trustee.individual.nonUkAddress.title = What is the trustee’s address?
 trustee.individual.nonUkAddress.heading = What is {0}’s address?
 
-ukAddress.title = What is {0}’s address?
+ukAddress.title = What is the trustee’s address?
 ukAddress.heading = What is {0}’s address?
 ukAddress.line1 = Address line 1
 ukAddress.line2 = Address line 2
@@ -335,3 +335,13 @@ trustee.individual.idCardDetails.expiryDate.error.required = ID card expiry date
 trustee.individual.idCardDetails.expiryDate.error.invalid = Enter a real date when the trustee’s ID card expires
 trustee.individual.idCardDetails.expiryDate.error.future = ID card expiry date must be after 31 December 1499 and before 01 January 2100
 trustee.individual.idCardDetails.expiryDate.error.past = ID card expiry date must be after 31 December 1499 and before 01 January 2100
+
+trustee.whenAdded.title = When was the trustee added as a trustee?
+trustee.whenAdded.heading = When was {0} added as a trustee?
+trustee.whenAdded.hint = Check the trust deed or the power of appointment document. For example, 31 3 1980
+trustee.whenAdded.error.required.all = Enter the passport expiry date
+trustee.whenAdded.error.required.two = Passport expiry date must include a {0} and {1}
+trustee.whenAdded.error.required = Passport expiry date must include {0}
+trustee.whenAdded.error.invalid = Enter a real date when the trustee’s passport expires
+trustee.whenAdded.error.future = Passport expiry date must be after 31 December 1499 and before 01 January 2100
+trustee.whenAdded.error.past = Passport expiry date must be after 31 December 1499 and before 01 January 2100

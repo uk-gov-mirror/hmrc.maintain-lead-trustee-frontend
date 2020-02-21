@@ -14,59 +14,61 @@
  * limitations under the License.
  */
 
-package controllers.trustee.individual
+package controllers.trustee
 
-import controllers.actions._
+import controllers.actions.StandardActionSets
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
-import forms.UkCitizenFormProvider
+import forms.DateAddedToTrustFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.leadtrustee.individual.UkCitizenPage
+import pages.trustee.WhenAddedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.leadtrustee.individual.UkCitizenView
+import views.html.trustee.WhenAddedView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UkCitizenController @Inject()(
+class WhenAddedController @Inject()(
                                      override val messagesApi: MessagesApi,
                                      sessionRepository: PlaybackRepository,
                                      navigator: Navigator,
                                      standardActionSets: StandardActionSets,
                                      nameAction: TrusteeNameRequiredProvider,
-                                     formProvider: UkCitizenFormProvider,
+                                     formProvider: DateAddedToTrustFormProvider,
                                      val controllerComponents: MessagesControllerComponents,
-                                     view: UkCitizenView
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     view: WhenAddedView
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider("trustee.individual")
+  val form = formProvider.withPrefix("trustee.whenAdded")
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction(index)) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(UkCitizenPage) match {
+      val preparedForm = request.userAnswers.get(WhenAddedPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, request.trusteeName))
+      Ok(view(preparedForm, index, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameAction(index)).async {
+
+
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, index, request.trusteeName))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UkCitizenPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(UkCitizenPage, mode, updatedAnswers))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhenAddedPage(index), value))
+            _              <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(WhenAddedPage(index), mode, updatedAnswers))
       )
   }
 }
