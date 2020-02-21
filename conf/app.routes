@@ -17,6 +17,7 @@ GET        /trust-not-claimed                                               cont
 GET        /agent-not-authorised                                            controllers.AgentNotAuthorisedController.onPageLoad()
 
 GET        /leadTrustee/details                                             controllers.leadtrustee.DetailsController.onPageLoad()
+POST       /leadTrustee/details                                             controllers.leadtrustee.DetailsController.onSubmit(mode: Mode = NormalMode)
 
 GET        /leadTrustee/individual/name                                     controllers.leadtrustee.individual.NameController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/name                                     controllers.leadtrustee.individual.NameController.onSubmit(mode: Mode = NormalMode)
