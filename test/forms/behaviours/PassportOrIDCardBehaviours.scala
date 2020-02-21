@@ -20,14 +20,14 @@ import java.time.LocalDate
 
 import forms.{FormSpec, Validation}
 import generators.Generators
-import models.PassportOrIdCardDetails
+import models.Passport
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
 
 trait PassportOrIDCardBehaviours extends FormSpec
   with ScalaCheckPropertyChecks with Generators with FieldBehaviours with OptionalFieldBehaviours {
 
-  def passportOrIDCardDateField(form: Form[PassportOrIdCardDetails], key: String): Unit = {
+  def passportOrIDCardDateField(form: Form[Passport], key: String): Unit = {
 
     "bind a valid date" in {
 
@@ -81,7 +81,7 @@ trait PassportOrIDCardBehaviours extends FormSpec
     }
   }
 
-  def mandatoryPassportOrIdDateField(form: Form[PassportOrIdCardDetails], key: String, requiredAllKey: String): Unit = {
+  def mandatoryPassportOrIdDateField(form: Form[Passport], key: String, requiredAllKey: String): Unit = {
 
     "fail to bind an empty date" in {
 
@@ -92,7 +92,7 @@ trait PassportOrIDCardBehaviours extends FormSpec
   }
 
 
-  def passportOrIDCardInvalidDateField(form: Form[PassportOrIdCardDetails], key: String, requiredAllKey: String): Unit = {
+  def passportOrIDCardInvalidDateField(form: Form[Passport], key: String, requiredAllKey: String): Unit = {
 
     "not bind a invalid date" in {
 

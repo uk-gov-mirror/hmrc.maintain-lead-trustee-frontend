@@ -18,14 +18,14 @@ package pages.trustee.individual
 
 import java.time.LocalDate
 
-import models.PassportOrIdCardDetails
+import models.{IdCard, Passport}
 import pages.behaviours.PageBehaviours
 
 class PassportDetailsYesNoPageSpec extends PageBehaviours {
 
   val index = 0
 
-  val data: PassportOrIdCardDetails = PassportOrIdCardDetails("country", "number", LocalDate.of(2020, 1, 1))
+  val data: Passport = Passport("number", LocalDate.of(2020, 1, 1), "country")
 
   "PassportDetailsYesNo page" must {
 
@@ -38,7 +38,7 @@ class PassportDetailsYesNoPageSpec extends PageBehaviours {
     "implement cleanup logic when YES selected" in {
       val userAnswers = emptyUserAnswers
         .set(IdCardDetailsYesNoPage(index), true)
-        .flatMap(_.set(IdCardDetailsPage(index), data))
+        .flatMap(_.set(PassportDetailsPage(index), data))
         .flatMap(_.set(PassportDetailsYesNoPage(index), true))
 
       userAnswers.get.get(IdCardDetailsYesNoPage(index)) mustNot be(defined)

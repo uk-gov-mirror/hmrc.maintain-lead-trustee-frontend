@@ -111,6 +111,10 @@ trusteeName.defaultText = the trustee
 individualOrBusiness.individual = Individual
 individualOrBusiness.business = Business
 
+leadTrusteeDetails.title = Lead Trustee Details
+leadTrusteeDetails.heading = Lead Trustee Details
+leadTrusteeDetails.guidance =
+
 leadtrustee.individual.name.title = What is the lead trustee’s name?
 leadtrustee.individual.name.heading = What is the lead trustee’s name?
 leadtrustee.individual.name.firstName = First name
@@ -171,6 +175,30 @@ leadtrustee.individual.idCardDetails.expiryDate.error.invalid = Enter a real dat
 leadtrustee.individual.idCardDetails.expiryDate.error.future = ID card expiry date must be after 31 December 1499 and before 01 January 2100
 leadtrustee.individual.idCardDetails.expiryDate.error.past = ID card expiry date must be after 31 December 1499 and before 01 January 2100
 
+leadtrustee.individual.passportDetails.title = What are {0}’s passport details?
+leadtrustee.individual.passportDetails.heading = What are {0}’s passport details?
+leadtrustee.individual.passportDetails.checkYourAnswersLabel = What are {0}’s passport details?
+leadtrustee.individual.passportDetails.country = Passport country of issue
+leadtrustee.individual.passportDetails.error.country.required = Enter the lead trustee’s passport country of issue
+leadtrustee.individual.passportDetails.country.error.required = Enter the lead trustee’s passport country of issue
+leadtrustee.individual.passportDetails.country.error.length = The the lead trustee’s passport country must be 100 characters or less
+leadtrustee.individual.passportDetails.number = Passport number
+leadtrustee.individual.passportDetails.number.error.required = Enter the lead trustee’s passport number
+leadtrustee.individual.passportDetails.number.error.length = Passport number must be 30 characters or less
+leadtrustee.individual.passportDetails.number.error.invalid = Passport number can only include letters and numbers
+leadtrustee.individual.passportDetails.expiryDate.title = Expiry date
+leadtrustee.individual.passportDetails.expiryDate.hint = Expiry date can be in the past. For example, 31 3 1980
+leadtrustee.individual.passportDetails.expiryDate.error.required.all = Enter the passport expiry date
+leadtrustee.individual.passportDetails.expiryDate.error.required.two = Passport expiry date must include a {0} and {1}
+leadtrustee.individual.passportDetails.expiryDate.error.required = Passport expiry date must include a {0}
+leadtrustee.individual.passportDetails.expiryDate.error.invalid = Enter a real date when the lead trustee’s passport expires
+leadtrustee.individual.passportDetails.expiryDate.error.future = Passport expiry date must be after 31 December 1499 and before 01 January 2100
+leadtrustee.individual.passportDetails.expiryDate.error.past = Passport expiry date must be after 31 December 1499 and before 01 January 2100
+
+leadtrustee.individual.liveInTheUkYesNoPage.title = liveInTheUkYesNoPage
+leadtrustee.individual.liveInTheUkYesNoPage.heading = liveInTheUkYesNoPage
+leadtrustee.individual.liveInTheUkYesNoPage.checkYourAnswersLabel = liveInTheUkYesNoPage
+leadtrustee.individual.liveInTheUkYesNoPage.error.required = Select yes if liveInTheUkYesNoPage
 leadtrustee.individual.liveInTheUkYesNoPage.title = Does {0} live in the UK?
 leadtrustee.individual.liveInTheUkYesNoPage.heading = Does {0} live in the UK?
 leadtrustee.individual.liveInTheUkYesNoPage.checkYourAnswersLabel = Does {0} live in the UK?
@@ -185,12 +213,6 @@ leadtrustee.individual.nonUkAddress.error.line1.required = Enter line1
 leadtrustee.individual.nonUkAddress.error.line2.required = Enter line2
 leadtrustee.individual.nonUkAddress.error.line1.length = line1 must be line2 characters or less
 leadtrustee.individual.nonUkAddress.error.line2.length = line2 must be 100 characters or less
-
-leadtrustee.individual.passportDetails.title = passportDetails
-leadtrustee.individual.passportDetails.heading = passportDetails
-leadtrustee.individual.passportDetails.checkYourAnswersLabel = passportDetails
-leadtrustee.individual.passportDetails.error.required = Enter passportDetails
-leadtrustee.individual.passportDetails.error.length = PassportDetails must be 100 characters or less
 
 leadtrustee.individual.ukAddress.title = ukAddress
 leadtrustee.individual.ukAddress.heading = ukAddress

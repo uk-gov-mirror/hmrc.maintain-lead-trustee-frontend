@@ -39,7 +39,7 @@ case class LeadTrusteeIndividual(
                                   phoneNumber: String,
                                   email: Option[String] = None,
                                   identification: IndividualIdentification,
-                                  address: Address,
+                                  address: Option[Address],
                                   entityStart: String
                                 ) extends LeadTrustee
 
@@ -52,7 +52,7 @@ object LeadTrusteeIndividual {
     (__ \ 'phoneNumber).read[String] and
     (__ \ 'email).readNullable[String] and
     (__ \ 'identification).read[IndividualIdentification] and
-    (__ \ 'identification \ 'address).read[Address] and
+    (__ \ 'identification \ 'address).readNullable[Address] and
     (__ \ 'entityStart).read[String]).apply(LeadTrusteeIndividual.apply _)
 }
 
