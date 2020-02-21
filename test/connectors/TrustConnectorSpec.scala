@@ -33,7 +33,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   with Inside with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  private def getLeadTrusteeUrl(utr: String): String = s"/trusts/$utr/transformed/leadTrustee"
+  private def getLeadTrusteeUrl(utr: String): String = s"/trusts/$utr/transformed/lead-trustee"
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
 
