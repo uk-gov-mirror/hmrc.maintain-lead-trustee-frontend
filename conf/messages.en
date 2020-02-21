@@ -87,6 +87,7 @@ trustNotClaimed.bullet.2.p3.a = contact the trusts helpline (opens in a new wind
 trustNotClaimed.bullet.2.p4 = You can
 trustNotClaimed.bullet.2.p4.a = return to register and maintain a trust for a client.
 
+address.country.select = Select a country
 site.address.nonUk.title = What is the address?
 site.address.nonUk.heading = What is {0}’s address?
 site.address.nonUk.line1 = Address line 1
@@ -106,6 +107,13 @@ nonUkAddress.error.line3.invalidCharacters = Address line 3 must only include le
 
 leadTrusteeName.defaultText = the lead trustee
 trusteeName.defaultText = the trustee
+
+individualOrBusiness.individual = Individual
+individualOrBusiness.business = Business
+
+leadTrusteeDetails.title = Lead Trustee Details
+leadTrusteeDetails.heading = Lead Trustee Details
+leadTrusteeDetails.guidance =
 
 leadtrustee.individual.name.title = What is the lead trustee’s name?
 leadtrustee.individual.name.heading = What is the lead trustee’s name?
@@ -191,12 +199,16 @@ leadtrustee.individual.liveInTheUkYesNoPage.title = liveInTheUkYesNoPage
 leadtrustee.individual.liveInTheUkYesNoPage.heading = liveInTheUkYesNoPage
 leadtrustee.individual.liveInTheUkYesNoPage.checkYourAnswersLabel = liveInTheUkYesNoPage
 leadtrustee.individual.liveInTheUkYesNoPage.error.required = Select yes if liveInTheUkYesNoPage
+leadtrustee.individual.liveInTheUkYesNoPage.title = Does {0} live in the UK?
+leadtrustee.individual.liveInTheUkYesNoPage.heading = Does {0} live in the UK?
+leadtrustee.individual.liveInTheUkYesNoPage.checkYourAnswersLabel = Does {0} live in the UK?
+leadtrustee.individual.liveInTheUkYesNoPage.error.required = Select yes if {0} lives in the UK
 
-leadtrustee.individual.nonUkAddress.title = nonUkAddress
-leadtrustee.individual.nonUkAddress.heading = nonUkAddress
+leadtrustee.individual.nonUkAddress.title = What is {0}’s address?
+leadtrustee.individual.nonUkAddress.heading = What is {0}’s address?
 leadtrustee.individual.nonUkAddress.line1 = line1
 leadtrustee.individual.nonUkAddress.line2 = line2
-leadtrustee.individual.nonUkAddress.checkYourAnswersLabel = nonUkAddress
+leadtrustee.individual.nonUkAddress.checkYourAnswersLabel = What is {0}’s address?
 leadtrustee.individual.nonUkAddress.error.line1.required = Enter line1
 leadtrustee.individual.nonUkAddress.error.line2.required = Enter line2
 leadtrustee.individual.nonUkAddress.error.line1.length = line1 must be line2 characters or less
@@ -212,22 +224,22 @@ leadtrustee.individual.ukAddress.error.line2.required = Enter line2
 leadtrustee.individual.ukAddress.error.line1.length = line1 must be line2 characters or less
 leadtrustee.individual.ukAddress.error.line2.length = line2 must be 100 characters or less
 
-leadtrustee.individual.emailAddress.title = emailAddress
-leadtrustee.individual.emailAddress.heading = emailAddress
-leadtrustee.individual.emailAddress.checkYourAnswersLabel = emailAddress
-leadtrustee.individual.emailAddress.error.required = Enter emailAddress
-leadtrustee.individual.emailAddress.error.length = EmailAddress must be 512 characters or less
+leadtrustee.individual.emailAddress.title = What is {0}’s email address?
+leadtrustee.individual.emailAddress.heading = What is {0}’s email address?
+leadtrustee.individual.emailAddress.checkYourAnswersLabel = What is {0}’s email address?
+leadtrustee.individual.emailAddress.error.required = Enter {0}’s email address
+leadtrustee.individual.emailAddress.error.length = An email address must be 512 characters or less
 
-leadtrustee.individual.emailAddressYesNo.title = emailAddressYesNo
-leadtrustee.individual.emailAddressYesNo.heading = emailAddressYesNo
-leadtrustee.individual.emailAddressYesNo.checkYourAnswersLabel = emailAddressYesNo
-leadtrustee.individual.emailAddressYesNo.error.required = Select yes if emailAddressYesNo
+leadtrustee.individual.emailAddressYesNo.title = Do you know {0}’s email address?
+leadtrustee.individual.emailAddressYesNo.heading = Do you know {0}’s email address?
+leadtrustee.individual.emailAddressYesNo.checkYourAnswersLabel = Do you know {0}’s email address?
+leadtrustee.individual.emailAddressYesNo.error.required = Select yes if you know {0}’s email address
 
-leadtrustee.individual.telephoneNumber.title = telephoneNumber
-leadtrustee.individual.telephoneNumber.heading = telephoneNumber
-leadtrustee.individual.telephoneNumber.checkYourAnswersLabel = telephoneNumber
-leadtrustee.individual.telephoneNumber.error.required = Enter telephoneNumber
-leadtrustee.individual.telephoneNumber.error.length = TelephoneNumber must be 100 characters or less
+leadtrustee.individual.telephoneNumber.title = What is {0}’s telephone number?
+leadtrustee.individual.telephoneNumber.heading = What is {0}’s telephone number?
+leadtrustee.individual.telephoneNumber.checkYourAnswersLabel = What is {0}’s telephone number?
+leadtrustee.individual.telephoneNumber.error.required = Enter {0}’s telephone number
+leadtrustee.individual.telephoneNumber.error.length = A telephone number must be 100 characters or less
 
 trustee.individual.ukCitizen.title = Does {0} have a National Insurance number?
 trustee.individual.ukCitizen.heading = Does {0} have a National Insurance number?
@@ -249,6 +261,9 @@ trustee.individual.name.error.lastName.required = Enter the trustee’s last nam
 trustee.individual.name.error.firstName.length = Trustee’s first name must be 35 characters or less
 trustee.individual.name.error.middleName.length = Trustee’s middle names must be 35 characters or less
 trustee.individual.name.error.lastName.length = Trustee’s last name must be 35 characters or less
+trustee.individual.name.error.firstName.invalid = Trustee’s first name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+trustee.individual.name.error.middleName.invalid = Trustee’s first name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+trustee.individual.name.error.lastName.invalid = Trustee’s first name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 
 trustee.individual.dateOfBirth.title = What is the trustee’s date of birth?
 trustee.individual.dateOfBirth.heading = What is {0}’s date of birth?
@@ -262,11 +277,11 @@ trustee.individual.dateOfBirth.error.past = Date of birth must be after 31 Decem
 
 trustee.individual.dateOfBirthYesNo.title = Do you know the trustee’s date of birth?
 trustee.individual.dateOfBirthYesNo.heading = Do you know {0}’s date of birth?
-trustee.individual.dateOfBirthYesNo.error.required = Select yes if you know the trustees date of birth
+trustee.individual.dateOfBirthYesNo.error.required = Select yes if you know the trustee’s date of birth
 
 trustee.individual.nationalInsuranceNumberYesNo.title = Do you know the trustee’s National Insurance number?
 trustee.individual.nationalInsuranceNumberYesNo.heading = Do you know {0}’s National Insurance number?
-trustee.individual.nationalInsuranceNumberYesNo.error.required = Select yes if you know the trustees National Insurance number
+trustee.individual.nationalInsuranceNumberYesNo.error.required = Select yes if you know the trustee’s National Insurance number
 
 trustee.individual.nationalInsuranceNumber.title = What is the trustee’s National Insurance number?
 trustee.individual.nationalInsuranceNumber.heading = What is {0}’s National Insurance number?
@@ -275,7 +290,7 @@ trustee.individual.nationalInsuranceNumber.error.invalidFormat = Enter the trust
 
 trustee.individual.addressYesNo.title = Do you know the trustee’s address?
 trustee.individual.addressYesNo.heading = Do you know {0}’s address?
-trustee.individual.addressYesNo.error.required = Select yes if you know the trustees address
+trustee.individual.addressYesNo.error.required = Select yes if you know the trustee’s address
 
 trustee.individual.liveInTheUkYesNo.title = Does the trustee live in the UK?
 trustee.individual.liveInTheUkYesNo.heading = Does {0} live in the UK?
@@ -353,9 +368,9 @@ trustee.individual.idCardDetails.expiryDate.error.past = ID card expiry date mus
 trustee.whenAdded.title = When was the trustee added as a trustee?
 trustee.whenAdded.heading = When was {0} added as a trustee?
 trustee.whenAdded.hint = Check the trust deed or the power of appointment document. For example, 31 3 1980
-trustee.whenAdded.error.required.all = Enter the passport expiry date
-trustee.whenAdded.error.required.two = Passport expiry date must include a {0} and {1}
-trustee.whenAdded.error.required = Passport expiry date must include {0}
-trustee.whenAdded.error.invalid = Enter a real date when the trustee’s passport expires
-trustee.whenAdded.error.future = Passport expiry date must be after 31 December 1499 and before 01 January 2100
-trustee.whenAdded.error.past = Passport expiry date must be after 31 December 1499 and before 01 January 2100
+trustee.whenAdded.error.required.all = Enter the date the trustee was added to the trust
+trustee.whenAdded.error.required.two = The date the trustee was added to the trust must include a {0} and {1}
+trustee.whenAdded.error.required = The date the trustee was added to the trust must include {0}
+trustee.whenAdded.error.invalid = Enter a real date when the trustee was added to the trust
+trustee.whenAdded.error.future = The date the trustee was added to the trust must be today or in the past
+trustee.whenAdded.error.past = The date the trustee was added to the trust cannot be before the start date of the trust

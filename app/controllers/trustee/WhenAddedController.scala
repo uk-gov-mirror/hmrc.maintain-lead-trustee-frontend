@@ -42,10 +42,10 @@ class WhenAddedController @Inject()(
                                      view: WhenAddedView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("trustee.whenAdded")
-
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)) {
     implicit request =>
+
+      val form = formProvider.withPrefixAndTrustStartDate("trustee.whenAdded", request.userAnswers.whenTrustSetup)
 
       val preparedForm = request.userAnswers.get(WhenAddedPage(index)) match {
         case None => form
@@ -55,10 +55,10 @@ class WhenAddedController @Inject()(
       Ok(view(preparedForm, index, request.trusteeName))
   }
 
-
-
   def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)).async {
     implicit request =>
+
+      val form = formProvider.withPrefixAndTrustStartDate("trustee.whenAdded", request.userAnswers.whenTrustSetup)
 
       form.bindFromRequest().fold(
         formWithErrors =>

@@ -23,12 +23,12 @@
 @(answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("checkYourAnswers.title")
+    title = messages("leadTrusteeDetails.title")
     ) {
 
-    @components.heading("checkYourAnswers.heading")
+    @components.heading("leadTrusteeDetails.heading")
 
-    <p>@messages("checkYourAnswers.guidance")</p>
+    <p>@messages("leadTrusteeDetails.guidance")</p>
 
     @for(section <- answerSections){
         @{

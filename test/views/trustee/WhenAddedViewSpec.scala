@@ -31,7 +31,7 @@ class WhenAddedViewSpec extends QuestionViewBehaviours[LocalDate] {
   val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  override val form: Form[LocalDate] = new DateAddedToTrustFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[LocalDate] = new DateAddedToTrustFormProvider().withPrefixAndTrustStartDate(messageKeyPrefix, LocalDate.now())
 
   "WhenAdded view" must {
 

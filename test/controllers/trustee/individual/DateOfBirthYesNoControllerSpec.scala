@@ -16,6 +16,8 @@
 
 package controllers.trustee.individual
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.YesNoFormProvider
 import models.{Name, UserAnswers}
@@ -44,9 +46,8 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
   val name = Name("FirstName", None, "LastName")
 
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR")
-    .set(NamePage(index), name)
-    .success.value
+  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
+    .set(NamePage(index), name).success.value
 
   lazy val dateOfBirthYesNoRoute = routes.DateOfBirthYesNoController.onPageLoad(index).url
 

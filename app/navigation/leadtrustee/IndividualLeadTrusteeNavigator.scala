@@ -22,6 +22,7 @@ import pages.leadtrustee.individual._
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 import controllers.leadtrustee.individual.{routes => rts}
+import controllers.leadtrustee.{routes => leadTrusteeRoutes}
 
 object IndividualLeadTrusteeNavigator {
   private val simpleNavigations : PartialFunction[Page, Call] = {
@@ -33,7 +34,7 @@ object IndividualLeadTrusteeNavigator {
     case UkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
     case NonUkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
     case EmailAddressPage => rts.TelephoneNumberController.onPageLoad()
-    case TelephoneNumberPage => controllers.routes.CheckYourAnswersController.onPageLoad()
+    case TelephoneNumberPage => leadTrusteeRoutes.DetailsController.onPageLoad()
   }
 
   private val yesNoNavigations : PartialFunction[Page, UserAnswers => Call] =

@@ -16,6 +16,8 @@
 
 package controllers.trustee.individual
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.NonUkAddressFormProvider
 import models.{Name, NonUkAddress, UserAnswers}
@@ -43,9 +45,8 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
   val index = 0
   val name: Name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR")
-    .set(NamePage(index), name)
-    .success.value
+  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
+    .set(NamePage(index), name).success.value
 
   val nonUkAddressRoute: String = routes.NonUkAddressController.onPageLoad(index).url
 

@@ -21,7 +21,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
-import models.{LeadTrusteeOrganisation, UkAddress}
+import models.{LeadTrusteeOrganisation, TrustStartDate, UkAddress}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.Json
@@ -34,6 +34,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   private def getLeadTrusteeUrl(utr: String): String = s"/trusts/$utr/transformed/lead-trustee"
+  private def getTrustStartDateUrl(utr: String): String = s"/trusts/$utr/trust-start-date"
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
 
@@ -99,6 +100,40 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
             UkAddress("address1", "address2", None, None, "Postcode"),
             "now"
           )
+      }
+      application.stop()
+    }
+  }
+
+  "TrustConnector getTrustStartDate" must {
+
+    "must return trust start date" in {
+      val utr = "1000000007"
+      val json = Json.obj(
+        "startDate" -> "2019-06-01"
+      )
+
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        get(urlEqualTo(getTrustStartDateUrl(utr)))
+          .willReturn(okJson(json.toString))
+      )
+
+      val processed = connector.getTrustStartDate(utr)
+
+      whenReady(processed) { startDate =>
+        startDate mustBe TrustStartDate(
+          "2019-06-01"
+        )
       }
       application.stop()
     }
