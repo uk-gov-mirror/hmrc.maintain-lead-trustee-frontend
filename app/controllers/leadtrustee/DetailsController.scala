@@ -21,8 +21,7 @@ import connectors.TrustConnector
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.individual.actions.NameRequiredAction
 import mapping.LeadTrusteesExtractor
-import models.{LeadTrusteeIndividual, UserAnswers}
-import pages.trustee.individual.DateOfBirthPage
+import models.{LeadTrusteeIndividual, Mode, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -60,13 +59,14 @@ class DetailsController @Inject()(
             val bound = checkYourAnswersHelper.bind(updatedAnswers, request.leadTrusteeName)
             val sections = Seq(AnswerSection(None, Seq(
               bound.name,
-              bound.telephoneNumber,
               bound.dateOfBirth,
-              bound.emailAddressYesNo,
-              bound.emailAddress,
+              bound.nationalInsuranceNumber,
               bound.liveInTheUkYesNoPage,
               bound.ukAddress,
-              bound.nonUkAddress
+              bound.nonUkAddress,
+              bound.emailAddressYesNo,
+              bound.emailAddress,
+              bound.telephoneNumber
             ).flatten))
 
             Ok(view(sections))
@@ -75,5 +75,9 @@ class DetailsController @Inject()(
 
           Future.successful(Ok(view(sections)))
       }
+  }
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+    implicit request =>
+        ???
   }
 }
