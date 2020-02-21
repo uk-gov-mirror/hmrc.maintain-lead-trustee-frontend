@@ -34,7 +34,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages("trustee.individual.nonUkAddress.heading", name))
+        @components.heading("trustee.individual.nonUkAddress.heading", Some(name))
 
         @components.non_uk_address(form, countryOptions)
 

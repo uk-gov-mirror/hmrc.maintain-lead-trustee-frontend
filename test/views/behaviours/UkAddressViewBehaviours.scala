@@ -34,13 +34,13 @@ trait UkAddressViewBehaviours extends ViewBehaviours {
                     messageKeyPrefix: Option[String],
                     args : String*) = {
 
-    val prefix = messageKeyPrefix.getOrElse("ukAddress")
+    val prefix = messageKeyPrefix.getOrElse("site.address.uk")
 
     val fields =  Seq(("line1",None),
       ("line2",None),
       ("line3", None),
       ("line4", None),
-      ("postcode", Some("ukAddress.postcode.hint")))
+      ("postcode", Some("site.address.uk.postcode.hint")))
 
     "behave like a ukAddressPage" when {
 
@@ -94,7 +94,7 @@ trait UkAddressViewBehaviours extends ViewBehaviours {
           val doc = asDocument(createView(form))
           val fieldName = field._1
           val fieldHint = field._2 map (k => messages(k))
-          assertContainsLabel(doc, fieldName, messages(s"ukAddress.$fieldName"), fieldHint)
+          assertContainsLabel(doc, fieldName, messages(s"site.address.uk.$fieldName"), fieldHint)
         }
       }
     }

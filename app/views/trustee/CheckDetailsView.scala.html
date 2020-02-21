@@ -14,30 +14,23 @@
  * limitations under the License.
  *@
 
-@import controllers.leadtrustee.individual.routes._
-@import models.Mode
+@import viewmodels.{AnswerSection, RepeaterAnswerSection, Section}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    main_template: MainTemplate
 )
 
-@(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
+@(answerSection: AnswerSection)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("leadtrustee.individual.ukAddress.title", name)}"
+    title = messages("trustee.checkDetails.title")
     ) {
 
-    @formHelper(action = UkAddressController.onSubmit(), 'autoComplete -> "off") {
+    @components.back_link()
 
-        @components.back_link()
+    @components.heading("trustee.checkDetails.heading")
 
-        @components.error_summary(form.errors)
+    @components.answer_section(answerSection)
 
-        @components.heading("leadtrustee.individual.ukAddress.heading", Some(name))
-
-        @components.uk_address(form)
-
-        @components.submit_button()
-    }
+    @components.submit_button()
 }

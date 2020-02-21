@@ -62,8 +62,8 @@ POST       /lead-trustee/individual/what-identification                     cont
 GET        /lead-trustee/individual/telephone-number                        controllers.leadtrustee.individual.TelephoneNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /lead-trustee/individual/telephone-number                        controllers.leadtrustee.individual.TelephoneNumberController.onSubmit(mode: Mode = NormalMode)
 
-GET        /trustee/individual/:index/individual-or-business                controllers.trustee.IndividualOrBusinessController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /trustee/individual/:index/individual-or-business                controllers.trustee.IndividualOrBusinessController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /trustee/:index/individual-or-business                           controllers.trustee.IndividualOrBusinessController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /trustee/:index/individual-or-business                           controllers.trustee.IndividualOrBusinessController.onSubmit(mode: Mode = NormalMode, index: Int)
 
 GET        /trustee/individual/:index/name                                  controllers.trustee.individual.NameController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/individual/:index/name                                  controllers.trustee.individual.NameController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -106,5 +106,8 @@ POST       /trustee/individual/:index/id-card                               cont
 
 GET        /trustee/:index/when-was-trustee-added                           controllers.trustee.WhenAddedController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /trustee/:index/when-was-trustee-added                           controllers.trustee.WhenAddedController.onSubmit(mode: Mode = NormalMode, index: Int)
+
+GET        /trustee/:index/check-details                                    controllers.trustee.CheckDetailsController.onPageLoad(mode: Mode = NormalMode, index: Int)
+#POST       /trustee/:index/check-details                                    controllers.trustee.CheckDetailsController.onSubmit(mode: Mode = NormalMode, index: Int)
 
 GET        /:utr                                                            controllers.IndexController.onPageLoad(utr: String)
