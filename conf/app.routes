@@ -6,8 +6,6 @@ GET        /language/:lang                                                  cont
 
 GET        /this-service-has-been-reset                                     controllers.SessionExpiredController.onPageLoad
 
-GET        /check-your-answers                                              controllers.CheckYourAnswersController.onPageLoad
-
 GET        /unauthorised                                                    controllers.UnauthorisedController.onPageLoad
 
 GET        /logout                                                          controllers.LogoutController.logout()

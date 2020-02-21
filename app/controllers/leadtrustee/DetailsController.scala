@@ -19,18 +19,20 @@ package controllers.leadtrustee
 import com.google.inject.Inject
 import connectors.TrustConnector
 import controllers.actions.StandardActionSets
+import controllers.leadtrustee.individual.actions.NameRequiredAction
 import mapping.LeadTrusteesExtractor
-import models.{LeadTrusteeIndividual}
+import models.{LeadTrusteeIndividual, UserAnswers}
 import pages.trustee.individual.DateOfBirthPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.CheckYourAnswersHelper
 import viewmodels.AnswerSection
+import viewmodels.leadtrustee.individual.CheckYourAnswersHelper
 import views.html.leadtrustee.LeadTrusteeDetailsView
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class DetailsController @Inject()(
                                             override val messagesApi: MessagesApi,
@@ -39,21 +41,33 @@ class DetailsController @Inject()(
                                             view: LeadTrusteeDetailsView,
                                             connector: TrustConnector,
                                             extractor: LeadTrusteesExtractor,
-                                            repository: PlaybackRepository
+                                            repository: PlaybackRepository,
+                                            checkYourAnswersHelper: CheckYourAnswersHelper,
+                                            nameRequiredAction: NameRequiredAction
                                           ) (implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.IdentifiedUserWithData andThen nameRequiredAction).async {
     implicit request =>
 
       connector.getLeadTrustee(request.userAnswers.utr).flatMap {
         case trusteeInd: LeadTrusteeIndividual =>
-          val answers = extractor.extractLeadTrusteeIndividual(request.userAnswers, trusteeInd)
+          val answers: Try[UserAnswers] = extractor.extractLeadTrusteeIndividual(request.userAnswers, trusteeInd)
           for {
             updatedAnswers <- Future.fromTry(answers)
             _ <- repository.set(updatedAnswers)
           } yield {
-            val sections = Seq(AnswerSection(None, Seq()))
+            val bound = checkYourAnswersHelper.bind(updatedAnswers, request.leadTrusteeName)
+            val sections = Seq(AnswerSection(None, Seq(
+              bound.name,
+              bound.telephoneNumber,
+              bound.dateOfBirth,
+              bound.emailAddressYesNo,
+              bound.emailAddress,
+              bound.liveInTheUkYesNoPage,
+              bound.ukAddress,
+              bound.nonUkAddress
+            ).flatten))
 
             Ok(view(sections))
           }
