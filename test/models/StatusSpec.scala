@@ -28,29 +28,29 @@ class StatusSpec extends WordSpec with MustMatchers with PropertyChecks with Opt
 
     "deserialise valid values" in {
 
-      val gen = Gen.oneOf(Status.values.toSeq)
+      val gen = Gen.oneOf(TrusteeStatus.values.toSeq)
 
       forAll(gen) {
         trusteeStatus =>
 
-          JsString(trusteeStatus.toString).validate[Status].asOpt.value mustEqual trusteeStatus
+          JsString(trusteeStatus.toString).validate[TrusteeStatus].asOpt.value mustEqual trusteeStatus
       }
     }
 
     "fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!Status.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!TrusteeStatus.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
 
-          JsString(invalidValue).validate[Status] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[TrusteeStatus] mustEqual JsError("error.invalid")
       }
     }
 
     "serialise" in {
 
-      val gen = Gen.oneOf(Status.values.toSeq)
+      val gen = Gen.oneOf(TrusteeStatus.values.toSeq)
 
       forAll(gen) {
         trusteeStatus =>

@@ -16,10 +16,9 @@
 
 package utils
 
-import models.UserAnswers
-import models.IndividualOrBusiness
 import models.IndividualOrBusiness.{Business, Individual}
-import models.Status.{Completed, InProgress}
+import models.TrusteeStatus.{Completed, InProgress}
+import models.{IndividualOrBusiness, UserAnswers}
 import play.api.i18n.Messages
 import sections.Trustees
 import viewmodels.addAnother.{AddRow, AddToRows, TrusteeViewModel}

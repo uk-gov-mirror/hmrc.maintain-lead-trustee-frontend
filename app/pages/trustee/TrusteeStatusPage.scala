@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package pages.trustee
 
-sealed trait Status
+import models.TrusteeStatus
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import sections.Trustees
 
-object Status extends Enumerable.Implicits {
+case class TrusteeStatusPage(index : Int) extends QuestionPage[TrusteeStatus] {
 
-  case object Completed extends WithName("completed") with Status
+  override def path: JsPath = Trustees.path \ index \ toString
 
-  case object InProgress extends WithName("progress") with Status
-
-  val values: Set[Status] = Set(
-    Completed, InProgress
-  )
-
-  implicit val enumerable: Enumerable[Status] =
-    Enumerable(values.toSeq.map(v => v.toString -> v): _*)
+  override def toString: String = "status"
 }
-
-

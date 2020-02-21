@@ -19,12 +19,11 @@ package controllers.trustee
 import base.SpecBase
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
+import models.TrusteeStatus._
 import models.{AddATrustee, Name, NormalMode}
 import models.IndividualOrBusiness
-import models.Status.Completed
-import pages.trustee.{IndividualOrBusinessPage, TrusteeStatus}
 import pages.trustee.individual.NamePage
-import play.api.mvc.Call
+import pages.trustee.{IndividualOrBusinessPage, TrusteeStatusPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.addAnother.AddRow
@@ -47,10 +46,10 @@ class AddATrusteeControllerSpec extends SpecBase {
   val userAnswersWithTrusteesComplete = emptyUserAnswers
     .set(IndividualOrBusinessPage(0), IndividualOrBusiness.Individual).success.value
     .set(NamePage(0), Name("First 0", None, "Last 0")).success.value
-    .set(TrusteeStatus(0), Completed).success.value
+    .set(TrusteeStatusPage(0), Completed).success.value
     .set(IndividualOrBusinessPage(1), IndividualOrBusiness.Individual).success.value
     .set(NamePage(1), Name("First 1", None, "Last 1")).success.value
-    .set(TrusteeStatus(1), Completed).success.value
+    .set(TrusteeStatusPage(1), Completed).success.value
 
   "AddATrustee Controller" when {
 

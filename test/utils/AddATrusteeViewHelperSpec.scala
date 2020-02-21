@@ -17,11 +17,10 @@
 package utils
 
 import base.SpecBase
-import models.Name
-import models.IndividualOrBusiness
-import models.Status.Completed
+import models.TrusteeStatus.Completed
+import models.{IndividualOrBusiness, Name}
 import pages.trustee.individual.NamePage
-import pages.trustee.{IndividualOrBusinessPage, IsThisLeadTrusteePage, TrusteeStatus}
+import pages.trustee.{IndividualOrBusinessPage, IsThisLeadTrusteePage, TrusteeStatusPage}
 import viewmodels.addAnother.AddRow
 
 class AddATrusteeViewHelperSpec extends SpecBase {
@@ -30,11 +29,11 @@ class AddATrusteeViewHelperSpec extends SpecBase {
     .set(IsThisLeadTrusteePage(0), true).success.value
     .set(IndividualOrBusinessPage(0), IndividualOrBusiness.Individual).success.value
     .set(NamePage(0), Name("First 0", None, "Last 0")).success.value
-    .set(TrusteeStatus(0), Completed).success.value
+    .set(TrusteeStatusPage(0), Completed).success.value
     .set(IsThisLeadTrusteePage(1), false).success.value
     .set(IndividualOrBusinessPage(1), IndividualOrBusiness.Individual).success.value
     .set(NamePage(1), Name("First 1", None, "Last 1")).success.value
-    .set(TrusteeStatus(1), Completed).success.value
+    .set(TrusteeStatusPage(1), Completed).success.value
 
   val userAnswersWithTrusteesInProgress = emptyUserAnswers
     .set(IsThisLeadTrusteePage(0), false).success.value
@@ -49,7 +48,7 @@ class AddATrusteeViewHelperSpec extends SpecBase {
     .set(IsThisLeadTrusteePage(1), true).success.value
     .set(IndividualOrBusinessPage(1), IndividualOrBusiness.Individual).success.value
     .set(NamePage(1), Name("First 1", Some("Middle"), "Last 1")).success.value
-    .set(TrusteeStatus(1), Completed).success.value
+    .set(TrusteeStatusPage(1), Completed).success.value
 
   val userAnswersWithNoTrustees = emptyUserAnswers
 
@@ -81,7 +80,7 @@ class AddATrusteeViewHelperSpec extends SpecBase {
         )
         rows.inProgress mustBe Nil
       }
-
+      
       "generate rows from user answers for complete and in progress trustees" in {
         val rows = new AddATrusteeViewHelper(userAnswersWithCompleteAndInProgress).rows
         rows.complete mustBe List(

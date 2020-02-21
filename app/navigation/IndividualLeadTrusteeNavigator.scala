@@ -16,7 +16,7 @@
 
 package navigation
 
-import models.{AddATrustee, NormalMode, UserAnswers}
+import models.{AddATrustee, UserAnswers}
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 import controllers.leadtrustee.individual.{routes => rts}
@@ -26,6 +26,7 @@ import pages.trustee.{AddATrusteePage, AddATrusteeYesNoPage}
 import sections.Trustees
 
 object IndividualLeadTrusteeNavigator {
+
   private val simpleNavigations : PartialFunction[Page, Call] = {
     case NamePage => rts.DateOfBirthController.onPageLoad()
     case DateOfBirthPage => rts.UkCitizenController.onPageLoad()
@@ -102,6 +103,5 @@ object IndividualLeadTrusteeNavigator {
       case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
-
 
 }

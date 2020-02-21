@@ -16,13 +16,13 @@
 
 package viewmodels.addAnother
 
-import models.{IndividualOrBusiness, Name, Status}
-import models.Status.InProgress
+import models.TrusteeStatus.InProgress
+import models.{IndividualOrBusiness, Name, TrusteeStatus}
 
 final case class TrusteeViewModel(isLead : Boolean,
                                     name : Option[String],
                                   `type` : Option[IndividualOrBusiness],
-                                  status : Status)
+                                  status : TrusteeStatus)
 
 object TrusteeViewModel {
 
@@ -43,7 +43,7 @@ object TrusteeViewModel {
     (__ \ "isThisLeadTrustee").readWithDefault[Boolean](false) and
       (__ \ "individualOrBusiness").readNullable[IndividualOrBusiness] and
       nameReads and
-      (__ \ "status").readWithDefault[Status](InProgress)
+      (__ \ "status").readWithDefault[TrusteeStatus](InProgress)
     )(
       (isLead, individualOrBusiness, name, status) => {
         TrusteeViewModel(isLead, name, individualOrBusiness, status)
