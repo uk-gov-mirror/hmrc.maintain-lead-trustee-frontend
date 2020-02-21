@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package navigation
+package navigation.leadtrustee
 
+import models.IdentificationDetailOptions.{IdCard, Passport}
 import models.UserAnswers
+import pages.leadtrustee.individual._
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 import controllers.leadtrustee.individual.{routes => rts}
-import models.IdentificationDetailOptions.{IdCard, Passport}
-import pages.leadtrustee.individual._
 
 object IndividualLeadTrusteeNavigator {
   private val simpleNavigations : PartialFunction[Page, Call] = {

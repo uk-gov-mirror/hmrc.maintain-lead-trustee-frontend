@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package navigation
+package navigation.trustee
 
-import controllers.trustee.individual.{routes => rts}
 import models.UserAnswers
 import pages.trustee.individual._
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
+import controllers.trustee.individual.{routes => rts}
 
 object IndividualTrusteeNavigator {
   private val simpleNavigation: PartialFunction[Page, Call] = {

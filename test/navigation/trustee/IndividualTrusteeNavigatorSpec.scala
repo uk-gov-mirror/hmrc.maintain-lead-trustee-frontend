@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package navigation
+package navigation.trustee
 
 import base.SpecBase
 import models._
+import navigation.Navigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.trustee.individual._
 
