@@ -31,11 +31,12 @@ class PassportDetailsFormProvider @Inject() extends Mappings with Constraints {
 
   def withPrefix(prefix: String): Form[Passport] = Form(
     mapping(
-      "country" -> text(s"$prefix.individual.passportDetails.country.error.required")
+      "number" -> text(s"$prefix.individual.passportDetails.number.error.required")
         .verifying(
           firstError(
-            maxLength(maxLengthCountryField, s"$prefix.individual.passportDetails.country.error.length"),
-            nonEmptyString("country", s"$prefix.individual.passportDetails.country.error.required")
+            maxLength(maxLengthNumberField, s"$prefix.individual.passportDetails.number.error.length"),
+            regexp(Validation.passportOrIdCardNumberRegEx, s"$prefix.individual.passportDetails.number.error.invalid"),
+            nonEmptyString("number", s"$prefix.individual.passportDetails.number.error.required")
           )
         ),
       "expiryDate" -> localDate(
@@ -52,12 +53,12 @@ class PassportDetailsFormProvider @Inject() extends Mappings with Constraints {
           LocalDate.of(1500,1,1),
           s"$prefix.individual.passportDetails.expiryDate.error.past", "day", "month", "year"
         )
-      )),      "number" -> text(s"$prefix.individual.passportDetails.number.error.required")
+      )),
+      "country" -> text(s"$prefix.individual.passportDetails.country.error.required")
         .verifying(
           firstError(
-            maxLength(maxLengthNumberField, s"$prefix.individual.passportDetails.number.error.length"),
-            regexp(Validation.passportOrIdCardNumberRegEx, s"$prefix.individual.passportDetails.number.error.invalid"),
-            nonEmptyString("number", s"$prefix.individual.passportDetails.number.error.required")
+            maxLength(maxLengthCountryField, s"$prefix.individual.passportDetails.country.error.length"),
+            nonEmptyString("country", s"$prefix.individual.passportDetails.country.error.required")
           )
         )
     )(Passport.apply)(Passport.unapply)

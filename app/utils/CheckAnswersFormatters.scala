@@ -19,7 +19,7 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import javax.inject.Inject
-import models.{IdCard, Passport}
+import models.{IdCard, IdentificationDetailOptions, Passport}
 import play.twirl.api.{Html, HtmlFormat}
 import utils.countryOptions.CountryOptions
 
@@ -50,5 +50,12 @@ class CheckAnswersFormatters @Inject()(countryOptions: CountryOptions) {
       ).flatten
 
     Html(lines.mkString("<br />"))
+  }
+
+  def identificationDetailOptions(identificationDetailOptions: IdentificationDetailOptions): Html = {
+    identificationDetailOptions match {
+      case IdentificationDetailOptions.IdCard => HtmlFormat.escape("ID card")
+      case IdentificationDetailOptions.Passport => HtmlFormat.escape("Passport")
+    }
   }
 }

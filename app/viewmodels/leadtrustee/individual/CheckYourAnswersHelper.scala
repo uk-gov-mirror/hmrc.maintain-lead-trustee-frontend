@@ -45,7 +45,7 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
       x =>
         AnswerRow(
           HtmlFormat.escape(messages("leadtrustee.individual.identificationDetailOptions.checkYourAnswersLabel", leadTrusteeName)),
-          HtmlFormat.escape(messages(s"identificationDetailOptions.$x")),
+          formatter.identificationDetailOptions(x),
           individualLeadtrusteeRoutes.IdentificationDetailOptionsController.onPageLoad().url
         )
     }

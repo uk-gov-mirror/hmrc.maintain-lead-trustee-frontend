@@ -133,8 +133,8 @@ trusteeName.defaultText = the trustee
 individualOrBusiness.individual = Individual
 individualOrBusiness.business = Business
 
-leadTrusteeDetails.title = Lead Trustee Details
-leadTrusteeDetails.heading = Lead Trustee Details
+leadTrusteeDetails.title = Check lead trustee details
+leadTrusteeDetails.heading = Check lead trustee details
 leadTrusteeDetails.guidance =
 
 leadtrustee.individual.name.title = What is the lead trustee’s name?
@@ -217,14 +217,10 @@ leadtrustee.individual.passportDetails.expiryDate.error.invalid = Enter a real d
 leadtrustee.individual.passportDetails.expiryDate.error.future = Passport expiry date must be after 31 December 1499 and before 01 January 2100
 leadtrustee.individual.passportDetails.expiryDate.error.past = Passport expiry date must be after 31 December 1499 and before 01 January 2100
 
-leadtrustee.individual.liveInTheUkYesNoPage.title = liveInTheUkYesNoPage
-leadtrustee.individual.liveInTheUkYesNoPage.heading = liveInTheUkYesNoPage
-leadtrustee.individual.liveInTheUkYesNoPage.checkYourAnswersLabel = liveInTheUkYesNoPage
-leadtrustee.individual.liveInTheUkYesNoPage.error.required = Select yes if liveInTheUkYesNoPage
 leadtrustee.individual.liveInTheUkYesNoPage.title = Does {0} live in the UK?
 leadtrustee.individual.liveInTheUkYesNoPage.heading = Does {0} live in the UK?
 leadtrustee.individual.liveInTheUkYesNoPage.checkYourAnswersLabel = Does {0} live in the UK?
-leadtrustee.individual.liveInTheUkYesNoPage.error.required = Select yes if {0} lives in the UK
+leadtrustee.individual.liveInTheUkYesNoPage.error.required = Select yes if the lead trustee lives in the UK
 
 leadtrustee.individual.nonUkAddress.title = What is {0}’s address?
 leadtrustee.individual.nonUkAddress.heading = What is {0}’s address?

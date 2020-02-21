@@ -31,11 +31,12 @@ class IdCardDetailsFormProvider @Inject() extends Mappings with Constraints {
 
   def withPrefix(prefix: String): Form[IdCard] = Form(
     mapping(
-      "country" -> text(s"$prefix.individual.idCardDetails.country.error.required")
+      "number" -> text(s"$prefix.individual.idCardDetails.number.error.required")
         .verifying(
           firstError(
-            maxLength(maxLengthCountryField, s"$prefix.individual.idCardDetails.country.error.length"),
-            nonEmptyString("country", s"$prefix.individual.idCardDetails.country.error.required")
+            maxLength(maxLengthNumberField, s"$prefix.individual.idCardDetails.number.error.length"),
+            regexp(Validation.passportOrIdCardNumberRegEx, s"$prefix.individual.idCardDetails.number.error.invalid"),
+            nonEmptyString("number", s"$prefix.individual.idCardDetails.number.error.required")
           )
         ),
       "expiryDate" -> localDate(
@@ -52,12 +53,12 @@ class IdCardDetailsFormProvider @Inject() extends Mappings with Constraints {
           LocalDate.of(1500,1,1),
           s"$prefix.individual.idCardDetails.expiryDate.error.past", "day", "month", "year"
         )
-      )),      "number" -> text(s"$prefix.individual.idCardDetails.number.error.required")
+      )),
+      "country" -> text(s"$prefix.individual.idCardDetails.country.error.required")
         .verifying(
           firstError(
-            maxLength(maxLengthNumberField, s"$prefix.individual.idCardDetails.number.error.length"),
-            regexp(Validation.passportOrIdCardNumberRegEx, s"$prefix.individual.idCardDetails.number.error.invalid"),
-            nonEmptyString("number", s"$prefix.individual.idCardDetails.number.error.required")
+            maxLength(maxLengthCountryField, s"$prefix.individual.idCardDetails.country.error.length"),
+            nonEmptyString("country", s"$prefix.individual.idCardDetails.country.error.required")
           )
         )
     )(IdCard.apply)(IdCard.unapply)
