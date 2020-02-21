@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(headingKey: String, msgParam: Option[String] = None, headingSize: String = "heading-xlarge")(implicit messages: Messages)
+package viewmodels
 
-<h1 class="@headingSize">@messages(headingKey, msgParam.getOrElse(""))</h1>
+case class Link(text: String, url: String)

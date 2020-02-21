@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 
-package utils
+package viewmodels.leadtrustee.individual
 
 import java.time.format.DateTimeFormatter
 
 import controllers.leadtrustee.individual.{routes => individualLeadtrusteeRoutes}
+import javax.inject.Inject
 import models.UserAnswers
+import pages.leadtrustee.individual._
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
+import utils.CheckAnswersFormatters
 import viewmodels.AnswerRow
-import javax.inject.Inject
-import pages.leadtrustee.individual._
 
 class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
-  def bind(userAnswers: UserAnswers)(implicit messages: Messages): Bound = new Bound(formatter, userAnswers)
+  def bind(userAnswers: UserAnswers, leadTrusteeName: String)(implicit messages: Messages): Bound = new Bound(formatter, userAnswers, leadTrusteeName)
 
-  class Bound(formatter: CheckAnswersFormatters, userAnswers: UserAnswers)(implicit messages: Messages) {
+  class Bound(formatter: CheckAnswersFormatters, userAnswers: UserAnswers, leadTrusteeName: String)(implicit messages: Messages) {
 
     def telephoneNumber: Option[AnswerRow] = userAnswers.get(TelephoneNumberPage) map {
       x =>
         AnswerRow(
-          HtmlFormat.escape(messages("telephoneNumber.checkYourAnswersLabel")),
+          HtmlFormat.escape(messages("leadtrustee.individual.telephoneNumber.checkYourAnswersLabel", leadTrusteeName)),
           HtmlFormat.escape(x),
           individualLeadtrusteeRoutes.TelephoneNumberController.onPageLoad().url
         )
@@ -43,7 +44,7 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
     def identificationDetailOptions: Option[AnswerRow] = userAnswers.get(IdentificationDetailOptionsPage) map {
       x =>
         AnswerRow(
-          HtmlFormat.escape(messages("identificationDetailOptions.checkYourAnswersLabel")),
+          HtmlFormat.escape(messages("leadtrustee.individual.identificationDetailOptions.checkYourAnswersLabel", leadTrusteeName)),
           HtmlFormat.escape(messages(s"identificationDetailOptions.$x")),
           individualLeadtrusteeRoutes.IdentificationDetailOptionsController.onPageLoad().url
         )
@@ -52,7 +53,7 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
     def emailAddressYesNo: Option[AnswerRow] = userAnswers.get(EmailAddressYesNoPage) map {
       x =>
         AnswerRow(
-          HtmlFormat.escape(messages("emailAddressYesNo.checkYourAnswersLabel")),
+          HtmlFormat.escape(messages("leadtrustee.individual.emailAddressYesNo.checkYourAnswersLabel", leadTrusteeName)),
           yesOrNo(x),
           individualLeadtrusteeRoutes.EmailAddressYesNoController.onPageLoad().url
         )
@@ -61,7 +62,7 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
     def emailAddress: Option[AnswerRow] = userAnswers.get(EmailAddressPage) map {
       x =>
         AnswerRow(
-          HtmlFormat.escape(messages("emailAddress.checkYourAnswersLabel")),
+          HtmlFormat.escape(messages("leadtrustee.individual.emailAddress.checkYourAnswersLabel", leadTrusteeName)),
           HtmlFormat.escape(x),
           individualLeadtrusteeRoutes.EmailAddressController.onPageLoad().url
         )
@@ -70,7 +71,7 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
     def ukCitizen: Option[AnswerRow] = userAnswers.get(UkCitizenPage) map {
       x =>
         AnswerRow(
-          HtmlFormat.escape(messages("ukCitizen.checkYourAnswersLabel")),
+          HtmlFormat.escape(messages("leadtrustee.individual.ukCitizen.checkYourAnswersLabel", leadTrusteeName)),
           yesOrNo(x),
           individualLeadtrusteeRoutes.UkCitizenController.onPageLoad().url
         )
@@ -79,7 +80,7 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
     def ukAddress: Option[AnswerRow] = userAnswers.get(UkAddressPage) map {
       x =>
         AnswerRow(
-          HtmlFormat.escape(messages("ukAddress.checkYourAnswersLabel")),
+          HtmlFormat.escape(messages("leadtrustee.individual.ukAddress.checkYourAnswersLabel", leadTrusteeName)),
           HtmlFormat.escape(s"${x.line1} ${x.line2}"),
           individualLeadtrusteeRoutes.UkAddressController.onPageLoad().url
         )
@@ -88,7 +89,7 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
     def passportDetails: Option[AnswerRow] = userAnswers.get(PassportDetailsPage) map {
       x =>
         AnswerRow(
-          HtmlFormat.escape(messages("passportDetails.checkYourAnswersLabel")),
+          HtmlFormat.escape(messages("leadtrustee.individual.passportDetails.checkYourAnswersLabel", leadTrusteeName)),
           formatter.passport(x),
           individualLeadtrusteeRoutes.PassportDetailsController.onPageLoad().url
         )
@@ -97,7 +98,7 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
     def nonUkAddress: Option[AnswerRow] = userAnswers.get(NonUkAddressPage) map {
       x =>
         AnswerRow(
-          HtmlFormat.escape(messages("nonUkAddress.checkYourAnswersLabel")),
+          HtmlFormat.escape(messages("leadtrustee.individual.nonUkAddress.checkYourAnswersLabel", leadTrusteeName)),
           HtmlFormat.escape(s"${x.line1} ${x.line2}"),
           individualLeadtrusteeRoutes.NonUkAddressController.onPageLoad().url
         )
@@ -106,7 +107,7 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
     def nationalInsuranceNumber: Option[AnswerRow] = userAnswers.get(NationalInsuranceNumberPage) map {
       x =>
         AnswerRow(
-          HtmlFormat.escape(messages("nationalInsuranceNumber.checkYourAnswersLabel")),
+          HtmlFormat.escape(messages("leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", leadTrusteeName)),
           HtmlFormat.escape(x),
           individualLeadtrusteeRoutes.NationalInsuranceNumberController.onPageLoad().url
         )
@@ -115,7 +116,7 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
     def name: Option[AnswerRow] = userAnswers.get(NamePage) map {
       x =>
         AnswerRow(
-          HtmlFormat.escape(messages("name.checkYourAnswersLabel")),
+          HtmlFormat.escape(messages("leadtrustee.individual.name.checkYourAnswersLabel")),
           HtmlFormat.escape(s"${x.firstName} ${x.lastName}"),
           individualLeadtrusteeRoutes.NameController.onPageLoad().url
         )
@@ -124,7 +125,7 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
     def liveInTheUkYesNoPage: Option[AnswerRow] = userAnswers.get(LiveInTheUkYesNoPage) map {
       x =>
         AnswerRow(
-          HtmlFormat.escape(messages("liveInTheUkYesNoPage.checkYourAnswersLabel")),
+          HtmlFormat.escape(messages("leadtrustee.individual.liveInTheUkYesNoPage.checkYourAnswersLabel", leadTrusteeName)),
           yesOrNo(x),
           individualLeadtrusteeRoutes.LiveInTheUkYesNoPageController.onPageLoad().url
         )
@@ -133,7 +134,7 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
     def idCardDetails: Option[AnswerRow] = userAnswers.get(IdCardDetailsPage) map {
       x =>
         AnswerRow(
-          HtmlFormat.escape(messages("idCardDetails.checkYourAnswersLabel")),
+          HtmlFormat.escape(messages("leadtrustee.individual.idCardDetails.checkYourAnswersLabel", leadTrusteeName)),
           formatter.idCard(x),
           individualLeadtrusteeRoutes.IdCardDetailsController.onPageLoad().url
         )
@@ -142,7 +143,7 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
     def dateOfBirth: Option[AnswerRow] = userAnswers.get(DateOfBirthPage) map {
       x =>
         AnswerRow(
-          HtmlFormat.escape(messages("dateOfBirth.checkYourAnswersLabel")),
+          HtmlFormat.escape(messages("leadtrustee.individual.dateOfBirth.checkYourAnswersLabel", leadTrusteeName)),
           HtmlFormat.escape(x.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))),
           individualLeadtrusteeRoutes.DateOfBirthController.onPageLoad().url
         )

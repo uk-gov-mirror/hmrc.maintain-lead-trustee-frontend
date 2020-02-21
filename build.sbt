@@ -44,7 +44,11 @@ lazy val root = (project in file("."))
     // concatenate js
     Concat.groups := Seq(
       "javascripts/maintainleadtrusteefrontend-app.js" ->
-        group(Seq("javascripts/show-hide-content.js", "javascripts/maintainleadtrusteefrontend.js"))
+        group(Seq(
+          "javascripts/show-hide-content.js",
+          "javascripts/maintainleadtrusteefrontend.js",
+          "javascripts/autocomplete/location-autocomplete.min.js"
+        ))
     ),
     // prevent removal of unused code which generates warning errors due to use of third-party libs
     uglifyCompressOptions := Seq("unused=false", "dead_code=false"),

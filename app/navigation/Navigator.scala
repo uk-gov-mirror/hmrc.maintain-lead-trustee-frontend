@@ -36,7 +36,7 @@ class Navigator @Inject()() {
     case NormalMode =>
       normalRoutes(page)(userAnswers)
     case _ =>
-      controllers.routes.CheckYourAnswersController.onPageLoad()
+      controllers.routes.IndexController.onPageLoad(userAnswers.utr)
   }
 }
 
