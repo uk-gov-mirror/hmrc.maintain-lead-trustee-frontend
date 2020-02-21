@@ -107,6 +107,10 @@ nonUkAddress.error.line3.invalidCharacters = Address line 3 must only include le
 leadTrusteeName.defaultText = the lead trustee
 trusteeName.defaultText = the trustee
 
+leadTrusteeDetails.title = Lead Trustee Details
+leadTrusteeDetails.heading = Lead Trustee Details
+leadTrusteeDetails.guidance =
+
 leadtrustee.individual.name.title = What is the lead trustee’s name?
 leadtrustee.individual.name.heading = What is the lead trustee’s name?
 leadtrustee.individual.name.firstName = First name

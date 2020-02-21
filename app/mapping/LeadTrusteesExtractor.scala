@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import models.{Address, IdCard, LeadTrusteeIndividual, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
 import pages.leadtrustee.{individual => ltind}
 
-import scala.util.Try
+import scala.util.{Success, Try}
 
 class LeadTrusteesExtractor @Inject()() {
 
@@ -48,14 +48,15 @@ class LeadTrusteesExtractor @Inject()() {
     }
   }
 
-  private def extractAddress(address: Address, answers: UserAnswers) = {
+  private def extractAddress(address: Option[Address], answers: UserAnswers) = {
     address match {
-      case uk: UkAddress =>
+      case Some(uk: UkAddress) =>
         answers.set(ltind.UkAddressPage, uk)
           .flatMap(_.set(ltind.LiveInTheUkYesNoPage, true))
-      case nonUk: NonUkAddress =>
+      case Some(nonUk: NonUkAddress) =>
         answers.set(ltind.NonUkAddressPage, nonUk)
           .flatMap(_.set(ltind.LiveInTheUkYesNoPage, false))
+      case None => Success(answers)
     }
   }
 
