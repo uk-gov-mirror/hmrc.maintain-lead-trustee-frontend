@@ -18,7 +18,7 @@ package controllers.trustee.individual
 
 import controllers.actions._
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
-import forms.PassportOrIdCardFormProvider
+import forms.IdCardDetailsFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
@@ -38,13 +38,13 @@ class IdCardDetailsController @Inject()(
                                            navigator: Navigator,
                                            standardActionSets: StandardActionSets,
                                            nameAction: TrusteeNameRequiredProvider,
-                                           formProvider: PassportOrIdCardFormProvider,
+                                           formProvider: IdCardDetailsFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: IdCardDetailsView,
                                            val countryOptions: CountryOptions
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider("trustee.individual.idCardDetails")
+  val form = formProvider.withPrefix("trustee")
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)) {
     implicit request =>

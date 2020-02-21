@@ -29,35 +29,35 @@ class PassportDetailsFormProvider @Inject() extends Mappings with Constraints {
   val maxLengthCountryField = 100
   val maxLengthNumberField = 30
 
-  def apply(prefix: String): Form[Passport] = Form(
+  def withPrefix(prefix: String): Form[Passport] = Form(
     mapping(
-      "country" -> text(s"$prefix.country.error.required")
+      "country" -> text(s"$prefix.individual.passportDetails.country.error.required")
         .verifying(
           firstError(
-            maxLength(maxLengthCountryField, s"$prefix.country.error.length"),
-            nonEmptyString("country", s"$prefix.country.error.required")
+            maxLength(maxLengthCountryField, s"$prefix.individual.passportDetails.country.error.length"),
+            nonEmptyString("country", s"$prefix.individual.passportDetails.country.error.required")
           )
         ),
       "expiryDate" -> localDate(
-        invalidKey     = s"$prefix.expiryDate.error.invalid",
-        allRequiredKey = s"$prefix.expiryDate.error.required.all",
-        twoRequiredKey = s"$prefix.expiryDate.error.required.two",
-        requiredKey    = s"$prefix.expiryDate.error.required"
+        invalidKey     = s"$prefix.individual.passportDetails.expiryDate.error.invalid",
+        allRequiredKey = s"$prefix.individual.passportDetails.expiryDate.error.required.all",
+        twoRequiredKey = s"$prefix.individual.passportDetails.expiryDate.error.required.two",
+        requiredKey    = s"$prefix.individual.passportDetails.expiryDate.error.required"
       ).verifying(firstError(
         maxDate(
           LocalDate.of(2099, 12, 31),
-          s"$prefix.expiryDate.error.future", "day", "month", "year"
+          s"$prefix.individual.passportDetails.expiryDate.error.future", "day", "month", "year"
         ),
         minDate(
           LocalDate.of(1500,1,1),
-          s"$prefix.expiryDate.error.past", "day", "month", "year"
+          s"$prefix.individual.passportDetails.expiryDate.error.past", "day", "month", "year"
         )
-      )),      "number" -> text(s"$prefix.number.error.required")
+      )),      "number" -> text(s"$prefix.individual.passportDetails.number.error.required")
         .verifying(
           firstError(
-            maxLength(maxLengthNumberField, s"$prefix.number.error.length"),
-            regexp(Validation.passportOrIdCardNumberRegEx, s"$prefix.number.error.invalid"),
-            nonEmptyString("number", s"$prefix.number.error.required")
+            maxLength(maxLengthNumberField, s"$prefix.individual.passportDetails.number.error.length"),
+            regexp(Validation.passportOrIdCardNumberRegEx, s"$prefix.individual.passportDetails.number.error.invalid"),
+            nonEmptyString("number", s"$prefix.individual.passportDetails.number.error.required")
           )
         )
     )(Passport.apply)(Passport.unapply)
