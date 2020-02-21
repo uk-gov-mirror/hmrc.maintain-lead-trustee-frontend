@@ -18,12 +18,12 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import forms.UkAddressFormProvider
-import models.UkAddress
+import models.{Name, UkAddress}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.UkAddressPage
+import pages.leadtrustee.individual.{NamePage, UkAddressPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -39,7 +39,11 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new UkAddressFormProvider()
   val form = formProvider()
-  val index = 0
+
+  val name = Name("Lead", None, "Trustee")
+
+  override val emptyUserAnswers = super.emptyUserAnswers
+    .set(NamePage, name).success.value
 
   val validAnswer = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
 
@@ -62,7 +66,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(request, messages).toString
+        view(form, name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -80,7 +84,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(UkAddress("value 1", "value 2", None, None, "AB1 1AB")))(fakeRequest, messages).toString
+        view(form.fill(UkAddress("value 1", "value 2", None, None, "AB1 1AB")), name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -129,7 +133,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(fakeRequest, messages).toString
 
        application.stop()
     }

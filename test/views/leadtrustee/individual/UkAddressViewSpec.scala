@@ -35,7 +35,7 @@ class UkAddressViewSpec extends QuestionViewBehaviours[UkAddress] {
     val view = viewFor[UkAddressView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form)(fakeRequest, messages)
+      view.apply(form, "Lead Trustee")(fakeRequest, messages)
 
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, "Lead Trustee")
