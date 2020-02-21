@@ -18,11 +18,12 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import forms.YesNoFormProvider
+import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.LiveInTheUkYesNoPage
+import pages.leadtrustee.individual.{LiveInTheUkYesNoPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -37,9 +38,14 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNoPage")
+  val form = formProvider.withPrefix("leadtrustee")
 
   lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoPageController.onPageLoad().url
+
+  val name = Name("Lead", None, "Trustee")
+
+  override val emptyUserAnswers = super.emptyUserAnswers
+    .set(NamePage, name).success.value
 
   "LiveInTheUkYesNoPage Controller" must {
 
@@ -56,7 +62,7 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(fakeRequest, messages).toString
+        view(form, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -76,7 +82,7 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true))(fakeRequest, messages).toString
+        view(form.fill(true), name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -124,7 +130,7 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
