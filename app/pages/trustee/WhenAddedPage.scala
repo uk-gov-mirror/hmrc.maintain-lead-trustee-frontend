@@ -20,11 +20,10 @@ import java.time.LocalDate
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.Trustees
 
 case class WhenAddedPage(index: Int) extends QuestionPage[LocalDate] {
 
-  override def path: JsPath = Trustees.path \ index \ toString
+  override def path: JsPath = basePath \ index \ toString
 
   override def toString: String = "dateAddedToTrust"
 }

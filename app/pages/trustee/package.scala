@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-package sections
+package pages
 
-import pages.QuestionPage
-import play.api.libs.json.{JsArray, JsPath}
+import play.api.libs.json.JsPath
 
-case object Trustees extends QuestionPage[JsArray]{
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "trustees"
-
+package object trustee {
+  val basePath = JsPath \ 'trustee
 }

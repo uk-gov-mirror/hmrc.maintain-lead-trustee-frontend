@@ -16,11 +16,12 @@
 
 package controllers.trustee
 
+import connectors.TrustConnector
 import controllers.actions._
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import javax.inject.Inject
 import models.IndividualOrBusiness._
-import models.{Mode, UserAnswers}
+import models.{Mode, TrusteeIndividual, UserAnswers}
 import navigation.Navigator
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import pages.trustee.individual._
@@ -32,6 +33,7 @@ import utils.countryOptions.CountryOptions
 import utils.print.AnswerRowConverter
 import viewmodels.AnswerSection
 import views.html.trustee.CheckDetailsView
+import services.TrusteeBuilder
 
 import scala.concurrent.ExecutionContext
 
@@ -44,10 +46,12 @@ class CheckDetailsController @Inject()(
                                 view: CheckDetailsView,
                                 answerRowConverter: AnswerRowConverter,
                                 nameAction: TrusteeNameRequiredProvider,
-                                val countryOptions: CountryOptions
+                                val countryOptions: CountryOptions,
+                                service: TrusteeBuilder,
+                                trustConnector: TrustConnector
                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
     implicit request =>
 
       val bound = answerRowConverter.bind(request.userAnswers, request.trusteeName, countryOptions)
@@ -77,5 +81,13 @@ class CheckDetailsController @Inject()(
       }
 
       Ok(view(section))
+  }
+
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+    implicit request =>
+      val trusteeInd: TrusteeIndividual = service.createTrusteeIndividual(request.userAnswers, index)
+      trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd).map{ _ =>
+        Ok("") //TODO: Where does this page go?
+      }
   }
 }
