@@ -20,6 +20,7 @@ import java.time.LocalDate
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import sections.Trustees
 
 case class DateOfBirthPage(index: Int) extends QuestionPage[LocalDate] {
 

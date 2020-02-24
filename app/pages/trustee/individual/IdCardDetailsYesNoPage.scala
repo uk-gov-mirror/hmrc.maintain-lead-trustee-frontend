@@ -25,7 +25,7 @@ import scala.util.Try
 
 case class IdCardDetailsYesNoPage(index: Int) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = Trustees.path \ index \ toString
+  override def path: JsPath = basePath \ index \ toString
 
   override def toString: String = "idCardDetailsYesNo"
 

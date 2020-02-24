@@ -20,10 +20,10 @@ import base.SpecBase
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
 import models.TrusteeStatus._
-import models.{AddATrustee, IndividualOrBusiness, Name, NormalMode}
+import models.{AddATrustee, Name, NormalMode}
+import models.IndividualOrBusiness
 import pages.trustee.individual.NamePage
 import pages.trustee.{IndividualOrBusinessPage, TrusteeStatusPage}
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.addAnother.AddRow
@@ -50,8 +50,6 @@ class AddATrusteeControllerSpec extends SpecBase {
     .set(IndividualOrBusinessPage(1), IndividualOrBusiness.Individual).success.value
     .set(NamePage(1), Name("First 1", None, "Last 1")).success.value
     .set(TrusteeStatusPage(1), Completed).success.value
-
-  def onwardRoute = Call("GET", "/maintain-a-trust/trustees")
 
   "AddATrustee Controller" when {
 
@@ -122,7 +120,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.leadtrustee.individual.routes.NameController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.trustee.individual.routes.NameController.onPageLoad(0).url
 
         application.stop()
       }
@@ -183,7 +181,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual controllers.trustee.individual.routes.NameController.onPageLoad(2).url
 
         application.stop()
       }

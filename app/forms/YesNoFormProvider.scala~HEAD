@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
-import play.api.libs.json._
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-case class Name (firstName: String, middleName: Option[String], lastName: String) {
-  lazy val displayName : String = firstName + " " + lastName
-  override def toString = s"$firstName $lastName"
-}
+class YesNoFormProvider @Inject() extends Mappings {
 
-object Name {
-  implicit lazy val formats: OFormat[Name] = Json.format[Name]
+  def withPrefix(prefix: String): Form[Boolean] =
+    Form(
+      "value" -> boolean(s"$prefix.error.required")
+    )
 }

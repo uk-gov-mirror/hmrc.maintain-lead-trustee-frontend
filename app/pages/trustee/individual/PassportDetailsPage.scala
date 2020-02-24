@@ -23,7 +23,7 @@ import sections.Trustees
 
 case class PassportDetailsPage(index: Int) extends QuestionPage[PassportOrIdCardDetails] {
 
-  override def path: JsPath = Trustees.path \ index \ toString
+  override def path: JsPath = basePath \ index \ toString
 
   override def toString: String = "passportDetails"
 
