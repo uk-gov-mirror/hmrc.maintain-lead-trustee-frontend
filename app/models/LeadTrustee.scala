@@ -32,28 +32,28 @@ object LeadTrustee {
 }
 
 case class LeadTrusteeIndividual(
-                                  lineNo: String,
-                                  bpMatchStatus: Option[String],
+                                  //lineNo: String,
+                                  //bpMatchStatus: Option[String],
                                   name: Name,
                                   dateOfBirth: LocalDate,
                                   phoneNumber: String,
                                   email: Option[String] = None,
                                   identification: IndividualIdentification,
-                                  address: Option[Address],
-                                  entityStart: String
+                                  address: Option[Address]//,
+                                  //entityStart: String
                                 ) extends LeadTrustee
 
 object LeadTrusteeIndividual {
   implicit val reads: Reads[LeadTrusteeIndividual] =
-    ((__ \ 'lineNo).read[String] and
-    (__ \ 'bpMatchStatus).readNullable[String] and
+    (//(__ \ 'lineNo).read[String] and
+    //(__ \ 'bpMatchStatus).readNullable[String] and
     (__ \ 'name).read[Name] and
     (__ \ 'dateOfBirth).read[LocalDate] and
     (__ \ 'phoneNumber).read[String] and
     (__ \ 'email).readNullable[String] and
     (__ \ 'identification).read[IndividualIdentification] and
-    (__ \ 'identification \ 'address).readNullable[Address] and
-    (__ \ 'entityStart).read[String]).apply(LeadTrusteeIndividual.apply _)
+    (__ \ 'identification \ 'address).readNullable[Address] //and
+    /*(__ \ 'entityStart).read[String]*/).apply(LeadTrusteeIndividual.apply _)
 }
 
 case class LeadTrusteeOrganisation(
