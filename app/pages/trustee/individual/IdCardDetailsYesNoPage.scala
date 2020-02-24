@@ -19,13 +19,12 @@ package pages.trustee.individual
 import models.UserAnswers
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.Trustees
-
+import pages.trustee.basePath
 import scala.util.Try
 
 case class IdCardDetailsYesNoPage(index: Int) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = Trustees.path \ index \ toString
+  override def path: JsPath = basePath \ index \ toString
 
   override def toString: String = "idCardDetailsYesNo"
 
