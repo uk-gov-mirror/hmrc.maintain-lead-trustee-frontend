@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.trustee.individual.actions
+package controllers
 
-import models.UserAnswers
-import models.requests.DataRequest
-import play.api.mvc.WrappedRequest
+import config.FrontendAppConfig
+import play.api.mvc.{Result, Results}
+import uk.gov.hmrc.auth.core.AffinityGroup
+import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 
-case class TrusteeNameRequest[T](request: DataRequest[T], trusteeName: String) extends WrappedRequest[T](request) {
-  val userAnswers:UserAnswers = request.userAnswers
-  val user = request.user
+trait ReturnToStart {
+  this : Results =>
+  val appConfig: FrontendAppConfig
+
+  def returnToStart(userAffinityGroup : AffinityGroup): Result = {userAffinityGroup match {
+    case Agent => Redirect(appConfig.maintainATrustAgentDeclarationUrl)
+    case _ => Redirect(appConfig.maintainATrustIndividualDeclarationUrl)
+  }}
 }

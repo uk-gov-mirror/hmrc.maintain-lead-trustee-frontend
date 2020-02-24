@@ -18,6 +18,7 @@ package controllers.trustee
 
 import config.FrontendAppConfig
 import connectors.TrustConnector
+import controllers.ReturnToStart
 import controllers.actions._
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import javax.inject.Inject
@@ -48,8 +49,8 @@ class CheckDetailsController @Inject()(
                                         helper: TrusteeIndividualPrintHelper,
                                         service: TrusteeBuilder,
                                         trustConnector: TrustConnector,
-                                        config: FrontendAppConfig
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                        val appConfig: FrontendAppConfig
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with ReturnToStart {
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
     implicit request =>
@@ -70,12 +71,7 @@ class CheckDetailsController @Inject()(
       } {
         date =>
           val trusteeInd: TrusteeIndividual = service.createTrusteeIndividual(request.userAnswers, date, index)
-          trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd).map { _ =>
-            request.request.user.affinityGroup match {
-              case Agent => Redirect(config.maintainATrustAgentDeclarationUrl)
-              case _ => Redirect(config.maintainATrustIndividualDeclarationUrl)
-            }
-          }
+          trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd).map { _ => returnToStart(request.user.affinityGroup)}
       }
   }
 }

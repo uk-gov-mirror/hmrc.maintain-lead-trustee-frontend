@@ -17,13 +17,15 @@
 package controllers.leadtrustee
 
 import com.google.inject.Inject
+import config.FrontendAppConfig
 import connectors.TrustConnector
+import controllers.ReturnToStart
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.individual.actions.{LeadTrusteeNameRequest, NameRequiredAction}
 import mapping.LeadTrusteesExtractor
 import models.{LeadTrusteeIndividual, Mode, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result, Results}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import viewmodels.AnswerSection
@@ -42,9 +44,10 @@ class DetailsController @Inject()(
                                             extractor: LeadTrusteesExtractor,
                                             repository: PlaybackRepository,
                                             checkYourAnswersHelper: CheckYourAnswersHelper,
-                                            nameRequiredAction: NameRequiredAction
+                                            nameRequiredAction: NameRequiredAction,
+                                            val appConfig: FrontendAppConfig
                                           ) (implicit val executionContext: ExecutionContext)
-  extends FrontendBaseController with I18nSupport {
+  extends FrontendBaseController with I18nSupport with ReturnToStart {
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameRequiredAction).async {
     implicit request =>
@@ -93,7 +96,7 @@ class DetailsController @Inject()(
     implicit request =>
         extractor.mapLeadTrusteeIndividual(request.userAnswers) match {
           case None => Future.successful(InternalServerError)
-          case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ => Redirect("www.tax.service.gov.uk"))
+          case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ => returnToStart(request.user.affinityGroup))
         }
   }
 }

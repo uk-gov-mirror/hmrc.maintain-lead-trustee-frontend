@@ -17,9 +17,9 @@
 package controllers.leadtrustee.individual.actions
 
 import models.UserAnswers
-import models.requests.DataRequest
+import models.requests.{DataRequest, User}
 import play.api.mvc.WrappedRequest
 
-case class LeadTrusteeNameRequest[T](request: DataRequest[T], leadTrusteeName: String) extends WrappedRequest[T](request) {
+case class LeadTrusteeNameRequest[T](request: DataRequest[T], leadTrusteeName: String) extends WrappedRequest[T](request){
   val userAnswers:UserAnswers = request.userAnswers
 }
