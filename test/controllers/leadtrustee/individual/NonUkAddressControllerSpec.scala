@@ -16,18 +16,15 @@
 
 package controllers.leadtrustee.individual
 
-import java.time.LocalDate
-
 import base.SpecBase
 import forms.NonUkAddressFormProvider
-import models.{Name, NonUkAddress, NormalMode, UserAnswers}
+import models.{Name, NonUkAddress}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.leadtrustee.individual.{NamePage, NonUkAddressPage}
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -48,8 +45,12 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   val countryOptions = injector.instanceOf[CountryOptions]
 
-  val userAnswers = UserAnswers("fakeId", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage, Name("value 1", None, "value 2")).success.value
+  val name = Name("Lead", None, "Trustee")
+
+  override val emptyUserAnswers = super.emptyUserAnswers
+    .set(NamePage, name).success.value
+
+  val userAnswers = emptyUserAnswers
     .set(NonUkAddressPage, NonUkAddress("value 1", "value 2", None, "the country")).success.value
 
   "NonUkAddress Controller" must {
@@ -67,7 +68,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions.options)(request, messages).toString
+        view(form, countryOptions.options, name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -85,7 +86,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(NonUkAddress("value 1", "value 2", None, "the country")), countryOptions.options)(fakeRequest, messages).toString
+        view(form.fill(NonUkAddress("value 1", "value 2", None, "the country")), countryOptions.options, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -134,7 +135,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions.options)(fakeRequest, messages).toString
+        view(boundForm, countryOptions.options, name.displayName)(fakeRequest, messages).toString
 
        application.stop()
     }

@@ -23,10 +23,10 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], countryOptions: Seq[InputOption])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], countryOptions: Seq[InputOption], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("nonUkAddress.title")}"
+    title = s"${errorPrefix(form)} ${messages("leadtrustee.individual.nonUkAddress.title", name)}"
     ) {
 
     @formHelper(action = NonUkAddressController.onSubmit(), 'autoComplete -> "off") {
@@ -35,7 +35,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("nonUkAddress.heading")
+        @components.heading("leadtrustee.individual.nonUkAddress.title", Some(name))
 
         @components.international_address(form, countryOptions)
 

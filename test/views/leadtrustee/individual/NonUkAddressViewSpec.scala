@@ -26,7 +26,7 @@ import views.html.leadtrustee.individual.NonUkAddressView
 
 class NonUkAddressViewSpec extends QuestionViewBehaviours[NonUkAddress] {
 
-  val messageKeyPrefix = "nonUkAddress"
+  val messageKeyPrefix = "leadtrustee.individual.nonUkAddress"
 
   override val form = new NonUkAddressFormProvider()()
 
@@ -35,10 +35,10 @@ class NonUkAddressViewSpec extends QuestionViewBehaviours[NonUkAddress] {
     val view = viewFor[NonUkAddressView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, Seq.empty)(fakeRequest, messages)
+      view.apply(form, Seq.empty, "Lead Trustee")(fakeRequest, messages)
 
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, "Lead Trustee")
 
     behave like pageWithBackLink(applyView(form))
 
@@ -46,7 +46,7 @@ class NonUkAddressViewSpec extends QuestionViewBehaviours[NonUkAddress] {
       form,
       applyView,
       messageKeyPrefix,
-      None,
+      Some("Lead Trustee"),
       routes.NonUkAddressController.onSubmit().url,
       "line1", "line2"
     )

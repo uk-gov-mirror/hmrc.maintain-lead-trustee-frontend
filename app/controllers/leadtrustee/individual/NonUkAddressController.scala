@@ -17,6 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
+import controllers.leadtrustee.individual.actions.NameRequiredAction
 import forms.NonUkAddressFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -36,6 +37,7 @@ class NonUkAddressController @Inject()(
                                       playbackRepository: PlaybackRepository,
                                       navigator: Navigator,
                                       standardActionSets: StandardActionSets,
+                                      nameAction: NameRequiredAction,
                                       formProvider: NonUkAddressFormProvider,
                                       val controllerComponents: MessagesControllerComponents,
                                       view: NonUkAddressView,
@@ -44,7 +46,7 @@ class NonUkAddressController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(NonUkAddressPage) match {
@@ -52,15 +54,15 @@ class NonUkAddressController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options))
+      Ok(view(preparedForm, countryOptions.options, request.leadTrusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, request.leadTrusteeName))),
 
         value =>
           for {

@@ -97,7 +97,7 @@ site.address.uk.postcode = Postcode
 site.address.uk.postcode.hint = For example AB1 1AB
 
 address.country.select = Select a country
-site.address.nonUk.title = What is the address?
+site.address.nonUk.title = What is {0}’s address?
 site.address.nonUk.heading = What is {0}’s address?
 site.address.nonUk.line1 = Address line 1
 site.address.nonUk.line2 = Address line 2
@@ -223,13 +223,6 @@ leadtrustee.individual.liveInTheUkYesNoPage.error.required = Select yes if the l
 
 leadtrustee.individual.nonUkAddress.title = What is {0}’s address?
 leadtrustee.individual.nonUkAddress.heading = What is {0}’s address?
-leadtrustee.individual.nonUkAddress.line1 = line1
-leadtrustee.individual.nonUkAddress.line2 = line2
-leadtrustee.individual.nonUkAddress.checkYourAnswersLabel = What is {0}’s address?
-leadtrustee.individual.nonUkAddress.error.line1.required = Enter line1
-leadtrustee.individual.nonUkAddress.error.line2.required = Enter line2
-leadtrustee.individual.nonUkAddress.error.line1.length = line1 must be line2 characters or less
-leadtrustee.individual.nonUkAddress.error.line2.length = line2 must be 100 characters or less
 
 leadtrustee.individual.ukAddress.title = What is {0}’s address?
 leadtrustee.individual.ukAddress.heading = What is {0}’s address?
