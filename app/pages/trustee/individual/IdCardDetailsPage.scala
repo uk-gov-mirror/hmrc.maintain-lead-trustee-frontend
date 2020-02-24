@@ -16,14 +16,14 @@
 
 package pages.trustee.individual
 
-import models.PassportOrIdCardDetails
+import models.IdCard
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.Trustees
+import pages.trustee.basePath
 
-case class IdCardDetailsPage(index: Int) extends QuestionPage[PassportOrIdCardDetails] {
+case class IdCardDetailsPage(index: Int) extends QuestionPage[IdCard] {
 
-  override def path: JsPath = Trustees.path \ index \ toString
+  override def path: JsPath = basePath \ index \ toString
 
   override def toString: String = "idCardDetails"
 

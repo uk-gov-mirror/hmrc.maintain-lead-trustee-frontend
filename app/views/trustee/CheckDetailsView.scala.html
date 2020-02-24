@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models
+@import viewmodels.{AnswerSection, RepeaterAnswerSection, Section}
 
-import java.time.LocalDate
+@this(
+    main_template: MainTemplate
+)
 
-import play.api.libs.json.Json
+@(answerSection: AnswerSection)(implicit request: Request[_], messages: Messages)
 
-case class PassportOrIdCardDetails(country: String, cardNumber: String, expiryDate:LocalDate)
+@main_template(
+    title = messages("trustee.checkDetails.title")
+    ) {
 
-object PassportOrIdCardDetails {
-  implicit val format = Json.format[PassportOrIdCardDetails]
+    @components.back_link()
+
+    @components.heading("trustee.checkDetails.heading")
+
+    @components.answer_section(answerSection)
+
+    @components.submit_button()
 }

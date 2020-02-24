@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package navigation
+package navigation.leadtrustee
 
+import models.IdentificationDetailOptions.{IdCard, Passport}
 import models.UserAnswers
+import pages.leadtrustee.individual._
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 import controllers.leadtrustee.individual.{routes => rts}
-import models.IdentificationDetailOptions.{IdCard, Passport}
-import pages.leadtrustee.individual._
+import controllers.leadtrustee.{routes => leadTrusteeRoutes}
 
 object IndividualLeadTrusteeNavigator {
   private val simpleNavigations : PartialFunction[Page, Call] = {
@@ -33,7 +34,7 @@ object IndividualLeadTrusteeNavigator {
     case UkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
     case NonUkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
     case EmailAddressPage => rts.TelephoneNumberController.onPageLoad()
-    case TelephoneNumberPage => controllers.routes.CheckYourAnswersController.onPageLoad()
+    case TelephoneNumberPage => leadTrusteeRoutes.DetailsController.onPageLoadUpdated()
   }
 
   private val yesNoNavigations : PartialFunction[Page, UserAnswers => Call] =
@@ -51,7 +52,7 @@ object IndividualLeadTrusteeNavigator {
     yesNoNavigations orElse
     parameterisedNavigation
 
-  private   def idOptionsNavigation(userAnswers: UserAnswers): Call = {
+  private def idOptionsNavigation(userAnswers: UserAnswers): Call = {
     userAnswers.get(IdentificationDetailOptionsPage).map {
       case Passport => rts.PassportDetailsController.onPageLoad()
       case IdCard => rts.IdCardDetailsController.onPageLoad()

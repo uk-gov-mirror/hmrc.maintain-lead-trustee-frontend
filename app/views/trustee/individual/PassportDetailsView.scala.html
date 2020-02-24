@@ -34,7 +34,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages("trustee.individual.passportDetails.heading", name))
+        @components.heading("trustee.individual.passportDetails.heading", Some(name))
 
         @components.select(field = form("country"),
             label = messages("trustee.individual.passportDetails.country"),
@@ -54,7 +54,7 @@
         @components.input_date(
             field = form("expiryDate"),
             legend = messages("trustee.individual.passportDetails.expiryDate"),
-            legendClass = Some("bold"),
+            legendClass = "bold",
             hint = Some(messages("trustee.individual.passportDetails.expiryDate.hint")),
             headingIsLegend = false
         )

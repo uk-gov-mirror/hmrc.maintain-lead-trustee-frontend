@@ -46,6 +46,7 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
       form,
       applyView,
       messageKeyPrefix,
+      None,
       routes.NameController.onSubmit().url,
       "firstName", "lastName"
     )

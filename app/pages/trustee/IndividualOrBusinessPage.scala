@@ -16,15 +16,38 @@
 
 package pages.trustee
 
-import models.IndividualOrBusiness
+import models.IndividualOrBusiness.Business
+import models.{IndividualOrBusiness, UserAnswers}
 import pages.QuestionPage
+import pages.trustee.individual._
 import play.api.libs.json.JsPath
-import sections.Trustees
+import scala.util.Try
 
 case class IndividualOrBusinessPage(index: Int) extends QuestionPage[IndividualOrBusiness] {
 
-  override def path: JsPath = Trustees.path \ index \ toString
+  override def path: JsPath = basePath \ index \ toString
 
   override def toString: String = "individualOrBusiness"
+
+  override def cleanup(value: Option[IndividualOrBusiness], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(Business) =>
+        userAnswers.remove(NamePage(index))
+          .flatMap(_.remove(DateOfBirthYesNoPage(index)))
+          .flatMap(_.remove(DateOfBirthPage(index)))
+          .flatMap(_.remove(NationalInsuranceNumberYesNoPage(index)))
+          .flatMap(_.remove(NationalInsuranceNumberPage(index)))
+          .flatMap(_.remove(AddressYesNoPage(index)))
+          .flatMap(_.remove(LiveInTheUkYesNoPage(index)))
+          .flatMap(_.remove(AddressPage(index)))
+          .flatMap(_.remove(NonUkAddressPage(index)))
+          .flatMap(_.remove(PassportDetailsYesNoPage(index)))
+          .flatMap(_.remove(PassportDetailsPage(index)))
+          .flatMap(_.remove(IdCardDetailsYesNoPage(index)))
+          .flatMap(_.remove(IdCardDetailsPage(index)))
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
+  }
 
 }

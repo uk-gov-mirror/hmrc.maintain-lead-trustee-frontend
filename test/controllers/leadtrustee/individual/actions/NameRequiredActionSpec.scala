@@ -16,6 +16,8 @@
 
 package controllers.leadtrustee.individual.actions
 
+import java.time.LocalDate
+
 import models.UserAnswers
 import models.requests.DataRequest
 import org.mockito.Matchers.any
@@ -41,6 +43,7 @@ class NameRequiredActionSpec extends WordSpec with MockitoSugar with ScalaFuture
 
     val ua = UserAnswers("id",
       "UTRUTRUTR",
+      LocalDate.now(),
       Json.obj().transform(pages.leadtrustee.individual.NamePage.path.json.put(Json.obj(
       "firstName" -> "testFirstName",
       "middleName" -> "testMiddleName",
@@ -62,7 +65,7 @@ class NameRequiredActionSpec extends WordSpec with MockitoSugar with ScalaFuture
 
     val OUT = new Harness(messagesApi)
 
-    val ua = UserAnswers("id", "UTRUTRUTR", Json.obj())
+    val ua = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), Json.obj())
 
     when(sourceRequest.userAnswers).thenReturn(ua)
     whenReady(OUT.callTransform(sourceRequest)) { transformedRequest =>

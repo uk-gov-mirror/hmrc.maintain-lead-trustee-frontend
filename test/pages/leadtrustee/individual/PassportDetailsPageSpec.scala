@@ -16,6 +16,7 @@
 
 package pages.leadtrustee.individual
 
+import models.Passport
 import pages.behaviours.PageBehaviours
 
 
@@ -23,10 +24,10 @@ class PassportDetailsPageSpec extends PageBehaviours {
 
   "PassportDetailsPage" must {
 
-    beRetrievable[String](PassportDetailsPage)
+    beRetrievable[Passport](PassportDetailsPage)
 
-    beSettable[String](PassportDetailsPage)
+    beSettable[Passport](PassportDetailsPage)
 
-    beRemovable[String](PassportDetailsPage)
+    beRemovable[Passport](PassportDetailsPage)
   }
 }

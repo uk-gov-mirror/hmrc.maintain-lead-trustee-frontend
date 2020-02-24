@@ -21,7 +21,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
-import models.{DisplayTrustIdentificationOrgType, DisplayTrustLeadTrusteeOrgType, DisplayTrustLeadTrusteeType}
+import models.{LeadTrusteeOrganisation, TrustStartDate, UkAddress}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.Json
@@ -29,10 +29,12 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures with Inside with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {
+class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
+  with Inside with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  private def getLeadTrusteeUrl(utr: String): String = s"/trusts/$utr/transformed/leadTrustee"
+  private def getLeadTrusteeUrl(utr: String): String = s"/trusts/$utr/transformed/lead-trustee"
+  private def getTrustStartDateUrl(utr: String): String = s"/trusts/$utr/trust-start-date"
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
 
@@ -60,7 +62,12 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures with
         "name" -> "name",
         "phoneNumber" -> "phoneNumber",
         "identification" -> Json.obj(
-          "utr" -> "anUtr"
+          "utr" -> "anUtr",
+            "address" -> Json.obj(
+              "line1" -> "address1",
+              "line2" -> "address2",
+              "postcode" -> "Postcode"
+            )
         ),
         "entityStart" -> "now"
       )
@@ -83,17 +90,49 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures with
       val processed = connector.getLeadTrustee(utr)
 
       whenReady(processed) { leadTrustee =>
-        leadTrustee mustBe DisplayTrustLeadTrusteeType(
-          None,
-          Some(DisplayTrustLeadTrusteeOrgType(
+        leadTrustee mustBe LeadTrusteeOrganisation(
             "lineNo",
             None,
             "name",
             "phoneNumber",
             None,
-            DisplayTrustIdentificationOrgType(None, Some("anUtr"), None),
+            Some("anUtr"),
+            UkAddress("address1", "address2", None, None, "Postcode"),
             "now"
-          ))
+          )
+      }
+      application.stop()
+    }
+  }
+
+  "TrustConnector getTrustStartDate" must {
+
+    "must return trust start date" in {
+      val utr = "1000000007"
+      val json = Json.obj(
+        "startDate" -> "2019-06-01"
+      )
+
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        get(urlEqualTo(getTrustStartDateUrl(utr)))
+          .willReturn(okJson(json.toString))
+      )
+
+      val processed = connector.getTrustStartDate(utr)
+
+      whenReady(processed) { startDate =>
+        startDate mustBe TrustStartDate(
+          "2019-06-01"
         )
       }
       application.stop()

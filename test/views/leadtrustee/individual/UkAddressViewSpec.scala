@@ -18,36 +18,38 @@ package views.leadtrustee.individual
 
 import controllers.leadtrustee.individual.routes
 import forms.UkAddressFormProvider
-import models.{NormalMode, UkAddress}
+import models.{Name, UkAddress}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.QuestionViewBehaviours
+import views.behaviours.UkAddressViewBehaviours
 import views.html.leadtrustee.individual.UkAddressView
 
-class UkAddressViewSpec extends QuestionViewBehaviours[UkAddress] {
+class UkAddressViewSpec extends UkAddressViewBehaviours {
 
-  val messageKeyPrefix = "ukAddress"
+  val messageKeyPrefix = "leadtrustee.individual.ukAddress"
+  val name: Name = Name("First", Some("Middle"), "Last")
 
-  override val form = new UkAddressFormProvider()()
+  override val form: Form[UkAddress] = new UkAddressFormProvider().apply()
 
   "UkAddressView" must {
 
     val view = viewFor[UkAddressView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form)(fakeRequest, messages)
+      view.apply(form, name.displayName)(fakeRequest, messages)
 
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like pageWithTextFields(
-      form,
+    behave like ukAddressPage(
       applyView,
-      messageKeyPrefix,
+      Some(messageKeyPrefix),
       routes.UkAddressController.onSubmit().url,
-      "line1", "line2"
+      name.displayName
     )
+
+    behave like pageWithASubmitButton(applyView(form))
   }
 }

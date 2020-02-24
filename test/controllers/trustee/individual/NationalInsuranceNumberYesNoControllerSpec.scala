@@ -16,6 +16,8 @@
 
 package controllers.trustee.individual
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.YesNoFormProvider
 import models.{Name, UserAnswers}
@@ -23,7 +25,7 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.trustee.individual.{NationalInsuranceNumberYesNoPage, NamePage}
+import pages.trustee.individual.{NamePage, NationalInsuranceNumberYesNoPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -44,13 +46,12 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
   val name = Name("FirstName", None, "LastName")
 
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR")
-    .set(NamePage(index), name)
-    .success.value
+  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
+    .set(NamePage(index), name).success.value
   
   lazy val nationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad(index).url
 
-  "LiveInTheUkYesNoPage Controller" must {
+  "NationalInsuranceNumberYesNo Controller" must {
 
     "return OK and the correct view for a GET" in {
 

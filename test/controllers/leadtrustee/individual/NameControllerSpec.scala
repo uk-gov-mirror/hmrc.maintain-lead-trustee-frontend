@@ -16,16 +16,17 @@
 
 package controllers.leadtrustee.individual
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.NameFormProvider
-import models.{Name, NormalMode, UserAnswers}
+import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.leadtrustee.individual.NamePage
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -43,15 +44,8 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val nameRoute = routes.NameController.onPageLoad().url
 
-
-  val userAnswers = UserAnswers(
-    "fakeId",
-    "UTRUTRUTR",
-    Json.obj().transform(NamePage.path.json.put(Json.obj(
-      "firstName" -> "value 1",
-      "lastName" -> "value 2")
-    )).get
-  )
+  val userAnswers = UserAnswers("fakeId", "UTRUTRUTR", LocalDate.now())
+    .set(NamePage, Name("value 1", None, "value 2")).success.value
 
   "Name Controller" must {
 

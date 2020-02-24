@@ -17,70 +17,46 @@
 package mapping
 
 import com.google.inject.Inject
-import mapping.PlaybackExtractionErrors.InvalidExtractorState
-import mapping.PlaybackImplicits._
-import models.{Address, DisplayTrustIdentificationType, DisplayTrustLeadTrusteeIndType, IdentificationDetailOptions, NonUkAddress, PassportType, UkAddress, UserAnswers}
+import models.{Address, IdCard, LeadTrusteeIndividual, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
 import pages.leadtrustee.{individual => ltind}
-import play.api.Logger
 
-import scala.util.{Failure, Try}
+import scala.util.{Success, Try}
 
 class LeadTrusteesExtractor @Inject()() {
 
-  def extractLeadTrusteeIndividual(answers: UserAnswers, leadIndividual: DisplayTrustLeadTrusteeIndType) = {
+  def extractLeadTrusteeIndividual(answers: UserAnswers, leadIndividual: LeadTrusteeIndividual): Try[UserAnswers] = {
     answers.set(ltind.NamePage, leadIndividual.name)
       .flatMap(_.set(ltind.DateOfBirthPage, leadIndividual.dateOfBirth))
       .flatMap(answers => extractLeadIndividualIdentification(leadIndividual, answers))
       .flatMap(answers => extractEmail(leadIndividual.email, answers))
+      .flatMap(answers => extractAddress(leadIndividual.address, answers))
       .flatMap(_.set(ltind.TelephoneNumberPage, leadIndividual.phoneNumber))
-
   }
 
-  private def extractLeadIndividualIdentification(leadIndividual: DisplayTrustLeadTrusteeIndType, answers: UserAnswers) = {
+  private def extractLeadIndividualIdentification(leadIndividual: LeadTrusteeIndividual, answers: UserAnswers) = {
     leadIndividual.identification match {
 
-      case DisplayTrustIdentificationType(_, Some(nino), None, Some(address)) =>
+      case NationalInsuranceNumber(nino) =>
         answers.set(ltind.UkCitizenPage, true)
           .flatMap(_.set(ltind.NationalInsuranceNumberPage, nino))
-          .flatMap(answers => extractAddress(address, answers))
-
-      case DisplayTrustIdentificationType(_, None, Some(passport), Some(address)) =>
+      case passport:Passport =>
         answers.set(ltind.UkCitizenPage, false)
-          .flatMap(answers => extractPassportIdCard(passport, answers))
-          .flatMap(answers => extractAddress(address, answers))
-
-      case DisplayTrustIdentificationType(_, None, Some(_), None) =>
-        Logger.error(s"[TrusteesExtractor] only passport identification for lead trustee individual returned in DisplayTrustOrEstate api")
-        Failure(InvalidExtractorState)
-
-      case DisplayTrustIdentificationType(_, Some(nino), None, None) =>
-        Logger.error(s"[TrusteesExtractor] only national insurance number for lead trustee individual returned in DisplayTrustOrEstate api")
-        Failure(InvalidExtractorState)
-
-      case DisplayTrustIdentificationType(_, None, None, Some(address)) =>
-        Logger.error(s"[TrusteesExtractor] only address identification for lead trustee individual returned in DisplayTrustOrEstate api")
-        Failure(InvalidExtractorState)
-
-      case DisplayTrustIdentificationType(_, _, _, _) =>
-        Logger.error(s"[TrusteesExtractor] no identification for lead trustee individual returned in DisplayTrustOrEstate api")
-        Failure(InvalidExtractorState)
+          .flatMap(_.set(ltind.PassportDetailsPage, passport))
+      case idCard:IdCard =>
+        answers.set(ltind.UkCitizenPage, false)
+          .flatMap(_.set(ltind.IdCardDetailsPage, idCard))
     }
   }
 
-  private def extractPassportIdCard(passport: PassportType, answers: UserAnswers) = {
-    answers.set(ltind.IdentificationDetailOptionsPage, IdentificationDetailOptions.Passport)
-      .flatMap(_.set(ltind.PassportDetailsPage, passport.number))
-
-  }
-
-  private def extractAddress(address: Address, answers: UserAnswers) = {
+  private def extractAddress(address: Option[Address], answers: UserAnswers) = {
     address match {
-      case uk: UkAddress =>
+      case Some(uk: UkAddress) =>
         answers.set(ltind.UkAddressPage, uk)
           .flatMap(_.set(ltind.LiveInTheUkYesNoPage, true))
-      case nonUk: NonUkAddress =>
+      case Some(nonUk: NonUkAddress) =>
         answers.set(ltind.NonUkAddressPage, nonUk)
           .flatMap(_.set(ltind.LiveInTheUkYesNoPage, false))
+      case None => Success(answers)
     }
   }
 

@@ -17,8 +17,8 @@
 package views.trustee.individual
 
 import controllers.trustee.individual.routes
-import forms.PassportOrIdCardFormProvider
-import models.{Name, PassportOrIdCardDetails}
+import forms.PassportDetailsFormProvider
+import models.{Name, Passport}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.InputOption
@@ -26,13 +26,13 @@ import utils.countryOptions.CountryOptions
 import views.behaviours.QuestionViewBehaviours
 import views.html.trustee.individual.PassportDetailsView
 
-class PassportDetailsViewSpec extends QuestionViewBehaviours[PassportOrIdCardDetails] {
+class PassportDetailsViewSpec extends QuestionViewBehaviours[Passport] {
 
   val messageKeyPrefix = "trustee.individual.passportDetails"
   val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  override val form: Form[PassportOrIdCardDetails] = new PassportOrIdCardFormProvider().apply(messageKeyPrefix)
+  override val form: Form[Passport] = new PassportDetailsFormProvider().withPrefix(messageKeyPrefix)
 
   "PassportDetails view" must {
 

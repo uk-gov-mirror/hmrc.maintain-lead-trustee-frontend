@@ -44,7 +44,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
   
   lazy val IndividualOrBusinessRoute = routes.IndividualOrBusinessController.onPageLoad(index).url
 
-  "LiveInTheUkYesNoPage Controller" must {
+  "IndividualOrBusiness Controller" must {
 
     "return OK and the correct view for a GET" in {
 

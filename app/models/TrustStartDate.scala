@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package sections
+package models
 
-import pages.QuestionPage
-import play.api.libs.json.{JsArray, JsPath}
+import play.api.libs.json.{Json, OFormat}
 
-case object Trustees extends QuestionPage[JsArray]{
+object TrustStartDate {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "trustees"
-
+  implicit val formats: OFormat[TrustStartDate] = Json.format[TrustStartDate]
 }
+
+case class TrustStartDate(startDate: String)
+
+
