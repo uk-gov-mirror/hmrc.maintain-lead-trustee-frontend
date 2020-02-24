@@ -27,7 +27,7 @@ class TrusteeBuilder {
 
   import mapping.PlaybackImplicits._
 
-  def createTrusteeIndividual(userAnswers: UserAnswers, index: Int) = {
+  def createTrusteeIndividual(userAnswers: UserAnswers, date: LocalDate, index: Int) = {
     TrusteeIndividual(
       "",
       None,
@@ -42,7 +42,7 @@ class TrusteeBuilder {
           buildAddress(userAnswers, index)
         )
       ),
-      userAnswers.get(WhenAddedPage(index)).get
+      date
     )
   }
 

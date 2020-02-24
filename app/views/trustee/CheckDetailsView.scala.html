@@ -15,12 +15,13 @@
  *@
 
 @import viewmodels.AnswerSection
+@import controllers.trustee.routes._
 
 @this(
     main_template: MainTemplate
 )
 
-@(answerSection: AnswerSection)(implicit request: Request[_], messages: Messages)
+@(answerSection: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("trustee.checkDetails.title")
@@ -32,5 +33,5 @@
 
     @components.answer_section(answerSection)
 
-    @components.submit_button()
+    @components.button_link(messages("site.save.continue"), CheckDetailsController.onSubmit(index).url)
 }
