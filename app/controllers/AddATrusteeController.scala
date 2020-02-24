@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.trustee
+package controllers
 
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider

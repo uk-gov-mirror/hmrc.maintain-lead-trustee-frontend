@@ -31,9 +31,9 @@ import views.html.trustee.{AddATrusteeView, AddATrusteeYesNoView}
 
 class AddATrusteeControllerSpec extends SpecBase {
 
-  lazy val getRoute : String = routes.AddATrusteeController.onPageLoad().url
-  lazy val submitAnotherRoute : String = routes.AddATrusteeController.submitAnother().url
-  lazy val submitYesNoRoute : String = routes.AddATrusteeController.submitOne().url
+  lazy val getRoute : String = controllers.routes.AddATrusteeController.onPageLoad().url
+  lazy val submitAnotherRoute : String = controllers.routes.AddATrusteeController.submitAnother().url
+  lazy val submitYesNoRoute : String = controllers.routes.AddATrusteeController.submitOne().url
 
   val addTrusteeForm = new AddATrusteeFormProvider()()
   val yesNoForm = new YesNoFormProvider().withPrefix("addATrusteeYesNo")

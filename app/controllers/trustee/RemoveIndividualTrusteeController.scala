@@ -49,7 +49,7 @@ class RemoveIndividualTrusteeController @Inject()(
     standardActionSets.IdentifiedUserWithData
 
   override def redirect : Call =
-    controllers.trustee.routes.AddATrusteeController.onPageLoad()
+    controllers.routes.AddATrusteeController.onPageLoad()
 
   override def formRoute(index: Int): Call =
     controllers.trustee.routes.RemoveIndividualTrusteeController.onSubmit(index)

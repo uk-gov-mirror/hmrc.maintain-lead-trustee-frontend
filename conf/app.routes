@@ -21,9 +21,9 @@ GET        /agent-not-authorised                                            cont
 GET        /leadTrustee/individual/name                                     controllers.leadtrustee.individual.NameController.onPageLoad(mode: Mode = NormalMode)
 POST       /leadTrustee/individual/name                                     controllers.leadtrustee.individual.NameController.onSubmit(mode: Mode = NormalMode)
 
-GET        /add                                                             controllers.trustee.AddATrusteeController.onPageLoad(mode: Mode = NormalMode)
-POST       /add                                                             controllers.trustee.AddATrusteeController.submitOne(mode: Mode = NormalMode)
-POST       /add-another                                                     controllers.trustee.AddATrusteeController.submitAnother(mode: Mode = NormalMode)
+GET        /add                                                             controllers.AddATrusteeController.onPageLoad(mode: Mode = NormalMode)
+POST       /add                                                             controllers.AddATrusteeController.submitOne(mode: Mode = NormalMode)
+POST       /add-another                                                     controllers.AddATrusteeController.submitAnother(mode: Mode = NormalMode)
 
 GET        /trustee/:index/remove                                           controllers.trustee.RemoveIndividualTrusteeController.onPageLoad(index : Int)
 POST       /trustee/:index/remove                                           controllers.trustee.RemoveIndividualTrusteeController.onSubmit(index : Int)
