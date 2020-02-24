@@ -36,12 +36,12 @@ class EmailAddressYesNoViewSpec extends YesNoViewBehaviours {
     val view = viewFor[EmailAddressYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form, "Lead Trustee")(fakeRequest, messages)
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, "Lead Trustee")
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, None, routes.EmailAddressYesNoController.onSubmit().url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some("Lead Trustee"), routes.EmailAddressYesNoController.onSubmit().url)
   }
 }

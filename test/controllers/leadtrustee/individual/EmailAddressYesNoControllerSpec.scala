@@ -18,12 +18,12 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import forms.YesNoFormProvider
-import models.{NormalMode, UserAnswers}
+import models.{Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.EmailAddressYesNoPage
+import pages.leadtrustee.individual.{EmailAddressYesNoPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -39,6 +39,11 @@ class EmailAddressYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new YesNoFormProvider()
   val form = formProvider.withPrefix("leadtrustee.individual.emailAddressYesNo")
+
+  val name = Name("Lead", None, "Trustee")
+
+  override val emptyUserAnswers = super.emptyUserAnswers
+    .set(NamePage, name).success.value
 
   lazy val emailAddressYesNoRoute = routes.EmailAddressYesNoController.onPageLoad().url
 
@@ -57,7 +62,7 @@ class EmailAddressYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -77,7 +82,7 @@ class EmailAddressYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(true), name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -125,7 +130,7 @@ class EmailAddressYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
