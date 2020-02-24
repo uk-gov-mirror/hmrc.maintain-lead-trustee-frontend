@@ -91,12 +91,6 @@ class DetailsController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
-      // build model for submission to back end
-//      for {
-//        a <- request.userAnswers.get
-//      }
-      // submit to back end
-      // redirect
-      ???
+        ???
   }
 }
