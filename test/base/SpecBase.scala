@@ -18,6 +18,7 @@ package base
 
 import java.time.LocalDate
 
+import connectors.EnrolmentStoreConnector
 import controllers.actions._
 import org.scalatest.{BeforeAndAfter, TestSuite, TryValues}
 import org.scalatestplus.play.PlaySpec
@@ -46,6 +47,7 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
         bind[PlaybackIdentifierAction].toInstance(new FakePlaybackIdentifierAction()),
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
         bind[DataRequiredAction].to[DataRequiredActionImpl],
+        bind[EnrolmentStoreConnector].toInstance(mockEnrolmentStoreConnector),
         bind[PlaybackRepository].toInstance(playbackRepository)
       )
 }

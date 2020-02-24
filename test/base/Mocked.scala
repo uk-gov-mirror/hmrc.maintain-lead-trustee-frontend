@@ -16,6 +16,7 @@
 
 package base
 
+import connectors.EnrolmentStoreConnector
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -28,5 +29,7 @@ trait Mocked extends MockitoSugar {
   val playbackRepository: PlaybackRepository = mock[PlaybackRepository]
 
   when(playbackRepository.set(any())).thenReturn(Future.successful(true))
+
+  val mockEnrolmentStoreConnector = mock[EnrolmentStoreConnector]
 
 }
