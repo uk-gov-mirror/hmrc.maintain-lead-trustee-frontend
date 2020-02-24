@@ -53,6 +53,34 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
     server.stop()
   }
 
+  "TrustConnector amendLeadTrustee" must {
+    "Be fine when request is successful" in {
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        post(urlEqualTo("/trusts/amend-lead-trustee/UTRUTRUTR"))
+          .willReturn(ok)
+      )
+
+      val result = connector.amendLeadTrustee("UTRUTRUTR", arbitraryLeadTrusteeIndividual.arbitrary.sample.get)
+      result.futureValue mustBe()
+
+      application.stop()
+    }
+
+    "Deal with failures" ignore {
+    }
+  }
+
+
   "TrustConnector getLeadTrustee" must {
 
     "must return playback data inside a Processed trust" in {
@@ -60,6 +88,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val json = Json.obj(
         "lineNo" -> "lineNo",
         "name" -> "name",
+        "dateOfBirth" -> "1956-01-01",
         "phoneNumber" -> "phoneNumber",
         "identification" -> Json.obj(
           "utr" -> "anUtr",

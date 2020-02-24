@@ -91,6 +91,9 @@ class DetailsController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
-        ???
+        extractor.mapLeadTrusteeIndividual(request.userAnswers) match {
+          case None => Future.successful(InternalServerError)
+          case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ => Redirect("www.tax.service.gov.uk"))
+        }
   }
 }

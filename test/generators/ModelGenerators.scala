@@ -106,23 +106,22 @@ trait ModelGenerators {
     Arbitrary {
       Gen.oneOf(
         arbitraryPassport.arbitrary, arbitraryIdCard.arbitrary, arbitraryNationalInsuranceNumber.arbitrary
-      )
+      ).map {
+        case p:Passport => p.copy(countryOfIssue = "GB")
+        case x => x
+      }
     }
   }
-
 
   implicit lazy val arbitraryLeadTrusteeIndividual: Arbitrary[LeadTrusteeIndividual] = {
     Arbitrary {
       for {
-        lineNo <- arbitrary[String]
-        bpMatchStatus <- arbitrary[Option[String]]
         name <- arbitrary[Name]
         dob <- datesBetween(LocalDate.of(1916, 1, 1), LocalDate.of(2010, 12, 31))
         phone <- arbitrary[String]
         email <- arbitrary[Option[String]]
         id <- arbitrary[IndividualIdentification]
         address <- arbitrary[Option[Address]]
-        estart <- arbitrary[String]
       } yield LeadTrusteeIndividual(name, dob, phone, email, id, address)
     }
   }
