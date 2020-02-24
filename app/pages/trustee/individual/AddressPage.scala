@@ -18,6 +18,7 @@ package pages.trustee.individual
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import pages.trustee.basePath
 
 case class AddressPage(index:Int) extends QuestionPage[String] {
 

@@ -21,13 +21,11 @@ import models.{IndividualOrBusiness, UserAnswers}
 import pages.QuestionPage
 import pages.trustee.individual._
 import play.api.libs.json.JsPath
-import sections.Trustees
-
 import scala.util.Try
 
 case class IndividualOrBusinessPage(index: Int) extends QuestionPage[IndividualOrBusiness] {
 
-  override def path: JsPath = Trustees.path \ index \ toString
+  override def path: JsPath = basePath \ index \ toString
 
   override def toString: String = "individualOrBusiness"
 
