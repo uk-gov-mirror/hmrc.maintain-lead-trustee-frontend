@@ -26,6 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.countryOptions.CountryOptions
 import views.html.leadtrustee.individual.NonUkAddressView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,7 +38,8 @@ class NonUkAddressController @Inject()(
                                       standardActionSets: StandardActionSets,
                                       formProvider: NonUkAddressFormProvider,
                                       val controllerComponents: MessagesControllerComponents,
-                                      view: NonUkAddressView
+                                      view: NonUkAddressView,
+                                      countryOptions: CountryOptions
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
@@ -50,7 +52,7 @@ class NonUkAddressController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm))
+      Ok(view(preparedForm, countryOptions.options))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
@@ -58,7 +60,7 @@ class NonUkAddressController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options))),
 
         value =>
           for {

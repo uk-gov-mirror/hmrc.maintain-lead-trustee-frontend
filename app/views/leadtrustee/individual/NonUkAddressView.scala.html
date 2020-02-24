@@ -16,13 +16,14 @@
 
 @import controllers.leadtrustee.individual.routes._
 @import models.Mode
+@import utils.InputOption
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], countryOptions: Seq[InputOption])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("nonUkAddress.title")}"
@@ -36,15 +37,7 @@
 
         @components.heading("nonUkAddress.heading")
 
-        @components.input_text(
-            field = form("line1"),
-            label = messages("nonUkAddress.line1")
-        )
-
-        @components.input_text(
-            field = form("line2"),
-            label = messages("nonUkAddress.line2")
-        )
+        @components.international_address(form, countryOptions)
 
         @components.submit_button()
     }

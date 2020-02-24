@@ -35,7 +35,7 @@ class NonUkAddressViewSpec extends QuestionViewBehaviours[NonUkAddress] {
     val view = viewFor[NonUkAddressView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form)(fakeRequest, messages)
+      view.apply(form, Seq.empty)(fakeRequest, messages)
 
 
     behave like normalPage(applyView(form), messageKeyPrefix)

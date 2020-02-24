@@ -32,6 +32,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
+import utils.countryOptions.CountryOptions
 import views.html.leadtrustee.individual.NonUkAddressView
 
 import scala.concurrent.Future
@@ -44,6 +45,8 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
   val form = formProvider()
 
   lazy val nonUkAddressRoute = routes.NonUkAddressController.onPageLoad().url
+
+  val countryOptions = injector.instanceOf[CountryOptions]
 
   val userAnswers = UserAnswers("fakeId", "UTRUTRUTR", LocalDate.now())
     .set(NamePage, Name("value 1", None, "value 2")).success.value
@@ -64,7 +67,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(request, messages).toString
+        view(form, countryOptions.options)(request, messages).toString
 
       application.stop()
     }
@@ -82,7 +85,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(NonUkAddress("value 1", "value 2", None, "the country")))(fakeRequest, messages).toString
+        view(form.fill(NonUkAddress("value 1", "value 2", None, "the country")), countryOptions.options)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -131,7 +134,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm, countryOptions.options)(fakeRequest, messages).toString
 
        application.stop()
     }
