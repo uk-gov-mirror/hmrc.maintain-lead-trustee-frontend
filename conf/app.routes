@@ -18,8 +18,8 @@ GET        /trust-not-claimed                                               cont
 
 GET        /agent-not-authorised                                            controllers.AgentNotAuthorisedController.onPageLoad()
 
-GET        /leadTrustee/individual/name                                     controllers.leadtrustee.individual.NameController.onPageLoad(mode: Mode = NormalMode)
-POST       /leadTrustee/individual/name                                     controllers.leadtrustee.individual.NameController.onSubmit(mode: Mode = NormalMode)
+GET        /lead-trustee/individual/name                                     controllers.leadtrustee.individual.NameController.onPageLoad(mode: Mode = NormalMode)
+POST       /lead-trustee/individual/name                                     controllers.leadtrustee.individual.NameController.onSubmit(mode: Mode = NormalMode)
 
 GET        /add                                                             controllers.AddATrusteeController.onPageLoad(mode: Mode = NormalMode)
 POST       /add                                                             controllers.AddATrusteeController.submitOne(mode: Mode = NormalMode)
@@ -28,8 +28,8 @@ POST       /add-another                                                     cont
 GET        /trustee/:index/remove                                           controllers.trustee.RemoveIndividualTrusteeController.onPageLoad(index : Int)
 POST       /trustee/:index/remove                                           controllers.trustee.RemoveIndividualTrusteeController.onSubmit(index : Int)
 
-GET        /leadTrustee/individual/name                                     controllers.leadtrustee.individual.NameController.onPageLoad(mode: Mode = NormalMode)
-POST       /leadTrustee/individual/name                                     controllers.leadtrustee.individual.NameController.onSubmit(mode: Mode = NormalMode)
+GET        /lead-trustee/individual/name                                     controllers.leadtrustee.individual.NameController.onPageLoad(mode: Mode = NormalMode)
+POST       /lead-trustee/individual/name                                     controllers.leadtrustee.individual.NameController.onSubmit(mode: Mode = NormalMode)
 
 GET        /lead-trustee/individual/date-of-birth                           controllers.leadtrustee.individual.DateOfBirthController.onPageLoad(mode: Mode = NormalMode)
 POST       /lead-trustee/individual/date-of-birth                           controllers.leadtrustee.individual.DateOfBirthController.onSubmit(mode: Mode = NormalMode)

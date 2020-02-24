@@ -20,8 +20,7 @@ import base.SpecBase
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
 import models.TrusteeStatus._
-import models.{AddATrustee, Name, NormalMode}
-import models.IndividualOrBusiness
+import models.{AddATrustee, IndividualOrBusiness, Name, NormalMode}
 import pages.trustee.individual.NamePage
 import pages.trustee.{IndividualOrBusinessPage, TrusteeStatusPage}
 import play.api.test.FakeRequest
