@@ -32,17 +32,33 @@ package views.trustee
  * limitations under the License.
  */
 
-import models.{Name, NonUkAddress, UkAddress}
+import controllers.trustee.routes
+import play.twirl.api.HtmlFormat
+import viewmodels.AnswerSection
 import views.behaviours.ViewBehaviours
+import views.html.trustee.CheckDetailsView
 
 class CheckDetailsViewSpec extends ViewBehaviours {
+
+  val messageKeyPrefix = "trustee.checkDetails"
   val index = 0
-  val name: Name = Name("First", Some("Middle"), "Last")
-  val trusteeUkAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
-  val trusteeNonUkAddress = NonUkAddress("value 1", "value 2", None, "DE")
 
-  "ChecDetails view" must {
+  "CheckDetails view" must {
 
+    val view = viewFor[CheckDetailsView](Some(emptyUserAnswers))
+
+    def applyView(): HtmlFormat.Appendable =
+      view.apply(AnswerSection(None, Seq()), index)(fakeRequest, messages)
+
+    behave like normalPage(applyView(), messageKeyPrefix)
+
+    behave like pageWithBackLink(applyView())
+
+    behave like pageWithButtonLink(
+      applyView(),
+      messages("site.save.continue"),
+      routes.CheckDetailsController.onSubmit(index).url
+    )
   }
 }
 

@@ -18,7 +18,7 @@ package views
 
 import models.UserAnswers
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
 import base.SpecBase
 import org.scalatest.Assertion
@@ -58,6 +58,10 @@ trait ViewSpecBase extends SpecBase {
 
   def assertContainsMessages(doc: Document, expectedMessageKeys: String*) = {
     for (key <- expectedMessageKeys) assertContainsText(doc, messages(key))
+  }
+
+  def assertAttributeValueForElement(element: Element, attribute: String, attributeValue: String): Assertion = {
+    assert(element.attr(attribute) == attributeValue)
   }
 
   def assertRenderedById(doc: Document, id: String) = {
@@ -105,5 +109,9 @@ trait ViewSpecBase extends SpecBase {
       case true => assert(radio.attr("checked") == "checked", s"\n\nElement $id is not checked")
       case _ => assert(!radio.hasAttr("checked") && radio.attr("checked") != "checked", s"\n\nElement $id is checked")
     }
+  }
+
+  def assertContainsTextForClass(doc: Document, buttonClass: String, expectedText: String): Assertion = {
+    assert(doc.getElementsByClass(buttonClass).first().text() == expectedText, s"\n\nElement $buttonClass does not have text $expectedText")
   }
 }

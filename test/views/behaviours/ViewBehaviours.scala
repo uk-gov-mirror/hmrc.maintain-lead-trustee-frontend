@@ -143,4 +143,19 @@ trait ViewBehaviours extends ViewSpecBase {
       }
     }
   }
+
+  def pageWithButtonLink(view: HtmlFormat.Appendable, buttonMessage: String, url : String) = {
+
+    "behave like a page with a Continue button" must {
+      "have a continue button" in {
+        val doc = asDocument(view)
+        assertContainsTextForClass(doc,"button", buttonMessage)
+        assertAttributeValueForElement(
+          doc.getElementsByClass("button").first(),
+          "href",
+          url
+        )
+      }
+    }
+  }
 }

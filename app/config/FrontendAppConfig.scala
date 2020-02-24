@@ -31,11 +31,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   def claimATrustUrl(utr: String) =
     configuration.get[Service]("microservice.services.claim-a-trust-frontend").baseUrl + s"/claim-a-trust/save/$utr"
 
-  val maintainATrustAgentDeclarationUrl =
-    configuration.get[Service]("microservice.services.maintain-a-trust-frontend").baseUrl + "/is-agency-address-in-uk"
+  val maintainATrustAgentDeclarationUrl = configuration.get[String]("urls.agentDeclaration")
 
-  val maintainATrustIndividualDeclarationUrl =
-    configuration.get[Service]("microservice.services.maintain-a-trust-frontend").baseUrl + "/individual-declaration"
+  val maintainATrustIndividualDeclarationUrl = configuration.get[String]("urls.individualDeclaration")
 
   def verifyIdentityForATrustUrl(utr: String) =
     configuration.get[Service]("microservice.services.verify-your-identity-for-a-trust-frontend").baseUrl + s"/verify-your-identity-for-a-trust/save/$utr"
