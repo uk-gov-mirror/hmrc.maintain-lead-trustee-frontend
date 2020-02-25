@@ -42,9 +42,6 @@ POST       /lead-trustee/individual/id-card                                 cont
 GET        /lead-trustee/individual/lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoPageController.onPageLoad(mode: Mode = NormalMode)
 POST       /lead-trustee/individual/lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoPageController.onSubmit(mode: Mode = NormalMode)
 
-GET        /lead-trustee/individual/name                                    controllers.leadtrustee.individual.NameController.onPageLoad(mode: Mode = NormalMode)
-POST       /lead-trustee/individual/name                                    controllers.leadtrustee.individual.NameController.onSubmit(mode: Mode = NormalMode)
-
 GET        /lead-trustee/individual/national-insurance-number               controllers.leadtrustee.individual.NationalInsuranceNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /lead-trustee/individual/national-insurance-number               controllers.leadtrustee.individual.NationalInsuranceNumberController.onSubmit(mode: Mode = NormalMode)
 
@@ -118,6 +115,6 @@ GET        /trustee/:index/when-was-trustee-added                           cont
 POST       /trustee/:index/when-was-trustee-added                           controllers.trustee.WhenAddedController.onSubmit(mode: Mode = NormalMode, index: Int)
 
 GET        /trustee/:index/check-details                                    controllers.trustee.CheckDetailsController.onPageLoad(mode: Mode = NormalMode, index: Int)
-#POST       /trustee/:index/check-details                                    controllers.trustee.CheckDetailsController.onSubmit(mode: Mode = NormalMode, index: Int)
+POST       /trustee/:index/check-details                                    controllers.trustee.CheckDetailsController.onSubmit(mode: Mode = NormalMode, index: Int)
 
 GET        /:utr                                                            controllers.IndexController.onPageLoad(utr: String)

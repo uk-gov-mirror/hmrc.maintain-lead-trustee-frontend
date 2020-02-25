@@ -41,9 +41,12 @@ object NonUkAddress {
 
 object Address {
   implicit val reads: Reads[Address] =
-    __.read[UkAddress].widen[Address] orElse
-    __.read[NonUkAddress].widen[Address]
+    __.read[UkAddress](UkAddress.format).widen[Address] orElse
+    __.read[NonUkAddress](NonUkAddress.format).widen[Address]
 
-  implicit val writes: Writes[Address] = Writes(_ => ???)
+  implicit val writes: Writes[Address] = Writes {
+    case a:UkAddress => Json.toJson(a)(UkAddress.format)
+    case a:NonUkAddress => Json.toJson(a)(NonUkAddress.format)
+  }
 }
 

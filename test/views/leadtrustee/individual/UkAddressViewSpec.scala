@@ -38,7 +38,6 @@ class UkAddressViewSpec extends UkAddressViewBehaviours {
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, name.displayName)(fakeRequest, messages)
 
-
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))
@@ -46,7 +45,6 @@ class UkAddressViewSpec extends UkAddressViewBehaviours {
     behave like ukAddressPage(
       applyView,
       Some(messageKeyPrefix),
-      routes.UkAddressController.onSubmit().url,
       name.displayName
     )
 

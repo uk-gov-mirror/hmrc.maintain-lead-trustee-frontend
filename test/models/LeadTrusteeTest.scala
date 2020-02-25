@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,30 +12,24 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import viewmodels.AnswerSection
-@import controllers.trustee.routes._
+package models
 
-@this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
-)
+import generators.ModelGenerators
+import org.scalatest.{FreeSpec, MustMatchers}
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.libs.json.Json
 
-@(answerSection: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
-
-@main_template(
-    title = messages("trustee.checkDetails.title")
-    ) {
-
-    @formHelper(action = CheckDetailsController.onSubmit(index), 'autoComplete -> "off") {
-
-        @components.back_link()
-
-        @components.heading("trustee.checkDetails.heading")
-
-        @components.answer_section(answerSection)
-
-        @components.submit_button()
+class LeadTrusteeTest extends FreeSpec with ModelGenerators with MustMatchers with ScalaCheckPropertyChecks{
+  "JSON roundtrips with individual" in {
+    forAll(arbitraryLeadTrusteeIndividual.arbitrary) { lti =>
+      val a = Json.toJson(lti.asInstanceOf[LeadTrustee])(LeadTrustee.writes)
+      a.as[LeadTrustee](LeadTrustee.reads) mustBe lti
     }
+  }
+
+  "JSON roundtrips with organisation" ignore {
+    ???
+  }
 }

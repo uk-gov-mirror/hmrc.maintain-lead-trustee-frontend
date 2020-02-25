@@ -17,7 +17,8 @@
 package models
 
 import java.time.LocalDate
-import play.api.libs.json.{Format, Json, Reads, __}
+
+import play.api.libs.json.{Format, Json, Reads, Writes, __}
 
 sealed trait IndividualIdentification
 object IndividualIdentification {
@@ -27,18 +28,24 @@ object IndividualIdentification {
       case _ => (__ \ 'passport).read[IdCard].widen[IndividualIdentification]
     } orElse
     __.read[NationalInsuranceNumber].widen[IndividualIdentification]
+
+  implicit val writes: Writes[IndividualIdentification] = Writes {
+    case ni:NationalInsuranceNumber =>Json.toJson(ni)(NationalInsuranceNumber.format)
+    case p:Passport => Json.obj("passport" -> Json.toJson(p)(Passport.format))
+    case i:IdCard=> Json.obj("passport" -> Json.toJson(i)(IdCard.format))
+  }
 }
 
 case class NationalInsuranceNumber(nino: String) extends IndividualIdentification
 object NationalInsuranceNumber{
-  implicit val reads: Reads[NationalInsuranceNumber] = Json.reads[NationalInsuranceNumber]
+  implicit val format: Format[NationalInsuranceNumber] = Json.format[NationalInsuranceNumber]
 }
 
 case class Passport(number: String,
                     expirationDate: LocalDate,
                     countryOfIssue: String) extends IndividualIdentification
 object Passport {
-  implicit val reads: Format[Passport] = Json.format[Passport]
+  implicit val format: Format[Passport] = Json.format[Passport]
 }
 
 case class IdCard(number: String,

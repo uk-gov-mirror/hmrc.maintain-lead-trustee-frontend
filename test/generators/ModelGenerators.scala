@@ -58,6 +58,13 @@ trait ModelGenerators {
       } yield Passport(number, expiry, country)
     }
 
+  implicit lazy val arbitraryNationalInsuranceNumber: Arbitrary[NationalInsuranceNumber] =
+    Arbitrary {
+      for {
+        number <- arbitrary[String]
+      } yield NationalInsuranceNumber(number)
+    }
+
   implicit lazy val arbitraryUkAddress: Arbitrary[UkAddress] =
     Arbitrary {
       for {
@@ -79,6 +86,13 @@ trait ModelGenerators {
       } yield NonUkAddress(line1, line2, line3, country)
     }
 
+  implicit lazy val arbitraryAddress: Arbitrary[Address] = {
+    Arbitrary(Gen.oneOf(
+      arbitraryUkAddress.arbitrary,
+      arbitraryNonUkAddress.arbitrary
+    ))
+  }
+
   implicit lazy val arbitraryName: Arbitrary[Name] =
     Arbitrary {
       for {
@@ -87,6 +101,30 @@ trait ModelGenerators {
         lastName <- arbitrary[String]
       } yield Name(firstName, middleName, lastName)
     }
+
+  implicit lazy val arbitraryIndividualIdentification : Arbitrary[IndividualIdentification] = {
+    Arbitrary {
+      Gen.oneOf(
+        arbitraryPassport.arbitrary, arbitraryIdCard.arbitrary, arbitraryNationalInsuranceNumber.arbitrary
+      ).map {
+        case p:Passport => p.copy(countryOfIssue = "GB")
+        case x => x
+      }
+    }
+  }
+
+  implicit lazy val arbitraryLeadTrusteeIndividual: Arbitrary[LeadTrusteeIndividual] = {
+    Arbitrary {
+      for {
+        name <- arbitrary[Name]
+        dob <- datesBetween(LocalDate.of(1916, 1, 1), LocalDate.of(2010, 12, 31))
+        phone <- arbitrary[String]
+        email <- arbitrary[Option[String]]
+        id <- arbitrary[IndividualIdentification]
+        address <- arbitrary[Option[Address]]
+      } yield LeadTrusteeIndividual(name, dob, phone, email, id, address)
+    }
+  }
 
   implicit lazy val arbitraryLocalDate : Arbitrary[LocalDate] =
     Arbitrary {

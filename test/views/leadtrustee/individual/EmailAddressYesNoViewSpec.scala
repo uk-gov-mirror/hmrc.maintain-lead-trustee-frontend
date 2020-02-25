@@ -18,7 +18,6 @@ package views.leadtrustee.individual
 
 import controllers.leadtrustee.individual.routes
 import forms.YesNoFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -27,21 +26,21 @@ import views.html.leadtrustee.individual.EmailAddressYesNoView
 
 class EmailAddressYesNoViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "emailAddressYesNo"
+  val messageKeyPrefix = "leadtrustee.individual.emailAddressYesNo"
 
-  val form = (new YesNoFormProvider).withPrefix("prefix")
+  val form = (new YesNoFormProvider).withPrefix("leadtrustee.individual.emailAddressYesNo")
 
   "EmailAddressYesNo view" must {
 
     val view = viewFor[EmailAddressYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form, "Lead Trustee")(fakeRequest, messages)
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, "Lead Trustee")
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, None, routes.EmailAddressYesNoController.onSubmit().url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some("Lead Trustee"), routes.EmailAddressYesNoController.onSubmit().url)
   }
 }

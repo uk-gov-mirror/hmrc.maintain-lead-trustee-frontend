@@ -17,7 +17,6 @@ site.complete = Completed
 
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
-checkYourAnswers.guidance = Guidance for check your answers
 
 date.day = Day
 date.month = Month
@@ -99,7 +98,7 @@ site.address.uk.postcode = Postcode
 site.address.uk.postcode.hint = For example AB1 1AB
 
 address.country.select = Select a country
-site.address.nonUk.title = What is the address?
+site.address.nonUk.title = What is {0}’s address?
 site.address.nonUk.heading = What is {0}’s address?
 site.address.nonUk.line1 = Address line 1
 site.address.nonUk.line2 = Address line 2
@@ -167,7 +166,6 @@ individualOrBusiness.business = Business
 
 leadTrusteeDetails.title = Check lead trustee details
 leadTrusteeDetails.heading = Check lead trustee details
-leadTrusteeDetails.guidance =
 
 leadtrustee.individual.name.title = What is the lead trustee’s name?
 leadtrustee.individual.name.heading = What is the lead trustee’s name?
@@ -256,39 +254,27 @@ leadtrustee.individual.liveInTheUkYesNoPage.error.required = Select yes if the l
 
 leadtrustee.individual.nonUkAddress.title = What is {0}’s address?
 leadtrustee.individual.nonUkAddress.heading = What is {0}’s address?
-leadtrustee.individual.nonUkAddress.line1 = line1
-leadtrustee.individual.nonUkAddress.line2 = line2
 leadtrustee.individual.nonUkAddress.checkYourAnswersLabel = What is {0}’s address?
-leadtrustee.individual.nonUkAddress.error.line1.required = Enter line1
-leadtrustee.individual.nonUkAddress.error.line2.required = Enter line2
-leadtrustee.individual.nonUkAddress.error.line1.length = line1 must be line2 characters or less
-leadtrustee.individual.nonUkAddress.error.line2.length = line2 must be 100 characters or less
 
-leadtrustee.individual.ukAddress.title = ukAddress
-leadtrustee.individual.ukAddress.heading = ukAddress
-leadtrustee.individual.ukAddress.line1 = line1
-leadtrustee.individual.ukAddress.line2 = line2
-leadtrustee.individual.ukAddress.checkYourAnswersLabel = ukAddress
-leadtrustee.individual.ukAddress.error.line1.required = Enter line1
-leadtrustee.individual.ukAddress.error.line2.required = Enter line2
-leadtrustee.individual.ukAddress.error.line1.length = line1 must be line2 characters or less
-leadtrustee.individual.ukAddress.error.line2.length = line2 must be 100 characters or less
+leadtrustee.individual.ukAddress.title = What is {0}’s address?
+leadtrustee.individual.ukAddress.heading = What is {0}’s address?
+leadtrustee.individual.ukAddress.checkYourAnswersLabel = What is {0}’s address?
 
 leadtrustee.individual.emailAddress.title = What is {0}’s email address?
 leadtrustee.individual.emailAddress.heading = What is {0}’s email address?
 leadtrustee.individual.emailAddress.checkYourAnswersLabel = What is {0}’s email address?
-leadtrustee.individual.emailAddress.error.required = Enter {0}’s email address
+leadtrustee.individual.emailAddress.error.required = Enter the lead trustee’s email address
 leadtrustee.individual.emailAddress.error.length = An email address must be 512 characters or less
 
 leadtrustee.individual.emailAddressYesNo.title = Do you know {0}’s email address?
 leadtrustee.individual.emailAddressYesNo.heading = Do you know {0}’s email address?
 leadtrustee.individual.emailAddressYesNo.checkYourAnswersLabel = Do you know {0}’s email address?
-leadtrustee.individual.emailAddressYesNo.error.required = Select yes if you know {0}’s email address
+leadtrustee.individual.emailAddressYesNo.error.required = Select yes if you know the lead trustee’s email address
 
 leadtrustee.individual.telephoneNumber.title = What is {0}’s telephone number?
 leadtrustee.individual.telephoneNumber.heading = What is {0}’s telephone number?
 leadtrustee.individual.telephoneNumber.checkYourAnswersLabel = What is {0}’s telephone number?
-leadtrustee.individual.telephoneNumber.error.required = Enter {0}’s telephone number
+leadtrustee.individual.telephoneNumber.error.required = Enter the lead trustee’s telephone number
 leadtrustee.individual.telephoneNumber.error.length = A telephone number must be 100 characters or less
 
 trustee.individual.ukCitizen.title = Does {0} have a National Insurance number?

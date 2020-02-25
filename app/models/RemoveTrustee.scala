@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,30 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import viewmodels.AnswerSection
-@import controllers.trustee.routes._
+package models
 
-@this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
-)
+import java.time.LocalDate
 
-@(answerSection: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
+import play.api.libs.json.{Format, Json}
 
-@main_template(
-    title = messages("trustee.checkDetails.title")
-    ) {
+case class RemoveTrustee(trustee: TrusteeType, endDate: LocalDate)
 
-    @formHelper(action = CheckDetailsController.onSubmit(index), 'autoComplete -> "off") {
-
-        @components.back_link()
-
-        @components.heading("trustee.checkDetails.heading")
-
-        @components.answer_section(answerSection)
-
-        @components.submit_button()
-    }
+object RemoveTrustee {
+  implicit val formats : Format[RemoveTrustee] = Json.format[RemoveTrustee]
 }

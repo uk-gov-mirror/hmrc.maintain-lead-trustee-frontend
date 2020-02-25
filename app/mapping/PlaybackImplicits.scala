@@ -27,4 +27,28 @@ object PlaybackImplicits {
     def convert : LocalDate = LocalDate.of(date.getYear, date.getMonthOfYear, date.getDayOfMonth)
   }
 
+  private def convertAddress(address: Address) : AddressType = address match {
+    case UkAddress(line1, line2, line3, line4, postcode) =>
+      AddressType(
+        line1,
+        line2,
+        line3,
+        line4,
+        Some(postcode),
+        "GB"
+      )
+    case NonUkAddress(line1, line2, line3, country) =>
+      AddressType(
+        line1,
+        line2,
+        line3,
+        None,
+        None,
+        country
+      )
+  }
+
+  implicit class AddressConverter(address : Address) {
+    def convert : AddressType = convertAddress(address)
+  }
 }
