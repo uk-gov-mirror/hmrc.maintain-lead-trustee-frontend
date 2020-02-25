@@ -18,7 +18,8 @@
 @import controllers.trustee.routes._
 
 @this(
-    main_template: MainTemplate
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
 )
 
 @(answerSection: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
@@ -27,11 +28,14 @@
     title = messages("trustee.checkDetails.title")
     ) {
 
-    @components.back_link()
+    @formHelper(action = CheckDetailsController.onSubmit(index), 'autoComplete -> "off") {
 
-    @components.heading("trustee.checkDetails.heading")
+        @components.back_link()
 
-    @components.answer_section(answerSection)
+        @components.heading("trustee.checkDetails.heading")
 
-    @components.button_link(messages("site.save.continue"), CheckDetailsController.onSubmit(index).url)
+        @components.answer_section(answerSection)
+
+        @components.submit_button()
+    }
 }

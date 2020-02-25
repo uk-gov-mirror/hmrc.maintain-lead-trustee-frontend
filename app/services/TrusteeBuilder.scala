@@ -29,7 +29,7 @@ class TrusteeBuilder {
 
   def createTrusteeIndividual(userAnswers: UserAnswers, date: LocalDate, index: Int) = {
     TrusteeIndividual(
-      "",
+      "500",
       None,
       userAnswers.get(NamePage(index)).get,
       userAnswers.get(DateOfBirthPage(index)),
