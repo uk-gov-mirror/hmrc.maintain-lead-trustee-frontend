@@ -223,9 +223,11 @@ leadtrustee.individual.liveInTheUkYesNoPage.error.required = Select yes if the l
 
 leadtrustee.individual.nonUkAddress.title = What is {0}’s address?
 leadtrustee.individual.nonUkAddress.heading = What is {0}’s address?
+leadtrustee.individual.nonUkAddress.checkYourAnswersLabel = What is {0}’s address?
 
 leadtrustee.individual.ukAddress.title = What is {0}’s address?
 leadtrustee.individual.ukAddress.heading = What is {0}’s address?
+leadtrustee.individual.ukAddress.checkYourAnswersLabel = What is {0}’s address?
 
 leadtrustee.individual.emailAddress.title = What is {0}’s email address?
 leadtrustee.individual.emailAddress.heading = What is {0}’s email address?
