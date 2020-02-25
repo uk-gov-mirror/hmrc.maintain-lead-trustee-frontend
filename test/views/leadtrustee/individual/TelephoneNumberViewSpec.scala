@@ -26,21 +26,23 @@ import views.html.leadtrustee.individual.TelephoneNumberView
 
 class TelephoneNumberViewSpec extends StringViewBehaviours {
 
-  val messageKeyPrefix = "telephoneNumber"
+  val messageKeyPrefix = "leadtrustee.individual.telephoneNumber"
 
   val form = new TelephoneNumberFormProvider()()
+
+  val name = "Lead Trustee"
 
   "TelephoneNumberView view" must {
 
     val view = viewFor[TelephoneNumberView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form, name)(fakeRequest, messages)
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPage(form, applyView, messageKeyPrefix, None, routes.TelephoneNumberController.onSubmit().url)
+    behave like stringPage(form, applyView, messageKeyPrefix, Some(name), routes.TelephoneNumberController.onSubmit().url)
   }
 }

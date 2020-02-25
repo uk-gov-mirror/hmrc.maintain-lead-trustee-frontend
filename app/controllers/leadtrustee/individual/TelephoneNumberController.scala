@@ -17,6 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
+import controllers.leadtrustee.individual.actions.NameRequiredAction
 import forms.TelephoneNumberFormProvider
 import models.Mode
 import navigation.Navigator
@@ -35,6 +36,7 @@ class TelephoneNumberController @Inject()(
                                         playbackRepository: PlaybackRepository,
                                         navigator: Navigator,
                                         standardActionSets: StandardActionSets,
+                                        nameAction: NameRequiredAction,
                                         formProvider: TelephoneNumberFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: TelephoneNumberView
@@ -42,7 +44,7 @@ class TelephoneNumberController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(TelephoneNumberPage) match {
@@ -50,15 +52,15 @@ class TelephoneNumberController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, request.leadTrusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
 
         value =>
           for {
