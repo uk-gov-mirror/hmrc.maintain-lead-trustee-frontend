@@ -26,7 +26,7 @@ import views.html.leadtrustee.individual.EmailAddressView
 
 class EmailAddressViewSpec extends StringViewBehaviours {
 
-  val messageKeyPrefix = "emailAddress"
+  val messageKeyPrefix = "leadtrustee.individual.emailAddress"
 
   val form = new EmailAddressFormProvider()()
 
@@ -35,12 +35,12 @@ class EmailAddressViewSpec extends StringViewBehaviours {
     val view = viewFor[EmailAddressView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form, "Lead Trustee")(fakeRequest, messages)
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, "Lead Trustee")
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPage(form, applyView, messageKeyPrefix, None, routes.EmailAddressController.onSubmit().url)
+    behave like stringPage(form, applyView, messageKeyPrefix, Some("Lead Trustee"), routes.EmailAddressController.onSubmit().url)
   }
 }

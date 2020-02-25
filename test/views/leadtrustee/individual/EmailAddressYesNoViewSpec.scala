@@ -28,7 +28,7 @@ class EmailAddressYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "leadtrustee.individual.emailAddressYesNo"
 
-  val form = (new YesNoFormProvider).withPrefix("prefix")
+  val form = (new YesNoFormProvider).withPrefix("leadtrustee.individual.emailAddressYesNo")
 
   "EmailAddressYesNo view" must {
 
