@@ -15,7 +15,6 @@ site.date.hint = For example, 31 3 1980
 
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
-checkYourAnswers.guidance = Guidance for check your answers
 
 date.day = Day
 date.month = Month
