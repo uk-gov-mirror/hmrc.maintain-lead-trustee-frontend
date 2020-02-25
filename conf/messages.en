@@ -241,7 +241,7 @@ leadtrustee.individual.emailAddressYesNo.error.required = Select yes if you know
 leadtrustee.individual.telephoneNumber.title = What is {0}’s telephone number?
 leadtrustee.individual.telephoneNumber.heading = What is {0}’s telephone number?
 leadtrustee.individual.telephoneNumber.checkYourAnswersLabel = What is {0}’s telephone number?
-leadtrustee.individual.telephoneNumber.error.required = Enter {0}’s telephone number
+leadtrustee.individual.telephoneNumber.error.required = Enter the lead trustee’s telephone number
 leadtrustee.individual.telephoneNumber.error.length = A telephone number must be 100 characters or less
 
 trustee.individual.ukCitizen.title = Does {0} have a National Insurance number?
