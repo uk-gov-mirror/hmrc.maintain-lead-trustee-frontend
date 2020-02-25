@@ -19,8 +19,8 @@ package controllers.trustee.individual
 import java.time.LocalDate
 
 import base.SpecBase
-import forms.PassportOrIdCardFormProvider
-import models.{Name, PassportOrIdCardDetails, UserAnswers}
+import forms.{IdCardDetailsFormProvider, PassportDetailsFormProvider}
+import models.{IdCard, Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -39,16 +39,15 @@ import scala.concurrent.Future
 
 class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new PassportOrIdCardFormProvider()
-  private def form = formProvider.apply("trustee.individual.idCardDetails")
+  val formProvider = new IdCardDetailsFormProvider()
+  private def form = formProvider.withPrefix("trustee")
 
   def onwardRoute: Call = Call("GET", "/foo")
   val index = 0
   val name: Name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR")
-    .set(NamePage(index), name)
-    .success.value
+  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
+    .set(NamePage(index), name).success.value
 
   val idCardDetailsRoute: String = routes.IdCardDetailsController.onPageLoad(index).url
 
@@ -56,7 +55,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
 
-  val validData: PassportOrIdCardDetails = PassportOrIdCardDetails("country", "card number", LocalDate.of(2020, 1, 1))
+  val validData: IdCard = IdCard("card number", LocalDate.of(2020, 1, 1), "country")
 
   "IdCardDetails Controller" must {
 
@@ -114,9 +113,9 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
           .withFormUrlEncodedBody(
             "country" -> "country",
             "number" -> "123456",
-            "expiryDate.day"   -> validData.expiryDate.getDayOfMonth.toString,
-            "expiryDate.month" -> validData.expiryDate.getMonthValue.toString,
-            "expiryDate.year"  -> validData.expiryDate.getYear.toString
+            "expiryDate.day"   -> validData.expirationDate.getDayOfMonth.toString,
+            "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
+            "expiryDate.year"  -> validData.expirationDate.getYear.toString
           )
 
       val result = route(application, request).value
@@ -171,9 +170,9 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
           .withFormUrlEncodedBody(
             "country" -> "country",
             "number" -> "123456",
-            "expiryDate.day"   -> validData.expiryDate.getDayOfMonth.toString,
-            "expiryDate.month" -> validData.expiryDate.getMonthValue.toString,
-            "expiryDate.year"  -> validData.expiryDate.getYear.toString
+            "expiryDate.day"   -> validData.expirationDate.getDayOfMonth.toString,
+            "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
+            "expiryDate.year"  -> validData.expirationDate.getYear.toString
           )
 
       val result = route(application, request).value

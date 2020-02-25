@@ -44,7 +44,7 @@ class LiveInTheUkYesNoController @Inject()(
 
   val form = formProvider.withPrefix("trustee.individual.liveInTheUkYesNo")
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(LiveInTheUkYesNoPage(index)) match {
@@ -55,7 +55,7 @@ class LiveInTheUkYesNoController @Inject()(
       Ok(view(preparedForm, index, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)).async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
     implicit request =>
 
       form.bindFromRequest().fold(

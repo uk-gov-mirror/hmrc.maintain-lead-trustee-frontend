@@ -17,6 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
+import controllers.leadtrustee.individual.actions.NameRequiredAction
 import forms.UkAddressFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -35,6 +36,7 @@ class UkAddressController @Inject()(
                                     playbackRepository: PlaybackRepository,
                                     navigator: Navigator,
                                     standardActionSets: StandardActionSets,
+                                    nameAction: NameRequiredAction,
                                     formProvider: UkAddressFormProvider,
                                     val controllerComponents: MessagesControllerComponents,
                                     view: UkAddressView
@@ -42,7 +44,7 @@ class UkAddressController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(UkAddressPage) match {
@@ -50,15 +52,15 @@ class UkAddressController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm))
+      Ok(view(preparedForm, request.leadTrusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
 
         value =>
           for {

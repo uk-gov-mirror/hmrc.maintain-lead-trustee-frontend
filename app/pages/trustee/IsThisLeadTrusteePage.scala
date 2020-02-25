@@ -18,11 +18,10 @@ package pages.trustee
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.Trustees
 
 final case class IsThisLeadTrusteePage(index : Int) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = Trustees.path \ index \ toString
+  override def path: JsPath = basePath \ index \ toString
 
   override def toString: String = "isThisLeadTrustee"
 

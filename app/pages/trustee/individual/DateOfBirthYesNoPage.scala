@@ -19,8 +19,7 @@ package pages.trustee.individual
 import models.UserAnswers
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.Trustees
-
+import pages.trustee.basePath
 import scala.util.Try
 
 case class DateOfBirthYesNoPage(index: Int) extends QuestionPage[Boolean] {

@@ -16,7 +16,7 @@
 
 package generators
 
-import java.time.LocalDate
+import java.time.{Instant, LocalDate, ZoneOffset}
 
 import models._
 import org.scalacheck.Arbitrary.arbitrary
@@ -24,9 +24,38 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  def datesBetween(min: LocalDate, max: LocalDate): Gen[LocalDate] = {
+
+    def toMillis(date: LocalDate): Long =
+      date.atStartOfDay.atZone(ZoneOffset.UTC).toInstant.toEpochMilli
+
+    Gen.choose(toMillis(min), toMillis(max)).map {
+      millis =>
+        Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC).toLocalDate
+    }
+  }
+
   implicit lazy val arbitraryIdentificationDetailOptions: Arbitrary[IdentificationDetailOptions] =
     Arbitrary {
       Gen.oneOf(IdentificationDetailOptions.values.toSeq)
+    }
+
+  implicit lazy val arbitraryIdCard: Arbitrary[IdCard] =
+    Arbitrary {
+      for {
+        number <- arbitrary[String]
+        expiry <- datesBetween(LocalDate.now, LocalDate.now.plusYears(10))
+        country <- arbitrary[String]
+      } yield IdCard(number, expiry, country)
+    }
+
+  implicit lazy val arbitraryPassport: Arbitrary[Passport] =
+    Arbitrary {
+      for {
+        number <- arbitrary[String]
+        expiry <- datesBetween(LocalDate.now, LocalDate.now.plusYears(10))
+        country <- arbitrary[String]
+      } yield Passport(number, expiry, country)
     }
 
   implicit lazy val arbitraryUkAddress: Arbitrary[UkAddress] =
@@ -36,8 +65,8 @@ trait ModelGenerators {
         line2 <- arbitrary[String]
         line3 <- arbitrary[Option[String]]
         line4 <- arbitrary[Option[String]]
-        postCode <- arbitrary[String]
-      } yield UkAddress(line1, line2, line3, line4, postCode)
+        postcode <- arbitrary[String]
+      } yield UkAddress(line1, line2, line3, line4, postcode)
     }
 
   implicit lazy val arbitraryNonUkAddress: Arbitrary[NonUkAddress] =
@@ -46,9 +75,8 @@ trait ModelGenerators {
         line1 <- arbitrary[String]
         line2 <- arbitrary[String]
         line3 <- arbitrary[Option[String]]
-        line4 <- arbitrary[Option[String]]
         country <- arbitrary[String]
-      } yield NonUkAddress(line1, line2, line3, line4, country)
+      } yield NonUkAddress(line1, line2, line3, country)
     }
 
   implicit lazy val arbitraryName: Arbitrary[Name] =

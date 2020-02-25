@@ -16,19 +16,22 @@
 
 package controllers.leadtrustee.individual
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.PassportDetailsFormProvider
-import models.{NormalMode, UserAnswers}
+import models.{Name, Passport}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.PassportDetailsPage
+import pages.leadtrustee.individual.{NamePage, PassportDetailsPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
+import utils.countryOptions.CountryOptions
 import views.html.leadtrustee.individual.PassportDetailsView
 
 import scala.concurrent.Future
@@ -38,9 +41,14 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new PassportDetailsFormProvider()
-  val form = formProvider()
+  val form = formProvider.withPrefix("leadtrustee")
 
   lazy val passportDetailsRoute = routes.PassportDetailsController.onPageLoad().url
+
+  val countryOptions = injector.instanceOf[CountryOptions]
+
+  override val emptyUserAnswers = super.emptyUserAnswers
+    .set(NamePage, Name("Lead", None, "Trustee")).success.value
 
   "PassportDetails Controller" must {
 
@@ -57,14 +65,14 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(fakeRequest, messages).toString
+        view(form, "Lead Trustee", countryOptions.options)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PassportDetailsPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(PassportDetailsPage, Passport("NUMBER", LocalDate.of(2040, 12, 31), "GB")).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -77,7 +85,7 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"))(fakeRequest, messages).toString
+        view(form.fill(Passport("NUMBER", LocalDate.of(2040, 12, 31), "GB")), "Lead Trustee", countryOptions.options)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -97,7 +105,13 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
 
       val request =
         FakeRequest(POST, passportDetailsRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(
+            "country"-> "GB",
+            "expiryDate.day" -> "21",
+            "expiryDate.month" -> "3",
+            "expiryDate.year" -> "2079",
+            "number" -> "PASSPORTNUMBER"
+          )
 
       val result = route(application, request).value
 
@@ -124,7 +138,7 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm, "Lead Trustee", countryOptions.options)(fakeRequest, messages).toString
 
       application.stop()
     }

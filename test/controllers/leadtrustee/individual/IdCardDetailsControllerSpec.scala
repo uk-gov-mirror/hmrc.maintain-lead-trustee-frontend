@@ -16,9 +16,11 @@
 
 package controllers.leadtrustee.individual
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.IdCardDetailsFormProvider
-import models.{Name, NormalMode, UserAnswers}
+import models.{IdCard, Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -29,6 +31,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
+import utils.countryOptions.CountryOptions
 import views.html.leadtrustee.individual.IdCardDetailsView
 
 import scala.concurrent.Future
@@ -41,10 +44,12 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   val name = Name("Lead", None, "Trustee")
 
+  lazy val idCardDetailsRoute = routes.IdCardDetailsController.onPageLoad().url
+
+  val countryOptions = injector.instanceOf[CountryOptions]
+
   override val emptyUserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
-
-  lazy val idCardDetailsRoute = routes.IdCardDetailsController.onPageLoad().url
 
   "IdCardDetails Controller" must {
 
@@ -61,14 +66,16 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName)(fakeRequest, messages).toString
+        view(form, name.displayName, countryOptions.options)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(IdCardDetailsPage, "answer").success.value
+      val userAnswers = emptyUserAnswers
+        .set(IdCardDetailsPage, IdCard("NUMBER", LocalDate.of(2040, 12, 31), "GB")).success.value
+        .set(NamePage, name).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -81,7 +88,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), name.displayName)(fakeRequest, messages).toString
+        view(form.fill(IdCard("NUMBER", LocalDate.of(2040, 12, 31), "GB")), name.displayName, countryOptions.options)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -101,7 +108,13 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
       val request =
         FakeRequest(POST, idCardDetailsRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(
+            "country"-> "DE",
+            "expiryDate.day" -> "21",
+            "expiryDate.month" -> "3",
+            "expiryDate.year" -> "2079",
+            "number" -> "PASSPORTNUMBER"
+          )
 
       val result = route(application, request).value
 
@@ -128,7 +141,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, name.displayName, countryOptions.options)(fakeRequest, messages).toString
 
       application.stop()
     }

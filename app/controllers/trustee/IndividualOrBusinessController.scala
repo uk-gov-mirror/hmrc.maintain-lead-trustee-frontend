@@ -42,7 +42,7 @@ class IndividualOrBusinessController @Inject()(
 
   val form = formProvider.withPrefix("trustee.individualOrBusiness")
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(IndividualOrBusinessPage(index)) match {
@@ -55,7 +55,7 @@ class IndividualOrBusinessController @Inject()(
 
 
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       form.bindFromRequest().fold(

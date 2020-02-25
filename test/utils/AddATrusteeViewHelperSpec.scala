@@ -19,6 +19,8 @@ package utils
 import base.SpecBase
 import models.TrusteeStatus.Completed
 import models.{IndividualOrBusiness, Name}
+import pages.leadtrustee.individual.{NamePage => leadTrusteeNamePage}
+import pages.leadtrustee.individual.{LeadTrusteeStatusPage => leadTrusteeStatusPage}
 import pages.trustee.individual.NamePage
 import pages.trustee.{IndividualOrBusinessPage, IsThisLeadTrusteePage, TrusteeStatusPage}
 import viewmodels.addAnother.AddRow
@@ -26,14 +28,12 @@ import viewmodels.addAnother.AddRow
 class AddATrusteeViewHelperSpec extends SpecBase {
 
   val userAnswersWithTrusteesComplete = emptyUserAnswers
-    .set(IsThisLeadTrusteePage(0), true).success.value
+    .set(leadTrusteeNamePage, Name("First", None, "Last")).success.value
+    .set(leadTrusteeStatusPage, Completed).success.value
+    .set(IsThisLeadTrusteePage(0), false).success.value
     .set(IndividualOrBusinessPage(0), IndividualOrBusiness.Individual).success.value
     .set(NamePage(0), Name("First 0", None, "Last 0")).success.value
     .set(TrusteeStatusPage(0), Completed).success.value
-    .set(IsThisLeadTrusteePage(1), false).success.value
-    .set(IndividualOrBusinessPage(1), IndividualOrBusiness.Individual).success.value
-    .set(NamePage(1), Name("First 1", None, "Last 1")).success.value
-    .set(TrusteeStatusPage(1), Completed).success.value
 
   val userAnswersWithTrusteesInProgress = emptyUserAnswers
     .set(IsThisLeadTrusteePage(0), false).success.value
@@ -43,12 +43,9 @@ class AddATrusteeViewHelperSpec extends SpecBase {
     .set(IsThisLeadTrusteePage(2),false).success.value
 
   val userAnswersWithCompleteAndInProgress = emptyUserAnswers
-    .set(IsThisLeadTrusteePage(0), false).success.value
     .set(NamePage(0), Name("First 0", Some("Middle"), "Last 0")).success.value
-    .set(IsThisLeadTrusteePage(1), true).success.value
-    .set(IndividualOrBusinessPage(1), IndividualOrBusiness.Individual).success.value
-    .set(NamePage(1), Name("First 1", Some("Middle"), "Last 1")).success.value
-    .set(TrusteeStatusPage(1), Completed).success.value
+    .set(leadTrusteeNamePage, Name("First", Some("Middle"), "Last")).success.value
+    .set(leadTrusteeStatusPage, Completed).success.value
 
   val userAnswersWithNoTrustees = emptyUserAnswers
 
@@ -75,8 +72,8 @@ class AddATrusteeViewHelperSpec extends SpecBase {
       "generate rows from user answers for complete trustees (Lead Trustee Individual)" in {
         val rows = new AddATrusteeViewHelper(userAnswersWithTrusteesComplete).rows
         rows.complete mustBe List(
-          AddRow("First 0 Last 0", typeLabel = "Lead Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/0/remove"),
-          AddRow("First 1 Last 1", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/1/remove")
+          AddRow("First Last", typeLabel = "Lead Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/0/remove"),
+          AddRow("First 0 Last 0", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/0/remove")
         )
         rows.inProgress mustBe Nil
       }
@@ -84,7 +81,7 @@ class AddATrusteeViewHelperSpec extends SpecBase {
       "generate rows from user answers for complete and in progress trustees" in {
         val rows = new AddATrusteeViewHelper(userAnswersWithCompleteAndInProgress).rows
         rows.complete mustBe List(
-          AddRow("First 1 Last 1", typeLabel = "Lead Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/1/remove")
+          AddRow("First Last", typeLabel = "Lead Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/0/remove")
         )
         rows.inProgress mustBe List(
           AddRow("First 0 Last 0", typeLabel = "Trustee", "#", "/maintain-a-trust/trustees/trustee/0/remove")

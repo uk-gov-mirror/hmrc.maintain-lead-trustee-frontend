@@ -42,7 +42,7 @@ class NameController @Inject()(
 
   val form = formProvider.withPrefix("trustee.individual.name")
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(NamePage(index)) match {
@@ -53,7 +53,7 @@ class NameController @Inject()(
       Ok(view(preparedForm, index))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       form.bindFromRequest().fold(

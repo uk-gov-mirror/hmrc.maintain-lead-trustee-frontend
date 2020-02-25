@@ -17,8 +17,15 @@
 package controllers
 
 import base.SpecBase
+import connectors.TrustConnector
+import models.TrustStartDate
+import org.mockito.Matchers.any
+import org.mockito.Mockito._
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase {
 
@@ -26,7 +33,11 @@ class IndexControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val mockTrustConnector = mock[TrustConnector]
+
+      when(mockTrustConnector.getTrustStartDate(any())(any(), any())).thenReturn(Future.successful(TrustStartDate("2019-06-01")))
+
+      val application = applicationBuilder(userAnswers = None).overrides(bind[TrustConnector].toInstance(mockTrustConnector)).build()
 
       val request = FakeRequest(GET, routes.IndexController.onPageLoad("UTRUTRUTR").url)
 
@@ -34,7 +45,7 @@ class IndexControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(controllers.leadtrustee.individual.routes.NameController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.leadtrustee.routes.DetailsController.onPageLoad().url)
 
       application.stop()
     }

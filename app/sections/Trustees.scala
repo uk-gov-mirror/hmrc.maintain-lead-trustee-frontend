@@ -24,6 +24,6 @@ case object Trustees extends QuestionPage[List[TrusteeViewModel]]{
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "trustees"
+  override def toString: String = "trustee"
 
 }

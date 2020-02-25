@@ -16,15 +16,51 @@
 
 package forms
 
+import java.time.LocalDate
+
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.Passport
 import play.api.data.Form
+import play.api.data.Forms.mapping
+import forms.mappings.Constraints
 
-class PassportDetailsFormProvider @Inject() extends Mappings {
+class PassportDetailsFormProvider @Inject() extends Mappings with Constraints {
+  val maxLengthCountryField = 100
+  val maxLengthNumberField = 30
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("passportDetails.error.required")
-        .verifying(maxLength(100, "passportDetails.error.length"))
-    )
+  def withPrefix(prefix: String): Form[Passport] = Form(
+    mapping(
+      "number" -> text(s"$prefix.individual.passportDetails.number.error.required")
+        .verifying(
+          firstError(
+            maxLength(maxLengthNumberField, s"$prefix.individual.passportDetails.number.error.length"),
+            regexp(Validation.passportOrIdCardNumberRegEx, s"$prefix.individual.passportDetails.number.error.invalid"),
+            nonEmptyString("number", s"$prefix.individual.passportDetails.number.error.required")
+          )
+        ),
+      "expiryDate" -> localDate(
+        invalidKey     = s"$prefix.individual.passportDetails.expiryDate.error.invalid",
+        allRequiredKey = s"$prefix.individual.passportDetails.expiryDate.error.required.all",
+        twoRequiredKey = s"$prefix.individual.passportDetails.expiryDate.error.required.two",
+        requiredKey    = s"$prefix.individual.passportDetails.expiryDate.error.required"
+      ).verifying(firstError(
+        maxDate(
+          LocalDate.of(2099, 12, 31),
+          s"$prefix.individual.passportDetails.expiryDate.error.future", "day", "month", "year"
+        ),
+        minDate(
+          LocalDate.of(1500,1,1),
+          s"$prefix.individual.passportDetails.expiryDate.error.past", "day", "month", "year"
+        )
+      )),
+      "country" -> text(s"$prefix.individual.passportDetails.country.error.required")
+        .verifying(
+          firstError(
+            maxLength(maxLengthCountryField, s"$prefix.individual.passportDetails.country.error.length"),
+            nonEmptyString("country", s"$prefix.individual.passportDetails.country.error.required")
+          )
+        )
+    )(Passport.apply)(Passport.unapply)
+  )
 }

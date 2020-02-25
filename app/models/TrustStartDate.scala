@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-package pages.trustee
+package models
 
-import play.api.libs.json.JsPath
+import play.api.libs.json.{Json, OFormat}
 
-package object individual {
-  val basePath = JsPath \ 'trustee \ 'individual
+object TrustStartDate {
+
+  implicit val formats: OFormat[TrustStartDate] = Json.format[TrustStartDate]
 }
+
+case class TrustStartDate(startDate: String)
+
+

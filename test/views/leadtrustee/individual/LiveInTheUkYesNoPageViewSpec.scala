@@ -25,7 +25,7 @@ import views.html.leadtrustee.individual.LiveInTheUkYesNoPageView
 
 class LiveInTheUkYesNoPageViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "liveInTheUkYesNoPage"
+  val messageKeyPrefix = "leadtrustee.individual.liveInTheUkYesNoPage"
 
   val form = (new YesNoFormProvider).withPrefix("prefix")
 
@@ -34,12 +34,12 @@ class LiveInTheUkYesNoPageViewSpec extends YesNoViewBehaviours {
     val view = viewFor[LiveInTheUkYesNoPageView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form)(fakeRequest, messages)
+      view.apply(form, "Lead Trustee")(fakeRequest, messages)
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, "Lead Trustee")
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, None, routes.LiveInTheUkYesNoPageController.onSubmit().url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some("Lead Trustee"), routes.LiveInTheUkYesNoPageController.onSubmit().url)
   }
 }

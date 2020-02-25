@@ -18,7 +18,7 @@ package pages.trustee.individual
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.Trustees
+import pages.trustee.basePath
 
 case class NationalInsuranceNumberPage(index:Int) extends QuestionPage[String] {
 

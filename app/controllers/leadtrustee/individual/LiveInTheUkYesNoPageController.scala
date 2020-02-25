@@ -17,6 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
+import controllers.leadtrustee.individual.actions.NameRequiredAction
 import forms.YesNoFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -35,14 +36,15 @@ class LiveInTheUkYesNoPageController @Inject()(
                                          playbackRepository: PlaybackRepository,
                                          navigator: Navigator,
                                          standardActionSets: StandardActionSets,
+                                         nameAction: NameRequiredAction,
                                          formProvider: YesNoFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: LiveInTheUkYesNoPageView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNoPage")
+  val form = formProvider.withPrefix("leadtrustee")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(LiveInTheUkYesNoPage) match {
@@ -50,15 +52,15 @@ class LiveInTheUkYesNoPageController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm))
+      Ok(view(preparedForm, request.leadTrusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
 
         value =>
           for {

@@ -40,13 +40,12 @@ object TrusteeViewModel {
       (__ \ "name").readNullable[String]
 
   implicit lazy val reads : Reads[TrusteeViewModel] = (
-    (__ \ "isThisLeadTrustee").readWithDefault[Boolean](false) and
       (__ \ "individualOrBusiness").readNullable[IndividualOrBusiness] and
       nameReads and
       (__ \ "status").readWithDefault[TrusteeStatus](InProgress)
     )(
-      (isLead, individualOrBusiness, name, status) => {
-        TrusteeViewModel(isLead, name, individualOrBusiness, status)
+      (individualOrBusiness, name, status) => {
+        TrusteeViewModel(false, name, individualOrBusiness, status)
       }
     )
 

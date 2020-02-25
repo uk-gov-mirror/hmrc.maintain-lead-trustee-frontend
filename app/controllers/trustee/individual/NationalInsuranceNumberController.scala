@@ -44,7 +44,7 @@ class NationalInsuranceNumberController @Inject()(
 
   val form = formProvider.withPrefix("trustee.individual.nationalInsuranceNumber")
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(NationalInsuranceNumberPage(index)) match {
@@ -55,7 +55,7 @@ class NationalInsuranceNumberController @Inject()(
       Ok(view(preparedForm, index, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.andThen(nameAction(index)).async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
     implicit request =>
 
       form.bindFromRequest().fold(

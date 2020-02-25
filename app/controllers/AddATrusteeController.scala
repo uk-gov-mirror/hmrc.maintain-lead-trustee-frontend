@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
-import sections.Trustees
+import sections.LeadTrusteeIndividual
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.AddATrusteeViewHelper
 import views.html.trustee.{AddATrusteeView, AddATrusteeYesNoView}
@@ -62,7 +62,7 @@ class AddATrusteeController @Inject()(
 
       val trustees = new AddATrusteeViewHelper(request.userAnswers).rows
 
-      val isLeadTrusteeDefined = request.userAnswers.get(Trustees).toList.flatten.exists(trustee => trustee.isLead)
+      val isLeadTrusteeDefined = request.userAnswers.get(LeadTrusteeIndividual).exists(trustee => trustee.isLead)  // TODO Check for Lead Trustee Company
 
       trustees.count match {
         case 0 =>
@@ -96,7 +96,7 @@ class AddATrusteeController @Inject()(
 
           val trustees = new AddATrusteeViewHelper(request.userAnswers).rows
 
-          val isLeadTrusteeDefined = request.userAnswers.get(Trustees).toList.flatten.exists(trustee => trustee.isLead)
+          val isLeadTrusteeDefined = request.userAnswers.get(LeadTrusteeIndividual).exists(trustee => trustee.isLead) // TODO Check for Lead Trustee Company
 
           Future.successful(BadRequest(
             addAnotherView(

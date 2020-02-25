@@ -27,12 +27,16 @@ trait Mappings extends Formatters with Constraints {
   protected def nino(errorKey: String = "error.required"): FieldMapping[String] =
     of(ninoFormatter(errorKey))
 
+  protected def postcode(requiredKey : String = "error.required",
+                         invalidKey : String = "error.postcodeInvalid") : FieldMapping[String] =
+    of(postcodeFormatter(requiredKey, invalidKey))
+
   protected def text(errorKey: String = "error.required"): FieldMapping[String] =
     of(stringFormatter(errorKey))
 
   protected def int(requiredKey: String = "error.required",
-                    wholeNumberKey: String = "error.wholeNumber",
-                    nonNumericKey: String = "error.nonNumeric"): FieldMapping[Int] =
+                    wholeNumberKey: String = "error.integer",
+                    nonNumericKey: String = "error.non_numeric"): FieldMapping[Int] =
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey))
 
   protected def boolean(requiredKey: String = "error.required",
@@ -48,7 +52,6 @@ trait Mappings extends Formatters with Constraints {
                            invalidKey: String,
                            allRequiredKey: String,
                            twoRequiredKey: String,
-                           requiredKey: String,
-                           args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
-    of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
+                           requiredKey: String): FieldMapping[LocalDate] =
+    of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey))
 }

@@ -17,16 +17,18 @@
 package controllers.trustee.individual
 
 import controllers.actions._
+import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.NonUkAddressFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.leadtrustee.individual.NonUkAddressPage
+import pages.trustee.individual.NonUkAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.leadtrustee.individual.NonUkAddressView
+import utils.countryOptions.CountryOptions
+import views.html.trustee.individual.NonUkAddressView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,36 +37,38 @@ class NonUkAddressController @Inject()(
                                       sessionRepository: PlaybackRepository,
                                       navigator: Navigator,
                                       standardActionSets: StandardActionSets,
+                                      nameAction: TrusteeNameRequiredProvider,
                                       formProvider: NonUkAddressFormProvider,
                                       val controllerComponents: MessagesControllerComponents,
-                                      view: NonUkAddressView
+                                      view: NonUkAddressView,
+                                      val countryOptions: CountryOptions
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(NonUkAddressPage) match {
+      val preparedForm = request.userAnswers.get(NonUkAddressPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm))
+      Ok(view(preparedForm, countryOptions.options, index, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, index, request.trusteeName))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NonUkAddressPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(NonUkAddressPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NonUkAddressPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NonUkAddressPage(index), mode, updatedAnswers))
       )
   }
 }

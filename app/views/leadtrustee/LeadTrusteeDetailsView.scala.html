@@ -14,21 +14,23 @@
  * limitations under the License.
  *@
 
+@import controllers.leadtrustee.routes.DetailsController
 @import viewmodels.{AnswerSection, RepeaterAnswerSection, Section}
 
 @this(
-    main_template: MainTemplate
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
 )
 
 @(answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("checkYourAnswers.title")
+    title = messages("leadTrusteeDetails.title")
     ) {
 
-    @components.heading("checkYourAnswers.heading")</h1>
+    @components.heading("leadTrusteeDetails.heading")
 
-    <p>@messages("checkYourAnswers.guidance")</p>
+    <p>@messages("leadTrusteeDetails.guidance")</p>
 
     @for(section <- answerSections){
         @{
@@ -37,5 +39,9 @@
                 case r: RepeaterAnswerSection => components.repeater_answer_section(r)
             }
         }
+    }
+
+    @formHelper(action = DetailsController.onSubmit(), 'autoComplete -> "off") {
+        @components.submit_button()
     }
 }

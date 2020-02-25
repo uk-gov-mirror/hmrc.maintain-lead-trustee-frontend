@@ -27,9 +27,4 @@ object PlaybackImplicits {
     def convert : LocalDate = LocalDate.of(date.getYear, date.getMonthOfYear, date.getDayOfMonth)
   }
 
-  implicit class PassportTypeConverter(passport: PassportType) {
-    def convert : PassportOrIdCardDetails =
-      PassportOrIdCardDetails(passport.countryOfIssue, passport.number, passport.expirationDate)
-  }
-
 }

@@ -16,6 +16,8 @@
 
 package utils
 
+import java.time.LocalDate
+
 import org.scalatest.TryValues
 
 object TestUserAnswers extends TryValues {
@@ -23,6 +25,6 @@ object TestUserAnswers extends TryValues {
   lazy val draftId = "id"
   lazy val userInternalId = "internalId"
 
-  def emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR")
+  def emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR", LocalDate.now())
   
 }

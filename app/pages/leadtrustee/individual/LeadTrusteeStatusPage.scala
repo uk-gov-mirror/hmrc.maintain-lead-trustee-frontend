@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package pages.leadtrustee.individual
 
-import java.time.LocalDate
+import models.TrusteeStatus
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-import play.api.libs.json.Json
+case object LeadTrusteeStatusPage extends QuestionPage[TrusteeStatus] {
 
-case class PassportOrIdCardDetails(country: String, cardNumber: String, expiryDate:LocalDate)
+  override def path: JsPath = basePath \ toString
 
-object PassportOrIdCardDetails {
-  implicit val format = Json.format[PassportOrIdCardDetails]
+  override def toString: String = "status"
 }

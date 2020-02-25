@@ -46,6 +46,7 @@ class NonUkAddressViewSpec extends QuestionViewBehaviours[NonUkAddress] {
       form,
       applyView,
       messageKeyPrefix,
+      None,
       routes.NonUkAddressController.onSubmit().url,
       "line1", "line2"
     )

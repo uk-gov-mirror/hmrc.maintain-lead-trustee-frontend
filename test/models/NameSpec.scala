@@ -16,11 +16,11 @@
 
 package models
 
-import generators.ModelGenerators
+import generators.{Generators, ModelGenerators}
 import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class NameSpec extends WordSpec with MustMatchers with ScalaCheckPropertyChecks with ModelGenerators {
+class NameSpec extends WordSpec with MustMatchers with ScalaCheckPropertyChecks with ModelGenerators with Generators {
   "displayName properties" in {
     forAll(arbitraryName.arbitrary) { (name:Name) =>
       name.displayName must startWith(name.firstName + " ")
