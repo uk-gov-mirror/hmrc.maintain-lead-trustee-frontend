@@ -32,7 +32,6 @@ package views.trustee
  * limitations under the License.
  */
 
-import controllers.trustee.routes
 import play.twirl.api.HtmlFormat
 import viewmodels.AnswerSection
 import views.behaviours.ViewBehaviours
@@ -54,11 +53,7 @@ class CheckDetailsViewSpec extends ViewBehaviours {
 
     behave like pageWithBackLink(applyView())
 
-    behave like pageWithButtonLink(
-      applyView(),
-      messages("site.save.continue"),
-      routes.CheckDetailsController.onSubmit(index).url
-    )
+    behave like pageWithASubmitButton(applyView())
   }
 }
 
