@@ -22,11 +22,9 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("emailAddress.title")}"
-    ) {
+@main_template(title = s"${errorPrefix(form)} ${messages("leadtrustee.individual.emailAddress.title", name)}") {
 
     @formHelper(action = EmailAddressController.onSubmit(), 'autoComplete -> "off") {
 
@@ -36,7 +34,7 @@
 
         @components.input_text(
           field = form("value"),
-          label = messages("emailAddress.heading"),
+          label = messages("leadtrustee.individual.emailAddress.heading", name),
           headingIsLabel = true
         )
 
