@@ -69,7 +69,7 @@ class EmailAddressControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(EmailAddressPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(EmailAddressPage, "e@answer.com").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -82,7 +82,7 @@ class EmailAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), name.displayName)(fakeRequest, messages).toString
+        view(form.fill("e@answer.com"), name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -102,7 +102,7 @@ class EmailAddressControllerSpec extends SpecBase with MockitoSugar {
 
       val request =
         FakeRequest(POST, emailAddressRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "e@answer.com"))
 
       val result = route(application, request).value
 

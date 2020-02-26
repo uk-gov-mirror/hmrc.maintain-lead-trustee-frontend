@@ -38,7 +38,7 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("leadtrustee")
+  val form = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNo")
 
   lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoPageController.onPageLoad().url
 
