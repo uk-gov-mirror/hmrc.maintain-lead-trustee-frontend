@@ -74,7 +74,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(IdCardDetailsPage, IdCard("NUMBER", LocalDate.of(2040, 12, 31), "GB")).success.value
+        .set(IdCardDetailsPage, IdCard("GB", "NUMBER", LocalDate.of(2040, 12, 31))).success.value
         .set(NamePage, name).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
@@ -88,7 +88,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(IdCard("NUMBER", LocalDate.of(2040, 12, 31), "GB")), name.displayName, countryOptions.options)(fakeRequest, messages).toString
+        view(form.fill(IdCard("GB", "NUMBER", LocalDate.of(2040, 12, 31))), name.displayName, countryOptions.options)(fakeRequest, messages).toString
 
       application.stop()
     }
