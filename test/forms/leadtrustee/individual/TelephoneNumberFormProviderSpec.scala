@@ -16,9 +16,10 @@
 
 package forms.leadtrustee.individual
 
-import forms.TelephoneNumberFormProvider
 import forms.behaviours.StringFieldBehaviours
+import forms.{TelephoneNumberFormProvider, Validation}
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class TelephoneNumberFormProviderSpec extends StringFieldBehaviours {
 
@@ -35,14 +36,7 @@ class TelephoneNumberFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      RegexpGen.from(Validation.telephoneRegex)
     )
 
     behave like mandatoryField(
