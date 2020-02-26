@@ -52,9 +52,9 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
         .set(UkAddressPage(index), trusteeUkAddress).success.value
         .set(NonUkAddressPage(index), trusteeNonUkAddress).success.value
         .set(PassportDetailsYesNoPage(index), true).success.value
-        .set(PassportDetailsPage(index), Passport("1", LocalDate.of(2030, 10, 10), "GB")).success.value
+        .set(PassportDetailsPage(index), Passport("GB", "1", LocalDate.of(2030, 10, 10))).success.value
         .set(IdCardDetailsYesNoPage(index), true).success.value
-        .set(IdCardDetailsPage(index), IdCard("1", LocalDate.of(2030, 10, 10), "GB")).success.value
+        .set(IdCardDetailsPage(index), IdCard("GB", "1", LocalDate.of(2030, 10, 10))).success.value
         .set(WhenAddedPage(index), LocalDate.of(2020, 1, 1)).success.value
 
       val result = helper(userAnswers, name.displayName, index)

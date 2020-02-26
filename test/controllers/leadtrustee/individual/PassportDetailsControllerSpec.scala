@@ -72,7 +72,7 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PassportDetailsPage, Passport("NUMBER", LocalDate.of(2040, 12, 31), "GB")).success.value
+      val userAnswers = emptyUserAnswers.set(PassportDetailsPage, Passport("GB", "NUMBER", LocalDate.of(2040, 12, 31))).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -85,7 +85,7 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Passport("NUMBER", LocalDate.of(2040, 12, 31), "GB")), "Lead Trustee", countryOptions.options)(fakeRequest, messages).toString
+        view(form.fill(Passport("GB", "NUMBER", LocalDate.of(2040, 12, 31))), "Lead Trustee", countryOptions.options)(fakeRequest, messages).toString
 
       application.stop()
     }

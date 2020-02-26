@@ -55,7 +55,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
 
-  val validData: IdCard = IdCard("card number", LocalDate.of(2020, 1, 1), "country")
+  val validData: IdCard = IdCard("country", "card number", LocalDate.of(2020, 1, 1))
 
   "IdCardDetails Controller" must {
 

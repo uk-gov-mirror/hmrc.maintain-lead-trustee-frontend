@@ -46,7 +46,7 @@ trait ModelGenerators {
         number <- arbitrary[String]
         expiry <- datesBetween(LocalDate.now, LocalDate.now.plusYears(10))
         country <- arbitrary[String]
-      } yield IdCard(number, expiry, country)
+      } yield IdCard(country, number, expiry)
     }
 
   implicit lazy val arbitraryPassport: Arbitrary[Passport] =
@@ -55,7 +55,7 @@ trait ModelGenerators {
         number <- arbitrary[String]
         expiry <- datesBetween(LocalDate.now, LocalDate.now.plusYears(10))
         country <- arbitrary[String]
-      } yield Passport(number, expiry, country)
+      } yield Passport(country, number, expiry)
     }
 
   implicit lazy val arbitraryNationalInsuranceNumber: Arbitrary[NationalInsuranceNumber] =
