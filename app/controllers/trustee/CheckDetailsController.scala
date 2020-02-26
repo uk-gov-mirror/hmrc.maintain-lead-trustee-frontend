@@ -23,7 +23,7 @@ import controllers.actions._
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import javax.inject.Inject
 import models.IndividualOrBusiness._
-import models.{Mode, TrusteeIndividual}
+import models.{Mode, NewTrusteeIndividual}
 import navigation.Navigator
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -70,7 +70,7 @@ class CheckDetailsController @Inject()(
         Future.successful(Redirect(routes.WhenAddedController.onPageLoad(index)))
       } {
         date =>
-          val trusteeInd: TrusteeIndividual = service.createTrusteeIndividual(request.userAnswers, date, index)
+          val trusteeInd: NewTrusteeIndividual = service.createTrusteeIndividual(request.userAnswers, date, index)
           trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd).map { _ => returnToStart(request.user.affinityGroup)}
       }
   }

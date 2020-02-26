@@ -59,7 +59,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
   lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoad(index).url
   lazy val sendDetailsRoute = routes.CheckDetailsController.onSubmit(index).url
 
-  "UkAddress Controller" must {
+  "CheckDetails Controller" must {
 
     "return OK and the correct view for a GET" in {
 
