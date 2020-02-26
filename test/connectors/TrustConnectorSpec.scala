@@ -39,6 +39,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   private def getLeadTrusteeUrl(utr: String): String = s"/trusts/$utr/transformed/lead-trustee"
 
   private def getTrustStartDateUrl(utr: String): String = s"/trusts/$utr/trust-start-date"
+  private def getTrusteesUrl(utr: String) = s"/trusts/$utr/transformed/trustees"
   private def removeTrusteeUrl(utr: String) = s"/trusts/$utr/trustee"
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
@@ -302,5 +303,63 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
     }
 
   }
-  
+
+  "TrustConnector getTrusteea" must {
+
+    "must return playback data inside a Processed trust" in {
+
+      val utr = "1000000008"
+
+      val json = Json.obj(
+        "trusteeInd" -> Json.obj(
+          "lineNo" -> "1",
+          "bpMatchStatus" -> "01",
+          "name" -> Json.obj(
+             "firstName" -> "1234567890 QwErTyUiOp ,.(/)&'- name",
+            "lastName" -> "1234567890 QwErTyUiOp ,.(/)&'- name"
+          ),
+          "dateOfBirth" -> "1983-09-24",
+          "identification" -> Json.obj(
+            "nino" -> "JS123456A"
+          ),
+          "entityStart" -> "2019-02-28"
+        )
+      )
+
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        get(urlEqualTo(getTrusteesUrl(utr)))
+          .willReturn(okJson(json.toString))
+      )
+
+      val processed = connector.getTrustees(utr)
+
+      whenReady(processed) { Trustees =>
+        Trustees mustBe TrusteeType(
+          trusteeInd = Some(TrusteeIndividual(
+          lineNo = "1",
+          bpMatchStatus = Some("01"),
+          name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
+          dateOfBirth = Some(LocalDate.of(1983, 9, 24)),
+          phoneNumber = None,
+          identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+          entityStart = LocalDate.of(2019,2,28))
+        ),
+        trusteeOrg = None)
+      }
+
+      application.stop()
+    }
+  }
+
+
 }
