@@ -17,6 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
+import controllers.leadtrustee.individual.actions.NameRequiredAction
 import forms.NonUkAddressFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -26,6 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.countryOptions.CountryOptions
 import views.html.leadtrustee.individual.NonUkAddressView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,14 +37,16 @@ class NonUkAddressController @Inject()(
                                       playbackRepository: PlaybackRepository,
                                       navigator: Navigator,
                                       standardActionSets: StandardActionSets,
+                                      nameAction: NameRequiredAction,
                                       formProvider: NonUkAddressFormProvider,
                                       val controllerComponents: MessagesControllerComponents,
-                                      view: NonUkAddressView
+                                      view: NonUkAddressView,
+                                      countryOptions: CountryOptions
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(NonUkAddressPage) match {
@@ -50,15 +54,15 @@ class NonUkAddressController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm))
+      Ok(view(preparedForm, countryOptions.options, request.leadTrusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, request.leadTrusteeName))),
 
         value =>
           for {

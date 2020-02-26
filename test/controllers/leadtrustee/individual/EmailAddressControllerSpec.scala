@@ -18,12 +18,12 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import forms.EmailAddressFormProvider
-import models.{NormalMode, UserAnswers}
+import models.{Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.EmailAddressPage
+import pages.leadtrustee.individual.{EmailAddressPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -39,6 +39,11 @@ class EmailAddressControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new EmailAddressFormProvider()
   val form = formProvider()
+
+  val name = Name("Lead", None, "Trustee")
+
+  override val emptyUserAnswers = super.emptyUserAnswers
+    .set(NamePage, name).success.value
 
   lazy val emailAddressRoute = routes.EmailAddressController.onPageLoad().url
 
@@ -57,7 +62,7 @@ class EmailAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -77,7 +82,7 @@ class EmailAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), NormalMode)(fakeRequest, messages).toString
+        view(form.fill("answer"), name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -124,7 +129,7 @@ class EmailAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }

@@ -26,6 +26,7 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
+import play.api.test.Helpers._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -34,6 +35,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   private def getLeadTrusteeUrl(utr: String): String = s"/trusts/$utr/transformed/lead-trustee"
+
   private def getTrustStartDateUrl(utr: String): String = s"/trusts/$utr/trust-start-date"
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
@@ -53,6 +55,80 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
     server.stop()
   }
 
+  "TrustConnector amendLeadTrustee" must {
+    "Be fine when request is successful" in {
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        post(urlEqualTo("/trusts/amend-lead-trustee/UTRUTRUTR"))
+          .willReturn(ok)
+      )
+
+      val result = connector.amendLeadTrustee("UTRUTRUTR", arbitraryLeadTrusteeIndividual.arbitrary.sample.get)
+      result.futureValue mustBe()
+
+      application.stop()
+    }
+
+    "Deal with failures" ignore {
+    }
+  }
+
+  "TrustConnector addTrustee" must {
+    "Return Ok when the request is successful" in {
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        post(urlEqualTo("/trusts/add-trustee/UTRUTRUTR"))
+          .willReturn(ok)
+      )
+
+      val result = connector.addTrusteeIndividual("UTRUTRUTR", arbitraryTrusteeIndividual.arbitrary.sample.get)
+      result.futureValue.status mustBe (OK)
+
+      application.stop()
+    }
+
+    "return Bad Request when the request is unsuccessful" in {
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        post(urlEqualTo("/trusts/add-trustee/UTRUTRUTR"))
+          .willReturn(badRequest)
+      )
+
+      val result = connector.addTrusteeIndividual("UTRUTRUTR", arbitraryTrusteeIndividual.arbitrary.sample.get)
+
+      result.map(response => response.status mustBe BAD_REQUEST)
+
+      application.stop()
+    }
+  }
+
   "TrustConnector getLeadTrustee" must {
 
     "must return playback data inside a Processed trust" in {
@@ -60,14 +136,15 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val json = Json.obj(
         "lineNo" -> "lineNo",
         "name" -> "name",
+        "dateOfBirth" -> "1956-01-01",
         "phoneNumber" -> "phoneNumber",
         "identification" -> Json.obj(
           "utr" -> "anUtr",
-            "address" -> Json.obj(
-              "line1" -> "address1",
-              "line2" -> "address2",
-              "postcode" -> "Postcode"
-            )
+          "address" -> Json.obj(
+            "line1" -> "address1",
+            "line2" -> "address2",
+            "postcode" -> "Postcode"
+          )
         ),
         "entityStart" -> "now"
       )
@@ -91,15 +168,15 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       whenReady(processed) { leadTrustee =>
         leadTrustee mustBe LeadTrusteeOrganisation(
-            "lineNo",
-            None,
-            "name",
-            "phoneNumber",
-            None,
-            Some("anUtr"),
-            UkAddress("address1", "address2", None, None, "Postcode"),
-            "now"
-          )
+          "lineNo",
+          None,
+          "name",
+          "phoneNumber",
+          None,
+          Some("anUtr"),
+          UkAddress("address1", "address2", None, None, "Postcode"),
+          "now"
+        )
       }
       application.stop()
     }

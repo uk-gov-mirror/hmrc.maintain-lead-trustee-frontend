@@ -17,6 +17,7 @@
 package controllers.trustee.individual
 
 import controllers.actions._
+import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.TelephoneNumberFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -35,6 +36,7 @@ class TelephoneNumberController @Inject()(
                                         sessionRepository: PlaybackRepository,
                                         navigator: Navigator,
                                         standardActionSets: StandardActionSets,
+                                        nameAction: TrusteeNameRequiredProvider,
                                         formProvider: TelephoneNumberFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: TelephoneNumberView
@@ -42,7 +44,7 @@ class TelephoneNumberController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(TelephoneNumberPage) match {
@@ -50,15 +52,15 @@ class TelephoneNumberController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
 
         value =>
           for {

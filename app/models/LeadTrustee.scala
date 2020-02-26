@@ -24,36 +24,41 @@ sealed trait LeadTrustee
 
 object LeadTrustee {
 
-  implicit val writes: Writes[LeadTrustee] = Writes[LeadTrustee](_ => ???)
+  implicit val writes: Writes[LeadTrustee] = Writes[LeadTrustee] {
+    case lti:LeadTrusteeIndividual => Json.toJson(lti)(LeadTrusteeIndividual.writes)
+    case _:LeadTrusteeOrganisation => ???
+  }
 
   implicit val reads : Reads[LeadTrustee] = Reads(json =>
     json.validate[LeadTrusteeIndividual] orElse
-      json.validate[LeadTrusteeOrganisation])
+     json.validate[LeadTrusteeOrganisation])
 }
 
 case class LeadTrusteeIndividual(
-                                  lineNo: String,
-                                  bpMatchStatus: Option[String],
                                   name: Name,
                                   dateOfBirth: LocalDate,
                                   phoneNumber: String,
                                   email: Option[String] = None,
                                   identification: IndividualIdentification,
-                                  address: Option[Address],
-                                  entityStart: String
+                                  address: Option[Address]
                                 ) extends LeadTrustee
 
 object LeadTrusteeIndividual {
   implicit val reads: Reads[LeadTrusteeIndividual] =
-    ((__ \ 'lineNo).read[String] and
-    (__ \ 'bpMatchStatus).readNullable[String] and
-    (__ \ 'name).read[Name] and
+    ((__ \ 'name).read[Name] and
     (__ \ 'dateOfBirth).read[LocalDate] and
     (__ \ 'phoneNumber).read[String] and
     (__ \ 'email).readNullable[String] and
     (__ \ 'identification).read[IndividualIdentification] and
-    (__ \ 'identification \ 'address).readNullable[Address] and
-    (__ \ 'entityStart).read[String]).apply(LeadTrusteeIndividual.apply _)
+    (__ \ 'identification \ 'address).readNullable[Address]).apply(LeadTrusteeIndividual.apply _)
+
+  implicit val writes: Writes[LeadTrusteeIndividual] =
+    ((__ \ 'name).write[Name] and
+      (__ \ 'dateOfBirth).write[LocalDate] and
+      (__ \ 'phoneNumber).write[String] and
+      (__ \ 'email).writeNullable[String] and
+      (__ \ 'identification).write[IndividualIdentification] and
+      (__ \ 'identification \ 'address).writeNullable[Address]).apply(unlift(LeadTrusteeIndividual.unapply))
 }
 
 case class LeadTrusteeOrganisation(

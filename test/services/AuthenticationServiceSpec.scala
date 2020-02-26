@@ -54,7 +54,6 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
   implicit val dataRequest = DataRequest[AnyContent](fakeRequest, emptyUserAnswers, AgentUser("internalId", enrolments, "arn"))
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
-  val mockEnrolmentStoreConnector: EnrolmentStoreConnector = mock[EnrolmentStoreConnector]
 
   type RetrievalType = Option[String] ~ Option[AffinityGroup] ~ Enrolments
 
@@ -88,7 +87,6 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
           val app = applicationBuilder()
             .overrides(bind[TrustsAuthorisedFunctions].toInstance(trustsAuth))
-            .overrides(bind[EnrolmentStoreConnector].toInstance(mockEnrolmentStoreConnector))
             .build()
 
           val service = app.injector.instanceOf[AuthenticationService]
@@ -113,7 +111,6 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
           val app = applicationBuilder()
             .overrides(bind[TrustsAuthorisedFunctions].toInstance(trustsAuth))
-            .overrides(bind[EnrolmentStoreConnector].toInstance(mockEnrolmentStoreConnector))
             .build()
 
           val service = app.injector.instanceOf[AuthenticationService]
@@ -148,7 +145,6 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
           val app = applicationBuilder()
             .overrides(bind[TrustsAuthorisedFunctions].toInstance(trustsAuth))
-            .overrides(bind[EnrolmentStoreConnector].toInstance(mockEnrolmentStoreConnector))
             .build()
 
           val service = app.injector.instanceOf[AuthenticationService]
@@ -189,7 +185,6 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
           val app = applicationBuilder()
             .overrides(bind[TrustsAuthorisedFunctions].toInstance(trustsAuth))
-            .overrides(bind[EnrolmentStoreConnector].toInstance(mockEnrolmentStoreConnector))
             .build()
 
           val service = app.injector.instanceOf[AuthenticationService]
@@ -224,7 +219,6 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
             val app = applicationBuilder()
               .overrides(bind[TrustsAuthorisedFunctions].toInstance(trustsAuth))
-              .overrides(bind[EnrolmentStoreConnector].toInstance(mockEnrolmentStoreConnector))
               .build()
 
             val service = app.injector.instanceOf[AuthenticationService]
@@ -254,7 +248,6 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
             val app = applicationBuilder()
               .overrides(bind[TrustsAuthorisedFunctions].toInstance(trustsAuth))
-              .overrides(bind[EnrolmentStoreConnector].toInstance(mockEnrolmentStoreConnector))
               .build()
 
             val service = app.injector.instanceOf[AuthenticationService]
@@ -287,7 +280,6 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
             val app = applicationBuilder()
               .overrides(bind[TrustsAuthorisedFunctions].toInstance(trustsAuth))
-              .overrides(bind[EnrolmentStoreConnector].toInstance(mockEnrolmentStoreConnector))
               .build()
 
             val service = app.injector.instanceOf[AuthenticationService]
@@ -317,7 +309,6 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
             val app = applicationBuilder()
               .overrides(bind[TrustsAuthorisedFunctions].toInstance(trustsAuth))
-              .overrides(bind[EnrolmentStoreConnector].toInstance(mockEnrolmentStoreConnector))
               .build()
 
             val service = app.injector.instanceOf[AuthenticationService]
@@ -348,7 +339,6 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
             val app = applicationBuilder()
               .overrides(bind[TrustsAuthorisedFunctions].toInstance(trustsAuth))
-              .overrides(bind[EnrolmentStoreConnector].toInstance(mockEnrolmentStoreConnector))
               .build()
 
             val service = app.injector.instanceOf[AuthenticationService]

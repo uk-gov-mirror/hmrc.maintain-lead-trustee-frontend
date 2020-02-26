@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package base
+package controllers
 
-import connectors.EnrolmentStoreConnector
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
-import repositories.PlaybackRepository
+import config.FrontendAppConfig
+import play.api.mvc.{Result, Results}
+import uk.gov.hmrc.auth.core.AffinityGroup
+import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 
-import scala.concurrent.Future
+trait ReturnToStart {
+  this : Results =>
+  val appConfig: FrontendAppConfig
 
-trait Mocked extends MockitoSugar {
-
-  val playbackRepository: PlaybackRepository = mock[PlaybackRepository]
-
-  when(playbackRepository.set(any())).thenReturn(Future.successful(true))
-
-  val mockEnrolmentStoreConnector = mock[EnrolmentStoreConnector]
-
+  def returnToStart(userAffinityGroup : AffinityGroup): Result = {userAffinityGroup match {
+    case Agent => Redirect(appConfig.maintainATrustAgentDeclarationUrl)
+    case _ => Redirect(appConfig.maintainATrustIndividualDeclarationUrl)
+  }}
 }
