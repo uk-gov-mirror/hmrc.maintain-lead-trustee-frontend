@@ -31,6 +31,13 @@ class IdCardDetailsFormProvider @Inject() extends Mappings with Constraints {
 
   def withPrefix(prefix: String): Form[IdCard] = Form(
     mapping(
+      "country" -> text(s"$prefix.individual.idCardDetails.country.error.required")
+        .verifying(
+          firstError(
+            maxLength(maxLengthCountryField, s"$prefix.individual.idCardDetails.country.error.length"),
+            nonEmptyString("country", s"$prefix.individual.idCardDetails.country.error.required")
+          )
+        ),
       "number" -> text(s"$prefix.individual.idCardDetails.number.error.required")
         .verifying(
           firstError(
@@ -53,14 +60,7 @@ class IdCardDetailsFormProvider @Inject() extends Mappings with Constraints {
           LocalDate.of(1500,1,1),
           s"$prefix.individual.idCardDetails.expiryDate.error.past", "day", "month", "year"
         )
-      )),
-      "country" -> text(s"$prefix.individual.idCardDetails.country.error.required")
-        .verifying(
-          firstError(
-            maxLength(maxLengthCountryField, s"$prefix.individual.idCardDetails.country.error.length"),
-            nonEmptyString("country", s"$prefix.individual.idCardDetails.country.error.required")
-          )
-        )
+      ))
     )(IdCard.apply)(IdCard.unapply)
   )
 }

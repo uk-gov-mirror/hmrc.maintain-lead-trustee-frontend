@@ -34,7 +34,7 @@ class IdentificationDetailOptionsPageSpec extends PageBehaviours {
 
     "implement cleanup logic when ID-CARD selected" in {
       val userAnswers = emptyUserAnswers
-        .set(PassportDetailsPage, Passport("NUMBER", LocalDate.of(2040, 12, 31), "GB"))
+        .set(PassportDetailsPage, Passport("GB", "NUMBER", LocalDate.of(2040, 12, 31)))
         .flatMap(_.set(IdentificationDetailOptionsPage, IdentificationDetailOptions.IdCard))
 
       userAnswers.get.get(PassportDetailsPage) mustNot be(defined)
@@ -42,7 +42,7 @@ class IdentificationDetailOptionsPageSpec extends PageBehaviours {
 
     "implement cleanup logic when PASSPORT selected" in {
       val userAnswers = emptyUserAnswers
-        .set(IdCardDetailsPage, IdCard("NUMBER", LocalDate.of(2040, 12, 31), "GB"))
+        .set(IdCardDetailsPage, IdCard("GB", "NUMBER", LocalDate.of(2040, 12, 31)))
         .flatMap(_.set(IdentificationDetailOptionsPage, IdentificationDetailOptions.Passport))
 
       userAnswers.get.get(IdCardDetailsPage) mustNot be(defined)

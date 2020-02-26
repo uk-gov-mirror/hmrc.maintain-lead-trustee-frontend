@@ -20,9 +20,7 @@ import java.time.LocalDate
 
 import play.api.libs.json.{Format, Json, Reads, Writes}
 
-case class TrusteeIndividual(lineNo: String,
-                             bpMatchStatus: Option[String],
-                             name: Name,
+case class TrusteeIndividual(name: Name,
                              dateOfBirth: Option[LocalDate],
                              phoneNumber: Option[String],
                              identification: Option[TrustIdentification],

@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.TelephoneNumberFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.TelephoneNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,7 +43,7 @@ class TelephoneNumberController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(TelephoneNumberPage) match {
@@ -55,7 +54,7 @@ class TelephoneNumberController @Inject()(
       Ok(view(preparedForm, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -66,7 +65,7 @@ class TelephoneNumberController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(TelephoneNumberPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TelephoneNumberPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(TelephoneNumberPage, updatedAnswers))
       )
   }
 }

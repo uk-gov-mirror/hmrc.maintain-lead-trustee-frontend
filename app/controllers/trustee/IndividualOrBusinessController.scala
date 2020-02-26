@@ -19,7 +19,7 @@ package controllers.trustee
 import controllers.actions.StandardActionSets
 import forms.IndividualOrBusinessFormProvider
 import javax.inject.Inject
-import models.{IndividualOrBusiness, Mode}
+import models.IndividualOrBusiness
 import navigation.Navigator
 import pages.trustee.IndividualOrBusinessPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,7 +42,7 @@ class IndividualOrBusinessController @Inject()(
 
   val form = formProvider.withPrefix("trustee.individualOrBusiness")
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(IndividualOrBusinessPage(index)) match {
@@ -55,7 +55,7 @@ class IndividualOrBusinessController @Inject()(
 
 
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -66,7 +66,7 @@ class IndividualOrBusinessController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IndividualOrBusinessPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IndividualOrBusinessPage(index), mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(IndividualOrBusinessPage(index), updatedAnswers))
       )
   }
 }

@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.NonUkAddressFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.trustee.individual.NonUkAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -46,7 +45,7 @@ class NonUkAddressController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(NonUkAddressPage(index)) match {
@@ -57,7 +56,7 @@ class NonUkAddressController @Inject()(
       Ok(view(preparedForm, countryOptions.options, index, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -68,7 +67,7 @@ class NonUkAddressController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NonUkAddressPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NonUkAddressPage(index), mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NonUkAddressPage(index), updatedAnswers))
       )
   }
 }

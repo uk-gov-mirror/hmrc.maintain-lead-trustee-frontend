@@ -31,6 +31,13 @@ class PassportDetailsFormProvider @Inject() extends Mappings with Constraints {
 
   def withPrefix(prefix: String): Form[Passport] = Form(
     mapping(
+      "country" -> text(s"$prefix.individual.passportDetails.country.error.required")
+        .verifying(
+          firstError(
+            maxLength(maxLengthCountryField, s"$prefix.individual.passportDetails.country.error.length"),
+            nonEmptyString("country", s"$prefix.individual.passportDetails.country.error.required")
+          )
+        ),
       "number" -> text(s"$prefix.individual.passportDetails.number.error.required")
         .verifying(
           firstError(
@@ -53,14 +60,7 @@ class PassportDetailsFormProvider @Inject() extends Mappings with Constraints {
           LocalDate.of(1500,1,1),
           s"$prefix.individual.passportDetails.expiryDate.error.past", "day", "month", "year"
         )
-      )),
-      "country" -> text(s"$prefix.individual.passportDetails.country.error.required")
-        .verifying(
-          firstError(
-            maxLength(maxLengthCountryField, s"$prefix.individual.passportDetails.country.error.length"),
-            nonEmptyString("country", s"$prefix.individual.passportDetails.country.error.required")
-          )
-        )
+      ))
     )(Passport.apply)(Passport.unapply)
   )
 }

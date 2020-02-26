@@ -15,7 +15,6 @@
  *@
 
 @import controllers.leadtrustee.individual.routes._
-@import models.Mode
 
 @this(
     main_template: MainTemplate,
@@ -25,7 +24,7 @@
 @(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("leadtrustee.individual.liveInTheUkYesNoPage.title", name)}"
+    title = s"${errorPrefix(form)} ${messages("leadtrustee.individual.liveInTheUkYesNo.title", name)}"
     ) {
 
     @formHelper(action = LiveInTheUkYesNoPageController.onSubmit(), 'autoComplete -> "off") {
@@ -36,7 +35,7 @@
 
         @components.input_yes_no(
             field = form("value"),
-            legend = messages("leadtrustee.individual.liveInTheUkYesNoPage.heading", name),
+            legend = messages("leadtrustee.individual.liveInTheUkYesNo.heading", name),
             headingIsLegend = true
         )
 

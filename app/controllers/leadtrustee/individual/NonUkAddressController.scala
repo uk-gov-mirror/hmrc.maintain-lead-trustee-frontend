@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.leadtrustee.individual.actions.NameRequiredAction
 import forms.NonUkAddressFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.NonUkAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -46,7 +45,7 @@ class NonUkAddressController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(NonUkAddressPage) match {
@@ -57,7 +56,7 @@ class NonUkAddressController @Inject()(
       Ok(view(preparedForm, countryOptions.options, request.leadTrusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -68,7 +67,7 @@ class NonUkAddressController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NonUkAddressPage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NonUkAddressPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NonUkAddressPage, updatedAnswers))
       )
   }
 }
