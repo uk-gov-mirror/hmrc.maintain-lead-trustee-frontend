@@ -25,7 +25,7 @@ import views.html.leadtrustee.individual.LiveInTheUkYesNoPageView
 
 class LiveInTheUkYesNoPageViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "leadtrustee.individual.liveInTheUkYesNoPage"
+  val messageKeyPrefix = "leadtrustee.individual.liveInTheUkYesNo"
 
   val form = (new YesNoFormProvider).withPrefix("prefix")
 
