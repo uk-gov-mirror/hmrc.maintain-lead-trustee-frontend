@@ -18,7 +18,7 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import forms.UkCitizenFormProvider
-import models.{Name, NormalMode}
+import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -63,7 +63,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, name.displayName)(fakeRequest, messages).toString
+        view(form, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -83,7 +83,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, name.displayName)(fakeRequest, messages).toString
+        view(form.fill(true), name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -131,7 +131,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }

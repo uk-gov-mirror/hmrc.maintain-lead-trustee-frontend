@@ -19,7 +19,7 @@ package controllers.leadtrustee.individual
 import controllers.actions._
 import controllers.leadtrustee.individual.actions.NameRequiredAction
 import forms.IdentificationDetailOptionsFormProvider
-import models.Mode
+import javax.inject.Inject
 import navigation.Navigator
 import pages.leadtrustee.individual.IdentificationDetailOptionsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,7 +27,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.leadtrustee.individual.IdentificationDetailOptionsView
-import javax.inject.Inject
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,7 +43,7 @@ class IdentificationDetailOptionsController @Inject()(
 
   val form = formProvider.withPrefix("leadtrustee")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(IdentificationDetailOptionsPage) match {
@@ -55,7 +54,7 @@ class IdentificationDetailOptionsController @Inject()(
       Ok(view(preparedForm, request.leadTrusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -66,7 +65,7 @@ class IdentificationDetailOptionsController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IdentificationDetailOptionsPage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IdentificationDetailOptionsPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(IdentificationDetailOptionsPage, updatedAnswers))
       )
   }
 }

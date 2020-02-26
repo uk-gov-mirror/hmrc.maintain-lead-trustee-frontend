@@ -23,9 +23,9 @@ import controllers.ReturnToStart
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.individual.actions.{LeadTrusteeNameRequest, NameRequiredAction}
 import mapping.LeadTrusteesExtractor
-import models.{LeadTrusteeIndividual, Mode, UserAnswers}
+import models.{LeadTrusteeIndividual, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result, Results}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import viewmodels.AnswerSection
@@ -92,7 +92,7 @@ class DetailsController @Inject()(
     Ok(view(sections))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
         extractor.mapLeadTrusteeIndividual(request.userAnswers) match {
           case None => Future.successful(InternalServerError)

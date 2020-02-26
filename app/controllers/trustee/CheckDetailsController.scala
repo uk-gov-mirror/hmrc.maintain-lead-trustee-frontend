@@ -23,14 +23,13 @@ import controllers.actions._
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import javax.inject.Inject
 import models.IndividualOrBusiness._
-import models.{Mode, NewTrusteeIndividual}
+import models.TrusteeIndividual
 import navigation.Navigator
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrusteeBuilder
-import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.print.checkYourAnswers.TrusteeIndividualPrintHelper
 import viewmodels.AnswerSection
@@ -52,7 +51,7 @@ class CheckDetailsController @Inject()(
                                         val appConfig: FrontendAppConfig
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with ReturnToStart {
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
     implicit request =>
 
 
@@ -64,13 +63,13 @@ class CheckDetailsController @Inject()(
       Ok(view(section, index))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
     implicit request =>
       request.userAnswers.get(WhenAddedPage(index)).fold {
         Future.successful(Redirect(routes.WhenAddedController.onPageLoad(index)))
       } {
         date =>
-          val trusteeInd: NewTrusteeIndividual = service.createTrusteeIndividual(request.userAnswers, date, index)
+          val trusteeInd: TrusteeIndividual = service.createTrusteeIndividual(request.userAnswers, date, index)
           trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd).map { _ => returnToStart(request.user.affinityGroup)}
       }
   }

@@ -149,7 +149,7 @@ trait ModelGenerators {
     }
   }
 
-  implicit lazy val arbitraryTrusteeIndividual: Arbitrary[NewTrusteeIndividual] = {
+  implicit lazy val arbitraryTrusteeIndividual: Arbitrary[TrusteeIndividual] = {
     Arbitrary {
       for {
         name <- arbitrary[Name]
@@ -157,7 +157,7 @@ trait ModelGenerators {
         phone <- arbitrary[Option[String]]
         id <- arbitrary[Option[TrustIdentification]]
         enitityStart <- datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(2019, 12, 31))
-      } yield NewTrusteeIndividual(name, Some(dob), phone, id, enitityStart)
+      } yield TrusteeIndividual(name, Some(dob), phone, id, enitityStart)
     }
   }
 }

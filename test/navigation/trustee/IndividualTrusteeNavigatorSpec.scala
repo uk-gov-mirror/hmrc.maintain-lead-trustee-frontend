@@ -30,7 +30,7 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
   "Individual trustee navigator" when {
 
     "Name page -> Do you know date of birth page" in {
-      navigator.nextPage(NamePage(index), NormalMode, emptyUserAnswers)
+      navigator.nextPage(NamePage(index), emptyUserAnswers)
         .mustBe(controllers.trustee.individual.routes.DateOfBirthYesNoController.onPageLoad(index))
     }
 
@@ -38,12 +38,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       val answers = emptyUserAnswers
         .set(DateOfBirthYesNoPage(index), true).success.value
 
-      navigator.nextPage(DateOfBirthYesNoPage(index), NormalMode, answers)
+      navigator.nextPage(DateOfBirthYesNoPage(index), answers)
         .mustBe(controllers.trustee.individual.routes.DateOfBirthController.onPageLoad(index))
     }
 
     "Date of birth page -> Do you know NINO page" in {
-      navigator.nextPage(DateOfBirthPage(index), NormalMode, emptyUserAnswers)
+      navigator.nextPage(DateOfBirthPage(index), emptyUserAnswers)
         .mustBe(controllers.trustee.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad(index))
     }
 
@@ -51,7 +51,7 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       val answers = emptyUserAnswers
         .set(DateOfBirthYesNoPage(index), false).success.value
 
-      navigator.nextPage(DateOfBirthYesNoPage(index), NormalMode, answers)
+      navigator.nextPage(DateOfBirthYesNoPage(index), answers)
         .mustBe(controllers.trustee.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad(index))
     }
 
@@ -59,12 +59,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       val answers = emptyUserAnswers
         .set(NationalInsuranceNumberYesNoPage(index), true).success.value
 
-      navigator.nextPage(NationalInsuranceNumberYesNoPage(index), NormalMode, answers)
+      navigator.nextPage(NationalInsuranceNumberYesNoPage(index), answers)
         .mustBe(controllers.trustee.individual.routes.NationalInsuranceNumberController.onPageLoad(index))
     }
 
     "NINO page -> When added as trustee page" in {
-      navigator.nextPage(NationalInsuranceNumberPage(index), NormalMode, emptyUserAnswers)
+      navigator.nextPage(NationalInsuranceNumberPage(index), emptyUserAnswers)
         .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad(index))
     }
 
@@ -72,7 +72,7 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       val answers = emptyUserAnswers
         .set(NationalInsuranceNumberYesNoPage(index), false).success.value
 
-      navigator.nextPage(NationalInsuranceNumberYesNoPage(index), NormalMode, answers)
+      navigator.nextPage(NationalInsuranceNumberYesNoPage(index), answers)
         .mustBe(controllers.trustee.individual.routes.AddressYesNoController.onPageLoad(index))
     }
 
@@ -80,7 +80,7 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       val answers = emptyUserAnswers
         .set(AddressYesNoPage(index), true).success.value
 
-      navigator.nextPage(AddressYesNoPage(index), NormalMode, answers)
+      navigator.nextPage(AddressYesNoPage(index), answers)
         .mustBe(controllers.trustee.individual.routes.LiveInTheUkYesNoController.onPageLoad(index))
     }
 
@@ -88,7 +88,7 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       val answers = emptyUserAnswers
         .set(AddressYesNoPage(index), false).success.value
 
-      navigator.nextPage(AddressYesNoPage(index), NormalMode, answers)
+      navigator.nextPage(AddressYesNoPage(index), answers)
         .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad(index))
     }
 
@@ -96,12 +96,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       val answers = emptyUserAnswers
         .set(LiveInTheUkYesNoPage(index), true).success.value
 
-      navigator.nextPage(LiveInTheUkYesNoPage(index), NormalMode, answers)
+      navigator.nextPage(LiveInTheUkYesNoPage(index), answers)
         .mustBe(controllers.trustee.individual.routes.UkAddressController.onPageLoad(index))
     }
 
     "UK address page -> Do you know passport details page" in {
-      navigator.nextPage(UkAddressPage(index), NormalMode, emptyUserAnswers)
+      navigator.nextPage(UkAddressPage(index), emptyUserAnswers)
         .mustBe(controllers.trustee.individual.routes.PassportDetailsYesNoController.onPageLoad(index))
     }
 
@@ -109,12 +109,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       val answers = emptyUserAnswers
         .set(LiveInTheUkYesNoPage(index), false).success.value
 
-      navigator.nextPage(LiveInTheUkYesNoPage(index), NormalMode, answers)
+      navigator.nextPage(LiveInTheUkYesNoPage(index), answers)
         .mustBe(controllers.trustee.individual.routes.NonUkAddressController.onPageLoad(index))
     }
 
     "Non-UK address page -> Do you know passport details page" in {
-      navigator.nextPage(NonUkAddressPage(index), NormalMode, emptyUserAnswers)
+      navigator.nextPage(NonUkAddressPage(index), emptyUserAnswers)
         .mustBe(controllers.trustee.individual.routes.PassportDetailsYesNoController.onPageLoad(index))
     }
 
@@ -122,12 +122,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       val answers = emptyUserAnswers
         .set(PassportDetailsYesNoPage(index), true).success.value
 
-      navigator.nextPage(PassportDetailsYesNoPage(index), NormalMode, answers)
+      navigator.nextPage(PassportDetailsYesNoPage(index), answers)
         .mustBe(controllers.trustee.individual.routes.PassportDetailsController.onPageLoad(index))
     }
 
     "Passport details page -> When added as trustee page" in {
-      navigator.nextPage(PassportDetailsPage(index), NormalMode, emptyUserAnswers)
+      navigator.nextPage(PassportDetailsPage(index), emptyUserAnswers)
         .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad(index))
     }
 
@@ -135,7 +135,7 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       val answers = emptyUserAnswers
         .set(PassportDetailsYesNoPage(index), false).success.value
 
-      navigator.nextPage(PassportDetailsYesNoPage(index), NormalMode, answers)
+      navigator.nextPage(PassportDetailsYesNoPage(index), answers)
         .mustBe(controllers.trustee.individual.routes.IdCardDetailsYesNoController.onPageLoad(index))
     }
 
@@ -143,12 +143,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       val answers = emptyUserAnswers
         .set(IdCardDetailsYesNoPage(index), true).success.value
 
-      navigator.nextPage(IdCardDetailsYesNoPage(index), NormalMode, answers)
+      navigator.nextPage(IdCardDetailsYesNoPage(index), answers)
         .mustBe(controllers.trustee.individual.routes.IdCardDetailsController.onPageLoad(index))
     }
 
     "ID card details page -> When added as trustee page" in {
-      navigator.nextPage(IdCardDetailsPage(index), NormalMode, emptyUserAnswers)
+      navigator.nextPage(IdCardDetailsPage(index), emptyUserAnswers)
         .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad(index))
     }
 
@@ -156,7 +156,7 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       val answers = emptyUserAnswers
         .set(IdCardDetailsYesNoPage(index), false).success.value
 
-      navigator.nextPage(IdCardDetailsYesNoPage(index), NormalMode, answers)
+      navigator.nextPage(IdCardDetailsYesNoPage(index), answers)
         .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad(index))
     }
   }

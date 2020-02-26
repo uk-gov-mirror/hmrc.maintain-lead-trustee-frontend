@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.leadtrustee.individual.actions.NameRequiredAction
 import forms.NationalInsuranceNumberFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.NationalInsuranceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,7 +43,7 @@ class NationalInsuranceNumberController @Inject()(
 
   val form = formProvider.withPrefix("leadtrustee.individual.nationalInsuranceNumber")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(NationalInsuranceNumberPage) match {
@@ -55,7 +54,7 @@ class NationalInsuranceNumberController @Inject()(
       Ok(view(preparedForm, request.leadTrusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -66,7 +65,7 @@ class NationalInsuranceNumberController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NationalInsuranceNumberPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswers))
       )
   }
 }
