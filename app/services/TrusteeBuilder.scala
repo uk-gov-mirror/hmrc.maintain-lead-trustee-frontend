@@ -18,8 +18,7 @@ package services
 
 import java.time.LocalDate
 
-import models.{AddressType, NonUkAddress, TrustIdentification, TrusteeIndividual, UkAddress, UserAnswers}
-import pages.trustee.WhenAddedPage
+import models.{AddressType, NewTrusteeIndividual, NonUkAddress, TrustIdentification, UkAddress, UserAnswers}
 import pages.trustee.individual._
 
 
@@ -28,9 +27,7 @@ class TrusteeBuilder {
   import mapping.PlaybackImplicits._
 
   def createTrusteeIndividual(userAnswers: UserAnswers, date: LocalDate, index: Int) = {
-    TrusteeIndividual(
-      "500",
-      None,
+    NewTrusteeIndividual(
       userAnswers.get(NamePage(index)).get,
       userAnswers.get(DateOfBirthPage(index)),
       None,
@@ -41,9 +38,7 @@ class TrusteeBuilder {
           userAnswers.get(PassportDetailsPage(index)),
           buildAddress(userAnswers, index)
         )
-      ),
-      date
-    )
+      ), date)
   }
 
   private def buildAddress(userAnswers: UserAnswers, index: Int): Option[AddressType] = {
