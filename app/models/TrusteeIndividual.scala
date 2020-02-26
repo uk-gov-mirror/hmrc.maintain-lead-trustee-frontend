@@ -20,17 +20,17 @@ import java.time.LocalDate
 
 import play.api.libs.json.{Format, Json, Reads, Writes}
 
-case class NewTrusteeIndividual(name: Name,
-                                dateOfBirth: Option[LocalDate],
-                                phoneNumber: Option[String],
-                                identification: Option[TrustIdentification],
-                                entityStart: LocalDate)
+case class TrusteeIndividual(name: Name,
+                             dateOfBirth: Option[LocalDate],
+                             phoneNumber: Option[String],
+                             identification: Option[TrustIdentification],
+                             entityStart: LocalDate)
 
-object NewTrusteeIndividual {
+object TrusteeIndividual {
 
   implicit val dateFormat: Format[LocalDate] = Format[LocalDate](Reads.DefaultLocalDateReads, Writes.DefaultLocalDateWrites)
 
-  implicit val trusteeIndividualTypeFormat: Format[NewTrusteeIndividual] = Json.format[NewTrusteeIndividual]
+  implicit val trusteeIndividualTypeFormat: Format[TrusteeIndividual] = Json.format[TrusteeIndividual]
 }
 
 case class TrustIdentification(safeId: Option[String],

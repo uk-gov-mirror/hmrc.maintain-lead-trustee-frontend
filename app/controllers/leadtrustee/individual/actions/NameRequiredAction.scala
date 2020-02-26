@@ -18,9 +18,9 @@ package controllers.leadtrustee.individual.actions
 
 import javax.inject.Inject
 import models.requests.DataRequest
-import play.api.mvc.ActionTransformer
 import pages.leadtrustee.individual.NamePage
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.ActionTransformer
 
 import scala.concurrent.{ExecutionContext, Future}
 

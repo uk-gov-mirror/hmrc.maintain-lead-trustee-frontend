@@ -20,7 +20,6 @@ import controllers.actions.StandardActionSets
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.YesNoFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.trustee.individual.NationalInsuranceNumberYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,7 +43,7 @@ class NationalInsuranceNumberYesNoController @Inject()(
 
   val form = formProvider.withPrefix("trustee.individual.nationalInsuranceNumberYesNo")
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(NationalInsuranceNumberYesNoPage(index)) match {
@@ -55,7 +54,7 @@ class NationalInsuranceNumberYesNoController @Inject()(
       Ok(view(preparedForm, index, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -66,7 +65,7 @@ class NationalInsuranceNumberYesNoController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberYesNoPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NationalInsuranceNumberYesNoPage(index), mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NationalInsuranceNumberYesNoPage(index), updatedAnswers))
       )
   }
 }

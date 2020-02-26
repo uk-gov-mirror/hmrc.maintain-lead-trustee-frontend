@@ -18,17 +18,14 @@ package controllers.trustee.individual
 
 import controllers.actions.StandardActionSets
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
-import forms.{IndividualOrBusinessFormProvider, YesNoFormProvider}
+import forms.YesNoFormProvider
 import javax.inject.Inject
-import models.{IndividualOrBusiness, Mode}
 import navigation.Navigator
-import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.individual.DateOfBirthYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.trustee.IndividualOrBusinessView
 import views.html.trustee.individual.DateOfBirthYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +43,7 @@ class DateOfBirthYesNoController @Inject()(
 
   val form = formProvider.withPrefix("trustee.individual.dateOfBirthYesNo")
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(DateOfBirthYesNoPage(index)) match {
@@ -57,7 +54,7 @@ class DateOfBirthYesNoController @Inject()(
       Ok(view(preparedForm, index, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -68,7 +65,7 @@ class DateOfBirthYesNoController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfBirthYesNoPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DateOfBirthYesNoPage(index), mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(DateOfBirthYesNoPage(index), updatedAnswers))
       )
   }
 }

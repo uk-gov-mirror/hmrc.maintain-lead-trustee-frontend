@@ -20,7 +20,6 @@ import controllers.actions.StandardActionSets
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.DateAddedToTrustFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.trustee.WhenAddedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,7 +41,7 @@ class WhenAddedController @Inject()(
                                      view: WhenAddedView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
     implicit request =>
 
       val form = formProvider.withPrefixAndTrustStartDate("trustee.whenAdded", request.userAnswers.whenTrustSetup)
@@ -55,7 +54,7 @@ class WhenAddedController @Inject()(
       Ok(view(preparedForm, index, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
     implicit request =>
 
       val form = formProvider.withPrefixAndTrustStartDate("trustee.whenAdded", request.userAnswers.whenTrustSetup)
@@ -68,7 +67,7 @@ class WhenAddedController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(WhenAddedPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(WhenAddedPage(index), mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(WhenAddedPage(index), updatedAnswers))
       )
   }
 }

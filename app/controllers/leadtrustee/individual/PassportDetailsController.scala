@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.leadtrustee.individual.actions.NameRequiredAction
 import forms.PassportDetailsFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.PassportDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -46,7 +45,7 @@ class PassportDetailsController @Inject()(
 
   val form = formProvider.withPrefix("leadtrustee")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(PassportDetailsPage) match {
@@ -57,7 +56,7 @@ class PassportDetailsController @Inject()(
       Ok(view(preparedForm, request.leadTrusteeName, countryOptions.options))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -68,7 +67,7 @@ class PassportDetailsController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportDetailsPage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PassportDetailsPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(PassportDetailsPage, updatedAnswers))
       )
   }
 }

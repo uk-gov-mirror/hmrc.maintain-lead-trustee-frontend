@@ -17,7 +17,6 @@
 package views.leadtrustee.individual
 
 import forms.UkCitizenFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -36,7 +35,7 @@ class UkCitizenViewSpec extends YesNoViewBehaviours {
     val view = viewFor[UkCitizenView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, name)(fakeRequest, messages)
+      view.apply(form, name)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 
