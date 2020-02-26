@@ -28,6 +28,7 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
+import play.api.test.Helpers._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -36,6 +37,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   private def getLeadTrusteeUrl(utr: String): String = s"/trusts/$utr/transformed/lead-trustee"
+
   private def getTrustStartDateUrl(utr: String): String = s"/trusts/$utr/trust-start-date"
   private def removeTrusteeUrl(utr: String) = s"/trusts/$utr/trustee"
 
@@ -83,6 +85,52 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
     }
   }
 
+  "TrustConnector addTrustee" must {
+    "Return Ok when the request is successful" in {
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        post(urlEqualTo("/trusts/add-trustee/UTRUTRUTR"))
+          .willReturn(ok)
+      )
+
+      val result = connector.addTrusteeIndividual("UTRUTRUTR", arbitraryTrusteeIndividual.arbitrary.sample.get)
+      result.futureValue.status mustBe (OK)
+
+      application.stop()
+    }
+
+    "return Bad Request when the request is unsuccessful" in {
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        post(urlEqualTo("/trusts/add-trustee/UTRUTRUTR"))
+          .willReturn(badRequest)
+      )
+
+      val result = connector.addTrusteeIndividual("UTRUTRUTR", arbitraryTrusteeIndividual.arbitrary.sample.get)
+
+      result.map(response => response.status mustBe BAD_REQUEST)
+
+      application.stop()
+    }
+  }
 
   "TrustConnector getLeadTrustee" must {
 
@@ -95,11 +143,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
         "phoneNumber" -> "phoneNumber",
         "identification" -> Json.obj(
           "utr" -> "anUtr",
-            "address" -> Json.obj(
-              "line1" -> "address1",
-              "line2" -> "address2",
-              "postcode" -> "Postcode"
-            )
+          "address" -> Json.obj(
+            "line1" -> "address1",
+            "line2" -> "address2",
+            "postcode" -> "Postcode"
+          )
         ),
         "entityStart" -> "now"
       )
@@ -123,15 +171,15 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       whenReady(processed) { leadTrustee =>
         leadTrustee mustBe LeadTrusteeOrganisation(
-            "lineNo",
-            None,
-            "name",
-            "phoneNumber",
-            None,
-            Some("anUtr"),
-            UkAddress("address1", "address2", None, None, "Postcode"),
-            "now"
-          )
+          "lineNo",
+          None,
+          "name",
+          "phoneNumber",
+          None,
+          Some("anUtr"),
+          UkAddress("address1", "address2", None, None, "Postcode"),
+          "now"
+        )
       }
       application.stop()
     }
@@ -173,7 +221,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
   "TrustConnector removeTrustee" must {
 
-    "must remove a trustee inside a Processed trust" in {
+    "return Ok when the request is successful" in {
 
       val utr = "1000000008"
 
@@ -181,7 +229,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
           trusteeInd = Some(TrusteeIndividual(
             lineNo = "1",
             bpMatchStatus = Some("01"),
-            name = Name(firstName = "first", middleName = Some(""), lastName = ""),
+            name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
             dateOfBirth = Some(LocalDate.of(1983, 9, 24)),
             phoneNumber = None,
             identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
@@ -207,13 +255,52 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       )
 
       val result = connector.removeTrustee(utr, trustee)
-      result.futureValue mustBe()
+
+      result.futureValue.status mustBe (OK)
 
       application.stop()
     }
 
+    "return Bad Request when the request is unsuccessful" in {
+
+      val utr = "1000000008"
+
+      val trustee = RemoveTrustee(trustee = TrusteeType(
+        trusteeInd = Some(TrusteeIndividual(
+          lineNo = "1",
+          bpMatchStatus = Some("01"),
+          name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
+          dateOfBirth = Some(LocalDate.of(1983, 9, 24)),
+          phoneNumber = None,
+          identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+          entityStart = LocalDate.of(2019,2,28))
+        ),
+        trusteeOrg = None),
+        endDate = LocalDate.now()
+      )
+
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        post(urlEqualTo(removeTrusteeUrl(utr)))
+          .willReturn(badRequest)
+      )
+
+      val result = connector.removeTrustee(utr, trustee)
+
+      result.map(response => response.status mustBe BAD_REQUEST)
+
+      application.stop()
+    }
 
   }
-
-
+  
 }
