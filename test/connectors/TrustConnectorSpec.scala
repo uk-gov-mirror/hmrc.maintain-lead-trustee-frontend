@@ -26,6 +26,7 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
+import play.api.test.Helpers._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -80,7 +81,53 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
     }
   }
 
+  "TrustConnector addTrustee" must {
+    "Be fine when request is successful" in {
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
 
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        post(urlEqualTo("/trusts/add-trustee/UTRUTRUTR"))
+          .willReturn(ok)
+      )
+
+      val result = connector.addTrusteeIndividual("UTRUTRUTR", arbitraryTrusteeIndividual.arbitrary.sample.get)
+      result.futureValue.status mustBe(OK)
+
+      application.stop()
+    }
+  }
+
+  "return bad request when request is unsuccessful" in {
+    val application = applicationBuilder()
+      .configure(
+        Seq(
+          "microservice.services.trusts.port" -> server.port(),
+          "auditing.enabled" -> false
+        ): _*
+      ).build()
+
+    val connector = application.injector.instanceOf[TrustConnector]
+
+    server.stubFor(
+      post(urlEqualTo("/trusts/add-trustee/UTRUTRUTR"))
+        .willReturn(badRequest)
+    )
+
+    val result = connector.addTrusteeIndividual("UTRUTRUTR", arbitraryTrusteeIndividual.arbitrary.sample.get)
+
+    result.map(response => response.status mustBe(BAD_REQUEST))
+
+    application.stop()
+  }
+  
   "TrustConnector getLeadTrustee" must {
 
     "must return playback data inside a Processed trust" in {

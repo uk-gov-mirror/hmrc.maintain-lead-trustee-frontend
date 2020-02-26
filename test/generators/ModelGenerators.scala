@@ -93,6 +93,18 @@ trait ModelGenerators {
     ))
   }
 
+  implicit lazy val arbitraryAddressType: Arbitrary[AddressType] =
+    Arbitrary {
+      for {
+        line1 <- arbitrary[String]
+        line2 <- arbitrary[String]
+        line3 <- arbitrary[Option[String]]
+        line4 <- arbitrary[Option[String]]
+        postcode <- arbitrary[Option[String]]
+        country <- arbitrary[String]
+      } yield AddressType(line1, line2, line3, line4, postcode, country)
+    }
+
   implicit lazy val arbitraryName: Arbitrary[Name] =
     Arbitrary {
       for {
@@ -113,6 +125,17 @@ trait ModelGenerators {
     }
   }
 
+  implicit lazy val arbitraryTrustIdentification: Arbitrary[TrustIdentification] = {
+    Arbitrary {
+      for {
+        safeId <- arbitrary[Option[String]]
+        nino <- arbitrary[Option[String]]
+        passport <- arbitrary[Option[Passport]]
+        address <- arbitrary[Option[AddressType]]
+      } yield TrustIdentification(safeId, nino, passport, address)
+    }
+  }
+
   implicit lazy val arbitraryLeadTrusteeIndividual: Arbitrary[LeadTrusteeIndividual] = {
     Arbitrary {
       for {
@@ -123,6 +146,20 @@ trait ModelGenerators {
         id <- arbitrary[IndividualIdentification]
         address <- arbitrary[Option[Address]]
       } yield LeadTrusteeIndividual(name, dob, phone, email, id, address)
+    }
+  }
+
+  implicit lazy val arbitraryTrusteeIndividual: Arbitrary[TrusteeIndividual] = {
+    Arbitrary {
+      for {
+        lineNo <- arbitrary[String]
+        matchStatus <- arbitrary[Option[String]]
+        name <- arbitrary[Name]
+        dob <- datesBetween(LocalDate.of(1916, 1, 1), LocalDate.of(2010, 12, 31))
+        phone <- arbitrary[Option[String]]
+        id <- arbitrary[Option[TrustIdentification]]
+        enitityStart <- datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(2019, 12, 31))
+      } yield TrusteeIndividual(lineNo, matchStatus, name, Some(dob), phone, id, enitityStart)
     }
   }
 }
