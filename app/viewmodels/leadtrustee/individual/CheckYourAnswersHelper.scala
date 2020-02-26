@@ -127,7 +127,7 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
         AnswerRow(
           HtmlFormat.escape(messages("leadtrustee.individual.liveInTheUkYesNo.checkYourAnswersLabel", leadTrusteeName)),
           yesOrNo(x),
-          individualLeadtrusteeRoutes.LiveInTheUkYesNoPageController.onPageLoad().url
+          individualLeadtrusteeRoutes.LiveInTheUkYesNoController.onPageLoad().url
         )
     }
 

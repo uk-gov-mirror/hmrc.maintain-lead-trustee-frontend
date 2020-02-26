@@ -14,123 +14,109 @@
  * limitations under the License.
  */
 
-package controllers.leadtrustee.individual
+package controllers.leadtrustee.organisation
 
 import base.SpecBase
 import forms.YesNoFormProvider
-import models.Name
-import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.{LiveInTheUkYesNoPage, NamePage}
-import play.api.inject.bind
-import play.api.mvc.Call
+import navigation.FakeNavigator
+import pages.leadtrustee.organisation.RegisteredInUkYesNoPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.PlaybackRepository
-import views.html.leadtrustee.individual.LiveInTheUkYesNoPageView
+import views.html.leadtrustee.organisation.RegisteredInUkYesNoView
 
-import scala.concurrent.Future
-
-class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
-
-  def onwardRoute = Call("GET", "/foo")
+class RegisteredInUkYesNoControllerSpec extends SpecBase {
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNo")
+  val form = formProvider.withPrefix("leadtrustee.organisation.registeredInUkYesNo")
 
-  lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoPageController.onPageLoad().url
+  val index = 0
+  val emptyTrusteeName = ""
 
-  val name = Name("Lead", None, "Trustee")
+  val onwardRoute = routes.RegisteredInUkYesNoController.onPageLoad().url
 
-  override val emptyUserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
-
-  "LiveInTheUkYesNoPage Controller" must {
+  "TrusteeUtrYesNo Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswers
 
-      val request = FakeRequest(GET, liveInTheUkYesNoPageRoute)
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      val request = FakeRequest(GET, onwardRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[LiveInTheUkYesNoPageView]
+      val view = application.injector.instanceOf[RegisteredInUkYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName)(fakeRequest, messages).toString
+        view(form)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(LiveInTheUkYesNoPage, true).success.value
+      val userAnswers = emptyUserAnswers
+        .set(RegisteredInUkYesNoPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, liveInTheUkYesNoPageRoute)
+      val request = FakeRequest(GET, onwardRoute)
 
-      val view = application.injector.instanceOf[LiveInTheUkYesNoPageView]
+      val view = application.injector.instanceOf[RegisteredInUkYesNoView]
 
       val result = route(application, request).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), name.displayName)(fakeRequest, messages).toString
+        view(form.fill(true))(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
-
-      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+      val userAnswers = emptyUserAnswers
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
-          )
-          .build()
+        applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request =
-        FakeRequest(POST, liveInTheUkYesNoPageRoute)
+        FakeRequest(POST, onwardRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual new FakeNavigator().desiredRoute.url
 
       application.stop()
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswers
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request =
-        FakeRequest(POST, liveInTheUkYesNoPageRoute)
-          .withFormUrlEncodedBody(("value", ""))
+        FakeRequest(POST, onwardRoute)
+          .withFormUrlEncodedBody(("value", "invalid value"))
 
-      val boundForm = form.bind(Map("value" -> ""))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val view = application.injector.instanceOf[LiveInTheUkYesNoPageView]
+      val view = application.injector.instanceOf[RegisteredInUkYesNoView]
 
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(fakeRequest, messages).toString
+        view(boundForm)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -139,12 +125,11 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, liveInTheUkYesNoPageRoute)
+      val request = FakeRequest(GET, onwardRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
@@ -155,8 +140,7 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, liveInTheUkYesNoPageRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, onwardRoute)
 
       val result = route(application, request).value
 
@@ -166,5 +150,6 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
 
       application.stop()
     }
+
   }
 }

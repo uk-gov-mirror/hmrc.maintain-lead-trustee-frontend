@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.leadtrustee.organisation
 
-import models.UserAnswers
-import pages._
-import play.api.mvc.Call
+import pages.behaviours.PageBehaviours
 
-class FakeNavigator(val desiredRoute: Call = Call("GET", "/foo")) extends Navigator {
+class RegisteredInUkYesNoPageSpec extends PageBehaviours {
 
-  override def nextPage(page: Page, userAnswers: UserAnswers): Call =
-    desiredRoute
+  "RegisteredInUkYesNoPage" must {
+
+    beRetrievable[Boolean](RegisteredInUkYesNoPage)
+
+    beSettable[Boolean](RegisteredInUkYesNoPage)
+
+    beRemovable[Boolean](RegisteredInUkYesNoPage)
+
+  }
 }

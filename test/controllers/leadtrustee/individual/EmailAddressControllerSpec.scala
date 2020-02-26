@@ -35,8 +35,6 @@ import scala.concurrent.Future
 
 class EmailAddressControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
-
   val formProvider = new EmailAddressFormProvider()
   val form = formProvider()
 
@@ -93,21 +91,16 @@ class EmailAddressControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
-          )
-          .build()
-
       val request =
         FakeRequest(POST, emailAddressRoute)
           .withFormUrlEncodedBody(("value", "e@answer.com"))
 
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       application.stop()
     }

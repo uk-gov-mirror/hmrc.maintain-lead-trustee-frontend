@@ -36,8 +36,6 @@ import scala.concurrent.Future
 
 class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
-
   val formProvider = new NonUkAddressFormProvider()
   val form = formProvider()
 
@@ -97,23 +95,17 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
-          )
-          .build()
-
-
       val request =
         FakeRequest(POST, nonUkAddressRoute)
           .withFormUrlEncodedBody(("line1", "value 1"), ("line2", "value 2"), ("country", "the country"))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       application.stop()
     }

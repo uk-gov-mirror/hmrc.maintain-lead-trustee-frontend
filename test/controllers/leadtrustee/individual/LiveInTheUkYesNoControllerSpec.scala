@@ -17,45 +17,45 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import forms.IdentificationDetailOptionsFormProvider
-import models.{IdentificationDetailOptions, Name, NormalMode, UserAnswers}
+import forms.YesNoFormProvider
+import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.{IdentificationDetailOptionsPage, NamePage}
+import pages.leadtrustee.individual.{LiveInTheUkYesNoPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.leadtrustee.individual.IdentificationDetailOptionsView
+import views.html.leadtrustee.individual.LiveInTheUkYesNoPageView
 
 import scala.concurrent.Future
 
-class IdentificationDetailOptionsControllerSpec extends SpecBase with MockitoSugar {
+class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val identificationDetailOptionsRoute = routes.IdentificationDetailOptionsController.onPageLoad().url
+  val formProvider = new YesNoFormProvider()
+  val form = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNo")
 
-  val formProvider = new IdentificationDetailOptionsFormProvider()
-  val form = formProvider.withPrefix("leadtrustee")
+  lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoController.onPageLoad().url
 
   val name = Name("Lead", None, "Trustee")
 
   override val emptyUserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
-  "IdentificationDetailOptions Controller" must {
+  "LiveInTheUkYesNoPage Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, identificationDetailOptionsRoute)
+      val request = FakeRequest(GET, liveInTheUkYesNoPageRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[IdentificationDetailOptionsView]
+      val view = application.injector.instanceOf[LiveInTheUkYesNoPageView]
 
       status(result) mustEqual OK
 
@@ -67,20 +67,20 @@ class IdentificationDetailOptionsControllerSpec extends SpecBase with MockitoSug
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(IdentificationDetailOptionsPage, IdentificationDetailOptions.values.head).success.value
+      val userAnswers = emptyUserAnswers.set(LiveInTheUkYesNoPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, identificationDetailOptionsRoute)
+      val request = FakeRequest(GET, liveInTheUkYesNoPageRoute)
 
-      val view = application.injector.instanceOf[IdentificationDetailOptionsView]
+      val view = application.injector.instanceOf[LiveInTheUkYesNoPageView]
 
       val result = route(application, request).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(IdentificationDetailOptions.values.head), name.displayName)(fakeRequest, messages).toString
+        view(form.fill(true), name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -91,11 +91,12 @@ class IdentificationDetailOptionsControllerSpec extends SpecBase with MockitoSug
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val request =
-        FakeRequest(POST, identificationDetailOptionsRoute)
-          .withFormUrlEncodedBody(("value", IdentificationDetailOptions.options.head.value))
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request =
+        FakeRequest(POST, liveInTheUkYesNoPageRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
@@ -103,7 +104,7 @@ class IdentificationDetailOptionsControllerSpec extends SpecBase with MockitoSug
 
       redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
-      app.stop()
+      application.stop()
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
@@ -111,12 +112,12 @@ class IdentificationDetailOptionsControllerSpec extends SpecBase with MockitoSug
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, identificationDetailOptionsRoute)
-          .withFormUrlEncodedBody(("value", "invalid value"))
+        FakeRequest(POST, liveInTheUkYesNoPageRoute)
+          .withFormUrlEncodedBody(("value", ""))
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[IdentificationDetailOptionsView]
+      val view = application.injector.instanceOf[LiveInTheUkYesNoPageView]
 
       val result = route(application, request).value
 
@@ -132,11 +133,12 @@ class IdentificationDetailOptionsControllerSpec extends SpecBase with MockitoSug
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, identificationDetailOptionsRoute)
+      val request = FakeRequest(GET, liveInTheUkYesNoPageRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
@@ -147,8 +149,8 @@ class IdentificationDetailOptionsControllerSpec extends SpecBase with MockitoSug
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, identificationDetailOptionsRoute)
-          .withFormUrlEncodedBody(("value", IdentificationDetailOptions.values.head.toString))
+        FakeRequest(POST, liveInTheUkYesNoPageRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 

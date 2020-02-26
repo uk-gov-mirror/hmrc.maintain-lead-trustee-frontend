@@ -30,7 +30,7 @@ import views.html.leadtrustee.individual.LiveInTheUkYesNoPageView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class LiveInTheUkYesNoPageController @Inject()(
+class LiveInTheUkYesNoController @Inject()(
                                          override val messagesApi: MessagesApi,
                                          playbackRepository: PlaybackRepository,
                                          navigator: Navigator,

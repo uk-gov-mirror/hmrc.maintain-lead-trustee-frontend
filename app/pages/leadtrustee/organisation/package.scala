@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.leadtrustee
 
-import models.UserAnswers
-import pages._
-import play.api.mvc.Call
+import play.api.libs.json.JsPath
 
-class FakeNavigator(val desiredRoute: Call = Call("GET", "/foo")) extends Navigator {
-
-  override def nextPage(page: Page, userAnswers: UserAnswers): Call =
-    desiredRoute
+package object organisation {
+  val basePath = JsPath \ 'leadtrustee \ 'organisation
 }

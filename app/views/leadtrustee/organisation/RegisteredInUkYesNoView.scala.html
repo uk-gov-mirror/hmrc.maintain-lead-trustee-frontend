@@ -14,20 +14,20 @@
  * limitations under the License.
  *@
 
-@import controllers.leadtrustee.individual.routes._
+@import controllers.leadtrustee.organisation.routes._
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("leadtrustee.individual.liveInTheUkYesNo.title", name)}"
-    ) {
+    title = s"${errorPrefix(form)} ${messages("leadtrustee.organisation.registeredInUkYesNo.title")}"
+) {
 
-    @formHelper(action = LiveInTheUkYesNoController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = RegisteredInUkYesNoController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
@@ -35,7 +35,7 @@
 
         @components.input_yes_no(
             field = form("value"),
-            legend = messages("leadtrustee.individual.liveInTheUkYesNo.heading", name),
+            legend = messages("leadtrustee.organisation.registeredInUkYesNo.heading"),
             headingIsLegend = true
         )
 

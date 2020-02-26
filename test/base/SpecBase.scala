@@ -20,6 +20,7 @@ import java.time.LocalDate
 
 import connectors.EnrolmentStoreConnector
 import controllers.actions._
+import navigation.{FakeNavigator, Navigator}
 import org.scalatest.{BeforeAndAfter, TestSuite, TryValues}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
@@ -37,6 +38,8 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
 
   val bodyParsers = injector.instanceOf[BodyParsers.Default]
 
+  val fakeNavigator = new FakeNavigator()
+
   protected def applicationBuilder(userAnswers: Option[models.UserAnswers] = None,
                                    affinityGroup: AffinityGroup = AffinityGroup.Organisation,
                                    enrolments: Enrolments = Enrolments(Set.empty[Enrolment])
@@ -47,6 +50,7 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
         bind[PlaybackIdentifierAction].toInstance(new FakePlaybackIdentifierAction()),
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
         bind[DataRequiredAction].to[DataRequiredActionImpl],
+        bind[Navigator].toInstance(fakeNavigator),
         bind[EnrolmentStoreConnector].toInstance(mockEnrolmentStoreConnector),
         bind[PlaybackRepository].toInstance(playbackRepository)
       )
