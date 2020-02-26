@@ -16,7 +16,7 @@
 
 package pages.trustee
 
-import models.IndividualOrBusiness.Business
+import models.IndividualOrBusiness._
 import models.{IndividualOrBusiness, UserAnswers}
 import pages.QuestionPage
 import pages.trustee.individual._
@@ -45,6 +45,9 @@ case class IndividualOrBusinessPage(index: Int) extends QuestionPage[IndividualO
           .flatMap(_.remove(PassportDetailsPage(index)))
           .flatMap(_.remove(IdCardDetailsYesNoPage(index)))
           .flatMap(_.remove(IdCardDetailsPage(index)))
+          .flatMap(_.remove(WhenAddedPage(index)))
+      case Some(Individual) =>
+        userAnswers.remove(WhenAddedPage(index))
       case _ =>
         super.cleanup(value, userAnswers)
     }
