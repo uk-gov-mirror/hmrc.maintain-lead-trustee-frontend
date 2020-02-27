@@ -30,10 +30,8 @@ case object RegisteredInUkYesNoPage extends QuestionPage[Boolean] {
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
-//      case Some(true) =>
-//        userAnswers.remove(???)
-//      case Some(false) =>
-//        userAnswers.remove(???)
+      case Some(false) =>
+        userAnswers.remove(UtrPage)
       case _ =>
         super.cleanup(value, userAnswers)
     }
