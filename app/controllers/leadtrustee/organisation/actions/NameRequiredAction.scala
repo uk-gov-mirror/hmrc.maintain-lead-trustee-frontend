@@ -20,8 +20,7 @@ import controllers.actions
 import controllers.actions.LeadTrusteeNameRequest
 import javax.inject.Inject
 import models.requests.DataRequest
-// TODO: change to organisation name page
-import pages.leadtrustee.individual.NamePage
+import pages.leadtrustee.organisation.NamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.ActionTransformer
 
@@ -33,7 +32,6 @@ class NameRequiredAction @Inject()(val executionContext: ExecutionContext, val m
   override protected def transform[A](request: DataRequest[A]): Future[LeadTrusteeNameRequest[A]] = {
     Future.successful(actions.LeadTrusteeNameRequest[A](request,
       request.userAnswers.get(NamePage)
-      .map(_.displayName)
       .getOrElse(request.messages(messagesApi)("leadTrusteeName.defaultText"))
     ))
   }
