@@ -46,8 +46,6 @@ class NameRequiredActionSpec extends WordSpec with MockitoSugar with ScalaFuture
       LocalDate.now(),
       Json.obj().transform(pages.leadtrustee.organisation.NamePage.path.json.put(JsString("org name"))).get)
 
-    println(ua)
-
     when(sourceRequest.userAnswers).thenReturn(ua)
     whenReady(OUT.callTransform(sourceRequest)) { transformedRequest =>
       transformedRequest.leadTrusteeName mustBe "org name"
