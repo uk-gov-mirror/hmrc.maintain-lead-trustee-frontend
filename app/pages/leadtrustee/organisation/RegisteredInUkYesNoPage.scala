@@ -14,14 +14,28 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.leadtrustee.organisation
 
 import models.UserAnswers
-import pages._
-import play.api.mvc.Call
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class FakeNavigator(val desiredRoute: Call = Call("GET", "/foo")) extends Navigator {
+import scala.util.Try
 
-  override def nextPage(page: Page, userAnswers: UserAnswers): Call =
-    desiredRoute
+case object RegisteredInUkYesNoPage extends QuestionPage[Boolean] {
+
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "registeredInUkYesNoPage"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+//      case Some(true) =>
+//        userAnswers.remove(???)
+//      case Some(false) =>
+//        userAnswers.remove(???)
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
+  }
 }

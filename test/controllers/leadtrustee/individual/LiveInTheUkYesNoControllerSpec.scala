@@ -29,18 +29,16 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.leadtrustee.individual.LiveInTheUkYesNoPageView
+import views.html.leadtrustee.individual.LiveInTheUkYesNoView
 
 import scala.concurrent.Future
 
-class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
-
-  def onwardRoute = Call("GET", "/foo")
+class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new YesNoFormProvider()
   val form = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNo")
 
-  lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoPageController.onPageLoad().url
+  lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoController.onPageLoad().url
 
   val name = Name("Lead", None, "Trustee")
 
@@ -57,7 +55,7 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[LiveInTheUkYesNoPageView]
+      val view = application.injector.instanceOf[LiveInTheUkYesNoView]
 
       status(result) mustEqual OK
 
@@ -75,7 +73,7 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
 
       val request = FakeRequest(GET, liveInTheUkYesNoPageRoute)
 
-      val view = application.injector.instanceOf[LiveInTheUkYesNoPageView]
+      val view = application.injector.instanceOf[LiveInTheUkYesNoView]
 
       val result = route(application, request).value
 
@@ -95,9 +93,7 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
-          )
+          .overrides(bind[Navigator].toInstance(fakeNavigator))
           .build()
 
       val request =
@@ -108,7 +104,7 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       application.stop()
     }
@@ -123,7 +119,7 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[LiveInTheUkYesNoPageView]
+      val view = application.injector.instanceOf[LiveInTheUkYesNoView]
 
       val result = route(application, request).value
 
