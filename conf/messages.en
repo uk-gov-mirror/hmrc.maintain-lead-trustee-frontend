@@ -255,6 +255,10 @@ leadtrustee.organisation.registeredInUkYesNo.heading = Is this trustee a UK regi
 leadtrustee.organisation.registeredInUkYesNo.error.required = Select yes if the trustee is a UK registered company
 leadtrustee.organisation.registeredInUkYesNo.checkYourAnswersLabel = Is this trustee a UK registered company?
 
+leadtrustee.organisation.ukAddress.title = What is {0}’s address?
+leadtrustee.organisation.ukAddress.heading = What is {0}’s address?
+leadtrustee.organisation.ukAddress.checkYourAnswersLabel = What is {0}’s address?
+
 trustee.individual.ukCitizen.title = Does {0} have a National Insurance number?
 trustee.individual.ukCitizen.heading = Does {0} have a National Insurance number?
 trustee.individual.ukCitizen.checkYourAnswersLabel = Does {0} have a National Insurance number?
