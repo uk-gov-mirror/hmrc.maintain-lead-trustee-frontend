@@ -19,15 +19,14 @@ package controllers.leadtrustee.organisation
 import java.time.LocalDate
 
 import base.SpecBase
-import forms.NameFormProvider
+import forms.{BusinessNameFormProvider, IndividualNameFormProvider}
 import models.{Name, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.leadtrustee.organisation.NamePage
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
@@ -37,13 +36,13 @@ import scala.concurrent.Future
 
 class NameControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new NameFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.organisation.name")
+  val formProvider = new BusinessNameFormProvider()
+  val form = formProvider.withPrefix("leadtrustee")
 
   lazy val nameRoute = routes.NameController.onPageLoad().url
 
   val userAnswers = UserAnswers("fakeId", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage, Name("value 1", None, "value 2")).success.value
+    .set(NamePage, "My Trust").success.value
 
   "Name Controller" must {
 
@@ -78,7 +77,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Name("value 1", None, "value 2")))(fakeRequest, messages).toString
+        view(form.fill("My Trust"))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -99,7 +98,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
 
       val request =
         FakeRequest(POST, nameRoute)
-          .withFormUrlEncodedBody(("firstName", "value 1"), ("lastName", "value 2"))
+          .withFormUrlEncodedBody(("value", "My Trust"))
 
       val result = route(application, request).value
 
@@ -116,9 +115,9 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
 
       val request =
         FakeRequest(POST, nameRoute)
-          .withFormUrlEncodedBody(("value", "invalid value"))
+          .withFormUrlEncodedBody(("value", ""))
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val view = application.injector.instanceOf[NameView]
 

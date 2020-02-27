@@ -16,18 +16,17 @@
 
 package views.leadtrustee.organisation
 
-import forms.NameFormProvider
-import models.Name
+import forms.BusinessNameFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.QuestionViewBehaviours
+import views.behaviours.StringViewBehaviours
 import views.html.leadtrustee.organisation.NameView
 
-class NameViewSpec extends QuestionViewBehaviours[Name] {
+class NameViewSpec extends StringViewBehaviours {
 
   val messageKeyPrefix = "leadtrustee.organisation.name"
 
-  val form = new NameFormProvider().withPrefix("leadtrustee.organisation.name")
+  val form = new BusinessNameFormProvider().withPrefix("leadtrustee.organisation.name")
   val view = viewFor[NameView](Some(emptyUserAnswers))
 
   "TrusteeBusinessName view" must {

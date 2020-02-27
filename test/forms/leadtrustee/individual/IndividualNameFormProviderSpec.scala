@@ -16,15 +16,15 @@
 
 package forms.leadtrustee.individual
 
-import forms.NameFormProvider
+import forms.IndividualNameFormProvider
 import forms.behaviours.{OptionalFieldBehaviours, StringFieldBehaviours}
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class NameFormProviderSpec extends StringFieldBehaviours with OptionalFieldBehaviours {
+class IndividualNameFormProviderSpec extends StringFieldBehaviours with OptionalFieldBehaviours {
 
   val messageKeyPrefix = "leadtrustee.individual.name"
-  val form = new NameFormProvider().withPrefix(messageKeyPrefix)
+  val form = new IndividualNameFormProvider().withPrefix(messageKeyPrefix)
 
   val maxLength = 35
   val minLength = 1

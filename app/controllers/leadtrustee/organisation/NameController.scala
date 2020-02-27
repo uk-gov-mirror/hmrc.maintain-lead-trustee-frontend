@@ -17,7 +17,7 @@
 package controllers.leadtrustee.organisation
 
 import controllers.actions._
-import forms.NameFormProvider
+import forms.BusinessNameFormProvider
 import javax.inject.Inject
 import navigation.Navigator
 import pages.leadtrustee.organisation.NamePage
@@ -30,16 +30,16 @@ import views.html.leadtrustee.organisation.NameView
 import scala.concurrent.{ExecutionContext, Future}
 
 class NameController @Inject()(
-                                      override val messagesApi: MessagesApi,
-                                      playbackRepository: PlaybackRepository,
-                                      navigator: Navigator,
-                                      standardActionSets: StandardActionSets,
-                                      formProvider: NameFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      view: NameView
+                                override val messagesApi: MessagesApi,
+                                playbackRepository: PlaybackRepository,
+                                navigator: Navigator,
+                                standardActionSets: StandardActionSets,
+                                formProvider: BusinessNameFormProvider,
+                                val controllerComponents: MessagesControllerComponents,
+                                view: NameView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("leadtrustee.organisation.name")
+  val form = formProvider.withPrefix("leadtrustee")
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
