@@ -143,7 +143,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
           "address" -> Json.obj(
             "line1" -> "address1",
             "line2" -> "address2",
-            "postcode" -> "Postcode"
+            "postCode" -> "Postcode"
           )
         ),
         "entityStart" -> "now"
