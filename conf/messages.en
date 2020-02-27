@@ -263,6 +263,15 @@ leadtrustee.organisation.name.error.length = Business name must be 56 characters
 leadtrustee.organisation.name.error.invalidFormat = Business name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 leadtrustee.organisation.name.checkYourAnswersLabel = What is the business’s name?
 
+leadtrustee.organisation.utr.title = What is {0}’s Unique Taxpayer Reference (UTR) number?
+leadtrustee.organisation.utr.heading = What is {0}’s Unique Taxpayer Reference (UTR) number?
+leadtrustee.organisation.utr.error.required = Enter the trustee’s Unique Taxpayer Reference
+leadtrustee.organisation.utr.error.length = Unique Taxpayer Reference must be a 10 digit number
+leadtrustee.organisation.utr.error.invalidCharacters = Enter the trust’s Unique Taxpayer Reference in the correct format
+leadtrustee.organisation.utr.hint = This is 10 numbers, for example one two three four five six seven eight nine zero. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
+leadtrustee.organisation.utr.p1 = You can
+leadtrustee.organisation.utr.link = find a lost UTR number (opens in a new window or tab)
+
 leadtrustee.organisation.liveInTheUkYesNo.title = Does {0} live in the UK?
 leadtrustee.organisation.liveInTheUkYesNo.heading = Does {0} live in the UK?
 leadtrustee.organisation.liveInTheUkYesNo.checkYourAnswersLabel = Does {0} live in the UK?

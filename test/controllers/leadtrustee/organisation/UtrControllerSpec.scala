@@ -18,15 +18,22 @@ package controllers.leadtrustee.organisation
 
 import base.SpecBase
 import forms.UtrFormProvider
+import navigation.Navigator
 import pages.leadtrustee.organisation.{NamePage, UtrPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
+import repositories.PlaybackRepository
 import views.html.leadtrustee.organisation.UtrView
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
+import play.api.inject.bind
+
+import scala.concurrent.Future
 
 class UtrControllerSpec extends SpecBase {
 
   val formProvider = new UtrFormProvider()
-  val form = formProvider.withPrefix("leadtrustee")
+  val form = formProvider.withPrefix("leadtrustee.organisation.utr")
 
   val index = 0
   val fakeBusinessName = "Business name"
@@ -79,28 +86,18 @@ class UtrControllerSpec extends SpecBase {
       application.stop()
     }
 
-    "redirect to TrusteeBusinessName page when TrusteeBusinessName is not answered" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request = FakeRequest(GET, trusteeUtrRoute)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.RegisteredInUkYesNoController.onPageLoad().url
-
-      application.stop()
-    }
-
     "redirect to the next page when valid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers
-        .set(NamePage, fakeBusinessName).success.value
+      val mockPlaybackRepository = mock[PlaybackRepository]
+
+      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers)).build()
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[Navigator].toInstance(fakeNavigator)
+          )
+          .build()
 
       val request =
         FakeRequest(POST, trusteeUtrRoute)
@@ -109,6 +106,7 @@ class UtrControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       application.stop()

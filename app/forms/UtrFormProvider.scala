@@ -24,13 +24,13 @@ class UtrFormProvider @Inject() extends Mappings {
 
   def withPrefix(messagePrefix: String): Form[String] =
     Form(
-      "value" -> text(s"$messagePrefix.organisation.utr.error.required")
+      "value" -> text(s"$messagePrefix.error.required")
         .verifying(
           firstError(
-            maxLength(10, s"$messagePrefix.organisation.utr..error.length"),
-            minLength(10, s"$messagePrefix.organisation.utr.error.length"),
-            regexp(Validation.utrRegex, s"$messagePrefix.organisation.utr.error.invalidCharacters"),
-            nonEmptyString("value", s"$messagePrefix.organisation.utr.error.required")
+            maxLength(10, s"$messagePrefix.error.length"),
+            minLength(10, s"$messagePrefix.error.length"),
+            regexp(Validation.utrRegex, s"$messagePrefix.error.invalidCharacters"),
+            nonEmptyString("value", s"$messagePrefix.error.required")
           ))
     )
 }
