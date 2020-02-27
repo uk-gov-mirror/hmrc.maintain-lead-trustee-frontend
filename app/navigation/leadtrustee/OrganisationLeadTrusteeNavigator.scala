@@ -25,6 +25,7 @@ import play.api.mvc.Call
 object OrganisationLeadTrusteeNavigator {
 
   private val simpleNavigations : PartialFunction[Page, Call] = {
+    case UtrPage => rts.LiveInTheUkYesNoController.onPageLoad()
     case UkAddressPage => rts.UkAddressController.onPageLoad()
     case NonUkAddressPage => rts.NonUkAddressController.onPageLoad()
   }

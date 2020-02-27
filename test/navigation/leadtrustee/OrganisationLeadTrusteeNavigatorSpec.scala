@@ -51,6 +51,11 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
         .mustBe(controllers.leadtrustee.organisation.routes.UtrController.onPageLoad())
     }
 
+    "UTR page -> Is address in UK page" in {
+      navigator.nextPage(UtrPage, emptyUserAnswers)
+        .mustBe(controllers.leadtrustee.organisation.routes.LiveInTheUkYesNoController.onPageLoad())
+    }
+
     "(Is UK registered business -> No) -> Name page -> Is address in UK page" in {
       val answers = emptyUserAnswers
         .set(RegisteredInUkYesNoPage, false).success.value
