@@ -27,6 +27,38 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
 
   "Organisation lead trustee navigator" when {
 
+    "Is UK registered business -> Yes -> Name page" in {
+      val answers = emptyUserAnswers
+        .set(RegisteredInUkYesNoPage, true).success.value
+
+      navigator.nextPage(RegisteredInUkYesNoPage, answers)
+        .mustBe(controllers.leadtrustee.organisation.routes.NameController.onPageLoad())
+    }
+
+    "Is UK registered business -> No -> Name page" in {
+      val answers = emptyUserAnswers
+        .set(RegisteredInUkYesNoPage, false).success.value
+
+      navigator.nextPage(RegisteredInUkYesNoPage, answers)
+        .mustBe(controllers.leadtrustee.organisation.routes.NameController.onPageLoad())
+    }
+
+    "(Is UK registered business -> Yes) -> Name page -> UTR page" in {
+      val answers = emptyUserAnswers
+        .set(RegisteredInUkYesNoPage, true).success.value
+
+      navigator.nextPage(NamePage, answers)
+        .mustBe(controllers.leadtrustee.organisation.routes.UtrController.onPageLoad())
+    }
+
+    "(Is UK registered business -> No) -> Name page -> Is address in UK page" in {
+      val answers = emptyUserAnswers
+        .set(RegisteredInUkYesNoPage, false).success.value
+
+      navigator.nextPage(NamePage, answers)
+        .mustBe(controllers.leadtrustee.organisation.routes.LiveInTheUkYesNoController.onPageLoad())
+    }
+
     "Is address in UK page -> Yes -> UK address page" in {
       val answers = emptyUserAnswers
         .set(LiveInTheUkYesNoPage, true).success.value

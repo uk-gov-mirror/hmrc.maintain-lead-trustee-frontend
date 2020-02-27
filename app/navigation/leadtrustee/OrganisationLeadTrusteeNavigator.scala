@@ -30,11 +30,24 @@ object OrganisationLeadTrusteeNavigator {
   }
 
   private val yesNoNavigations : PartialFunction[Page, UserAnswers => Call] =
+    yesNoNav(RegisteredInUkYesNoPage, rts.NameController.onPageLoad(), rts.NameController.onPageLoad()) orElse
     yesNoNav(LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
+
+  private val conditionalNavigations : PartialFunction[Page, UserAnswers => Call] = {
+    case NamePage => nameNavigation
+  }
 
   val routes: PartialFunction[Page, UserAnswers => Call] =
     simpleNavigations andThen (c => (_:UserAnswers) => c) orElse
-    yesNoNavigations
+    yesNoNavigations orElse
+    conditionalNavigations
+
+  private def nameNavigation(userAnswers: UserAnswers): Call = {
+    userAnswers.get(RegisteredInUkYesNoPage).map {
+      case true => rts.UtrController.onPageLoad()
+      case false => rts.LiveInTheUkYesNoController.onPageLoad()
+    }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+  }
 
   def yesNoNav(fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call) : PartialFunction[Page, UserAnswers => Call] = {
     case `fromPage` =>
