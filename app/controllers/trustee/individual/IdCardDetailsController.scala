@@ -20,9 +20,8 @@ import controllers.actions._
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.IdCardDetailsFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
-import pages.trustee.individual.{IdCardDetailsPage, NamePage}
+import pages.trustee.individual.IdCardDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -46,7 +45,7 @@ class IdCardDetailsController @Inject()(
 
   val form = formProvider.withPrefix("trustee")
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(IdCardDetailsPage(index)) match {
@@ -57,7 +56,7 @@ class IdCardDetailsController @Inject()(
       Ok(view(preparedForm, countryOptions.options, index, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -68,7 +67,7 @@ class IdCardDetailsController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IdCardDetailsPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IdCardDetailsPage(index), mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(IdCardDetailsPage(index), updatedAnswers))
       )
   }
 }

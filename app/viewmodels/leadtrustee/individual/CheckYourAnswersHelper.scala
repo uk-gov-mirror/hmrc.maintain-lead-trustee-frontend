@@ -125,7 +125,7 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
     def liveInTheUkYesNoPage: Option[AnswerRow] = userAnswers.get(LiveInTheUkYesNoPage) map {
       x =>
         AnswerRow(
-          HtmlFormat.escape(messages("leadtrustee.individual.liveInTheUkYesNoPage.checkYourAnswersLabel", leadTrusteeName)),
+          HtmlFormat.escape(messages("leadtrustee.individual.liveInTheUkYesNo.checkYourAnswersLabel", leadTrusteeName)),
           yesOrNo(x),
           individualLeadtrusteeRoutes.LiveInTheUkYesNoPageController.onPageLoad().url
         )

@@ -25,6 +25,9 @@ class EmailAddressFormProvider @Inject() extends Mappings {
   def apply(): Form[String] =
     Form(
       "value" -> text("leadtrustee.individual.emailAddress.error.required")
-        .verifying(maxLength(512, "leadtrustee.individual.emailAddress.error.length"))
-    )
+        .verifying(
+          firstError(
+            maxLength(35, "leadtrustee.individual.emailAddress.error.length"),
+            regexp(Validation.emailRegex, "leadtrustee.individual.emailAddress.error.invalid"))
+        ))
 }

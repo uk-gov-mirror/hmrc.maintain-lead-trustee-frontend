@@ -19,7 +19,6 @@ package controllers.leadtrustee.individual
 import controllers.actions._
 import forms.NameFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.NamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,7 +41,7 @@ class NameController @Inject()(
 
   val form = formProvider.withPrefix("leadtrustee.individual.name")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(NamePage) match {
@@ -53,7 +52,7 @@ class NameController @Inject()(
       Ok(view(preparedForm))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -64,7 +63,7 @@ class NameController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NamePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NamePage, updatedAnswers))
       )
   }
 }

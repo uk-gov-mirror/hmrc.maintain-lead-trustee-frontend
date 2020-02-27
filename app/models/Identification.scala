@@ -41,16 +41,12 @@ object NationalInsuranceNumber{
   implicit val format: Format[NationalInsuranceNumber] = Json.format[NationalInsuranceNumber]
 }
 
-case class Passport(number: String,
-                    expirationDate: LocalDate,
-                    countryOfIssue: String) extends IndividualIdentification
+case class Passport(countryOfIssue: String, number: String, expirationDate: LocalDate) extends IndividualIdentification
 object Passport {
   implicit val format: Format[Passport] = Json.format[Passport]
 }
 
-case class IdCard(number: String,
-                    expirationDate: LocalDate,
-                    countryOfIssue: String) extends IndividualIdentification
+case class IdCard(countryOfIssue: String, number: String, expirationDate: LocalDate) extends IndividualIdentification
 object IdCard {
   implicit val format: Format[IdCard] = Json.format[IdCard]
 }

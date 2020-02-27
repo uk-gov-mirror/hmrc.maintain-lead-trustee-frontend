@@ -46,7 +46,7 @@ trait ModelGenerators {
         number <- arbitrary[String]
         expiry <- datesBetween(LocalDate.now, LocalDate.now.plusYears(10))
         country <- arbitrary[String]
-      } yield IdCard(number, expiry, country)
+      } yield IdCard(country, number, expiry)
     }
 
   implicit lazy val arbitraryPassport: Arbitrary[Passport] =
@@ -55,7 +55,7 @@ trait ModelGenerators {
         number <- arbitrary[String]
         expiry <- datesBetween(LocalDate.now, LocalDate.now.plusYears(10))
         country <- arbitrary[String]
-      } yield Passport(number, expiry, country)
+      } yield Passport(country, number, expiry)
     }
 
   implicit lazy val arbitraryNationalInsuranceNumber: Arbitrary[NationalInsuranceNumber] =
@@ -152,14 +152,12 @@ trait ModelGenerators {
   implicit lazy val arbitraryTrusteeIndividual: Arbitrary[TrusteeIndividual] = {
     Arbitrary {
       for {
-        lineNo <- arbitrary[String]
-        matchStatus <- arbitrary[Option[String]]
         name <- arbitrary[Name]
         dob <- datesBetween(LocalDate.of(1916, 1, 1), LocalDate.of(2010, 12, 31))
         phone <- arbitrary[Option[String]]
         id <- arbitrary[Option[TrustIdentification]]
         enitityStart <- datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(2019, 12, 31))
-      } yield TrusteeIndividual(lineNo, matchStatus, name, Some(dob), phone, id, enitityStart)
+      } yield TrusteeIndividual(name, Some(dob), phone, id, enitityStart)
     }
   }
 

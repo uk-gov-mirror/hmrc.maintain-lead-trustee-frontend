@@ -20,9 +20,8 @@ import controllers.actions._
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.YesNoFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
-import pages.trustee.individual.{NamePage, PassportDetailsYesNoPage}
+import pages.trustee.individual.PassportDetailsYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -44,7 +43,7 @@ class PassportDetailsYesNoController @Inject()(
 
   val form = formProvider.withPrefix("trustee.individual.passportDetailsYesNo")
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(PassportDetailsYesNoPage(index)) match {
@@ -55,7 +54,7 @@ class PassportDetailsYesNoController @Inject()(
       Ok(view(preparedForm, index, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -66,7 +65,7 @@ class PassportDetailsYesNoController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportDetailsYesNoPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PassportDetailsYesNoPage(index), mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(PassportDetailsYesNoPage(index), updatedAnswers))
       )
   }
 }

@@ -55,7 +55,7 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
 
-  val validData: Passport = Passport("passport number", LocalDate.of(2020, 1, 1), "country")
+  val validData: Passport = Passport("country", "passport number", LocalDate.of(2020, 1, 1))
 
   "PassportDetails Controller" must {
 

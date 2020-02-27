@@ -37,14 +37,14 @@ class NavigatorSpec extends SpecBase with PropertyChecks with Generators with Ad
 
         "navigating away from the tustee name question should go to the Do you know Date of birth question" in {
           val value1 = DateOfBirthController.onPageLoad()
-          navigator.nextPage(NamePage, NormalMode, UserAnswers("id", "UTRUTRUTR", LocalDate.now())) mustBe value1
+          navigator.nextPage(NamePage, UserAnswers("id", "UTRUTRUTR", LocalDate.now())) mustBe value1
         }
       }
 
       "go to Index from a page that doesn't exist in the route map" in {
 
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id", "UTRUTRUTR", LocalDate.now())) mustBe IndexController.onPageLoad("UTRUTRUTR")
+        navigator.nextPage(UnknownPage, UserAnswers("id", "UTRUTRUTR", LocalDate.now())) mustBe IndexController.onPageLoad("UTRUTRUTR")
       }
 
     behave like addATrusteeRoutes

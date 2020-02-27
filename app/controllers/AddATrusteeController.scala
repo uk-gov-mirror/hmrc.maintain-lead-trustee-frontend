@@ -83,7 +83,7 @@ class AddATrusteeController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddATrusteeYesNoPage, value))
             _              <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddATrusteeYesNoPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(AddATrusteeYesNoPage, updatedAnswers))
         }
       )
   }
@@ -113,7 +113,7 @@ class AddATrusteeController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddATrusteePage, value))
             _              <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddATrusteePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(AddATrusteePage, updatedAnswers))
         }
       )
   }

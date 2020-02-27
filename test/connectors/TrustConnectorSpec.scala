@@ -147,7 +147,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
           "address" -> Json.obj(
             "line1" -> "address1",
             "line2" -> "address2",
-            "postcode" -> "Postcode"
+            "postCode" -> "Postcode"
           )
         ),
         "entityStart" -> "now"
@@ -228,8 +228,6 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       val trustee = RemoveTrustee(trustee = TrusteeType(
           trusteeInd = Some(TrusteeIndividual(
-            lineNo = "1",
-            bpMatchStatus = Some("01"),
             name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
             dateOfBirth = Some(LocalDate.of(1983, 9, 24)),
             phoneNumber = None,
@@ -268,8 +266,6 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       val trustee = RemoveTrustee(trustee = TrusteeType(
         trusteeInd = Some(TrusteeIndividual(
-          lineNo = "1",
-          bpMatchStatus = Some("01"),
           name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
           dateOfBirth = Some(LocalDate.of(1983, 9, 24)),
           phoneNumber = None,
@@ -346,8 +342,6 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       whenReady(processed) { Trustees =>
         Trustees mustBe List(TrusteeType(
           trusteeInd = Some(TrusteeIndividual(
-          lineNo = "1",
-          bpMatchStatus = Some("01"),
           name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
           dateOfBirth = Some(LocalDate.of(1983, 9, 24)),
           phoneNumber = None,

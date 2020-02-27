@@ -33,8 +33,8 @@ class UkCitizenPageSpec extends PageBehaviours {
     "implement cleanup logic when YES selected" in {
       val userAnswers = emptyUserAnswers
         .set(IdentificationDetailOptionsPage, IdentificationDetailOptions.Passport)
-        .flatMap(_.set(IdCardDetailsPage, IdCard("NUMBER", LocalDate.of(2040, 12, 31), "GB")))
-        .flatMap(_.set(PassportDetailsPage, Passport("NUMBER", LocalDate.of(2040, 12, 31), "GB")))
+        .flatMap(_.set(IdCardDetailsPage, IdCard("GB", "NUMBER", LocalDate.of(2040, 12, 31))))
+        .flatMap(_.set(PassportDetailsPage, Passport("GB", "NUMBER", LocalDate.of(2040, 12, 31))))
         .flatMap(_.set(UkCitizenPage, true))
 
       userAnswers.get.get(IdentificationDetailOptionsPage) mustNot be(defined)
