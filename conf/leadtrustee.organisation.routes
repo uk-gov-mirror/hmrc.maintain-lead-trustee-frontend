@@ -2,6 +2,9 @@
 GET        /registered-in-uk                             controllers.leadtrustee.organisation.RegisteredInUkYesNoController.onPageLoad()
 POST       /registered-in-uk                             controllers.leadtrustee.organisation.RegisteredInUkYesNoController.onSubmit()
 
+GET        /lives-in-uk                                  controllers.leadtrustee.organisation.LiveInTheUkYesNoController.onPageLoad()
+POST       /lives-in-uk                                  controllers.leadtrustee.organisation.LiveInTheUkYesNoController.onSubmit()
+
 GET        /uk-address                                   controllers.leadtrustee.organisation.UkAddressController.onPageLoad()
 POST       /uk-address                                   controllers.leadtrustee.organisation.UkAddressController.onSubmit()
 
