@@ -40,7 +40,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
   private def getTrustStartDateUrl(utr: String): String = s"/trusts/$utr/trust-start-date"
   private def getTrusteesUrl(utr: String) = s"/trusts/$utr/transformed/trustees"
-  private def removeTrusteeUrl(utr: String) = s"/trusts/$utr/trustee"
+  private def removeTrusteeUrl(utr: String) = s"/trusts/remove-trustee/$utr"
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
 
