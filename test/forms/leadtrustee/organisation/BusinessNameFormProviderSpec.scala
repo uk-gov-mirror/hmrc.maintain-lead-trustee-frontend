@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.organisation
+package forms.leadtrustee.organisation
 
 import forms.{BusinessNameFormProvider, Validation}
 import forms.behaviours.StringFieldBehaviours

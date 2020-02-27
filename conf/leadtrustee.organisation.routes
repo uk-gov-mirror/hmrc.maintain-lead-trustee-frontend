@@ -5,6 +5,9 @@ POST       /registered-in-uk                            controllers.leadtrustee.
 GET        /name                                        controllers.leadtrustee.organisation.NameController.onPageLoad()
 POST       /name                                        controllers.leadtrustee.organisation.NameController.onSubmit()
 
+GET        /utr                                         controllers.leadtrustee.organisation.UtrController.onPageLoad()
+POST       /utr                                         controllers.leadtrustee.organisation.UtrController.onSubmit()
+
 GET        /lives-in-uk                                  controllers.leadtrustee.organisation.LiveInTheUkYesNoController.onPageLoad()
 POST       /lives-in-uk                                  controllers.leadtrustee.organisation.LiveInTheUkYesNoController.onSubmit()
 

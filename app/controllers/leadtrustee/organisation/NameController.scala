@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.BusinessNameFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.leadtrustee.organisation.NamePage
+import pages.leadtrustee.organisation.{NamePage, RegisteredInUkYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -37,7 +37,7 @@ class NameController @Inject()(
                                 formProvider: BusinessNameFormProvider,
                                 val controllerComponents: MessagesControllerComponents,
                                 view: NameView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("leadtrustee")
 
@@ -49,7 +49,10 @@ class NameController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm))
+      request.userAnswers.get(RegisteredInUkYesNoPage) map { answer =>
+        Ok(view(preparedForm, answer))
+      } getOrElse Redirect(routes.RegisteredInUkYesNoController.onPageLoad())
+
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
@@ -57,12 +60,15 @@ class NameController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
-
+          Future.successful {
+            request.userAnswers.get(RegisteredInUkYesNoPage) map { answer =>
+              BadRequest(view(formWithErrors, answer))
+            } getOrElse Redirect(routes.RegisteredInUkYesNoController.onPageLoad())
+          },
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
-            _              <- playbackRepository.set(updatedAnswers)
+            _ <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(NamePage, updatedAnswers))
       )
   }

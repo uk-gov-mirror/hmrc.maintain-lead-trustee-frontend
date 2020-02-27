@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package pages.leadtrustee.organisation
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class BusinessNameFormProvider @Inject() extends Mappings {
+case object UtrPage extends QuestionPage[String] {
 
-  def withPrefix(prefix: String): Form[String] =
-    Form(
-      "value" -> text(s"$prefix.organisation.name.error.required")
-        .verifying(
-          firstError(
-            nonEmptyString("value", s"$prefix.organisation.name.error.required"),
-            maxLength(56, s"$prefix.organisation.name.error.length"),
-            regexp(Validation.nameRegex, s"$prefix.organisation.name.error.invalidFormat"))
-    ))
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "utr"
 }

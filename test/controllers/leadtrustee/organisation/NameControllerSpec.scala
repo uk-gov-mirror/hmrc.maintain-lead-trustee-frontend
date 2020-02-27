@@ -19,13 +19,13 @@ package controllers.leadtrustee.organisation
 import java.time.LocalDate
 
 import base.SpecBase
-import forms.{BusinessNameFormProvider, IndividualNameFormProvider}
-import models.{Name, UserAnswers}
+import forms.BusinessNameFormProvider
+import models.UserAnswers
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.organisation.NamePage
+import pages.leadtrustee.organisation.{NamePage, RegisteredInUkYesNoPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,35 +36,16 @@ import scala.concurrent.Future
 
 class NameControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new BusinessNameFormProvider()
-  val form = formProvider.withPrefix("leadtrustee")
+  val form = new BusinessNameFormProvider().withPrefix("leadtrustee")
 
   lazy val nameRoute = routes.NameController.onPageLoad().url
 
-  val userAnswers = UserAnswers("fakeId", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage, "My Trust").success.value
+  val userAnswers = emptyUserAnswers
+    .set(RegisteredInUkYesNoPage, true).success.value
 
   "Name Controller" must {
 
     "return OK and the correct view for a GET" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request = FakeRequest(GET, nameRoute)
-
-      val view = application.injector.instanceOf[NameView]
-
-      val result = route(application, request).value
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form)(request, messages).toString
-
-      application.stop()
-    }
-
-    "populate the view correctly on a GET when the question has previously been answered" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -77,7 +58,28 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("My Trust"))(fakeRequest, messages).toString
+        view(form, true)(request, messages).toString
+
+      application.stop()
+    }
+
+    "populate the view correctly on a GET when the question has previously been answered" in {
+
+      val answers = userAnswers
+        .set(NamePage, "My Trust").success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+      val request = FakeRequest(GET, nameRoute)
+
+      val view = application.injector.instanceOf[NameView]
+
+      val result = route(application, request).value
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(form.fill("My Trust"), true)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -95,7 +97,6 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
           )
           .build()
 
-
       val request =
         FakeRequest(POST, nameRoute)
           .withFormUrlEncodedBody(("value", "My Trust"))
@@ -111,11 +112,9 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request =
-        FakeRequest(POST, nameRoute)
-          .withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, nameRoute)
 
       val boundForm = form.bind(Map("value" -> ""))
 
@@ -126,9 +125,26 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm, true)(fakeRequest, messages).toString
 
        application.stop()
+    }
+
+    "redirect to TrusteeUtrYesNoPage when TrusteeUtrYesNo is not answered" in {
+
+      val userAnswers = emptyUserAnswers
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      val request = FakeRequest(GET, nameRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.RegisteredInUkYesNoController.onPageLoad().url
+
+      application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {

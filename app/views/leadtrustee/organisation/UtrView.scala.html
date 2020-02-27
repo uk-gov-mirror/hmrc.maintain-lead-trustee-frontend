@@ -15,20 +15,19 @@
  *@
 
 @import controllers.leadtrustee.organisation.routes._
-@import models.Mode
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], isUKRegisteredCompany: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("leadtrustee.organisation.name.title")}"
+    title = s"${errorPrefix(form)} ${messages("leadtrustee.organisation.utr.title", name)}"
     ) {
 
-    @formHelper(action = NameController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = UtrController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
@@ -36,11 +35,13 @@
 
         @components.input_text(
           field = form("value"),
-          label = messages("leadtrustee.organisation.name.heading"),
-          hint = if(isUKRegisteredCompany) Some(messages("leadtrustee.organisation.name.hint")) else None,
+          label = messages("leadtrustee.organisation.utr.heading", name),
           headingIsLabel = true,
-          labelClass=Some("heading-large")
+          hint = Some(messages("leadtrustee.organisation.utr.hint")),
+          labelClass = Some("heading-large")
         )
+
+        <p>@messages("trusteeUtr.p1") <a target="_blank" href="https://www.gov.uk/find-lost-utr-number">@messages("trusteeUtr.link")</a>.</p>
 
         @components.submit_button()
     }

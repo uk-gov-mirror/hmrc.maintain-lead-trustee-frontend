@@ -20,15 +20,17 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class BusinessNameFormProvider @Inject() extends Mappings {
+class UtrFormProvider @Inject() extends Mappings {
 
-  def withPrefix(prefix: String): Form[String] =
+  def withPrefix(messagePrefix: String): Form[String] =
     Form(
-      "value" -> text(s"$prefix.organisation.name.error.required")
+      "value" -> text(s"$messagePrefix.organisation.utr.error.required")
         .verifying(
           firstError(
-            nonEmptyString("value", s"$prefix.organisation.name.error.required"),
-            maxLength(56, s"$prefix.organisation.name.error.length"),
-            regexp(Validation.nameRegex, s"$prefix.organisation.name.error.invalidFormat"))
-    ))
+            maxLength(10, s"$messagePrefix.organisation.utr..error.length"),
+            minLength(10, s"$messagePrefix.organisation.utr.error.length"),
+            regexp(Validation.utrRegex, s"$messagePrefix.organisation.utr.error.invalidCharacters"),
+            nonEmptyString("value", s"$messagePrefix.organisation.utr.error.required")
+          ))
+    )
 }

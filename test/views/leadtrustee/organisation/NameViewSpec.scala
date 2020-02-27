@@ -32,7 +32,7 @@ class NameViewSpec extends StringViewBehaviours {
   "TrusteeBusinessName view" must {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form)(fakeRequest, messages)
+      view.apply(form, true)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
@@ -53,7 +53,7 @@ class NameViewSpec extends StringViewBehaviours {
   "Name view for a UK registered company" must {
 
       def applyView(form: Form[_]): HtmlFormat.Appendable =
-        view.apply(form)(fakeRequest, messages)
+        view.apply(form, true)(fakeRequest, messages)
 
       "display hint text" in {
         val doc = asDocument(applyView(form))
