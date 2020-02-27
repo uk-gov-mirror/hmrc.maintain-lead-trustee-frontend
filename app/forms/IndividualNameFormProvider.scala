@@ -22,7 +22,7 @@ import models.Name
 import play.api.data.Form
 import play.api.data.Forms._
 
-class NameFormProvider @Inject() extends Mappings {
+class IndividualNameFormProvider @Inject() extends Mappings {
 
   def withPrefix(prefix: String): Form[Name] =   Form(
     mapping(

@@ -14,56 +14,56 @@
  * limitations under the License.
  */
 
-package controllers.trustee.individual
+package controllers.leadtrustee.organisation
 
 import controllers.actions._
-import forms.IndividualNameFormProvider
+import forms.BusinessNameFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.trustee.individual.NamePage
+import pages.leadtrustee.organisation.NamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.trustee.individual.NameView
+import views.html.leadtrustee.organisation.NameView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class NameController @Inject()(
                                 override val messagesApi: MessagesApi,
-                                sessionRepository: PlaybackRepository,
+                                playbackRepository: PlaybackRepository,
                                 navigator: Navigator,
                                 standardActionSets: StandardActionSets,
-                                formProvider: IndividualNameFormProvider,
+                                formProvider: BusinessNameFormProvider,
                                 val controllerComponents: MessagesControllerComponents,
                                 view: NameView
-                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("trustee.individual.name")
+  val form = formProvider.withPrefix("leadtrustee")
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(NamePage(index)) match {
+      val preparedForm = request.userAnswers.get(NamePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index))
+      Ok(view(preparedForm))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, index))),
+          Future.successful(BadRequest(view(formWithErrors))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage(index), value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NamePage(index), updatedAnswers))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
+            _              <- playbackRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(NamePage, updatedAnswers))
       )
   }
 }
