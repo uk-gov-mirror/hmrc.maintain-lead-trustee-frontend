@@ -27,6 +27,10 @@ class TrustService @Inject()(
                             connector: TrustConnector
                             ) {
 
+  def getTrustees(utr: String)(implicit hc:HeaderCarrier, ec:ExecutionContext) = {
+    connector.getTrustees(utr)
+  }
+
   def removeTrustee(removeTrustee: RemoveTrustee, utr: String)(implicit hc:HeaderCarrier, ec:ExecutionContext) = {
     connector.removeTrustee(utr, removeTrustee)
   }

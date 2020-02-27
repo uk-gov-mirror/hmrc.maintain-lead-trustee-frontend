@@ -16,11 +16,12 @@
 
 package controllers
 
+import connectors.TrustConnector
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
 import javax.inject.Inject
-import models.{Enumerable, Mode}
+import models.{Enumerable, Mode, TrusteeType}
 import navigation.Navigator
 import pages.trustee.{AddATrusteePage, AddATrusteeYesNoPage}
 import play.api.data.Form
@@ -28,6 +29,7 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import sections.LeadTrusteeIndividual
+import services.TrustService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.AddATrusteeViewHelper
 import views.html.trustee.{AddATrusteeView, AddATrusteeYesNoView}
@@ -38,6 +40,7 @@ class AddATrusteeController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        registrationsRepository: PlaybackRepository,
                                        navigator: Navigator,
+                                       trust: TrustService,
                                        standardActionSets: StandardActionSets,
                                        addAnotherFormProvider: AddATrusteeFormProvider,
                                        yesNoFormProvider: YesNoFormProvider,
@@ -49,27 +52,32 @@ class AddATrusteeController @Inject()(
   val addAnotherForm = addAnotherFormProvider()
   val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addATrusteeYesNo")
 
-  private def heading(count: Int)(implicit mp : MessagesProvider) = {
-    count match {
-      case 0 => Messages("addATrustee.heading")
-      case 1 => Messages("addATrustee.singular.heading")
-      case size => Messages("addATrustee.count.heading", size)
-    }
-  }
-
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      val trustees = new AddATrusteeViewHelper(request.userAnswers).rows
-
-      val isLeadTrusteeDefined = request.userAnswers.get(LeadTrusteeIndividual).exists(trustee => trustee.isLead)  // TODO Check for Lead Trustee Company
-
-      trustees.count match {
-        case 0 =>
-          Ok(yesNoView(yesNoForm, mode))
-        case count =>
-          Ok(addAnotherView(addAnotherForm, mode, trustees.inProgress, trustees.complete, isLeadTrusteeDefined, heading(count)))
+      trust.getTrustees(request.userAnswers.utr).flatMap {
+        case List(TrusteeType(Some(trusteeInd), None)) => {
+          println("************* 1 ********************")
+          println(trusteeInd)
+          Future.successful(Ok(yesNoView(yesNoForm, mode)))
+        }
+        case _ => {
+          println("************* 2 ********************")
+          Future.successful(Ok(yesNoView(yesNoForm, mode)))
+        }
       }
+
+//      val trustees = new AddATrusteeViewHelper(request.userAnswers).rows
+//
+//      val isLeadTrusteeDefined = request.userAnswers.get(LeadTrusteeIndividual).exists(trustee => trustee.isLead)  // TODO Check for Lead Trustee Company
+//
+//      trustees.count match {
+//        case 0 =>
+//          Future.successful(Ok(yesNoView(yesNoForm, mode)))
+//        case count =>
+//          Future.successful(Ok(addAnotherView(addAnotherForm, mode, trustees.inProgress, trustees.complete, isLeadTrusteeDefined, heading(count))))
+//      }
+
   }
 
   def submitOne(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
@@ -116,5 +124,13 @@ class AddATrusteeController @Inject()(
           } yield Redirect(navigator.nextPage(AddATrusteePage, updatedAnswers))
         }
       )
+  }
+
+  private def heading(count: Int)(implicit mp : MessagesProvider) = {
+    count match {
+      case 0 => Messages("addATrustee.heading")
+      case 1 => Messages("addATrustee.singular.heading")
+      case size => Messages("addATrustee.count.heading", size)
+    }
   }
 }

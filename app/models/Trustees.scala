@@ -16,34 +16,11 @@
 
 package models
 
-import java.time.LocalDate
+import play.api.libs.json.{Format, Json}
 
-import play.api.libs.json.{Format, Json, Reads, Writes}
-
-case class TrusteeType(trusteeInd: Option[TrusteeIndividual],
-                    trusteeOrg: Option[TrusteeOrg])
+case class TrusteeType(trusteeInd: Option[RemoveTrusteeIndividual],
+                    trusteeOrg: Option[RemoveTrusteeOrg])
 
 object TrusteeType {
   implicit val trusteeTypeFormat: Format[TrusteeType] = Json.format[TrusteeType]
-}
-
-case class TrusteeOrg(lineNo: String,
-                      bpMatchStatus: Option[String],
-                      name: String,
-                      phoneNumber: Option[String] = None,
-                      email: Option[String] = None,
-                      identification: Option[TrustIdentificationOrgType],
-                      entityStart: String)
-
-object TrusteeOrg {
-  implicit val dateFormat: Format[LocalDate] = Format[LocalDate](Reads.DefaultLocalDateReads, Writes.DefaultLocalDateWrites)
-  implicit val trusteeOrgTypeFormat: Format[TrusteeOrg] = Json.format[TrusteeOrg]
-}
-
-case class TrustIdentificationOrgType(safeId: Option[String],
-                                      utr: Option[String],
-                                      address: Option[AddressType])
-
-object TrustIdentificationOrgType {
-  implicit val trustBeneficiaryIdentificationFormat: Format[TrustIdentificationOrgType] = Json.format[TrustIdentificationOrgType]
 }

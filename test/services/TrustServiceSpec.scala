@@ -16,25 +16,50 @@
 
 package services
 
+import java.time.LocalDate
+
 import connectors.TrustConnector
-import models.RemoveTrustee
+import models.{Name, RemoveTrustee, TrustIdentification, TrusteeIndividual, TrusteeType}
 import org.scalatest.{FreeSpec, MustMatchers}
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status._
-import play.api.test.FakeRequest
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.ExecutionContext.Implicits._
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers with ScalaFutures {
 
   val mockConnector: TrustConnector = mock[TrustConnector]
 
   "Trust service" - {
+
+    "get trustees" in {
+
+      val trusteeInd = TrusteeIndividual(
+        name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
+        dateOfBirth = Some(LocalDate.of(1983, 9, 24)),
+        phoneNumber = None,
+        identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+        entityStart = LocalDate.of(2019,2,28))
+
+      when(mockConnector.getTrustees(any())(any(), any()))
+        .thenReturn(Future.successful(List(TrusteeType(Some(trusteeInd), None))))
+
+      val service = new TrustService(mockConnector)
+
+      implicit val hc : HeaderCarrier = HeaderCarrier()
+
+      val result = service.getTrustees("1234567890")
+
+      whenReady(result) { r =>
+        r mustBe List(TrusteeType(Some(trusteeInd), None))
+      }
+
+    }
 
     "remove a trustee" in {
 
@@ -43,7 +68,17 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
 
       val service = new TrustService(mockConnector)
 
-      val trustee : RemoveTrustee = ???
+      val trustee : RemoveTrustee =  RemoveTrustee(trustee = TrusteeType(
+        trusteeInd = Some(TrusteeIndividual(
+          name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
+          dateOfBirth = Some(LocalDate.of(1983, 9, 24)),
+          phoneNumber = None,
+          identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+          entityStart = LocalDate.of(2019,2,28))
+        ),
+        trusteeOrg = None),
+        endDate = LocalDate.now()
+      )
 
       implicit val hc : HeaderCarrier = HeaderCarrier()
 
