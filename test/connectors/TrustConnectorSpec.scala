@@ -310,7 +310,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       val utr = "1000000008"
 
-      val json = Json.obj(
+      val json = Json.arr(Json.obj(
         "trusteeInd" -> Json.obj(
           "lineNo" -> "1",
           "bpMatchStatus" -> "01",
@@ -324,7 +324,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
           ),
           "entityStart" -> "2019-02-28"
         )
-      )
+      ))
 
       val application = applicationBuilder()
         .configure(
@@ -344,7 +344,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val processed = connector.getTrustees(utr)
 
       whenReady(processed) { Trustees =>
-        Trustees mustBe TrusteeType(
+        Trustees mustBe List(TrusteeType(
           trusteeInd = Some(TrusteeIndividual(
           lineNo = "1",
           bpMatchStatus = Some("01"),
@@ -354,7 +354,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
           identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
           entityStart = LocalDate.of(2019,2,28))
         ),
-        trusteeOrg = None)
+        trusteeOrg = None))
       }
 
       application.stop()
