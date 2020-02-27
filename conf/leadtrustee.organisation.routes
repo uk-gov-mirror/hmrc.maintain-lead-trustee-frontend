@@ -4,3 +4,6 @@ POST       /registered-in-uk                             controllers.leadtrustee
 
 GET        /uk-address                                   controllers.leadtrustee.organisation.UkAddressController.onPageLoad()
 POST       /uk-address                                   controllers.leadtrustee.organisation.UkAddressController.onSubmit()
+
+GET        /international-address                        controllers.leadtrustee.organisation.NonUkAddressController.onPageLoad()
+POST       /international-address                        controllers.leadtrustee.organisation.NonUkAddressController.onSubmit()

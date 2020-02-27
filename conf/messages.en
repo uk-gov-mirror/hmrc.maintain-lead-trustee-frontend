@@ -259,6 +259,10 @@ leadtrustee.organisation.ukAddress.title = What is {0}’s address?
 leadtrustee.organisation.ukAddress.heading = What is {0}’s address?
 leadtrustee.organisation.ukAddress.checkYourAnswersLabel = What is {0}’s address?
 
+leadtrustee.organisation.nonUkAddress.title = What is {0}’s address?
+leadtrustee.organisation.nonUkAddress.heading = What is {0}’s address?
+leadtrustee.organisation.nonUkAddress.checkYourAnswersLabel = What is {0}’s address?
+
 trustee.individual.ukCitizen.title = Does {0} have a National Insurance number?
 trustee.individual.ukCitizen.heading = Does {0} have a National Insurance number?
 trustee.individual.ukCitizen.checkYourAnswersLabel = Does {0} have a National Insurance number?
