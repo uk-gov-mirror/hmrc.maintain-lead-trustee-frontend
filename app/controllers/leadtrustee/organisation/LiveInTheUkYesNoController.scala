@@ -17,8 +17,7 @@
 package controllers.leadtrustee.organisation
 
 import controllers.actions._
-//TODO: create name required action for lead trustee org
-import controllers.leadtrustee.individual.actions.NameRequiredAction
+import controllers.leadtrustee.organisation.actions.NameRequiredAction
 import forms.YesNoFormProvider
 import javax.inject.Inject
 import navigation.Navigator

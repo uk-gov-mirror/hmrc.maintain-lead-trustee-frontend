@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.leadtrustee.individual.actions
+package controllers.actions
 
 import models.UserAnswers
 import models.requests.DataRequest
