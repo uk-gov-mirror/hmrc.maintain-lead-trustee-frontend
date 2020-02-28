@@ -19,7 +19,8 @@ package services
 import java.time.LocalDate
 
 import connectors.TrustConnector
-import models.{Name, RemoveTrustee, TrustIdentification, TrusteeIndividual, TrusteeType}
+import models.{Name, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrusteeIndividual, TrusteeType}
+import org.joda.time.DateTime
 import org.scalatest.{FreeSpec, MustMatchers}
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Matchers.any
@@ -39,12 +40,14 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
 
     "get trustees" in {
 
-      val trusteeInd = TrusteeIndividual(
+      val trusteeInd = RemoveTrusteeIndividual(
+        lineNo = Some("1"),
+        bpMatchStatus = Some("01"),
         name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
-        dateOfBirth = Some(LocalDate.of(1983, 9, 24)),
+        dateOfBirth = Some(DateTime.parse("1983-9-24")),
         phoneNumber = None,
         identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-        entityStart = LocalDate.of(2019,2,28))
+        entityStart = DateTime.parse("2019-2-28"))
 
       when(mockConnector.getTrustees(any())(any(), any()))
         .thenReturn(Future.successful(List(TrusteeType(Some(trusteeInd), None))))
@@ -69,12 +72,14 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
       val service = new TrustService(mockConnector)
 
       val trustee : RemoveTrustee =  RemoveTrustee(trustee = TrusteeType(
-        trusteeInd = Some(TrusteeIndividual(
+        trusteeInd = Some(RemoveTrusteeIndividual(
+          lineNo = Some("1"),
+          bpMatchStatus = Some("01"),
           name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
-          dateOfBirth = Some(LocalDate.of(1983, 9, 24)),
+          dateOfBirth = Some(DateTime.parse("1983-9-24")),
           phoneNumber = None,
           identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-          entityStart = LocalDate.of(2019,2,28))
+          entityStart = DateTime.parse("2019-2-28"))
         ),
         trusteeOrg = None),
         endDate = LocalDate.now()

@@ -23,7 +23,8 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
-import models.{LeadTrusteeOrganisation, Name, RemoveTrustee, TrustIdentification, TrustStartDate, TrusteeIndividual, TrusteeType, UkAddress}
+import models.{LeadTrusteeOrganisation, Name, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrustStartDate, TrusteeIndividual, TrusteeType, UkAddress}
+import org.joda.time.DateTime
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.Json
@@ -39,7 +40,9 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   private def getLeadTrusteeUrl(utr: String): String = s"/trusts/$utr/transformed/lead-trustee"
 
   private def getTrustStartDateUrl(utr: String): String = s"/trusts/$utr/trust-start-date"
+
   private def getTrusteesUrl(utr: String) = s"/trusts/$utr/transformed/trustees"
+
   private def removeTrusteeUrl(utr: String) = s"/trusts/remove-trustee/$utr"
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
@@ -227,15 +230,17 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val utr = "1000000008"
 
       val trustee = RemoveTrustee(trustee = TrusteeType(
-          trusteeInd = Some(TrusteeIndividual(
-            name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
-            dateOfBirth = Some(LocalDate.of(1983, 9, 24)),
-            phoneNumber = None,
-            identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-            entityStart = LocalDate.of(2019,2,28))
-          ),
-          trusteeOrg = None),
-          endDate = LocalDate.now()
+        trusteeInd = Some(RemoveTrusteeIndividual(
+          lineNo = Some("1"),
+          bpMatchStatus = Some("01"),
+          name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
+          dateOfBirth = Some(DateTime.parse("1983-9-24")),
+          phoneNumber = None,
+          identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+          entityStart = DateTime.parse("2019-2-28"))
+        ),
+        trusteeOrg = None),
+        endDate = LocalDate.now()
       )
 
       val application = applicationBuilder()
@@ -265,12 +270,14 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val utr = "1000000008"
 
       val trustee = RemoveTrustee(trustee = TrusteeType(
-        trusteeInd = Some(TrusteeIndividual(
+        trusteeInd = Some(RemoveTrusteeIndividual(
+          lineNo = Some("1"),
+          bpMatchStatus = Some("01"),
           name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
-          dateOfBirth = Some(LocalDate.of(1983, 9, 24)),
+          dateOfBirth = Some(DateTime.parse("1983-9-24")),
           phoneNumber = None,
           identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-          entityStart = LocalDate.of(2019,2,28))
+          entityStart = DateTime.parse("2019-2-28"))
         ),
         trusteeOrg = None),
         endDate = LocalDate.now()
@@ -311,7 +318,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
           "lineNo" -> "1",
           "bpMatchStatus" -> "01",
           "name" -> Json.obj(
-             "firstName" -> "1234567890 QwErTyUiOp ,.(/)&'- name",
+            "firstName" -> "1234567890 QwErTyUiOp ,.(/)&'- name",
             "lastName" -> "1234567890 QwErTyUiOp ,.(/)&'- name"
           ),
           "dateOfBirth" -> "1983-09-24",
@@ -341,14 +348,16 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       whenReady(processed) { Trustees =>
         Trustees mustBe List(TrusteeType(
-          trusteeInd = Some(TrusteeIndividual(
-          name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
-          dateOfBirth = Some(LocalDate.of(1983, 9, 24)),
-          phoneNumber = None,
-          identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-          entityStart = LocalDate.of(2019,2,28))
-        ),
-        trusteeOrg = None))
+          trusteeInd = Some(RemoveTrusteeIndividual(
+            lineNo = Some("1"),
+            bpMatchStatus = Some("01"),
+            name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
+            dateOfBirth = Some(DateTime.parse("1983-9-24")),
+            phoneNumber = None,
+            identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+            entityStart = DateTime.parse("2019-2-28"))
+          ),
+          trusteeOrg = None))
       }
 
       application.stop()

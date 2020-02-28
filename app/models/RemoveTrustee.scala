@@ -18,10 +18,14 @@ package models
 
 import java.time.LocalDate
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Format, Json, Reads}
 
 case class RemoveTrustee(trustee: TrusteeType, endDate: LocalDate)
 
 object RemoveTrustee {
   implicit val formats : Format[RemoveTrustee] = Json.format[RemoveTrustee]
+
+  implicit val reads : Reads[RemoveTrusteeIndividual] = Reads(json =>
+    json.validate[RemoveTrusteeIndividual])
+
 }
