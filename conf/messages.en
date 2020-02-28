@@ -249,6 +249,60 @@ leadtrustee.individual.telephoneNumber.checkYourAnswersLabel = What is {0}’s t
 leadtrustee.individual.telephoneNumber.error.required = Enter the lead trustee’s telephone number
 leadtrustee.individual.telephoneNumber.error.length = A telephone number must be 100 characters or less
 
+leadtrustee.organisation.registeredInUkYesNo.checkYourAnswersLabel = Is this trustee a UK registered company?
+leadtrustee.organisation.registeredInUkYesNo.title = Is this trustee a UK registered company?
+leadtrustee.organisation.registeredInUkYesNo.heading = Is this trustee a UK registered company?
+leadtrustee.organisation.registeredInUkYesNo.error.required = Select yes if the trustee is a UK registered company
+leadtrustee.organisation.registeredInUkYesNo.checkYourAnswersLabel = Is this trustee a UK registered company?
+
+leadtrustee.organisation.name.heading = What is the business’s name?
+leadtrustee.organisation.name.title = What is the business’s name?
+leadtrustee.organisation.name.hint = Enter the name as it appears on tax returns and other letters about Corporation Tax.
+leadtrustee.organisation.name.error.required = Enter the business’s name
+leadtrustee.organisation.name.error.length = Business name must be 56 characters or less
+leadtrustee.organisation.name.error.invalidFormat = Business name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+leadtrustee.organisation.name.checkYourAnswersLabel = What is the business’s name?
+
+leadtrustee.organisation.utr.title = What is {0}’s Unique Taxpayer Reference (UTR) number?
+leadtrustee.organisation.utr.heading = What is {0}’s Unique Taxpayer Reference (UTR) number?
+leadtrustee.organisation.utr.error.required = Enter the trustee’s Unique Taxpayer Reference
+leadtrustee.organisation.utr.error.length = Unique Taxpayer Reference must be a 10 digit number
+leadtrustee.organisation.utr.error.invalidCharacters = Enter the trust’s Unique Taxpayer Reference in the correct format
+leadtrustee.organisation.utr.hint = This is 10 numbers, for example one two three four five six seven eight nine zero. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
+leadtrustee.organisation.utr.p1 = You can
+leadtrustee.organisation.utr.link = find a lost UTR number (opens in a new window or tab)
+
+leadtrustee.organisation.liveInTheUkYesNo.title = Does {0} live in the UK?
+leadtrustee.organisation.liveInTheUkYesNo.heading = Does {0} live in the UK?
+leadtrustee.organisation.liveInTheUkYesNo.checkYourAnswersLabel = Does {0} live in the UK?
+leadtrustee.organisation.liveInTheUkYesNo.error.required = Select yes if the lead trustee lives in the UK
+
+leadtrustee.organisation.ukAddress.title = What is {0}’s address?
+leadtrustee.organisation.ukAddress.heading = What is {0}’s address?
+leadtrustee.organisation.ukAddress.checkYourAnswersLabel = What is {0}’s address?
+
+leadtrustee.organisation.nonUkAddress.title = What is {0}’s address?
+leadtrustee.organisation.nonUkAddress.heading = What is {0}’s address?
+leadtrustee.organisation.nonUkAddress.checkYourAnswersLabel = What is {0}’s address?
+
+leadtrustee.organisation.emailAddressYesNo.title = Do you know {0}’s email address?
+leadtrustee.organisation.emailAddressYesNo.heading = Do you know {0}’s email address?
+leadtrustee.organisation.emailAddressYesNo.checkYourAnswersLabel = Do you know {0}’s email address?
+leadtrustee.organisation.emailAddressYesNo.error.required = Select yes if you know the lead trustee’s email address
+
+leadtrustee.organisation.emailAddress.title = What is {0}’s email address?
+leadtrustee.organisation.emailAddress.heading = What is {0}’s email address?
+leadtrustee.organisation.emailAddress.checkYourAnswersLabel = What is {0}’s email address?
+leadtrustee.organisation.emailAddress.error.required = Enter the lead trustee’s email address
+leadtrustee.organisation.emailAddress.error.length = An email address must be 35 characters or less
+leadtrustee.organisation.emailAddress.error.invalid = Enter a valid email address with no spaces, like name@example.com
+
+leadtrustee.organisation.telephoneNumber.title = What is {0}’s telephone number?
+leadtrustee.organisation.telephoneNumber.heading = What is {0}’s telephone number?
+leadtrustee.organisation.telephoneNumber.checkYourAnswersLabel = What is {0}’s telephone number?
+leadtrustee.organisation.telephoneNumber.error.required = Enter the lead trustee’s telephone number
+leadtrustee.organisation.telephoneNumber.error.length = A telephone number must be 100 characters or less
+
 trustee.individual.ukCitizen.title = Does {0} have a National Insurance number?
 trustee.individual.ukCitizen.heading = Does {0} have a National Insurance number?
 trustee.individual.ukCitizen.checkYourAnswersLabel = Does {0} have a National Insurance number?

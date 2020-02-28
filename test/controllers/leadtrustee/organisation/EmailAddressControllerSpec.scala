@@ -14,75 +14,71 @@
  * limitations under the License.
  */
 
-package controllers.leadtrustee.individual
+package controllers.leadtrustee.organisation
 
 import base.SpecBase
-import forms.YesNoFormProvider
-import models.Name
-import navigation.{FakeNavigator, Navigator}
+import forms.EmailAddressFormProvider
+import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.{LiveInTheUkYesNoPage, NamePage}
+import pages.leadtrustee.organisation.{EmailAddressPage, NamePage}
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.leadtrustee.individual.LiveInTheUkYesNoPageView
+import views.html.leadtrustee.organisation.EmailAddressView
 
 import scala.concurrent.Future
 
-class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
+class EmailAddressControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  val formProvider = new EmailAddressFormProvider()
+  val form = formProvider.withPrefix("leadtrustee.organisation.emailAddress")
 
-  val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNo")
-
-  lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoPageController.onPageLoad().url
-
-  val name = Name("Lead", None, "Trustee")
+  val name = "Lead trustee"
 
   override val emptyUserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
-  "LiveInTheUkYesNoPage Controller" must {
+  lazy val emailAddressRoute = routes.EmailAddressController.onPageLoad().url
+
+  "EmailAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, liveInTheUkYesNoPageRoute)
+      val request = FakeRequest(GET, emailAddressRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[LiveInTheUkYesNoPageView]
+      val view = application.injector.instanceOf[EmailAddressView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName)(fakeRequest, messages).toString
+        view(form, name)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(LiveInTheUkYesNoPage, true).success.value
+      val userAnswers = emptyUserAnswers.set(EmailAddressPage, "e@answer.com").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, liveInTheUkYesNoPageRoute)
+      val request = FakeRequest(GET, emailAddressRoute)
 
-      val view = application.injector.instanceOf[LiveInTheUkYesNoPageView]
+      val view = application.injector.instanceOf[EmailAddressView]
 
       val result = route(application, request).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), name.displayName)(fakeRequest, messages).toString
+        view(form.fill("e@answer.com"), name)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -93,22 +89,18 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
-          )
-          .build()
-
       val request =
-        FakeRequest(POST, liveInTheUkYesNoPageRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, emailAddressRoute)
+          .withFormUrlEncodedBody(("value", "e@answer.com"))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[Navigator].toInstance(fakeNavigator))
+        .build()
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       application.stop()
     }
@@ -118,19 +110,19 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, liveInTheUkYesNoPageRoute)
+        FakeRequest(POST, emailAddressRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[LiveInTheUkYesNoPageView]
+      val view = application.injector.instanceOf[EmailAddressView]
 
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, name)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -139,7 +131,7 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, liveInTheUkYesNoPageRoute)
+      val request = FakeRequest(GET, emailAddressRoute)
 
       val result = route(application, request).value
 
@@ -155,8 +147,8 @@ class LiveInTheUkYesNoPageControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, liveInTheUkYesNoPageRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, emailAddressRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 

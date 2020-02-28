@@ -17,7 +17,7 @@
 package controllers.trustee.individual
 
 import controllers.actions._
-import forms.NameFormProvider
+import forms.IndividualNameFormProvider
 import javax.inject.Inject
 import navigation.Navigator
 import pages.trustee.individual.NamePage
@@ -34,7 +34,7 @@ class NameController @Inject()(
                                 sessionRepository: PlaybackRepository,
                                 navigator: Navigator,
                                 standardActionSets: StandardActionSets,
-                                formProvider: NameFormProvider,
+                                formProvider: IndividualNameFormProvider,
                                 val controllerComponents: MessagesControllerComponents,
                                 view: NameView
                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {

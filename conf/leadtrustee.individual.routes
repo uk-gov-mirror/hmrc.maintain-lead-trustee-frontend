@@ -8,8 +8,8 @@ POST       /date-of-birth                           controllers.leadtrustee.indi
 GET        /id-card                                 controllers.leadtrustee.individual.IdCardDetailsController.onPageLoad()
 POST       /id-card                                 controllers.leadtrustee.individual.IdCardDetailsController.onSubmit()
 
-GET        /lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoPageController.onPageLoad()
-POST       /lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoPageController.onSubmit()
+GET        /lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoController.onPageLoad()
+POST       /lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoController.onSubmit()
 
 GET        /national-insurance-number               controllers.leadtrustee.individual.NationalInsuranceNumberController.onPageLoad()
 POST       /national-insurance-number               controllers.leadtrustee.individual.NationalInsuranceNumberController.onSubmit()

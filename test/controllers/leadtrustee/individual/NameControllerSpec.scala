@@ -19,7 +19,7 @@ package controllers.leadtrustee.individual
 import java.time.LocalDate
 
 import base.SpecBase
-import forms.NameFormProvider
+import forms.IndividualNameFormProvider
 import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
@@ -39,7 +39,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new NameFormProvider()
+  val formProvider = new IndividualNameFormProvider()
   val form = formProvider.withPrefix("leadtrustee.individual.name")
 
   lazy val nameRoute = routes.NameController.onPageLoad().url

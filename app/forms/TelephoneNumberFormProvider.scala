@@ -22,12 +22,14 @@ import play.api.data.Form
 
 class TelephoneNumberFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def withPrefix(prefix: String): Form[String] =
     Form(
-      "value" -> text("leadtrustee.individual.telephoneNumber.error.required")
+      "value" -> text(s"$prefix.error.required")
         .verifying(
           firstError(
-            nonEmptyString("value", "leadtrustee.individual.telephoneNumber.error.required"),
-            regexp(Validation.telephoneRegex, "leadtrustee.individual.telephoneNumber.error.invalid.characters")
-          )))
+            nonEmptyString("value", s"$prefix.error.required"),
+            regexp(Validation.telephoneRegex, s"$prefix.error.invalid.characters")
+          )
+        )
+    )
 }

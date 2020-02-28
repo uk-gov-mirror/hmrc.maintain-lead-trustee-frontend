@@ -14,32 +14,41 @@
  * limitations under the License.
  */
 
-package views.leadtrustee.individual
+package views.leadtrustee.organisation
 
-import controllers.leadtrustee.individual.routes
-import forms.YesNoFormProvider
+import controllers.leadtrustee.organisation.routes
+import forms.NonUkAddressFormProvider
+import models.NonUkAddress
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
-import views.html.leadtrustee.individual.LiveInTheUkYesNoPageView
+import views.behaviours.QuestionViewBehaviours
+import views.html.leadtrustee.organisation.NonUkAddressView
 
-class LiveInTheUkYesNoPageViewSpec extends YesNoViewBehaviours {
+class NonUkAddressViewSpec extends QuestionViewBehaviours[NonUkAddress] {
 
-  val messageKeyPrefix = "leadtrustee.individual.liveInTheUkYesNo"
+  val messageKeyPrefix = "leadtrustee.organisation.nonUkAddress"
 
-  val form = (new YesNoFormProvider).withPrefix("prefix")
+  override val form = new NonUkAddressFormProvider()()
 
-  "LiveInTheUkYesNoPage view" must {
+  "NonUkAddressView" must {
 
-    val view = viewFor[LiveInTheUkYesNoPageView](Some(emptyUserAnswers))
+    val view = viewFor[NonUkAddressView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, "Lead Trustee")(fakeRequest, messages)
+      view.apply(form, Seq.empty, "Lead Trustee")(fakeRequest, messages)
+
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, "Lead Trustee")
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some("Lead Trustee"), routes.LiveInTheUkYesNoPageController.onSubmit().url)
+    behave like pageWithTextFields(
+      form,
+      applyView,
+      messageKeyPrefix,
+      Some("Lead Trustee"),
+      routes.NonUkAddressController.onSubmit().url,
+      "line1", "line2"
+    )
   }
 }

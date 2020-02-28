@@ -14,39 +14,39 @@
  * limitations under the License.
  */
 
-package controllers.leadtrustee.individual
+package controllers.leadtrustee.organisation
 
 import controllers.actions._
-import controllers.leadtrustee.individual.actions.NameRequiredAction
-import forms.YesNoFormProvider
+import controllers.leadtrustee.organisation.actions.NameRequiredAction
+import forms.UkAddressFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.leadtrustee.individual.LiveInTheUkYesNoPage
+import pages.leadtrustee.organisation.UkAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.leadtrustee.individual.LiveInTheUkYesNoPageView
+import views.html.leadtrustee.organisation.UkAddressView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class LiveInTheUkYesNoPageController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         playbackRepository: PlaybackRepository,
-                                         navigator: Navigator,
-                                         standardActionSets: StandardActionSets,
-                                         nameAction: NameRequiredAction,
-                                         formProvider: YesNoFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: LiveInTheUkYesNoPageView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class UkAddressController @Inject()(
+                                    override val messagesApi: MessagesApi,
+                                    playbackRepository: PlaybackRepository,
+                                    navigator: Navigator,
+                                    standardActionSets: StandardActionSets,
+                                    nameAction: NameRequiredAction,
+                                    formProvider: UkAddressFormProvider,
+                                    val controllerComponents: MessagesControllerComponents,
+                                    view: UkAddressView
+                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNo")
+  val form = formProvider()
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(LiveInTheUkYesNoPage) match {
+      val preparedForm = request.userAnswers.get(UkAddressPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -63,9 +63,9 @@ class LiveInTheUkYesNoPageController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(LiveInTheUkYesNoPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(UkAddressPage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(LiveInTheUkYesNoPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(UkAddressPage, updatedAnswers))
       )
   }
 }
