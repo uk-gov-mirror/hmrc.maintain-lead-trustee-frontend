@@ -34,7 +34,7 @@ class TrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks  {
       val answers = emptyUserAnswers
         .set(IndividualOrBusinessPage(index), Individual).success.value
 
-      navigator.nextPage(IndividualOrBusinessPage(index), NormalMode, answers)
+      navigator.nextPage(IndividualOrBusinessPage(index), answers)
         .mustBe(controllers.trustee.individual.routes.NameController.onPageLoad(index))
     }
 
@@ -42,12 +42,12 @@ class TrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks  {
       val answers = emptyUserAnswers
         .set(IndividualOrBusinessPage(index), Business).success.value
 
-      navigator.nextPage(IndividualOrBusinessPage(index), NormalMode, answers)
+      navigator.nextPage(IndividualOrBusinessPage(index), answers)
         .mustBe(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(index))
     }
 
     "When added page -> Check your answers page" in {
-      navigator.nextPage(WhenAddedPage(index), NormalMode, emptyUserAnswers)
+      navigator.nextPage(WhenAddedPage(index), emptyUserAnswers)
         .mustBe(controllers.trustee.routes.CheckDetailsController.onPageLoad(index))
     }
   }

@@ -17,7 +17,7 @@
 package navigation
 
 import javax.inject.{Inject, Singleton}
-import models.{Mode, NormalMode, UserAnswers}
+import models.UserAnswers
 import navigation.leadtrustee.IndividualLeadTrusteeNavigator
 import navigation.trustee.TrusteeNavigator
 import pages.Page
@@ -32,12 +32,9 @@ class Navigator @Inject()() {
     case _ => ua => controllers.routes.IndexController.onPageLoad(ua.utr)
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
-    case NormalMode =>
+  def nextPage(page: Page, userAnswers: UserAnswers): Call =
       normalRoutes(page)(userAnswers)
-    case _ =>
-      controllers.routes.IndexController.onPageLoad(userAnswers.utr)
-  }
+
 }
 
 

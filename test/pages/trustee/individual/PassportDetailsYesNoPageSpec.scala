@@ -25,7 +25,7 @@ class PassportDetailsYesNoPageSpec extends PageBehaviours {
 
   val index = 0
 
-  val data: Passport = Passport("number", LocalDate.of(2020, 1, 1), "country")
+  val data: Passport = Passport("country", "number", LocalDate.of(2020, 1, 1))
 
   "PassportDetailsYesNo page" must {
 

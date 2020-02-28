@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.leadtrustee.individual.actions.NameRequiredAction
 import forms.YesNoFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.LiveInTheUkYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,9 +41,9 @@ class LiveInTheUkYesNoPageController @Inject()(
                                          view: LiveInTheUkYesNoPageView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("leadtrustee")
+  val form = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNo")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(LiveInTheUkYesNoPage) match {
@@ -55,7 +54,7 @@ class LiveInTheUkYesNoPageController @Inject()(
       Ok(view(preparedForm, request.leadTrusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -66,7 +65,7 @@ class LiveInTheUkYesNoPageController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(LiveInTheUkYesNoPage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(LiveInTheUkYesNoPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(LiveInTheUkYesNoPage, updatedAnswers))
       )
   }
 }

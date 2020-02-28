@@ -16,15 +16,16 @@
 
 package forms.leadtrustee.individual
 
-import forms.EmailAddressFormProvider
+import forms.{EmailAddressFormProvider, Validation}
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class EmailAddressFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "leadtrustee.individual.emailAddress.error.required"
   val lengthKey = "leadtrustee.individual.emailAddress.error.length"
-  val maxLength = 512
+  val maxLength = 35
 
   val form = new EmailAddressFormProvider()()
 
@@ -35,7 +36,7 @@ class EmailAddressFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      RegexpGen.from(Validation.emailRegex)
     )
 
     behave like fieldWithMaxLength(

@@ -16,8 +16,8 @@
 
 package models
 
-import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
 sealed trait Address
 
@@ -26,8 +26,33 @@ case class UkAddress (line1: String,
                       line3: Option[String],
                       line4: Option[String],
                       postcode: String) extends Address
+
 object UkAddress {
-  implicit val format = Json.format[UkAddress]
+
+  implicit val reads: Reads[UkAddress] =
+    ((__ \ 'line1).read[String] and
+      (__ \ 'line2).read[String] and
+      (__ \ 'line3).readNullable[String] and
+      (__ \ 'line4).readNullable[String] and
+      (__ \ 'postCode).read[String]).apply(UkAddress.apply _)
+
+  implicit val writes: Writes[UkAddress] =
+    ((__ \ 'line1).write[String] and
+      (__ \ 'line2).write[String] and
+      (__ \ 'line3).writeNullable[String] and
+      (__ \ 'line4).writeNullable[String] and
+      (__ \ 'postCode).write[String] and
+      (__ \ 'country).write[String]
+      ).apply(address => (
+      address.line1,
+      address.line2,
+      address.line3,
+      address.line4,
+      address.postcode,
+      "GB"
+    ))
+
+  implicit val format = Format[UkAddress](reads, writes)
 }
 
 case class NonUkAddress (line1: String,
@@ -41,11 +66,11 @@ object NonUkAddress {
 
 object Address {
   implicit val reads: Reads[Address] =
-    __.read[UkAddress](UkAddress.format).widen[Address] orElse
+    __.read[UkAddress](UkAddress.reads).widen[Address] orElse
     __.read[NonUkAddress](NonUkAddress.format).widen[Address]
 
   implicit val writes: Writes[Address] = Writes {
-    case a:UkAddress => Json.toJson(a)(UkAddress.format)
+    case a:UkAddress => Json.toJson(a)(UkAddress.writes)
     case a:NonUkAddress => Json.toJson(a)(NonUkAddress.format)
   }
 }
