@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions.StandardActionSets
-import controllers.leadtrustee.individual.actions.NameRequiredAction
+import controllers.leadtrustee.actions.NameRequiredAction
 import forms.DateOfBirthFormProvider
 import javax.inject.Inject
 import navigation.Navigator

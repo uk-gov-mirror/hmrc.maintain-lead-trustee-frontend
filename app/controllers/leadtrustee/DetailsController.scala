@@ -21,13 +21,18 @@ import config.FrontendAppConfig
 import connectors.TrustConnector
 import controllers.ReturnToStart
 import controllers.actions.{LeadTrusteeNameRequest, StandardActionSets}
-import controllers.leadtrustee.individual.actions.NameRequiredAction
-import mapping.LeadTrusteesExtractor
-import models.{LeadTrusteeIndividual, UserAnswers}
+import controllers.leadtrustee.actions.NameRequiredAction
+import mapping.{LeadTrusteeOrganisationExtractor, LeadTrusteesExtractor}
+import models.IndividualOrBusiness._
+import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, UserAnswers}
+import pages.leadtrustee.IndividualOrBusinessPage
+import pages.leadtrustee.organisation._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.countryOptions.CountryOptions
+import utils.print.AnswerRowConverter
 import viewmodels.AnswerSection
 import viewmodels.leadtrustee.individual.CheckYourAnswersHelper
 import views.html.leadtrustee.LeadTrusteeDetailsView
@@ -36,16 +41,19 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class DetailsController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            standardActionSets: StandardActionSets,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: LeadTrusteeDetailsView,
-                                            connector: TrustConnector,
-                                            extractor: LeadTrusteesExtractor,
-                                            repository: PlaybackRepository,
-                                            checkYourAnswersHelper: CheckYourAnswersHelper,
-                                            nameRequiredAction: NameRequiredAction,
-                                            val appConfig: FrontendAppConfig
+                                   override val messagesApi: MessagesApi,
+                                   standardActionSets: StandardActionSets,
+                                   val controllerComponents: MessagesControllerComponents,
+                                   view: LeadTrusteeDetailsView,
+                                   connector: TrustConnector,
+                                   extractor: LeadTrusteesExtractor,
+                                   leadTrusteeOrgExtractor: LeadTrusteeOrganisationExtractor,
+                                   repository: PlaybackRepository,
+                                   checkYourAnswersHelper: CheckYourAnswersHelper,
+                                   answerRowConverter: AnswerRowConverter,
+                                   nameRequiredAction: NameRequiredAction,
+                                   countryOptions: CountryOptions,
+                                   val appConfig: FrontendAppConfig
                                           ) (implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport with ReturnToStart {
 
@@ -59,7 +67,15 @@ class DetailsController @Inject()(
             updatedAnswers <- Future.fromTry(answers)
             _ <- repository.set(updatedAnswers)
           } yield {
-            renderPage(updatedAnswers)
+            renderIndividualLeadTrustee(updatedAnswers)
+          }
+        case trusteeOrg: LeadTrusteeOrganisation =>
+          val answers: Try[UserAnswers] = leadTrusteeOrgExtractor.extractLeadTrusteeOrganisation(request.userAnswers, trusteeOrg)
+          for {
+            updatedAnswers <- Future.fromTry(answers)
+            _ <- repository.set(updatedAnswers)
+          } yield {
+            renderOrganisationLeadTrustee(updatedAnswers)
           }
         case _ => val sections = Seq(AnswerSection(None, Seq()))
 
@@ -68,10 +84,15 @@ class DetailsController @Inject()(
   }
 
   def onPageLoadUpdated(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameRequiredAction) {
-    implicit request => renderPage(request.userAnswers)
+    implicit request =>
+      request.userAnswers.get(IndividualOrBusinessPage) match {
+        case Some(Individual) => renderIndividualLeadTrustee(request.userAnswers)
+        case Some(Business) => renderOrganisationLeadTrustee(request.userAnswers)
+        case None => Ok(view(Seq()))
+      }
   }
 
-  private def renderPage(updatedAnswers: UserAnswers)(implicit request: LeadTrusteeNameRequest[AnyContent]) = {
+  private def renderIndividualLeadTrustee(updatedAnswers: UserAnswers)(implicit request: LeadTrusteeNameRequest[AnyContent]) = {
     val bound = checkYourAnswersHelper.bind(updatedAnswers, request.leadTrusteeName)
     val sections = Seq(AnswerSection(None, Seq(
       bound.name,
@@ -90,6 +111,27 @@ class DetailsController @Inject()(
     ).flatten))
 
     Ok(view(sections))
+  }
+
+  private def renderOrganisationLeadTrustee(updatedAnswers: UserAnswers)(implicit request: LeadTrusteeNameRequest[AnyContent]) = {
+    val bound = answerRowConverter.bind(updatedAnswers, request.leadTrusteeName, countryOptions)
+
+    val section = AnswerSection(
+      None,
+      Seq(
+        bound.yesNoQuestion(RegisteredInUkYesNoPage, "leadtrustee.organisation.registeredInUkYesNo", controllers.leadtrustee.organisation.routes.RegisteredInUkYesNoController.onPageLoad().url),
+        bound.stringQuestion(NamePage, "leadtrustee.organisation.name", controllers.leadtrustee.organisation.routes.NameController.onPageLoad().url),
+        bound.stringQuestion(UtrPage, "leadtrustee.organisation.utr", controllers.leadtrustee.organisation.routes.UtrController.onPageLoad().url),
+        bound.yesNoQuestion(LiveInTheUkYesNoPage, "leadtrustee.organisation.liveInTheUkYesNo", controllers.leadtrustee.organisation.routes.LiveInTheUkYesNoController.onPageLoad().url),
+        bound.addressQuestion(UkAddressPage, "leadtrustee.organisation.ukAddress", controllers.leadtrustee.organisation.routes.UkAddressController.onPageLoad().url),
+        bound.addressQuestion(NonUkAddressPage, "leadtrustee.organisation.nonUkAddress", controllers.leadtrustee.organisation.routes.NonUkAddressController.onPageLoad().url),
+        bound.yesNoQuestion(EmailAddressYesNoPage, "leadtrustee.organisation.emailAddressYesNo", controllers.leadtrustee.organisation.routes.EmailAddressYesNoController.onPageLoad().url),
+        bound.stringQuestion(EmailAddressPage, "leadtrustee.organisation.emailAddress", controllers.leadtrustee.organisation.routes.EmailAddressController.onPageLoad().url),
+        bound.stringQuestion(TelephoneNumberPage, "leadtrustee.organisation.telephoneNumber", controllers.leadtrustee.organisation.routes.TelephoneNumberController.onPageLoad().url)
+      ).flatten
+    )
+
+    Ok(view(Seq(section)))
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {

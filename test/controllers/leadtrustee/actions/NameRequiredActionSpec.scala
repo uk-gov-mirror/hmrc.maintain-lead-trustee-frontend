@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.leadtrustee.organisation.actions
+package controllers.leadtrustee.actions
 
 import java.time.LocalDate
 
 import controllers.actions.LeadTrusteeNameRequest
+import controllers.leadtrustee.actions.NameRequiredAction
 import models.UserAnswers
 import models.requests.DataRequest
 import org.mockito.Matchers.any
+import org.mockito.Mockito
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{MustMatchers, WordSpec}
@@ -37,7 +39,26 @@ class NameRequiredActionSpec extends WordSpec with MockitoSugar with ScalaFuture
     def callTransform[A](request: DataRequest[A]): Future[LeadTrusteeNameRequest[A]] = transform(request)
   }
 
-  "Pulls the name from userAnswers into the Request" in {
+  "Pulls the individual name from userAnswers into the Request" in {
+    val OUT = new Harness(mock[MessagesApi])
+    val sourceRequest = mock[DataRequest[AnyContent]]
+
+    val ua = UserAnswers("id",
+      "UTRUTRUTR",
+      LocalDate.now(),
+      Json.obj().transform(pages.leadtrustee.individual.NamePage.path.json.put(Json.obj(
+      "firstName" -> "testFirstName",
+      "middleName" -> "testMiddleName",
+      "lastName" -> "testLastName"
+    ))).get)
+
+    when(sourceRequest.userAnswers).thenReturn(ua)
+    whenReady(OUT.callTransform(sourceRequest)) { transformedRequest =>
+      transformedRequest.leadTrusteeName mustBe "testFirstName testLastName"
+    }
+  }
+
+  "Pulls the org name from userAnswers into the Request" in {
     val OUT = new Harness(mock[MessagesApi])
     val sourceRequest = mock[DataRequest[AnyContent]]
 

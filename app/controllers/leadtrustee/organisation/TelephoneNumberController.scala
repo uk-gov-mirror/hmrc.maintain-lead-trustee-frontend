@@ -17,7 +17,7 @@
 package controllers.leadtrustee.organisation
 
 import controllers.actions._
-import controllers.leadtrustee.organisation.actions.NameRequiredAction
+import controllers.leadtrustee.actions.NameRequiredAction
 import forms.TelephoneNumberFormProvider
 import javax.inject.Inject
 import navigation.Navigator
