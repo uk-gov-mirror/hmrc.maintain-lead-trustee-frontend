@@ -21,6 +21,9 @@ GET        /trust-not-claimed                                               cont
 
 GET        /agent-not-authorised                                            controllers.AgentNotAuthorisedController.onPageLoad()
 
+GET        /lead-trustee/individual-or-business                             controllers.leadtrustee.IndividualOrBusinessController.onPageLoad()
+POST       /lead-trustee/individual-or-business                             controllers.leadtrustee.IndividualOrBusinessController.onSubmit()
+
 GET        /lead-trustee/details                                            controllers.leadtrustee.DetailsController.onPageLoad()
 GET        /lead-trustee/details/updated                                    controllers.leadtrustee.DetailsController.onPageLoadUpdated()
 POST       /lead-trustee/details                                            controllers.leadtrustee.DetailsController.onSubmit()

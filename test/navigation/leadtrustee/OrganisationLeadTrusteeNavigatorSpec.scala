@@ -111,9 +111,9 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
         .mustBe(controllers.leadtrustee.organisation.routes.TelephoneNumberController.onPageLoad())
     }
 
-    "Telephone number page -> When added as a trustee page" in {
+    "Telephone number page -> Check details page" in {
       navigator.nextPage(TelephoneNumberPage, emptyUserAnswers)
-        .mustBe(controllers.leadtrustee.organisation.routes.TelephoneNumberController.onPageLoad())
+        .mustBe(controllers.leadtrustee.routes.DetailsController.onPageLoad())
     }
   }
 }

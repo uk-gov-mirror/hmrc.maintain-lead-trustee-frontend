@@ -135,6 +135,10 @@ individualOrBusiness.business = Business
 leadTrusteeDetails.title = Check lead trustee details
 leadTrusteeDetails.heading = Check lead trustee details
 
+leadtrustee.individualOrBusiness.title = Is the trustee an individual or a business?
+leadtrustee.individualOrBusiness.heading = Is the trustee an individual or a business?
+leadtrustee.individualOrBusiness.error.required = Select if the trustee is an individual or a business
+
 leadtrustee.individual.name.title = What is the lead trustee’s name?
 leadtrustee.individual.name.heading = What is the lead trustee’s name?
 leadtrustee.individual.name.firstName = First name

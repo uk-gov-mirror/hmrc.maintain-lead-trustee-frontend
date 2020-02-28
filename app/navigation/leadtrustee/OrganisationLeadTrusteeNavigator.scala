@@ -29,7 +29,7 @@ object OrganisationLeadTrusteeNavigator {
     case UkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
     case NonUkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
     case EmailAddressPage => rts.TelephoneNumberController.onPageLoad()
-    case TelephoneNumberPage => rts.TelephoneNumberController.onPageLoad()
+    case TelephoneNumberPage => controllers.leadtrustee.routes.DetailsController.onPageLoad()
   }
 
   private val yesNoNavigations : PartialFunction[Page, UserAnswers => Call] =

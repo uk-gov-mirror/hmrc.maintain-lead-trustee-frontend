@@ -16,13 +16,27 @@
 
 package navigation.leadtrustee
 
+import models.IndividualOrBusiness.{Business, Individual}
 import models.UserAnswers
 import pages.Page
+import pages.leadtrustee.IndividualOrBusinessPage
 import play.api.mvc.Call
 
 object LeadTrusteeNavigator {
 
+  private val parameterisedNavigation : PartialFunction[Page, UserAnswers => Call] = {
+    case IndividualOrBusinessPage => individualOrBusinessNavigation()
+  }
+
   val routes: PartialFunction[Page, UserAnswers => Call] =
+    parameterisedNavigation orElse
     IndividualLeadTrusteeNavigator.routes orElse
     OrganisationLeadTrusteeNavigator.routes
+
+  private def individualOrBusinessNavigation()(userAnswers: UserAnswers): Call = {
+    userAnswers.get(IndividualOrBusinessPage).map {
+      case Individual => controllers.leadtrustee.individual.routes.NameController.onPageLoad()
+      case Business => controllers.leadtrustee.organisation.routes.RegisteredInUkYesNoController.onPageLoad()
+    }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+  }
 }
