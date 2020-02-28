@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package views.leadtrustee.individual
+package views.leadtrustee.organisation
 
-import controllers.leadtrustee.individual.routes
+import controllers.leadtrustee.organisation.routes
 import forms.TelephoneNumberFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours
-import views.html.leadtrustee.individual.TelephoneNumberView
+import views.html.leadtrustee.organisation.TelephoneNumberView
 
 class TelephoneNumberViewSpec extends StringViewBehaviours {
 
-  val messageKeyPrefix = "leadtrustee.individual.telephoneNumber"
+  val messageKeyPrefix = "leadtrustee.organisation.telephoneNumber"
 
-  val form = new TelephoneNumberFormProvider().withPrefix("leadtrustee.individual.telephoneNumber")
+  val form = new TelephoneNumberFormProvider().withPrefix(messageKeyPrefix)
 
   val name = "Lead Trustee"
 

@@ -100,7 +100,7 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
 
     "Email address page -> Telephone number page" in {
       navigator.nextPage(EmailAddressPage, emptyUserAnswers)
-        .mustBe(controllers.leadtrustee.organisation.routes.EmailAddressController.onPageLoad())
+        .mustBe(controllers.leadtrustee.organisation.routes.TelephoneNumberController.onPageLoad())
     }
 
     "Do you know email address page -> No -> Telephone number page" in {
@@ -108,7 +108,12 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
         .set(EmailAddressYesNoPage, false).success.value
 
       navigator.nextPage(EmailAddressYesNoPage, answers)
-        .mustBe(controllers.leadtrustee.organisation.routes.EmailAddressYesNoController.onPageLoad())
+        .mustBe(controllers.leadtrustee.organisation.routes.TelephoneNumberController.onPageLoad())
+    }
+
+    "Telephone number page -> When added as a trustee page" in {
+      navigator.nextPage(TelephoneNumberPage, emptyUserAnswers)
+        .mustBe(controllers.leadtrustee.organisation.routes.TelephoneNumberController.onPageLoad())
     }
   }
 }

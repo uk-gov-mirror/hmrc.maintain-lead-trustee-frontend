@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package pages.leadtrustee.organisation
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class TelephoneNumberFormProvider @Inject() extends Mappings {
+case object TelephoneNumberPage extends QuestionPage[String] {
 
-  def withPrefix(prefix: String): Form[String] =
-    Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(
-          firstError(
-            nonEmptyString("value", s"$prefix.error.required"),
-            regexp(Validation.telephoneRegex, s"$prefix.error.invalid.characters")
-          )
-        )
-    )
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "telephoneNumber"
 }

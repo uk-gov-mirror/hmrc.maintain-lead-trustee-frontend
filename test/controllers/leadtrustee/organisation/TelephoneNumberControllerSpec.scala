@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.leadtrustee.individual
+package controllers.leadtrustee.organisation
 
 import base.SpecBase
 import forms.TelephoneNumberFormProvider
-import models.{Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.{NamePage, TelephoneNumberPage}
+import pages.leadtrustee.organisation.{NamePage, TelephoneNumberPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.leadtrustee.individual.TelephoneNumberView
+import views.html.leadtrustee.organisation.TelephoneNumberView
 
 import scala.concurrent.Future
 
@@ -38,9 +37,9 @@ class TelephoneNumberControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new TelephoneNumberFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.individual.telephoneNumber")
+  val form = formProvider.withPrefix("leadtrustee.organisation.telephoneNumber")
 
-  val name = Name("Lead", None, "Trustee")
+  val name = "Lead Trustee"
 
   override val emptyUserAnswers = super.emptyUserAnswers
       .set(NamePage, name).success.value
@@ -62,7 +61,7 @@ class TelephoneNumberControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName)(fakeRequest, messages).toString
+        view(form, name)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -82,7 +81,7 @@ class TelephoneNumberControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("4132"), name.displayName)(fakeRequest, messages).toString
+        view(form.fill("4132"), name)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -129,7 +128,7 @@ class TelephoneNumberControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, name)(fakeRequest, messages).toString
 
       application.stop()
     }

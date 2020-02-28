@@ -22,3 +22,6 @@ POST       /has-email                                   controllers.leadtrustee.
 
 GET        /email                                       controllers.leadtrustee.organisation.EmailAddressController.onPageLoad()
 POST       /email                                       controllers.leadtrustee.organisation.EmailAddressController.onSubmit()
+
+GET        /telephone-number                            controllers.leadtrustee.organisation.TelephoneNumberController.onPageLoad()
+POST       /telephone-number                            controllers.leadtrustee.organisation.TelephoneNumberController.onSubmit()

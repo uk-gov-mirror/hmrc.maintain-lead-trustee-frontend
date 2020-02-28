@@ -28,13 +28,14 @@ object OrganisationLeadTrusteeNavigator {
     case UtrPage => rts.LiveInTheUkYesNoController.onPageLoad()
     case UkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
     case NonUkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
-    case EmailAddressPage => rts.EmailAddressController.onPageLoad()
+    case EmailAddressPage => rts.TelephoneNumberController.onPageLoad()
+    case TelephoneNumberPage => rts.TelephoneNumberController.onPageLoad()
   }
 
   private val yesNoNavigations : PartialFunction[Page, UserAnswers => Call] =
     yesNoNav(RegisteredInUkYesNoPage, rts.NameController.onPageLoad(), rts.NameController.onPageLoad()) orElse
     yesNoNav(LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad()) orElse
-    yesNoNav(EmailAddressYesNoPage, rts.EmailAddressController.onPageLoad(), rts.EmailAddressYesNoController.onPageLoad())
+    yesNoNav(EmailAddressYesNoPage, rts.EmailAddressController.onPageLoad(), rts.TelephoneNumberController.onPageLoad())
 
   private val conditionalNavigations : PartialFunction[Page, UserAnswers => Call] = {
     case NamePage => nameNavigation
