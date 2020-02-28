@@ -18,8 +18,10 @@ package models
 
 import play.api.libs.json.{Format, Json}
 
-case class TrusteeType(trusteeInd: Option[RemoveTrusteeIndividual],
-                    trusteeOrg: Option[RemoveTrusteeOrg])
+case class TrusteeType(
+                        trusteeInd: Option[RemoveTrusteeIndividual],
+                        trusteeOrg: Option[RemoveTrusteeOrg]
+                      )
 
 object TrusteeType {
   implicit val trusteeTypeFormat: Format[TrusteeType] = Json.format[TrusteeType]

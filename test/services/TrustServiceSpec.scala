@@ -19,7 +19,7 @@ package services
 import java.time.LocalDate
 
 import connectors.TrustConnector
-import models.{Name, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrusteeIndividual, TrusteeType}
+import models.{Name, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrusteeIndividual, TrusteeType, Trustees}
 import org.joda.time.DateTime
 import org.scalatest.{FreeSpec, MustMatchers}
 import org.scalatestplus.mockito.MockitoSugar
@@ -50,16 +50,16 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
         entityStart = DateTime.parse("2019-2-28"))
 
       when(mockConnector.getTrustees(any())(any(), any()))
-        .thenReturn(Future.successful(List(TrusteeType(Some(trusteeInd), None))))
+        .thenReturn(Future.successful(Trustees(List(TrusteeType(Some(trusteeInd), None)))))
 
-      val service = new TrustService(mockConnector)
+      val service = new TrustServiceImpl(mockConnector)
 
       implicit val hc : HeaderCarrier = HeaderCarrier()
 
       val result = service.getTrustees("1234567890")
 
       whenReady(result) { r =>
-        r mustBe List(TrusteeType(Some(trusteeInd), None))
+        r mustBe Trustees(List(TrusteeType(Some(trusteeInd), None)))
       }
 
     }
@@ -69,7 +69,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
       when(mockConnector.removeTrustee(any(),any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, None)))
 
-      val service = new TrustService(mockConnector)
+      val service = new TrustServiceImpl(mockConnector)
 
       val trustee : RemoveTrustee =  RemoveTrustee(trustee = TrusteeType(
         trusteeInd = Some(RemoveTrusteeIndividual(

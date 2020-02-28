@@ -23,7 +23,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
-import models.{LeadTrusteeOrganisation, Name, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrustStartDate, TrusteeIndividual, TrusteeType, UkAddress}
+import models.{LeadTrusteeOrganisation, Name, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrustStartDate, TrusteeIndividual, TrusteeType, Trustees, UkAddress}
 import org.joda.time.DateTime
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
@@ -307,13 +307,13 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
   }
 
-  "TrustConnector getTrusteea" must {
+  "TrustConnector getTrustees" must {
 
     "must return playback data inside a Processed trust" in {
 
       val utr = "1000000008"
 
-      val json = Json.arr(Json.obj(
+      val json = Json.obj("trustees" -> Json.arr(Json.obj(
         "trusteeInd" -> Json.obj(
           "lineNo" -> "1",
           "bpMatchStatus" -> "01",
@@ -327,7 +327,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
           ),
           "entityStart" -> "2019-02-28"
         )
-      ))
+      )))
 
       val application = applicationBuilder()
         .configure(
@@ -346,8 +346,8 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       val processed = connector.getTrustees(utr)
 
-      whenReady(processed) { Trustees =>
-        Trustees mustBe List(TrusteeType(
+      whenReady(processed) { trustees =>
+        trustees mustBe Trustees(List(TrusteeType(
           trusteeInd = Some(RemoveTrusteeIndividual(
             lineNo = Some("1"),
             bpMatchStatus = Some("01"),
@@ -357,7 +357,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
             identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
             entityStart = DateTime.parse("2019-2-28"))
           ),
-          trusteeOrg = None))
+          trusteeOrg = None)))
       }
 
       application.stop()

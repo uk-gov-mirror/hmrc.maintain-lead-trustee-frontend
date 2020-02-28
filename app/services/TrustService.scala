@@ -18,20 +18,25 @@ package services
 
 import connectors.TrustConnector
 import javax.inject.Inject
-import models.RemoveTrustee
-import uk.gov.hmrc.http.HeaderCarrier
+import models.{RemoveTrustee, Trustees}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
-class TrustService @Inject()(
+trait TrustService {
+  def getTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees]
+  def removeTrustee(removeTrustee: RemoveTrustee, utr: String)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
+}
+
+class TrustServiceImpl @Inject()(
                             connector: TrustConnector
-                            ) {
+                            ) extends TrustService {
 
-  def getTrustees(utr: String)(implicit hc:HeaderCarrier, ec:ExecutionContext) = {
+  override def getTrustees(utr: String)(implicit hc:HeaderCarrier, ec:ExecutionContext) = {
     connector.getTrustees(utr)
   }
 
-  def removeTrustee(removeTrustee: RemoveTrustee, utr: String)(implicit hc:HeaderCarrier, ec:ExecutionContext) = {
+  override def removeTrustee(removeTrustee: RemoveTrustee, utr: String)(implicit hc:HeaderCarrier, ec:ExecutionContext) = {
     connector.removeTrustee(utr, removeTrustee)
   }
 

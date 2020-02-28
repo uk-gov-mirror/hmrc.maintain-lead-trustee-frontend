@@ -19,9 +19,9 @@ GET        /trust-not-claimed                                               cont
 
 GET        /agent-not-authorised                                            controllers.AgentNotAuthorisedController.onPageLoad()
 
-GET        /add                                                             controllers.AddATrusteeController.onPageLoad(mode: Mode = NormalMode)
-POST       /add                                                             controllers.AddATrusteeController.submitOne(mode: Mode = NormalMode)
-POST       /add-another                                                     controllers.AddATrusteeController.submitAnother(mode: Mode = NormalMode)
+GET        /add                                                             controllers.AddATrusteeController.onPageLoad()
+POST       /add                                                             controllers.AddATrusteeController.submitOne()
+POST       /add-another                                                     controllers.AddATrusteeController.submitAnother()
 
 GET        /trustee/:index/remove                                           controllers.trustee.RemoveIndividualTrusteeController.onPageLoad(index : Int)
 POST       /trustee/:index/remove                                           controllers.trustee.RemoveIndividualTrusteeController.onSubmit(index : Int)

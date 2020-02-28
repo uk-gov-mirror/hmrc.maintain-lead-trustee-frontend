@@ -15,7 +15,6 @@
  *@
 
 @import controllers.trustee.routes._
-@import models.Mode
 @import models.AddATrustee
 @import viewmodels.addAnother.AddRow
 
@@ -24,7 +23,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode,
+@(form: Form[_],
     inProgressTrustees: Seq[AddRow],
     completeTrustees: Seq[AddRow],
     isLeadTrusteeDefined: Boolean,

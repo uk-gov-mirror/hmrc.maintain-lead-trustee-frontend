@@ -16,19 +16,18 @@
 
 package controllers
 
-import connectors.TrustConnector
+import config.FrontendAppConfig
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
 import javax.inject.Inject
-import models.{Enumerable, Mode, RemoveTrusteeIndividual, TrusteeType, Trustees}
+import models.{AddATrustee, Enumerable, Trustees}
 import navigation.Navigator
 import pages.trustee.{AddATrusteePage, AddATrusteeYesNoPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
-import sections.LeadTrusteeIndividual
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.AddATrusteeViewHelper
@@ -46,89 +45,87 @@ class AddATrusteeController @Inject()(
                                        yesNoFormProvider: YesNoFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        addAnotherView: AddATrusteeView,
-                                       yesNoView: AddATrusteeYesNoView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+                                       yesNoView: AddATrusteeYesNoView,
+                                       val appConfig: FrontendAppConfig
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController
+  with I18nSupport
+  with Enumerable.Implicits
+  with ReturnToStart {
 
   val addAnotherForm = addAnotherFormProvider()
   val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addATrusteeYesNo")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       trust.getTrustees(request.userAnswers.utr) map {
-          case Trustees(Nil) => Ok()
-          case Trustees(data) =>  {
+        case Trustees(Nil) => Ok(yesNoView(yesNoForm))
+        case Trustees(data) => {
 
-              val trustees = new AddATrusteeViewHelper(data).rows
+          val trustees = new AddATrusteeViewHelper(data).rows
 
-              val isLeadTrusteeDefined = request.userAnswers.get(LeadTrusteeIndividual).exists(trustee => trustee.isLead)  // TODO Check for Lead Trustee Company
+          Ok(addAnotherView(addAnotherForm,
+            trustees.inProgress,
+            trustees.complete,
+            isLeadTrusteeDefined = false,
+            heading(data.size)
+          ))
+        }
 
-              trustees.count match {
-                case 0 =>
-                  Ok(yesNoView(yesNoForm, mode))
-                case count =>
-                  Ok(addAnotherView(addAnotherForm, mode, trustees.inProgress, trustees.complete, isLeadTrusteeDefined, heading(count)))
-              }
-
-          }
       }
-
   }
 
-  def submitOne(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def submitOne(): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
     implicit request =>
 
       yesNoForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          Future.successful(BadRequest(yesNoView(formWithErrors, mode)))
+          Future.successful(BadRequest(yesNoView(formWithErrors)))
         },
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddATrusteeYesNoPage, value))
-            _              <- registrationsRepository.set(updatedAnswers)
+            _ <- registrationsRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(AddATrusteeYesNoPage, updatedAnswers))
         }
       )
   }
 
-  def submitAnother(mode: Mode): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def submitAnother(): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
     implicit request =>
 
-      addAnotherForm.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
+      trust.getTrustees(request.userAnswers.utr).map { trustees =>
+        addAnotherForm.bindFromRequest().fold(
+          (formWithErrors: Form[_]) => {
+            trustees match {
+              case Trustees(Nil) => Ok
+              case Trustees(data) => {
 
-          trust.getTrustees(request.userAnswers.utr).map {
-            case Trustees(Nil) => Ok()
-            case Trustees(data) =>  {
+                val trustees = new AddATrusteeViewHelper(data).rows
 
-              val trustees = new AddATrusteeViewHelper(data).rows
-
-              val isLeadTrusteeDefined = request.userAnswers.get(LeadTrusteeIndividual).exists(trustee => trustee.isLead)  // TODO Check for Lead Trustee Company
-
-              BadRequest(
-                addAnotherView(
-                  formWithErrors,
-                  mode,
-                  trustees.inProgress,
-                  trustees.complete,
-                  isLeadTrusteeDefined,
-                  heading(trustees.count)
+                BadRequest(
+                  addAnotherView(
+                    formWithErrors,
+                    trustees.inProgress,
+                    trustees.complete,
+                    isLeadTrusteeDefined = false,
+                    heading(trustees.count)
+                  )
                 )
-              )
 
+              }
             }
+          },
+          {
+            case AddATrustee.YesNow => Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(trustees.trustees.size))
+            case AddATrustee.YesLater => returnToStart(request.user.affinityGroup)
+            case AddATrustee.NoComplete => returnToStart(request.user.affinityGroup)
           }
-        },
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddATrusteePage, value))
-            _              <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddATrusteePage, updatedAnswers))
-        }
-      )
+        )
+      }
   }
 
-  private def heading(count: Int)(implicit mp : MessagesProvider) = {
+  private def heading(count: Int)(implicit mp: MessagesProvider) = {
     count match {
       case 0 => Messages("addATrustee.heading")
       case 1 => Messages("addATrustee.singular.heading")
