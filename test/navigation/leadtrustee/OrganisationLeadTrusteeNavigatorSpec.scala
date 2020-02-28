@@ -74,7 +74,7 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
 
     "UK address page -> Do you know email address page" in {
       navigator.nextPage(UkAddressPage, emptyUserAnswers)
-        .mustBe(controllers.leadtrustee.organisation.routes.UkAddressController.onPageLoad())
+        .mustBe(controllers.leadtrustee.organisation.routes.EmailAddressYesNoController.onPageLoad())
     }
 
     "Is address in UK page -> No -> Non-UK address page" in {
@@ -87,7 +87,28 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
 
     "Non-UK address page -> Do you know email address page" in {
       navigator.nextPage(NonUkAddressPage, emptyUserAnswers)
-        .mustBe(controllers.leadtrustee.organisation.routes.NonUkAddressController.onPageLoad())
+        .mustBe(controllers.leadtrustee.organisation.routes.EmailAddressYesNoController.onPageLoad())
+    }
+
+    "Do you know email address page -> Yes -> Email address page" in {
+      val answers = emptyUserAnswers
+        .set(EmailAddressYesNoPage, true).success.value
+
+      navigator.nextPage(EmailAddressYesNoPage, answers)
+        .mustBe(controllers.leadtrustee.organisation.routes.EmailAddressController.onPageLoad())
+    }
+
+    "Email address page -> Telephone number page" in {
+      navigator.nextPage(EmailAddressPage, emptyUserAnswers)
+        .mustBe(controllers.leadtrustee.organisation.routes.EmailAddressController.onPageLoad())
+    }
+
+    "Do you know email address page -> No -> Telephone number page" in {
+      val answers = emptyUserAnswers
+        .set(EmailAddressYesNoPage, false).success.value
+
+      navigator.nextPage(EmailAddressYesNoPage, answers)
+        .mustBe(controllers.leadtrustee.organisation.routes.EmailAddressYesNoController.onPageLoad())
     }
   }
 }
