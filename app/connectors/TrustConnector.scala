@@ -46,8 +46,8 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
   }
 
   private def amendLeadTrusteeUrl(utr: String) = s"${config.trustsUrl}/trusts/amend-lead-trustee/$utr "
-  def amendLeadTrustee(utr: String, leadTrustee: LeadTrusteeIndividual)(implicit hc: HeaderCarrier, ec : ExecutionContext) : Future[Unit] = {
-    http.POST[LeadTrusteeIndividual, HttpResponse](amendLeadTrusteeUrl(utr), leadTrustee)(LeadTrusteeIndividual.writes, HttpReads.readRaw, hc, ec).map(_ => ())
+  def amendLeadTrustee(utr: String, leadTrustee: LeadTrustee)(implicit hc: HeaderCarrier, ec : ExecutionContext) : Future[Unit] = {
+    http.POST[LeadTrustee, HttpResponse](amendLeadTrusteeUrl(utr), leadTrustee)(LeadTrustee.writes, HttpReads.readRaw, hc, ec).map(_ => ())
   }
 }
 

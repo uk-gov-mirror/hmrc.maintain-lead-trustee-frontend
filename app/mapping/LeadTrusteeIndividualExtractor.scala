@@ -19,15 +19,16 @@ package mapping
 import java.time.LocalDate
 
 import com.google.inject.Inject
+import models.IndividualOrBusiness.Individual
 import models.{Address, IdCard, IdentificationDetailOptions, IndividualIdentification, LeadTrusteeIndividual, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
 import org.slf4j.LoggerFactory
-import pages.leadtrustee.{individual => ltind}
+import pages.leadtrustee.{IndividualOrBusinessPage, individual => ltind}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsError, JsSuccess, Reads}
 
 import scala.util.{Success, Try}
 
-class LeadTrusteesExtractor @Inject()() {
+class LeadTrusteeIndividualExtractor @Inject()() {
 
   private val logger = LoggerFactory.getLogger("application." + this.getClass.getCanonicalName)
 
@@ -64,7 +65,8 @@ class LeadTrusteesExtractor @Inject()() {
   }
 
   def extractLeadTrusteeIndividual(answers: UserAnswers, leadIndividual: LeadTrusteeIndividual): Try[UserAnswers] = {
-    answers.set(ltind.NamePage, leadIndividual.name)
+    answers.set(IndividualOrBusinessPage, Individual)
+      .flatMap(_.set(ltind.NamePage, leadIndividual.name))
       .flatMap(_.set(ltind.DateOfBirthPage, leadIndividual.dateOfBirth))
       .flatMap(answers => extractLeadIndividualIdentification(leadIndividual, answers))
       .flatMap(answers => extractEmail(leadIndividual.email, answers))

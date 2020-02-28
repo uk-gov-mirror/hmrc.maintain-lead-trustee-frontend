@@ -17,17 +17,45 @@
 package mapping
 
 import com.google.inject.Inject
+import models.IndividualOrBusiness.Business
 import models.{Address, LeadTrusteeOrganisation, NonUkAddress, UkAddress, UserAnswers}
+import org.slf4j.LoggerFactory
 import pages.leadtrustee.organisation.UtrPage
-import pages.leadtrustee.{organisation => ltorg}
+import pages.leadtrustee.{IndividualOrBusinessPage, organisation => ltorg}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsError, JsSuccess, Reads}
 
 import scala.util.{Success, Try}
 
 class LeadTrusteeOrganisationExtractor @Inject()() {
 
+  private val logger = LoggerFactory.getLogger("application." + this.getClass.getCanonicalName)
+
+  def mapLeadTrusteeOrganisation(answers: UserAnswers): Option[LeadTrusteeOrganisation] = {
+    val readFromUserAnswers: Reads[LeadTrusteeOrganisation] =
+      (
+        ltorg.NamePage.path.read[String] and
+        ltorg.TelephoneNumberPage.path.read[String] and
+        ltorg.EmailAddressPage.path.readNullable[String] and
+        ltorg.UtrPage.path.readNullable[String] and
+        ltorg.LiveInTheUkYesNoPage.path.read[Boolean].flatMap {
+          case true => ltorg.UkAddressPage.path.read[UkAddress].widen[Address]
+          case false => ltorg.NonUkAddressPage.path.read[Address].widen[Address]
+        }
+      ).apply(LeadTrusteeOrganisation.apply _)
+
+    answers.data.validate[LeadTrusteeOrganisation](readFromUserAnswers) match {
+      case JsError(errors) =>
+        logger.error("Failed to rehydrate LeadTrusteeOrganisation from UserAnswers", errors)
+        None
+      case JsSuccess(value, _) => Some(value)
+    }
+  }
+
   def extractLeadTrusteeOrganisation(answers: UserAnswers, leadOrganisation: LeadTrusteeOrganisation): Try[UserAnswers] = {
-    answers.set(ltorg.NamePage, leadOrganisation.name)
+    answers.set(IndividualOrBusinessPage, Business)
       .flatMap(answers => extractRegisteredInUK(leadOrganisation.utr, answers))
+      .flatMap(_.set(ltorg.NamePage, leadOrganisation.name))
       .flatMap(answers => extractAddress(leadOrganisation.address, answers))
       .flatMap(answers => extractEmail(leadOrganisation.email, answers))
       .flatMap(_.set(ltorg.TelephoneNumberPage, leadOrganisation.phoneNumber))

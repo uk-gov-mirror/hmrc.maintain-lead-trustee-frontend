@@ -22,7 +22,7 @@ import connectors.TrustConnector
 import controllers.ReturnToStart
 import controllers.actions.{LeadTrusteeNameRequest, StandardActionSets}
 import controllers.leadtrustee.actions.NameRequiredAction
-import mapping.{LeadTrusteeOrganisationExtractor, LeadTrusteesExtractor}
+import mapping.{LeadTrusteeOrganisationExtractor, LeadTrusteeIndividualExtractor}
 import models.IndividualOrBusiness._
 import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, UserAnswers}
 import pages.leadtrustee.IndividualOrBusinessPage
@@ -45,7 +45,7 @@ class DetailsController @Inject()(
                                    val controllerComponents: MessagesControllerComponents,
                                    view: LeadTrusteeDetailsView,
                                    connector: TrustConnector,
-                                   extractor: LeadTrusteesExtractor,
+                                   leadTrusteeIndExtractor: LeadTrusteeIndividualExtractor,
                                    leadTrusteeOrgExtractor: LeadTrusteeOrganisationExtractor,
                                    repository: PlaybackRepository,
                                    answerRowConverter: AnswerRowConverter,
@@ -60,7 +60,7 @@ class DetailsController @Inject()(
 
       connector.getLeadTrustee(request.userAnswers.utr).flatMap {
         case trusteeInd: LeadTrusteeIndividual =>
-          val answers: Try[UserAnswers] = extractor.extractLeadTrusteeIndividual(request.userAnswers, trusteeInd)
+          val answers: Try[UserAnswers] = leadTrusteeIndExtractor.extractLeadTrusteeIndividual(request.userAnswers, trusteeInd)
           for {
             updatedAnswers <- Future.fromTry(answers)
             _ <- repository.set(updatedAnswers)
@@ -138,9 +138,20 @@ class DetailsController @Inject()(
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
-        extractor.mapLeadTrusteeIndividual(request.userAnswers) match {
-          case None => Future.successful(InternalServerError)
-          case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ => returnToStart(request.user.affinityGroup))
-        }
+      request.userAnswers.get(IndividualOrBusinessPage) match {
+        case Some(Individual) =>
+          leadTrusteeIndExtractor.mapLeadTrusteeIndividual(request.userAnswers) match {
+            case None => Future.successful(InternalServerError)
+            case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ => returnToStart(request.user.affinityGroup))
+          }
+        case Some(Business) =>
+          leadTrusteeOrgExtractor.mapLeadTrusteeOrganisation(request.userAnswers) match {
+            case None => Future.successful(InternalServerError)
+            case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ => returnToStart(request.user.affinityGroup))
+          }
+        case None =>
+          Future.successful(InternalServerError)
+      }
+
   }
 }
