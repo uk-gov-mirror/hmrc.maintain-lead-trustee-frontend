@@ -26,7 +26,6 @@ import mapping.{LeadTrusteeOrganisationExtractor, LeadTrusteesExtractor}
 import models.IndividualOrBusiness._
 import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, UserAnswers}
 import pages.leadtrustee.IndividualOrBusinessPage
-import pages.leadtrustee.organisation._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -34,9 +33,9 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import utils.print.AnswerRowConverter
 import viewmodels.AnswerSection
-import viewmodels.leadtrustee.individual.CheckYourAnswersHelper
 import views.html.leadtrustee.LeadTrusteeDetailsView
-
+import pages.leadtrustee.{individual => ltind}
+import pages.leadtrustee.{organisation => ltorg}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -49,7 +48,6 @@ class DetailsController @Inject()(
                                    extractor: LeadTrusteesExtractor,
                                    leadTrusteeOrgExtractor: LeadTrusteeOrganisationExtractor,
                                    repository: PlaybackRepository,
-                                   checkYourAnswersHelper: CheckYourAnswersHelper,
                                    answerRowConverter: AnswerRowConverter,
                                    nameRequiredAction: NameRequiredAction,
                                    countryOptions: CountryOptions,
@@ -77,9 +75,9 @@ class DetailsController @Inject()(
           } yield {
             renderOrganisationLeadTrustee(updatedAnswers)
           }
-        case _ => val sections = Seq(AnswerSection(None, Seq()))
+        case _ => val section = AnswerSection(None, Seq())
 
-          Future.successful(Ok(view(sections)))
+          Future.successful(Ok(view(section)))
       }
   }
 
@@ -88,29 +86,33 @@ class DetailsController @Inject()(
       request.userAnswers.get(IndividualOrBusinessPage) match {
         case Some(Individual) => renderIndividualLeadTrustee(request.userAnswers)
         case Some(Business) => renderOrganisationLeadTrustee(request.userAnswers)
-        case None => Ok(view(Seq()))
+        case None => Ok(view(AnswerSection(None, Seq())))
       }
   }
 
   private def renderIndividualLeadTrustee(updatedAnswers: UserAnswers)(implicit request: LeadTrusteeNameRequest[AnyContent]) = {
-    val bound = checkYourAnswersHelper.bind(updatedAnswers, request.leadTrusteeName)
-    val sections = Seq(AnswerSection(None, Seq(
-      bound.name,
-      bound.dateOfBirth,
-      bound.ukCitizen,
-      bound.nationalInsuranceNumber,
-      bound.identificationDetailOptions,
-      bound.idCardDetails,
-      bound.passportDetails,
-      bound.liveInTheUkYesNoPage,
-      bound.ukAddress,
-      bound.nonUkAddress,
-      bound.emailAddressYesNo,
-      bound.emailAddress,
-      bound.telephoneNumber
-    ).flatten))
+    val bound = answerRowConverter.bind(updatedAnswers, request.leadTrusteeName, countryOptions)
 
-    Ok(view(sections))
+    val section = AnswerSection(
+      None,
+      Seq(
+        bound.nameQuestion(ltind.NamePage, "leadtrustee.individual.name", controllers.leadtrustee.individual.routes.NameController.onPageLoad().url),
+        bound.dateQuestion(ltind.DateOfBirthPage, "leadtrustee.individual.dateOfBirth", controllers.leadtrustee.individual.routes.DateOfBirthController.onPageLoad().url),
+        bound.yesNoQuestion(ltind.UkCitizenPage, "leadtrustee.individual.ukCitizen", controllers.leadtrustee.individual.routes.UkCitizenController.onPageLoad().url),
+        bound.ninoQuestion(ltind.NationalInsuranceNumberPage, "leadtrustee.individual.nationalInsuranceNumber", controllers.leadtrustee.individual.routes.NationalInsuranceNumberController.onPageLoad().url),
+        bound.identificationOptionsQuestion(ltind.IdentificationDetailOptionsPage, "leadtrustee.individual.identificationDetailOptions", controllers.leadtrustee.individual.routes.IdentificationDetailOptionsController.onPageLoad().url),
+        bound.idCardDetailsQuestion(ltind.IdCardDetailsPage, "leadtrustee.individual.idCardDetails", controllers.leadtrustee.individual.routes.IdCardDetailsController.onPageLoad().url),
+        bound.passportDetailsQuestion(ltind.PassportDetailsPage, "leadtrustee.individual.passportDetails", controllers.leadtrustee.individual.routes.PassportDetailsController.onPageLoad().url),
+        bound.yesNoQuestion(ltind.LiveInTheUkYesNoPage, "leadtrustee.individual.liveInTheUkYesNo", controllers.leadtrustee.individual.routes.LiveInTheUkYesNoController.onPageLoad().url),
+        bound.addressQuestion(ltind.UkAddressPage, "leadtrustee.individual.ukAddress", controllers.leadtrustee.individual.routes.UkAddressController.onPageLoad().url),
+        bound.addressQuestion(ltind.NonUkAddressPage, "leadtrustee.individual.nonUkAddress", controllers.leadtrustee.individual.routes.NonUkAddressController.onPageLoad().url),
+        bound.yesNoQuestion(ltind.EmailAddressYesNoPage, "leadtrustee.individual.emailAddressYesNo", controllers.leadtrustee.individual.routes.EmailAddressYesNoController.onPageLoad().url),
+        bound.stringQuestion(ltind.EmailAddressPage, "leadtrustee.individual.emailAddress", controllers.leadtrustee.individual.routes.EmailAddressController.onPageLoad().url),
+        bound.stringQuestion(ltind.TelephoneNumberPage, "leadtrustee.individual.telephoneNumber", controllers.leadtrustee.individual.routes.TelephoneNumberController.onPageLoad().url)
+      ).flatten
+    )
+
+    Ok(view(section))
   }
 
   private def renderOrganisationLeadTrustee(updatedAnswers: UserAnswers)(implicit request: LeadTrusteeNameRequest[AnyContent]) = {
@@ -119,19 +121,19 @@ class DetailsController @Inject()(
     val section = AnswerSection(
       None,
       Seq(
-        bound.yesNoQuestion(RegisteredInUkYesNoPage, "leadtrustee.organisation.registeredInUkYesNo", controllers.leadtrustee.organisation.routes.RegisteredInUkYesNoController.onPageLoad().url),
-        bound.stringQuestion(NamePage, "leadtrustee.organisation.name", controllers.leadtrustee.organisation.routes.NameController.onPageLoad().url),
-        bound.stringQuestion(UtrPage, "leadtrustee.organisation.utr", controllers.leadtrustee.organisation.routes.UtrController.onPageLoad().url),
-        bound.yesNoQuestion(LiveInTheUkYesNoPage, "leadtrustee.organisation.liveInTheUkYesNo", controllers.leadtrustee.organisation.routes.LiveInTheUkYesNoController.onPageLoad().url),
-        bound.addressQuestion(UkAddressPage, "leadtrustee.organisation.ukAddress", controllers.leadtrustee.organisation.routes.UkAddressController.onPageLoad().url),
-        bound.addressQuestion(NonUkAddressPage, "leadtrustee.organisation.nonUkAddress", controllers.leadtrustee.organisation.routes.NonUkAddressController.onPageLoad().url),
-        bound.yesNoQuestion(EmailAddressYesNoPage, "leadtrustee.organisation.emailAddressYesNo", controllers.leadtrustee.organisation.routes.EmailAddressYesNoController.onPageLoad().url),
-        bound.stringQuestion(EmailAddressPage, "leadtrustee.organisation.emailAddress", controllers.leadtrustee.organisation.routes.EmailAddressController.onPageLoad().url),
-        bound.stringQuestion(TelephoneNumberPage, "leadtrustee.organisation.telephoneNumber", controllers.leadtrustee.organisation.routes.TelephoneNumberController.onPageLoad().url)
+        bound.yesNoQuestion(ltorg.RegisteredInUkYesNoPage, "leadtrustee.organisation.registeredInUkYesNo", controllers.leadtrustee.organisation.routes.RegisteredInUkYesNoController.onPageLoad().url),
+        bound.stringQuestion(ltorg.NamePage, "leadtrustee.organisation.name", controllers.leadtrustee.organisation.routes.NameController.onPageLoad().url),
+        bound.stringQuestion(ltorg.UtrPage, "leadtrustee.organisation.utr", controllers.leadtrustee.organisation.routes.UtrController.onPageLoad().url),
+        bound.yesNoQuestion(ltorg.LiveInTheUkYesNoPage, "leadtrustee.organisation.liveInTheUkYesNo", controllers.leadtrustee.organisation.routes.LiveInTheUkYesNoController.onPageLoad().url),
+        bound.addressQuestion(ltorg.UkAddressPage, "leadtrustee.organisation.ukAddress", controllers.leadtrustee.organisation.routes.UkAddressController.onPageLoad().url),
+        bound.addressQuestion(ltorg.NonUkAddressPage, "leadtrustee.organisation.nonUkAddress", controllers.leadtrustee.organisation.routes.NonUkAddressController.onPageLoad().url),
+        bound.yesNoQuestion(ltorg.EmailAddressYesNoPage, "leadtrustee.organisation.emailAddressYesNo", controllers.leadtrustee.organisation.routes.EmailAddressYesNoController.onPageLoad().url),
+        bound.stringQuestion(ltorg.EmailAddressPage, "leadtrustee.organisation.emailAddress", controllers.leadtrustee.organisation.routes.EmailAddressController.onPageLoad().url),
+        bound.stringQuestion(ltorg.TelephoneNumberPage, "leadtrustee.organisation.telephoneNumber", controllers.leadtrustee.organisation.routes.TelephoneNumberController.onPageLoad().url)
       ).flatten
     )
 
-    Ok(view(Seq(section)))
+    Ok(view(section))
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {

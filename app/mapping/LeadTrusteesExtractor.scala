@@ -22,9 +22,8 @@ import com.google.inject.Inject
 import models.{Address, IdCard, IdentificationDetailOptions, IndividualIdentification, LeadTrusteeIndividual, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
 import org.slf4j.LoggerFactory
 import pages.leadtrustee.{individual => ltind}
-import play.api.libs.json.{JsError, JsPath, JsSuccess, Reads, __}
-import queries.Gettable
 import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsError, JsSuccess, Reads}
 
 import scala.util.{Success, Try}
 
