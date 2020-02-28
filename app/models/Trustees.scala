@@ -24,3 +24,9 @@ case class TrusteeType(trusteeInd: Option[RemoveTrusteeIndividual],
 object TrusteeType {
   implicit val trusteeTypeFormat: Format[TrusteeType] = Json.format[TrusteeType]
 }
+
+case class Trustees(trustees: List[TrusteeType])
+
+object Trustees {
+  implicit val trusteesFormat: Format[Trustees] = Json.format[Trustees]
+}

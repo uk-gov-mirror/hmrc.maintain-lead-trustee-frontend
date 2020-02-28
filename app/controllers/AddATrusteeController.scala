@@ -21,7 +21,7 @@ import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
 import javax.inject.Inject
-import models.{Enumerable, Mode, TrusteeType}
+import models.{Enumerable, Mode, RemoveTrusteeIndividual, TrusteeType, Trustees}
 import navigation.Navigator
 import pages.trustee.{AddATrusteePage, AddATrusteeYesNoPage}
 import play.api.data.Form
@@ -52,31 +52,26 @@ class AddATrusteeController @Inject()(
   val addAnotherForm = addAnotherFormProvider()
   val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addATrusteeYesNo")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
 
-      trust.getTrustees(request.userAnswers.utr).flatMap {
-        case List(TrusteeType(Some(trusteeInd), None)) => {
-          println("************* 1 ********************")
-          println(trusteeInd)
-          Future.successful(Ok(yesNoView(yesNoForm, mode)))
-        }
-        case _ => {
-          println("************* 2 ********************")
-          Future.successful(Ok(yesNoView(yesNoForm, mode)))
-        }
-      }
+      trust.getTrustees(request.userAnswers.utr) map {
+          case Trustees(Nil) => Ok()
+          case Trustees(data) =>  {
 
-//      val trustees = new AddATrusteeViewHelper(request.userAnswers).rows
-//
-//      val isLeadTrusteeDefined = request.userAnswers.get(LeadTrusteeIndividual).exists(trustee => trustee.isLead)  // TODO Check for Lead Trustee Company
-//
-//      trustees.count match {
-//        case 0 =>
-//          Future.successful(Ok(yesNoView(yesNoForm, mode)))
-//        case count =>
-//          Future.successful(Ok(addAnotherView(addAnotherForm, mode, trustees.inProgress, trustees.complete, isLeadTrusteeDefined, heading(count))))
-//      }
+              val trustees = new AddATrusteeViewHelper(data).rows
+
+              val isLeadTrusteeDefined = request.userAnswers.get(LeadTrusteeIndividual).exists(trustee => trustee.isLead)  // TODO Check for Lead Trustee Company
+
+              trustees.count match {
+                case 0 =>
+                  Ok(yesNoView(yesNoForm, mode))
+                case count =>
+                  Ok(addAnotherView(addAnotherForm, mode, trustees.inProgress, trustees.complete, isLeadTrusteeDefined, heading(count)))
+              }
+
+          }
+      }
 
   }
 
@@ -102,20 +97,27 @@ class AddATrusteeController @Inject()(
       addAnotherForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
 
-          val trustees = new AddATrusteeViewHelper(request.userAnswers).rows
+          trust.getTrustees(request.userAnswers.utr).map {
+            case Trustees(Nil) => Ok()
+            case Trustees(data) =>  {
 
-          val isLeadTrusteeDefined = request.userAnswers.get(LeadTrusteeIndividual).exists(trustee => trustee.isLead) // TODO Check for Lead Trustee Company
+              val trustees = new AddATrusteeViewHelper(data).rows
 
-          Future.successful(BadRequest(
-            addAnotherView(
-              formWithErrors,
-              mode,
-              trustees.inProgress,
-              trustees.complete,
-              isLeadTrusteeDefined,
-              heading(trustees.count)
-            )
-          ))
+              val isLeadTrusteeDefined = request.userAnswers.get(LeadTrusteeIndividual).exists(trustee => trustee.isLead)  // TODO Check for Lead Trustee Company
+
+              BadRequest(
+                addAnotherView(
+                  formWithErrors,
+                  mode,
+                  trustees.inProgress,
+                  trustees.complete,
+                  isLeadTrusteeDefined,
+                  heading(trustees.count)
+                )
+              )
+
+            }
+          }
         },
         value => {
           for {
