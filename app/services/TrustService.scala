@@ -18,19 +18,37 @@ package services
 
 import connectors.TrustConnector
 import javax.inject.Inject
-import models.{RemoveTrustee, Trustees}
+import models.{AllTrustees, LeadTrustee, RemoveTrustee, Trustees}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait TrustService {
+
+  def getAllTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees]
+
+  def getLeadTrustee(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]]
+
   def getTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees]
+
   def removeTrustee(removeTrustee: RemoveTrustee, utr: String)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
 }
 
 class TrustServiceImpl @Inject()(
                             connector: TrustConnector
                             ) extends TrustService {
+
+  override def getAllTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees] = {
+    for {
+      lead <- getLeadTrustee(utr)
+      trustees <- getTrustees(utr)
+    } yield {
+      AllTrustees(lead, trustees.trustees)
+    }
+  }
+
+  override def getLeadTrustee(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] =
+    connector.getLeadTrustee(utr).map(Some(_))
 
   override def getTrustees(utr: String)(implicit hc:HeaderCarrier, ec:ExecutionContext) = {
     connector.getTrustees(utr)

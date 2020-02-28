@@ -16,10 +16,12 @@
 
 package controllers.trustee
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
-import models.{AddATrustee, Name, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrusteeType, Trustees}
+import models.{AddATrustee, AllTrustees, LeadTrustee, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrusteeType, Trustees}
 import org.joda.time.DateTime
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -45,6 +47,19 @@ class AddATrusteeControllerSpec extends SpecBase {
     AddRow("First Last", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/1/remove")
   )
 
+  private val leadTrusteeIndividual = Some(LeadTrusteeIndividual(
+    name = Name(
+      firstName = "First",
+      middleName = None,
+      lastName = "Last"
+    ),
+    dateOfBirth = LocalDate.parse("2010-10-10"),
+    phoneNumber = "+446565657",
+    email = None,
+    identification = NationalInsuranceNumber("JP121212A"),
+    address = None
+  ))
+
   private val trustee = TrusteeType(Some(RemoveTrusteeIndividual(
     lineNo = Some("1"),
     bpMatchStatus = Some("01"),
@@ -56,10 +71,18 @@ class AddATrusteeControllerSpec extends SpecBase {
   val trustees = Trustees(List(trustee, trustee))
 
 
-  class FakeService(data: Trustees) extends TrustService {
+  class FakeService(data: Trustees, leadTrustee: Option[LeadTrustee] = leadTrusteeIndividual) extends TrustService {
+
+    override def getLeadTrustee(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] =
+      Future.successful(leadTrustee)
+
+    override def getAllTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees] =
+      Future.successful(AllTrustees(leadTrustee, data.trustees))
+
     override def getTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] = Future.successful(data)
 
-    override def removeTrustee(removeTrustee: RemoveTrustee, utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(200))
+    override def removeTrustee(removeTrustee: RemoveTrustee, utr: String)
+                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(200))
 
   }
 
@@ -107,7 +130,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
       "return OK and the correct view for a GET" in {
 
-        val fakeService = new FakeService(Trustees(Nil))
+        val fakeService = new FakeService(Trustees(Nil), None)
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
           bind(classOf[TrustService]).toInstance(fakeService)
@@ -194,7 +217,7 @@ class AddATrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addTrusteeForm ,Nil, trusteeRows, isLeadTrusteeDefined = false, heading = "You have added 2 trustees")(fakeRequest, messages).toString
+          view(addTrusteeForm ,Nil, trusteeRows, isLeadTrusteeDefined = false, heading = "You have added 3 trustees")(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -288,7 +311,7 @@ class AddATrusteeControllerSpec extends SpecBase {
             Nil,
             trusteeRows,
             isLeadTrusteeDefined = false,
-            heading = "You have added 2 trustees"
+            heading = "You have added 3 trustees"
           )(fakeRequest, messages).toString
 
         application.stop()

@@ -19,7 +19,7 @@ package services
 import java.time.LocalDate
 
 import connectors.TrustConnector
-import models.{Name, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrusteeIndividual, TrusteeType, Trustees}
+import models.{AllTrustees, IndividualIdentification, LeadTrustee, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrusteeIndividual, TrusteeType, Trustees}
 import org.joda.time.DateTime
 import org.scalatest.{FreeSpec, MustMatchers}
 import org.scalatestplus.mockito.MockitoSugar
@@ -37,6 +37,52 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
   val mockConnector: TrustConnector = mock[TrustConnector]
 
   "Trust service" - {
+
+    "get all trustees" in {
+      val trusteeInd = RemoveTrusteeIndividual(
+        lineNo = Some("1"),
+        bpMatchStatus = Some("01"),
+        name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
+        dateOfBirth = Some(DateTime.parse("1983-9-24")),
+        phoneNumber = None,
+        identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+        entityStart = DateTime.parse("2019-2-28"))
+
+      val trustees = List(TrusteeType(Some(trusteeInd), None))
+
+      val leadTrusteeIndividual = LeadTrusteeIndividual(
+        name = Name(
+          firstName = "First",
+          middleName = None,
+          lastName = "Last"
+        ),
+        dateOfBirth = LocalDate.parse("2010-10-10"),
+        phoneNumber = "+446565657",
+        email = None,
+        identification = NationalInsuranceNumber("JP121212A"),
+        address = None
+      )
+
+      when(mockConnector.getTrustees(any())(any(), any()))
+        .thenReturn(Future.successful(Trustees(trustees)))
+
+      when(mockConnector.getLeadTrustee(any())(any(), any()))
+        .thenReturn(Future.successful(leadTrusteeIndividual))
+
+      val service = new TrustServiceImpl(mockConnector)
+
+      implicit val hc : HeaderCarrier = HeaderCarrier()
+
+      val result = service.getAllTrustees("1234567890")
+
+      whenReady(result) { r =>
+        r mustBe AllTrustees(
+          lead = Some(leadTrusteeIndividual),
+          trustees = trustees
+        )
+      }
+
+    }
 
     "get trustees" in {
 

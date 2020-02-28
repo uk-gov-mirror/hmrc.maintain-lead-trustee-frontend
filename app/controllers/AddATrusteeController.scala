@@ -21,9 +21,9 @@ import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
 import javax.inject.Inject
-import models.{AddATrustee, Enumerable, Trustees}
+import models.{AddATrustee, AllTrustees, Enumerable}
 import navigation.Navigator
-import pages.trustee.{AddATrusteePage, AddATrusteeYesNoPage}
+import pages.trustee.AddATrusteeYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -58,17 +58,17 @@ class AddATrusteeController @Inject()(
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      trust.getTrustees(request.userAnswers.utr) map {
-        case Trustees(Nil) => Ok(yesNoView(yesNoForm))
-        case Trustees(data) => {
+      trust.getAllTrustees(request.userAnswers.utr) map {
+        case AllTrustees(None, Nil) => Ok(yesNoView(yesNoForm))
+        case all@AllTrustees(_, data) => {
 
-          val trustees = new AddATrusteeViewHelper(data).rows
+          val trustees = new AddATrusteeViewHelper(all).rows
 
           Ok(addAnotherView(addAnotherForm,
             trustees.inProgress,
             trustees.complete,
             isLeadTrusteeDefined = false,
-            heading(data.size)
+            heading(all.size)
           ))
         }
 
@@ -94,27 +94,21 @@ class AddATrusteeController @Inject()(
   def submitAnother(): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
     implicit request =>
 
-      trust.getTrustees(request.userAnswers.utr).map { trustees =>
+      trust.getAllTrustees(request.userAnswers.utr).map { trustees =>
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
-            trustees match {
-              case Trustees(Nil) => Ok
-              case Trustees(data) => {
 
-                val trustees = new AddATrusteeViewHelper(data).rows
+            val rows = new AddATrusteeViewHelper(trustees).rows
 
-                BadRequest(
-                  addAnotherView(
-                    formWithErrors,
-                    trustees.inProgress,
-                    trustees.complete,
-                    isLeadTrusteeDefined = false,
-                    heading(trustees.count)
-                  )
-                )
-
-              }
-            }
+            BadRequest(
+              addAnotherView(
+                formWithErrors,
+                rows.inProgress,
+                rows.complete,
+                isLeadTrusteeDefined = false,
+                heading(trustees.size)
+              )
+            )
           },
           {
             case AddATrustee.YesNow => Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(trustees.trustees.size))

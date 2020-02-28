@@ -16,11 +16,11 @@
 
 package utils
 
-import models.TrusteeType
+import models.{AllTrustees, TrusteeType}
 import play.api.i18n.Messages
 import viewmodels.addAnother.{AddRow, AddToRows}
 
-class AddATrusteeViewHelper(trustees: List[TrusteeType])(implicit messages: Messages) {
+class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) {
 
   private def render(trustee : (TrusteeType, Int)) : AddRow = {
 
@@ -44,7 +44,7 @@ class AddATrusteeViewHelper(trustees: List[TrusteeType])(implicit messages: Mess
 
   def rows : AddToRows = {
 
-    val complete = trustees.zipWithIndex.map(render)
+    val complete = trustees.trustees.zipWithIndex.map(render)
 
     AddToRows(Nil, complete)
   }

@@ -40,7 +40,7 @@ case class LeadTrusteeIndividual(
                                   phoneNumber: String,
                                   email: Option[String] = None,
                                   identification: IndividualIdentification,
-                                  address: Option[Address]
+                                  address: Option[Address] // TODO no longer optional for frontend
                                 ) extends LeadTrustee
 
 object LeadTrusteeIndividual {

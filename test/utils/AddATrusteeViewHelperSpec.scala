@@ -17,13 +17,8 @@
 package utils
 
 import base.SpecBase
-import models.TrusteeStatus.Completed
-import models.{IndividualOrBusiness, Name, RemoveTrusteeIndividual, TrustIdentification, TrusteeType}
+import models.{AllTrustees, Name, RemoveTrusteeIndividual, TrustIdentification, TrusteeType}
 import org.joda.time.DateTime
-import pages.leadtrustee.individual.{NamePage => leadTrusteeNamePage}
-import pages.leadtrustee.individual.{LeadTrusteeStatusPage => leadTrusteeStatusPage}
-import pages.trustee.individual.NamePage
-import pages.trustee.{IndividualOrBusinessPage, IsThisLeadTrusteePage, TrusteeStatusPage}
 import viewmodels.addAnother.AddRow
 
 class AddATrusteeViewHelperSpec extends SpecBase {
@@ -42,13 +37,13 @@ class AddATrusteeViewHelperSpec extends SpecBase {
     ".row" must {
 
       "generate Nil for no user answers" in {
-        val rows = new AddATrusteeViewHelper(Nil).rows
+        val rows = new AddATrusteeViewHelper(AllTrustees(None, Nil)).rows
         rows.inProgress mustBe Nil
         rows.complete mustBe Nil
       }
 
       "generate rows from user answers for trustees" ignore {
-        val rows = new AddATrusteeViewHelper(Nil).rows
+        val rows = new AddATrusteeViewHelper(AllTrustees(None, Nil)).rows
         rows.inProgress mustBe List(
           AddRow("First 0 Last 0", typeLabel = "Trustee", "#", "/maintain-a-trust/trustees/trustee/0/remove"),
           AddRow("First 1 Last 1", typeLabel = "Trustee", "#", "/maintain-a-trust/trustees/trustee/1/remove"),
@@ -58,7 +53,7 @@ class AddATrusteeViewHelperSpec extends SpecBase {
       }
 
       "generate rows complete trustees" in {
-        val rows = new AddATrusteeViewHelper(userAnswersWithTrustees).rows
+        val rows = new AddATrusteeViewHelper(AllTrustees(None, userAnswersWithTrustees)).rows
         rows.complete mustBe List(
           AddRow("First Last", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/0/remove")
         )
@@ -66,7 +61,7 @@ class AddATrusteeViewHelperSpec extends SpecBase {
       }
       
       "generate rows from user answers for complete and in progress trustees" ignore {
-        val rows = new AddATrusteeViewHelper(Nil).rows
+        val rows = new AddATrusteeViewHelper(AllTrustees(None, Nil)).rows
         rows.complete mustBe List(
           AddRow("First Last", typeLabel = "Lead Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/0/remove")
         )
