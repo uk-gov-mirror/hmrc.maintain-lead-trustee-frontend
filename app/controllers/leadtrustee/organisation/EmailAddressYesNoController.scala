@@ -14,39 +14,39 @@
  * limitations under the License.
  */
 
-package controllers.leadtrustee.individual
+package controllers.leadtrustee.organisation
 
 import controllers.actions._
-import controllers.leadtrustee.individual.actions.NameRequiredAction
-import forms.EmailAddressFormProvider
+import controllers.leadtrustee.organisation.actions.NameRequiredAction
+import forms.YesNoFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.leadtrustee.individual.EmailAddressPage
+import pages.leadtrustee.organisation.EmailAddressYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.leadtrustee.individual.EmailAddressView
+import views.html.leadtrustee.organisation.EmailAddressYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmailAddressController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        playbackRepository: PlaybackRepository,
-                                        navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                        nameAction: NameRequiredAction,
-                                        formProvider: EmailAddressFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: EmailAddressView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class EmailAddressYesNoController @Inject()(
+                                         override val messagesApi: MessagesApi,
+                                         playbackRepository: PlaybackRepository,
+                                         navigator: Navigator,
+                                         standardActionSets: StandardActionSets,
+                                         nameAction: NameRequiredAction,
+                                         formProvider: YesNoFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         view: EmailAddressYesNoView
+                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("leadtrustee.individual.emailAddress")
+  val form = formProvider.withPrefix("leadtrustee.organisation.emailAddressYesNo")
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(EmailAddressPage) match {
+      val preparedForm = request.userAnswers.get(EmailAddressYesNoPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -63,9 +63,9 @@ class EmailAddressController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(EmailAddressPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(EmailAddressYesNoPage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(EmailAddressPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(EmailAddressYesNoPage, updatedAnswers))
       )
   }
 }

@@ -285,6 +285,18 @@ leadtrustee.organisation.nonUkAddress.title = What is {0}’s address?
 leadtrustee.organisation.nonUkAddress.heading = What is {0}’s address?
 leadtrustee.organisation.nonUkAddress.checkYourAnswersLabel = What is {0}’s address?
 
+leadtrustee.organisation.emailAddressYesNo.title = Do you know {0}’s email address?
+leadtrustee.organisation.emailAddressYesNo.heading = Do you know {0}’s email address?
+leadtrustee.organisation.emailAddressYesNo.checkYourAnswersLabel = Do you know {0}’s email address?
+leadtrustee.organisation.emailAddressYesNo.error.required = Select yes if you know the lead trustee’s email address
+
+leadtrustee.organisation.emailAddress.title = What is {0}’s email address?
+leadtrustee.organisation.emailAddress.heading = What is {0}’s email address?
+leadtrustee.organisation.emailAddress.checkYourAnswersLabel = What is {0}’s email address?
+leadtrustee.organisation.emailAddress.error.required = Enter the lead trustee’s email address
+leadtrustee.organisation.emailAddress.error.length = An email address must be 35 characters or less
+leadtrustee.organisation.emailAddress.error.invalid = Enter a valid email address with no spaces, like name@example.com
+
 trustee.individual.ukCitizen.title = Does {0} have a National Insurance number?
 trustee.individual.ukCitizen.heading = Does {0} have a National Insurance number?
 trustee.individual.ukCitizen.checkYourAnswersLabel = Does {0} have a National Insurance number?

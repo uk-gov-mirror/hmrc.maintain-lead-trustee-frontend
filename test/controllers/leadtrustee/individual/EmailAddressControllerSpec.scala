@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class EmailAddressControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new EmailAddressFormProvider()
-  val form = formProvider()
+  val form = formProvider.withPrefix("leadtrustee.individual.emailAddress")
 
   val name = Name("Lead", None, "Trustee")
 

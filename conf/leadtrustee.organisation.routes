@@ -8,11 +8,17 @@ POST       /name                                        controllers.leadtrustee.
 GET        /utr                                         controllers.leadtrustee.organisation.UtrController.onPageLoad()
 POST       /utr                                         controllers.leadtrustee.organisation.UtrController.onSubmit()
 
-GET        /lives-in-uk                                  controllers.leadtrustee.organisation.LiveInTheUkYesNoController.onPageLoad()
-POST       /lives-in-uk                                  controllers.leadtrustee.organisation.LiveInTheUkYesNoController.onSubmit()
+GET        /lives-in-uk                                 controllers.leadtrustee.organisation.LiveInTheUkYesNoController.onPageLoad()
+POST       /lives-in-uk                                 controllers.leadtrustee.organisation.LiveInTheUkYesNoController.onSubmit()
 
-GET        /uk-address                                   controllers.leadtrustee.organisation.UkAddressController.onPageLoad()
-POST       /uk-address                                   controllers.leadtrustee.organisation.UkAddressController.onSubmit()
+GET        /uk-address                                  controllers.leadtrustee.organisation.UkAddressController.onPageLoad()
+POST       /uk-address                                  controllers.leadtrustee.organisation.UkAddressController.onSubmit()
 
-GET        /international-address                        controllers.leadtrustee.organisation.NonUkAddressController.onPageLoad()
-POST       /international-address                        controllers.leadtrustee.organisation.NonUkAddressController.onSubmit()
+GET        /international-address                       controllers.leadtrustee.organisation.NonUkAddressController.onPageLoad()
+POST       /international-address                       controllers.leadtrustee.organisation.NonUkAddressController.onSubmit()
+
+GET        /has-email                                   controllers.leadtrustee.organisation.EmailAddressYesNoController.onPageLoad()
+POST       /has-email                                   controllers.leadtrustee.organisation.EmailAddressYesNoController.onSubmit()
+
+GET        /email                                       controllers.leadtrustee.organisation.EmailAddressController.onPageLoad()
+POST       /email                                       controllers.leadtrustee.organisation.EmailAddressController.onSubmit()

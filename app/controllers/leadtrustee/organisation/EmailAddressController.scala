@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.leadtrustee.individual
+package controllers.leadtrustee.organisation
 
 import controllers.actions._
-import controllers.leadtrustee.individual.actions.NameRequiredAction
+import controllers.leadtrustee.organisation.actions.NameRequiredAction
 import forms.EmailAddressFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.leadtrustee.individual.EmailAddressPage
+import pages.leadtrustee.organisation.EmailAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.leadtrustee.individual.EmailAddressView
+import views.html.leadtrustee.organisation.EmailAddressView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,7 +41,7 @@ class EmailAddressController @Inject()(
                                         view: EmailAddressView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("leadtrustee.individual.emailAddress")
+  val form = formProvider.withPrefix("leadtrustee.organisation.emailAddress")
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>

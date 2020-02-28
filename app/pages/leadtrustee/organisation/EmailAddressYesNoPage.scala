@@ -14,20 +14,26 @@
  * limitations under the License.
  */
 
-package forms
+package pages.leadtrustee.organisation
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import models.UserAnswers
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class EmailAddressFormProvider @Inject() extends Mappings {
+import scala.util.Try
 
-  def withPrefix(prefix: String): Form[String] =
-    Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(
-          firstError(
-            maxLength(35, s"$prefix.error.length"),
-            regexp(Validation.emailRegex, s"$prefix.error.invalid"))
-        ))
+case object EmailAddressYesNoPage extends QuestionPage[Boolean] {
+
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "emailAddressYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(false) =>
+        userAnswers.remove(EmailAddressPage)
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
+  }
 }
