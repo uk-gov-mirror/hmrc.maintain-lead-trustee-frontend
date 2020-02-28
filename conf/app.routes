@@ -24,9 +24,9 @@ GET        /agent-not-authorised                                            cont
 GET        /lead-trustee/individual-or-business                             controllers.leadtrustee.IndividualOrBusinessController.onPageLoad()
 POST       /lead-trustee/individual-or-business                             controllers.leadtrustee.IndividualOrBusinessController.onSubmit()
 
-GET        /lead-trustee/details                                            controllers.leadtrustee.DetailsController.onPageLoad()
-GET        /lead-trustee/details/updated                                    controllers.leadtrustee.DetailsController.onPageLoadUpdated()
-POST       /lead-trustee/details                                            controllers.leadtrustee.DetailsController.onSubmit()
+GET        /lead-trustee/details                                            controllers.leadtrustee.CheckDetailsController.onPageLoad()
+GET        /lead-trustee/details/updated                                    controllers.leadtrustee.CheckDetailsController.onPageLoadUpdated()
+POST       /lead-trustee/details                                            controllers.leadtrustee.CheckDetailsController.onSubmit()
 
 GET        /trustee/:index/individual-or-business                           controllers.trustee.IndividualOrBusinessController.onPageLoad(index: Int)
 POST       /trustee/:index/individual-or-business                           controllers.trustee.IndividualOrBusinessController.onSubmit(index: Int)

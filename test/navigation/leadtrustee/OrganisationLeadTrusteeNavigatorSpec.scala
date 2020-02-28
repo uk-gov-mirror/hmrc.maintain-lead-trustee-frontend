@@ -113,7 +113,7 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
 
     "Telephone number page -> Check (updated) details page" in {
       navigator.nextPage(TelephoneNumberPage, emptyUserAnswers)
-        .mustBe(controllers.leadtrustee.routes.DetailsController.onPageLoadUpdated())
+        .mustBe(controllers.leadtrustee.routes.CheckDetailsController.onPageLoadUpdated())
     }
   }
 }
