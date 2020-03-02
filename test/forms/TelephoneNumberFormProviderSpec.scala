@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
-import forms.UkCitizenFormProvider
-import forms.behaviours.BooleanFieldBehaviours
+import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
-class UkCitizenFormProviderSpec extends BooleanFieldBehaviours {
+class TelephoneNumberFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "leadtrustee.individual.ukCitizen.error.required"
-  val invalidKey = "error.boolean"
+  val requiredKey = "leadtrustee.individual.telephoneNumber.error.required"
+  val lengthKey = "leadtrustee.individual.telephoneNumber.error.length"
+  val maxLength = 100
 
-  val form = new UkCitizenFormProvider()("leadtrustee.individual")
+  val form = new TelephoneNumberFormProvider()()
 
   ".value" must {
 
     val fieldName = "value"
 
-    behave like booleanField(
+    behave like fieldThatBindsValidData(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+      RegexpGen.from(Validation.telephoneRegex)
     )
 
     behave like mandatoryField(

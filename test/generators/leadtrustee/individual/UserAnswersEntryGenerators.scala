@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package generators
+package generators.leadtrustee.individual
 
-import models._
+import generators.{Generators, ModelGenerators}
+import models.{Name, NonUkAddress, UkAddress}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages.leadtrustee.individual._
@@ -30,14 +31,6 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       for {
         page  <- arbitrary[TelephoneNumberPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryIdentificationDetailOptionsUserAnswersEntry: Arbitrary[(IdentificationDetailOptionsPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[IdentificationDetailOptionsPage.type]
-        value <- arbitrary[IdentificationDetailOptions].map(Json.toJson(_))
       } yield (page, value)
     }
 
@@ -73,10 +66,10 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryPassportDetailsUserAnswersEntry: Arbitrary[(PassportDetailsPage.type, JsValue)] =
+  implicit lazy val arbitraryPassportDetailsUserAnswersEntry: Arbitrary[(PassportOrIdCardDetailsPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[PassportDetailsPage.type]
+        page  <- arbitrary[PassportOrIdCardDetailsPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -110,14 +103,6 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       for {
         page  <- arbitrary[LiveInTheUkYesNoPage.type]
         value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryIdCardDetailsUserAnswersEntry: Arbitrary[(IdCardDetailsPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[IdCardDetailsPage.type]
-        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 

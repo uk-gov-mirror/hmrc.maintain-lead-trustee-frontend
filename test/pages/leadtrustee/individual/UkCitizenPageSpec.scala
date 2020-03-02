@@ -17,7 +17,8 @@
 package pages.leadtrustee.individual
 
 import java.time.LocalDate
-import models.{IdCard, IdentificationDetailOptions, Passport}
+
+import models.{CombinedPassportOrIdCard, IdCard, IdentificationDetailOptions, Passport}
 import pages.behaviours.PageBehaviours
 
 class UkCitizenPageSpec extends PageBehaviours {
@@ -32,14 +33,10 @@ class UkCitizenPageSpec extends PageBehaviours {
 
     "implement cleanup logic when YES selected" in {
       val userAnswers = emptyUserAnswers
-        .set(IdentificationDetailOptionsPage, IdentificationDetailOptions.Passport)
-        .flatMap(_.set(IdCardDetailsPage, IdCard("GB", "NUMBER", LocalDate.of(2040, 12, 31))))
-        .flatMap(_.set(PassportDetailsPage, Passport("GB", "NUMBER", LocalDate.of(2040, 12, 31))))
+        .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("GB", "NUMBER", LocalDate.of(2040, 12, 31)))
         .flatMap(_.set(UkCitizenPage, true))
 
-      userAnswers.get.get(IdentificationDetailOptionsPage) mustNot be(defined)
-      userAnswers.get.get(IdCardDetailsPage) mustNot be(defined)
-      userAnswers.get.get(PassportDetailsPage) mustNot be(defined)
+      userAnswers.get.get(PassportOrIdCardDetailsPage) mustNot be(defined)
     }
 
     "implement cleanup logic when NO selected" in {

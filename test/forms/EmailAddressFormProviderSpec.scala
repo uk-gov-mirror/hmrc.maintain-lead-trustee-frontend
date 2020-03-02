@@ -14,27 +14,35 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
-import forms.IdentificationDetailOptionsFormProvider
-import forms.behaviours.OptionFieldBehaviours
-import models.IdentificationDetailOptions
+import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
-class IdentificationDetailOptionsFormProviderSpec extends OptionFieldBehaviours {
+class EmailAddressFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new IdentificationDetailOptionsFormProvider().withPrefix("leadtrustee")
+  val requiredKey = "leadtrustee.individual.emailAddress.error.required"
+  val lengthKey = "leadtrustee.individual.emailAddress.error.length"
+  val maxLength = 35
+
+  val form = new EmailAddressFormProvider()()
 
   ".value" must {
 
     val fieldName = "value"
-    val requiredKey = "leadtrustee.individual.identificationDetailOptions.error.required"
 
-    behave like optionsField[IdentificationDetailOptions](
+    behave like fieldThatBindsValidData(
       form,
       fieldName,
-      validValues  = IdentificationDetailOptions.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      RegexpGen.from(Validation.emailRegex)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(

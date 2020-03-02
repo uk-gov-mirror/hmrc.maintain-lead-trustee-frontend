@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package mapping
-
-import java.time.LocalDate
+package models
 
 import generators.ModelGenerators
-import models.UserAnswers
 import org.scalatest.{FreeSpec, MustMatchers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 
-import scala.util.{Failure, Success}
-
-class LeadTrusteeExtractorSpec extends FreeSpec with ScalaCheckPropertyChecks with ModelGenerators with MustMatchers {
-  "should round trip through user answers" in {
-    forAll(arbitraryLeadTrusteeIndividual.arbitrary) { lt =>
-      val extractor = new LeadTrusteesExtractor()
-      val userAnswers = new UserAnswers("Id", "UTRUTRUTR", LocalDate.of(1987, 12, 31), Json.obj())
-      extractor.extractLeadTrusteeIndividual(userAnswers, lt) match {
-        case Failure(_) => fail("Setting user answers failed")
-        case Success(ua) => extractor.mapLeadTrusteeIndividual(ua) mustBe Some(lt)
+class LeadTrusteeSpec extends FreeSpec with ModelGenerators with MustMatchers with ScalaCheckPropertyChecks{
+  "JSON roundtrips with individual except Passports & Id cards will be unified into CombinedPassportOrId" in {
+    forAll(arbitraryLeadTrusteeIndividual.arbitrary) { lti =>
+      val expectedId = lti.identification match {
+        case p:Passport => p.asCombined
+        case id:IdCard => id.asCombined
+        case x => x
       }
+
+      Json.toJson(lti.asInstanceOf[LeadTrustee])(LeadTrustee.writes).as[LeadTrustee](LeadTrustee.reads) mustBe lti.copy(identification = expectedId)
     }
+  }
+
+  "JSON roundtrips with organisation" ignore {
+    ???
   }
 }

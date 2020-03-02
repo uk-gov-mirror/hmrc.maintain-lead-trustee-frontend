@@ -18,29 +18,29 @@ package controllers.leadtrustee.individual
 
 import controllers.actions._
 import controllers.leadtrustee.individual.actions.NameRequiredAction
-import forms.PassportDetailsFormProvider
+import forms.{CombinedPassportOrIdCardDetailsFormProvider, PassportDetailsFormProvider}
 import javax.inject.Inject
 import navigation.Navigator
-import pages.leadtrustee.individual.PassportDetailsPage
+import pages.leadtrustee.individual.PassportOrIdCardDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
-import views.html.leadtrustee.individual.PassportDetailsView
+import views.html.leadtrustee.individual.PassportOrIdCardDetailsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PassportDetailsController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        playbackRepository: PlaybackRepository,
-                                        navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                        nameAction: NameRequiredAction,
-                                        formProvider: PassportDetailsFormProvider,
-                                        countryOptions: CountryOptions,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: PassportDetailsView
+class PassportOrIdCardController @Inject()(
+                                            override val messagesApi: MessagesApi,
+                                            playbackRepository: PlaybackRepository,
+                                            navigator: Navigator,
+                                            standardActionSets: StandardActionSets,
+                                            nameAction: NameRequiredAction,
+                                            formProvider: CombinedPassportOrIdCardDetailsFormProvider,
+                                            countryOptions: CountryOptions,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            view: PassportOrIdCardDetailsView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("leadtrustee")
@@ -48,7 +48,7 @@ class PassportDetailsController @Inject()(
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(PassportDetailsPage) match {
+      val preparedForm = request.userAnswers.get(PassportOrIdCardDetailsPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -65,9 +65,9 @@ class PassportDetailsController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportDetailsPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportOrIdCardDetailsPage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PassportDetailsPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(PassportOrIdCardDetailsPage, updatedAnswers))
       )
   }
 }

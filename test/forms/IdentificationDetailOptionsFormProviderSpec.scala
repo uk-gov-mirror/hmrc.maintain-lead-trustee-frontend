@@ -14,35 +14,26 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
-import forms.IdCardDetailsFormProvider
-import forms.behaviours.StringFieldBehaviours
+import forms.behaviours.OptionFieldBehaviours
+import models.IdentificationDetailOptions
 import play.api.data.FormError
 
-class IdCardDetailsFormProviderSpec extends StringFieldBehaviours {
+class IdentificationDetailOptionsFormProviderSpec extends OptionFieldBehaviours {
 
-  val requiredKey = "leadtrustee.individual.idCardDetails.country.error.required"
-  val lengthKey = "leadtrustee.individual.idCardDetails.country.error.length"
-  val maxLengthCountryField = 100
+  val form = new IdentificationDetailOptionsFormProvider().withPrefix("leadtrustee")
 
-  val form = new IdCardDetailsFormProvider().withPrefix("leadtrustee")
+  ".value" must {
 
-  ".country" must {
+    val fieldName = "value"
+    val requiredKey = "leadtrustee.individual.identificationDetailOptions.error.required"
 
-    val fieldName = "country"
-
-    behave like fieldThatBindsValidData(
+    behave like optionsField[IdentificationDetailOptions](
       form,
       fieldName,
-      stringsWithMaxLength(maxLengthCountryField)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLengthCountryField,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLengthCountryField))
+      validValues  = IdentificationDetailOptions.values,
+      invalidError = FormError(fieldName, "error.invalid")
     )
 
     behave like mandatoryField(

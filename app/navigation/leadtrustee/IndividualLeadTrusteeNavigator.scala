@@ -16,7 +16,6 @@
 
 package navigation.leadtrustee
 
-import models.IdentificationDetailOptions.{IdCard, Passport}
 import models.UserAnswers
 import pages.leadtrustee.individual._
 import pages.{Page, QuestionPage}
@@ -28,8 +27,7 @@ object IndividualLeadTrusteeNavigator {
   private val simpleNavigations : PartialFunction[Page, Call] = {
     case NamePage => rts.DateOfBirthController.onPageLoad()
     case DateOfBirthPage => rts.UkCitizenController.onPageLoad()
-    case IdCardDetailsPage => rts.LiveInTheUkYesNoPageController.onPageLoad()
-    case PassportDetailsPage => rts.LiveInTheUkYesNoPageController.onPageLoad()
+    case PassportOrIdCardDetailsPage => rts.LiveInTheUkYesNoPageController.onPageLoad()
     case NationalInsuranceNumberPage => rts.LiveInTheUkYesNoPageController.onPageLoad()
     case UkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
     case NonUkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
@@ -38,26 +36,14 @@ object IndividualLeadTrusteeNavigator {
   }
 
   private val yesNoNavigations : PartialFunction[Page, UserAnswers => Call] =
-    yesNoNav(UkCitizenPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.IdentificationDetailOptionsController.onPageLoad()) orElse
+    yesNoNav(UkCitizenPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.PassportOrIdCardController.onPageLoad()) orElse
     yesNoNav(LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad()) orElse
     yesNoNav(EmailAddressYesNoPage, rts.EmailAddressController.onPageLoad(), rts.TelephoneNumberController.onPageLoad())
 
 
-  private val parameterisedNavigation : PartialFunction[Page, UserAnswers => Call] = {
-    case IdentificationDetailOptionsPage => idOptionsNavigation
-  }
-
   val routes: PartialFunction[Page, UserAnswers => Call] =
     simpleNavigations andThen (c => (_:UserAnswers) => c) orElse
-    yesNoNavigations orElse
-    parameterisedNavigation
-
-  private def idOptionsNavigation(userAnswers: UserAnswers): Call = {
-    userAnswers.get(IdentificationDetailOptionsPage).map {
-      case Passport => rts.PassportDetailsController.onPageLoad()
-      case IdCard => rts.IdCardDetailsController.onPageLoad()
-    }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
-  }
+    yesNoNavigations
 
   def yesNoNav(fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call) : PartialFunction[Page, UserAnswers => Call] = {
     case `fromPage` =>

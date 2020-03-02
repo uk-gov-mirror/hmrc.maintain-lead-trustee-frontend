@@ -41,15 +41,6 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
         )
     }
 
-    def identificationDetailOptions: Option[AnswerRow] = userAnswers.get(IdentificationDetailOptionsPage) map {
-      x =>
-        AnswerRow(
-          HtmlFormat.escape(messages("leadtrustee.individual.identificationDetailOptions.checkYourAnswersLabel", leadTrusteeName)),
-          formatter.identificationDetailOptions(x),
-          individualLeadtrusteeRoutes.IdentificationDetailOptionsController.onPageLoad().url
-        )
-    }
-
     def emailAddressYesNo: Option[AnswerRow] = userAnswers.get(EmailAddressYesNoPage) map {
       x =>
         AnswerRow(
@@ -86,12 +77,12 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
         )
     }
 
-    def passportDetails: Option[AnswerRow] = userAnswers.get(PassportDetailsPage) map {
+    def passportOrIdCardDetails: Option[AnswerRow] = userAnswers.get(PassportOrIdCardDetailsPage) map {
       x =>
         AnswerRow(
-          HtmlFormat.escape(messages("leadtrustee.individual.passportDetails.checkYourAnswersLabel", leadTrusteeName)),
-          formatter.passport(x),
-          individualLeadtrusteeRoutes.PassportDetailsController.onPageLoad().url
+          HtmlFormat.escape(messages("leadtrustee.individual.passportOrIdCardDetails.checkYourAnswersLabel", leadTrusteeName)),
+          formatter.passportOrIdCardDetails(x),
+          individualLeadtrusteeRoutes.PassportOrIdCardController.onPageLoad().url
         )
     }
 
@@ -128,15 +119,6 @@ class CheckYourAnswersHelper @Inject()(formatter: CheckAnswersFormatters) {
           HtmlFormat.escape(messages("leadtrustee.individual.liveInTheUkYesNo.checkYourAnswersLabel", leadTrusteeName)),
           yesOrNo(x),
           individualLeadtrusteeRoutes.LiveInTheUkYesNoPageController.onPageLoad().url
-        )
-    }
-
-    def idCardDetails: Option[AnswerRow] = userAnswers.get(IdCardDetailsPage) map {
-      x =>
-        AnswerRow(
-          HtmlFormat.escape(messages("leadtrustee.individual.idCardDetails.checkYourAnswersLabel", leadTrusteeName)),
-          formatter.idCard(x),
-          individualLeadtrusteeRoutes.IdCardDetailsController.onPageLoad().url
         )
     }
 

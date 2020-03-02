@@ -22,7 +22,7 @@ import connectors.TrustConnector
 import controllers.ReturnToStart
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.individual.actions.{LeadTrusteeNameRequest, NameRequiredAction}
-import mapping.LeadTrusteesExtractor
+import mapping.LeadTrusteeToUserAnswersMapper
 import models.{LeadTrusteeIndividual, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,16 +36,16 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class DetailsController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            standardActionSets: StandardActionSets,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: LeadTrusteeDetailsView,
-                                            connector: TrustConnector,
-                                            extractor: LeadTrusteesExtractor,
-                                            repository: PlaybackRepository,
-                                            checkYourAnswersHelper: CheckYourAnswersHelper,
-                                            nameRequiredAction: NameRequiredAction,
-                                            val appConfig: FrontendAppConfig
+                                   override val messagesApi: MessagesApi,
+                                   standardActionSets: StandardActionSets,
+                                   val controllerComponents: MessagesControllerComponents,
+                                   view: LeadTrusteeDetailsView,
+                                   connector: TrustConnector,
+                                   extractor: LeadTrusteeToUserAnswersMapper,
+                                   repository: PlaybackRepository,
+                                   checkYourAnswersHelper: CheckYourAnswersHelper,
+                                   nameRequiredAction: NameRequiredAction,
+                                   val appConfig: FrontendAppConfig
                                           ) (implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport with ReturnToStart {
 
@@ -54,7 +54,7 @@ class DetailsController @Inject()(
 
       connector.getLeadTrustee(request.userAnswers.utr).flatMap {
         case trusteeInd: LeadTrusteeIndividual =>
-          val answers: Try[UserAnswers] = extractor.extractLeadTrusteeIndividual(request.userAnswers, trusteeInd)
+          val answers: Try[UserAnswers] = extractor.populateUserAnswers(request.userAnswers, trusteeInd)
           for {
             updatedAnswers <- Future.fromTry(answers)
             _ <- repository.set(updatedAnswers)
@@ -78,9 +78,7 @@ class DetailsController @Inject()(
       bound.dateOfBirth,
       bound.ukCitizen,
       bound.nationalInsuranceNumber,
-      bound.identificationDetailOptions,
-      bound.idCardDetails,
-      bound.passportDetails,
+      bound.passportOrIdCardDetails,
       bound.liveInTheUkYesNoPage,
       bound.ukAddress,
       bound.nonUkAddress,
@@ -94,7 +92,7 @@ class DetailsController @Inject()(
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
-        extractor.mapLeadTrusteeIndividual(request.userAnswers) match {
+        extractor.getFromUserAnswers(request.userAnswers) match {
           case None => Future.successful(InternalServerError)
           case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ => returnToStart(request.user.affinityGroup))
         }

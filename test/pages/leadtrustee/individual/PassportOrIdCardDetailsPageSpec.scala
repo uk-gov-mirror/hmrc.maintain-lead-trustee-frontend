@@ -16,13 +16,18 @@
 
 package pages.leadtrustee.individual
 
-import models.IdCard
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import models.{CombinedPassportOrIdCard, Passport}
+import pages.behaviours.PageBehaviours
 
-case object IdCardDetailsPage extends QuestionPage[IdCard] {
 
-  override def path: JsPath = basePath \ toString
+class PassportOrIdCardDetailsPageSpec extends PageBehaviours {
 
-  override def toString: String = "idCardDetails"
+  "PassportDetailsPage" must {
+
+    beRetrievable[CombinedPassportOrIdCard](PassportOrIdCardDetailsPage)
+
+    beSettable[CombinedPassportOrIdCard](PassportOrIdCardDetailsPage)
+
+    beRemovable[CombinedPassportOrIdCard](PassportOrIdCardDetailsPage)
+  }
 }

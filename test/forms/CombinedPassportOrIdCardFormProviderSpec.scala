@@ -14,29 +14,35 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
 import forms.behaviours.StringFieldBehaviours
-import forms.{TelephoneNumberFormProvider, Validation}
 import play.api.data.FormError
-import wolfendale.scalacheck.regexp.RegexpGen
 
-class TelephoneNumberFormProviderSpec extends StringFieldBehaviours {
+class CombinedPassportOrIdCardFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "leadtrustee.individual.telephoneNumber.error.required"
-  val lengthKey = "leadtrustee.individual.telephoneNumber.error.length"
-  val maxLength = 100
+  val requiredKey = "leadtrustee.individual.passportOrIdCardDetails.country.error.required"
+  val lengthKey = "leadtrustee.individual.passportOrIdCardDetails.country.error.length"
+  val maxLengthCountryField = 100
+  val maxLengthNumberField = 30
 
-  val form = new TelephoneNumberFormProvider()()
+  val form = new CombinedPassportOrIdCardDetailsFormProvider().withPrefix("leadtrustee")
 
-  ".value" must {
+  ".country" must {
 
-    val fieldName = "value"
+    val fieldName = "country"
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(Validation.telephoneRegex)
+      stringsWithMaxLength(maxLengthCountryField)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLengthCountryField,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLengthCountryField))
     )
 
     behave like mandatoryField(
@@ -45,4 +51,6 @@ class TelephoneNumberFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
+
 }
