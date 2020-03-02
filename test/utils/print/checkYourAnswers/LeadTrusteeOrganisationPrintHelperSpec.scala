@@ -37,7 +37,6 @@ class LeadTrusteeOrganisationPrintHelperSpec extends SpecBase {
       val helper = injector.instanceOf[LeadTrusteeOrganisationPrintHelper]
 
       val userAnswers = emptyUserAnswers
-        .set(IndividualOrBusinessPage, Individual).success.value
         .set(RegisteredInUkYesNoPage, true).success.value
         .set(NamePage, name).success.value
         .set(UtrPage, "utr").success.value
