@@ -22,12 +22,12 @@ import play.api.data.Form
 
 class EmailAddressFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def withPrefix(prefix: String): Form[String] =
     Form(
-      "value" -> text("leadtrustee.individual.emailAddress.error.required")
+      "value" -> text(s"$prefix.error.required")
         .verifying(
           firstError(
-            maxLength(35, "leadtrustee.individual.emailAddress.error.length"),
-            regexp(Validation.emailRegex, "leadtrustee.individual.emailAddress.error.invalid"))
+            maxLength(35, s"$prefix.error.length"),
+            regexp(Validation.emailRegex, s"$prefix.error.invalid"))
         ))
 }

@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import controllers.leadtrustee.individual.actions.NameRequiredAction
+import controllers.leadtrustee.actions.NameRequiredAction
 import forms.EmailAddressFormProvider
 import javax.inject.Inject
 import navigation.Navigator
@@ -41,7 +41,7 @@ class EmailAddressController @Inject()(
                                         view: EmailAddressView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form = formProvider.withPrefix("leadtrustee.individual.emailAddress")
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>

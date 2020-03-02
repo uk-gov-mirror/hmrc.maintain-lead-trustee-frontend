@@ -26,7 +26,7 @@ class EmailAddressFormProviderSpec extends StringFieldBehaviours {
   val lengthKey = "leadtrustee.individual.emailAddress.error.length"
   val maxLength = 35
 
-  val form = new EmailAddressFormProvider()()
+  val form = new EmailAddressFormProvider().withPrefix("leadtrustee.individual.emailAddress")
 
   ".value" must {
 

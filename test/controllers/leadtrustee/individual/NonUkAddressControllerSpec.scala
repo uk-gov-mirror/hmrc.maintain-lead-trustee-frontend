@@ -19,31 +19,28 @@ package controllers.leadtrustee.individual
 import base.SpecBase
 import forms.NonUkAddressFormProvider
 import models.{Name, NonUkAddress}
-import navigation.{FakeNavigator, Navigator}
+import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.leadtrustee.individual.{NamePage, NonUkAddressPage}
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import utils.countryOptions.CountryOptions
+import utils.countryOptions.CountryOptionsNonUK
 import views.html.leadtrustee.individual.NonUkAddressView
 
 import scala.concurrent.Future
 
 class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
-
   val formProvider = new NonUkAddressFormProvider()
   val form = formProvider()
 
   lazy val nonUkAddressRoute = routes.NonUkAddressController.onPageLoad().url
 
-  val countryOptions = injector.instanceOf[CountryOptions]
+  val countryOptions = injector.instanceOf[CountryOptionsNonUK]
 
   val name = Name("Lead", None, "Trustee")
 
@@ -97,23 +94,19 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
-          )
-          .build()
-
-
       val request =
         FakeRequest(POST, nonUkAddressRoute)
           .withFormUrlEncodedBody(("line1", "value 1"), ("line2", "value 2"), ("country", "the country"))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[Navigator].toInstance(fakeNavigator))
+        .build()
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       application.stop()
     }

@@ -18,7 +18,7 @@ package navigation
 
 import javax.inject.{Inject, Singleton}
 import models.UserAnswers
-import navigation.leadtrustee.IndividualLeadTrusteeNavigator
+import navigation.leadtrustee.LeadTrusteeNavigator
 import navigation.trustee.TrusteeNavigator
 import pages.Page
 import play.api.mvc.Call
@@ -27,7 +27,7 @@ import play.api.mvc.Call
 class Navigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => Call =
-    IndividualLeadTrusteeNavigator.routes orElse
+    LeadTrusteeNavigator.routes orElse
     TrusteeNavigator.routes orElse {
     case _ => ua => controllers.routes.IndexController.onPageLoad(ua.utr)
   }

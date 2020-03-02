@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import forms.NameFormProvider
+import forms.IndividualNameFormProvider
 import javax.inject.Inject
 import navigation.Navigator
 import pages.leadtrustee.individual.NamePage
@@ -30,13 +30,13 @@ import views.html.leadtrustee.individual.NameView
 import scala.concurrent.{ExecutionContext, Future}
 
 class NameController @Inject()(
-                                      override val messagesApi: MessagesApi,
-                                      playbackRepository: PlaybackRepository,
-                                      navigator: Navigator,
-                                      standardActionSets: StandardActionSets,
-                                      formProvider: NameFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      view: NameView
+                                override val messagesApi: MessagesApi,
+                                playbackRepository: PlaybackRepository,
+                                navigator: Navigator,
+                                standardActionSets: StandardActionSets,
+                                formProvider: IndividualNameFormProvider,
+                                val controllerComponents: MessagesControllerComponents,
+                                view: NameView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("leadtrustee.individual.name")

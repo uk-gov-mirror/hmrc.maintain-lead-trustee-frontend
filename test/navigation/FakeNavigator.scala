@@ -20,7 +20,7 @@ import models.UserAnswers
 import pages._
 import play.api.mvc.Call
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
+class FakeNavigator(val desiredRoute: Call = Call("GET", "/foo")) extends Navigator {
 
   override def nextPage(page: Page, userAnswers: UserAnswers): Call =
     desiredRoute

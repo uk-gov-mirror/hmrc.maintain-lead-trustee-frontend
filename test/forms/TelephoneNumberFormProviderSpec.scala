@@ -26,7 +26,7 @@ class TelephoneNumberFormProviderSpec extends StringFieldBehaviours {
   val lengthKey = "leadtrustee.individual.telephoneNumber.error.length"
   val maxLength = 100
 
-  val form = new TelephoneNumberFormProvider()()
+  val form = new TelephoneNumberFormProvider().withPrefix("leadtrustee.individual.telephoneNumber")
 
   ".value" must {
 

@@ -17,8 +17,8 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import controllers.leadtrustee.individual.actions.NameRequiredAction
-import forms.{CombinedPassportOrIdCardDetailsFormProvider, PassportDetailsFormProvider}
+import controllers.leadtrustee.actions.NameRequiredAction
+import forms.CombinedPassportOrIdCardDetailsFormProvider
 import javax.inject.Inject
 import navigation.Navigator
 import pages.leadtrustee.individual.PassportOrIdCardDetailsPage
