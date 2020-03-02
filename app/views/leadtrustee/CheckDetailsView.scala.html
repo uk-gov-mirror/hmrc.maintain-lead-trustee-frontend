@@ -22,7 +22,7 @@
     formHelper: FormWithCSRF
 )
 
-@(answerSection: AnswerSection)(implicit request: Request[_], messages: Messages)
+@(answerSection: AnswerSection, submissionCall: Call)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("leadTrusteeDetails.title")
@@ -32,7 +32,7 @@
 
     @components.answer_section(answerSection)
 
-    @formHelper(action = CheckDetailsController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = submissionCall, 'autoComplete -> "off") {
         @components.submit_button()
     }
 }
