@@ -49,14 +49,14 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
         List(AddRow(
           name = leadInd.name.displayName,
           typeLabel = messages(s"entities.leadtrustee.individual"),
-          changeUrl = controllers.leadtrustee.routes.DetailsController.onPageLoad().url,
+          changeUrl = controllers.leadtrustee.routes.CheckDetailsController.onPageLoad().url,
           removeUrl = "#"
         ))
       case Some(leadIOrg: LeadTrusteeOrganisation) =>
         List(AddRow(
           name = leadIOrg.name,
           typeLabel = messages(s"entities.leadtrustee.organisation"),
-          changeUrl = controllers.leadtrustee.routes.DetailsController.onPageLoad().url,
+          changeUrl = controllers.leadtrustee.routes.CheckDetailsController.onPageLoad().url,
           removeUrl = "#"
         ))
       case _ => Nil

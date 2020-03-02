@@ -41,8 +41,14 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
   private def addTrusteeIndividualUrl(utr: String) = s"${config.trustsUrl}/trusts/add-trustee/$utr"
 
-  def addTrusteeIndividual(utr: String, trustee: TrusteeIndividual)(implicit hc: HeaderCarrier, ec : ExecutionContext)= {
+  def addTrusteeIndividual(utr: String, trustee: TrusteeIndividual)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
     http.POST[JsValue, HttpResponse](addTrusteeIndividualUrl(utr), Json.toJson(trustee))
+  }
+
+  private def amendLeadTrusteeUrl(utr: String) = s"${config.trustsUrl}/trusts/amend-lead-trustee/$utr"
+
+  def amendLeadTrustee(utr: String, leadTrustee: LeadTrustee)(implicit hc: HeaderCarrier, ec : ExecutionContext) : Future[HttpResponse] = {
+    http.POST[LeadTrustee, HttpResponse](amendLeadTrusteeUrl(utr), leadTrustee)(LeadTrustee.writes, HttpReads.readRaw, hc, ec)
   }
 
   private def getTrusteesUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/trustees"
@@ -57,10 +63,6 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
     http.POST[JsValue, HttpResponse](removeTrusteeUrl(utr), Json.toJson(trustee))
   }
 
-  private def amendLeadTrusteeUrl(utr: String) = s"${config.trustsUrl}/trusts/amend-lead-trustee/$utr "
-  def amendLeadTrustee(utr: String, leadTrustee: LeadTrusteeIndividual)(implicit hc: HeaderCarrier, ec : ExecutionContext) : Future[Unit] = {
-    http.POST[LeadTrusteeIndividual, HttpResponse](amendLeadTrusteeUrl(utr), leadTrustee)(LeadTrusteeIndividual.writes, HttpReads.readRaw, hc, ec).map(_ => ())
-  }
 }
 
 

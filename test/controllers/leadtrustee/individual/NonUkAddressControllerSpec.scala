@@ -19,17 +19,16 @@ package controllers.leadtrustee.individual
 import base.SpecBase
 import forms.NonUkAddressFormProvider
 import models.{Name, NonUkAddress}
-import navigation.{FakeNavigator, Navigator}
+import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.leadtrustee.individual.{NamePage, NonUkAddressPage}
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import utils.countryOptions.CountryOptions
+import utils.countryOptions.CountryOptionsNonUK
 import views.html.leadtrustee.individual.NonUkAddressView
 
 import scala.concurrent.Future
@@ -41,7 +40,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val nonUkAddressRoute = routes.NonUkAddressController.onPageLoad().url
 
-  val countryOptions = injector.instanceOf[CountryOptions]
+  val countryOptions = injector.instanceOf[CountryOptionsNonUK]
 
   val name = Name("Lead", None, "Trustee")
 

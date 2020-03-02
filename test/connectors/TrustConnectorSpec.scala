@@ -80,7 +80,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       )
 
       val result = connector.amendLeadTrustee("UTRUTRUTR", arbitraryLeadTrusteeIndividual.arbitrary.sample.get)
-      result.futureValue mustBe()
+      result.futureValue.status mustBe (OK)
 
       application.stop()
     }
@@ -175,14 +175,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       whenReady(processed) { leadTrustee =>
         leadTrustee mustBe LeadTrusteeOrganisation(
-          "lineNo",
-          None,
           "name",
           "phoneNumber",
           None,
           Some("anUtr"),
-          UkAddress("address1", "address2", None, None, "Postcode"),
-          "now"
+          UkAddress("address1", "address2", None, None, "Postcode")
         )
       }
       application.stop()
