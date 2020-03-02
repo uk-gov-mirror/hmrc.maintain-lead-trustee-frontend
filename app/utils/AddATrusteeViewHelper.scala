@@ -16,7 +16,7 @@
 
 package utils
 
-import models.{AllTrustees, TrusteeType}
+import models.{AllTrustees, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, TrusteeType}
 import play.api.i18n.Messages
 import viewmodels.addAnother.{AddRow, AddToRows}
 
@@ -27,7 +27,7 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
     trustee match {
       case (TrusteeType(Some(trusteeInd), None), index) =>
         AddRow(
-          name = trusteeInd.name.toString,
+          name = trusteeInd.name.displayName,
           typeLabel = messages(s"entities.trustee.individual"),
           changeUrl = "#",
           removeUrl = controllers.trustee.routes.RemoveIndividualTrusteeController.onPageLoad(index).url
@@ -42,9 +42,30 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
     }
   }
 
+  private def renderLead(lead : Option[LeadTrustee]) : List[AddRow] = {
+
+    lead match {
+      case Some(leadInd: LeadTrusteeIndividual) =>
+        List(AddRow(
+          name = leadInd.name.displayName,
+          typeLabel = messages(s"entities.leadtrustee.individual"),
+          changeUrl = controllers.leadtrustee.routes.DetailsController.onPageLoad().url,
+          removeUrl = "#"
+        ))
+      case Some(leadIOrg: LeadTrusteeOrganisation) =>
+        List(AddRow(
+          name = leadIOrg.name,
+          typeLabel = messages(s"entities.leadtrustee.organisation"),
+          changeUrl = controllers.leadtrustee.routes.DetailsController.onPageLoad().url,
+          removeUrl = "#"
+        ))
+      case _ => Nil
+    }
+  }
+
   def rows : AddToRows = {
 
-    val complete = trustees.trustees.zipWithIndex.map(render)
+    val complete = renderLead(trustees.lead) ++ trustees.trustees.zipWithIndex.map(render)
 
     AddToRows(Nil, complete)
   }

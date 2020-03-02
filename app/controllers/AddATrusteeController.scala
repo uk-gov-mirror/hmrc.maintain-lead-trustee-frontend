@@ -60,7 +60,7 @@ class AddATrusteeController @Inject()(
 
       trust.getAllTrustees(request.userAnswers.utr) map {
         case AllTrustees(None, Nil) => Ok(yesNoView(yesNoForm))
-        case all@AllTrustees(_, data) => {
+        case all: AllTrustees => {
 
           val trustees = new AddATrusteeViewHelper(all).rows
 

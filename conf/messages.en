@@ -130,8 +130,10 @@ nonUkAddress.error.line3.invalidCharacters = Address line 3 must only include le
 
 entities.lead = Lead
 entities.trustee = Trustee
+entities.leadtrustee.individual = Lead Trustee Individual
+entities.leadtrustee.organisation = Lead Trustee Company
 entities.trustee.individual = Trustee Individual
-entities.trustee.business = Trustee Company
+entities.trustee.organisation = Trustee Company
 entities.no.name.added = No name added
 entities.no.value.added = No value added
 
