@@ -22,28 +22,28 @@ import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.organisation.{LiveInTheUkYesNoPage, NamePage}
+import pages.leadtrustee.organisation.{BasedInTheUkYesNoPage, NamePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.leadtrustee.organisation.LiveInTheUkYesNoView
+import views.html.leadtrustee.organisation.BasedInTheUkYesNoView
 
 import scala.concurrent.Future
 
-class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
+class BasedInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.organisation.liveInTheUkYesNo")
+  val form = formProvider.withPrefix("leadtrustee.organisation.basedInTheUkYesNo")
 
-  lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoController.onPageLoad().url
+  lazy val liveInTheUkYesNoPageRoute = routes.BasedInTheUkYesNoController.onPageLoad().url
 
   val name = "Lead trustee org"
 
   override val emptyUserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
-  "LiveInTheUkYesNoPage Controller" must {
+  "BasedInTheUkYesNo Controller" must {
 
     "return OK and the correct view for a GET" in {
 
@@ -53,7 +53,7 @@ class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[LiveInTheUkYesNoView]
+      val view = application.injector.instanceOf[BasedInTheUkYesNoView]
 
       status(result) mustEqual OK
 
@@ -65,13 +65,13 @@ class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(LiveInTheUkYesNoPage, true).success.value
+      val userAnswers = emptyUserAnswers.set(BasedInTheUkYesNoPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request = FakeRequest(GET, liveInTheUkYesNoPageRoute)
 
-      val view = application.injector.instanceOf[LiveInTheUkYesNoView]
+      val view = application.injector.instanceOf[BasedInTheUkYesNoView]
 
       val result = route(application, request).value
 
@@ -117,7 +117,7 @@ class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[LiveInTheUkYesNoView]
+      val view = application.injector.instanceOf[BasedInTheUkYesNoView]
 
       val result = route(application, request).value
 
