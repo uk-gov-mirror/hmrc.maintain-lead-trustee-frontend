@@ -95,7 +95,7 @@ class CheckDetailsController @Inject()(
 
     val section = leadTrusteeIndPrintHelper(
       updatedAnswers,
-      updatedAnswers.get(pages.leadtrustee.individual.NamePage).map(_.displayName).getOrElseexit(request.messages(messagesApi)("leadTrusteeName.defaultText"))
+      updatedAnswers.get(pages.leadtrustee.individual.NamePage).map(_.displayName).getOrElse(request.messages(messagesApi)("leadTrusteeName.defaultText"))
     )
 
     Ok(view(section))
