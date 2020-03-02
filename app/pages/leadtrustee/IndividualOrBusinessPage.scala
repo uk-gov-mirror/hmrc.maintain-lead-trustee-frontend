@@ -49,7 +49,7 @@ object IndividualOrBusinessPage extends QuestionPage[IndividualOrBusiness] {
         userAnswers.remove(organisation.RegisteredInUkYesNoPage)
           .flatMap(_.remove(organisation.NamePage))
           .flatMap(_.remove(organisation.UtrPage))
-          .flatMap(_.remove(organisation.LiveInTheUkYesNoPage))
+          .flatMap(_.remove(organisation.BasedInTheUkYesNoPage))
           .flatMap(_.remove(organisation.UkAddressPage))
           .flatMap(_.remove(organisation.NonUkAddressPage))
           .flatMap(_.remove(organisation.EmailAddressYesNoPage))

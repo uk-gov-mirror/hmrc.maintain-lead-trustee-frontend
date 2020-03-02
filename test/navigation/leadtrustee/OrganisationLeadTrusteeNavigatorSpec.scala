@@ -53,7 +53,7 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
 
     "UTR page -> Is address in UK page" in {
       navigator.nextPage(UtrPage, emptyUserAnswers)
-        .mustBe(controllers.leadtrustee.organisation.routes.LiveInTheUkYesNoController.onPageLoad())
+        .mustBe(controllers.leadtrustee.organisation.routes.BasedInTheUkYesNoController.onPageLoad())
     }
 
     "(Is UK registered business -> No) -> Name page -> Is address in UK page" in {
@@ -61,14 +61,14 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
         .set(RegisteredInUkYesNoPage, false).success.value
 
       navigator.nextPage(NamePage, answers)
-        .mustBe(controllers.leadtrustee.organisation.routes.LiveInTheUkYesNoController.onPageLoad())
+        .mustBe(controllers.leadtrustee.organisation.routes.BasedInTheUkYesNoController.onPageLoad())
     }
 
     "Is address in UK page -> Yes -> UK address page" in {
       val answers = emptyUserAnswers
-        .set(LiveInTheUkYesNoPage, true).success.value
+        .set(BasedInTheUkYesNoPage, true).success.value
 
-      navigator.nextPage(LiveInTheUkYesNoPage, answers)
+      navigator.nextPage(BasedInTheUkYesNoPage, answers)
         .mustBe(controllers.leadtrustee.organisation.routes.UkAddressController.onPageLoad())
     }
 
@@ -79,9 +79,9 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
 
     "Is address in UK page -> No -> Non-UK address page" in {
       val answers = emptyUserAnswers
-        .set(LiveInTheUkYesNoPage, false).success.value
+        .set(BasedInTheUkYesNoPage, false).success.value
 
-      navigator.nextPage(LiveInTheUkYesNoPage, answers)
+      navigator.nextPage(BasedInTheUkYesNoPage, answers)
         .mustBe(controllers.leadtrustee.organisation.routes.NonUkAddressController.onPageLoad())
     }
 
