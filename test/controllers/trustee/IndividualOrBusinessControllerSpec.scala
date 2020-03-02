@@ -35,8 +35,6 @@ import scala.concurrent.Future
 
 class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
-
   val formProvider = new IndividualOrBusinessFormProvider()
   val form = formProvider.withPrefix("trustee.individualOrBusiness")
   val index = 0
@@ -86,22 +84,19 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
-          )
-          .build()
-
       val request =
         FakeRequest(POST, IndividualOrBusinessRoute)
           .withFormUrlEncodedBody(("value", "individual"))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[Navigator].toInstance(fakeNavigator))
+        .build()
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

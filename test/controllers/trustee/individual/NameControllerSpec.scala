@@ -17,7 +17,7 @@
 package controllers.trustee.individual
 
 import base.SpecBase
-import forms.NameFormProvider
+import forms.IndividualNameFormProvider
 import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
@@ -37,7 +37,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new NameFormProvider()
+  val formProvider = new IndividualNameFormProvider()
   val form = formProvider.withPrefix("trustee.individual.name")
   val index = 0
   val trusteeName = Name("FirstName", None, "LastName")

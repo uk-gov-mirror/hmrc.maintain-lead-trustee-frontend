@@ -18,6 +18,7 @@ package controllers.leadtrustee.individual.actions
 
 import java.time.LocalDate
 
+import controllers.actions.LeadTrusteeNameRequest
 import models.UserAnswers
 import models.requests.DataRequest
 import org.mockito.Matchers.any

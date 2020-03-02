@@ -14,58 +14,61 @@
  * limitations under the License.
  */
 
-package controllers.trustee.individual
+package controllers.leadtrustee.organisation
 
-import controllers.actions._
-import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
-import forms.TelephoneNumberFormProvider
+import controllers.actions.StandardActionSets
+import controllers.leadtrustee.organisation.actions.NameRequiredAction
+import forms.UtrFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.leadtrustee.individual.TelephoneNumberPage
+import pages.leadtrustee.organisation.UtrPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.leadtrustee.individual.TelephoneNumberView
+import views.html.leadtrustee.organisation.UtrView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TelephoneNumberController @Inject()(
+class UtrController @Inject()(
                                         override val messagesApi: MessagesApi,
-                                        sessionRepository: PlaybackRepository,
+                                        registrationsRepository: PlaybackRepository,
                                         navigator: Navigator,
                                         standardActionSets: StandardActionSets,
-                                        nameAction: TrusteeNameRequiredProvider,
-                                        formProvider: TelephoneNumberFormProvider,
+                                        nameAction: NameRequiredAction,
+                                        formProvider: UtrFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
-                                        view: TelephoneNumberView
+                                        view: UtrView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form = formProvider.withPrefix("leadtrustee.organisation.utr")
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(TelephoneNumberPage) match {
+      val preparedForm = request.userAnswers.get(UtrPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.trusteeName))
+      Ok(view(preparedForm, request.leadTrusteeName))
+
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
+        (formWithErrors: Form[_]) =>
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
 
-        value =>
+        value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(TelephoneNumberPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TelephoneNumberPage, updatedAnswers))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrPage, value))
+            _              <- registrationsRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(UtrPage, updatedAnswers))
+        }
       )
   }
 }

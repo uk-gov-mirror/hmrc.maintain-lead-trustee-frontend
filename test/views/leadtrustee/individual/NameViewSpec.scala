@@ -17,7 +17,7 @@
 package views.leadtrustee.individual
 
 import controllers.leadtrustee.individual.routes
-import forms.NameFormProvider
+import forms.IndividualNameFormProvider
 import models.{Name, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -28,7 +28,7 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
 
   val messageKeyPrefix = "leadtrustee.individual.name"
 
-  override val form = new NameFormProvider().withPrefix(messageKeyPrefix)
+  override val form = new IndividualNameFormProvider().withPrefix(messageKeyPrefix)
 
   "NameView" must {
 

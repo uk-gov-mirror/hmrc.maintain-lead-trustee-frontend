@@ -16,6 +16,8 @@
 
 package controllers.leadtrustee.individual.actions
 
+import controllers.actions
+import controllers.actions.LeadTrusteeNameRequest
 import javax.inject.Inject
 import models.requests.DataRequest
 import pages.leadtrustee.individual.NamePage
@@ -28,7 +30,7 @@ class NameRequiredAction @Inject()(val executionContext: ExecutionContext, val m
   extends ActionTransformer[DataRequest, LeadTrusteeNameRequest] with I18nSupport {
 
   override protected def transform[A](request: DataRequest[A]): Future[LeadTrusteeNameRequest[A]] = {
-    Future.successful(LeadTrusteeNameRequest[A](request,
+    Future.successful(actions.LeadTrusteeNameRequest[A](request,
       request.userAnswers.get(NamePage)
       .map(_.displayName)
       .getOrElse(request.messages(messagesApi)("leadTrusteeName.defaultText"))

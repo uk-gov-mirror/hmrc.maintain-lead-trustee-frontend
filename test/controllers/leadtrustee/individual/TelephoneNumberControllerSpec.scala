@@ -38,7 +38,7 @@ class TelephoneNumberControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new TelephoneNumberFormProvider()
-  val form = formProvider()
+  val form = formProvider.withPrefix("leadtrustee.individual.telephoneNumber")
 
   val name = Name("Lead", None, "Trustee")
 

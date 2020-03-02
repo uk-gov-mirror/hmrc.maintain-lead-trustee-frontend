@@ -1,6 +1,8 @@
 # microservice specific routes
 
-->         /lead-trustee/individual     leadtrustee.individual.Routes
+->         /lead-trustee/individual         leadtrustee.individual.Routes
+->         /lead-trustee/organisation       leadtrustee.organisation.Routes
+
 ->         /trustee/individual          trustee.individual.Routes
 
 GET        /assets/*file                                                    controllers.Assets.versioned(path="/public", file: Asset)

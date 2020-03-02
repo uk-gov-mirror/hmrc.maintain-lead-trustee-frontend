@@ -34,9 +34,9 @@ object IndividualLeadTrusteeNavigator {
   private val simpleNavigations : PartialFunction[Page, Call] = {
     case NamePage => rts.DateOfBirthController.onPageLoad()
     case DateOfBirthPage => rts.UkCitizenController.onPageLoad()
-    case IdCardDetailsPage => rts.LiveInTheUkYesNoPageController.onPageLoad()
-    case PassportDetailsPage => rts.LiveInTheUkYesNoPageController.onPageLoad()
-    case NationalInsuranceNumberPage => rts.LiveInTheUkYesNoPageController.onPageLoad()
+    case IdCardDetailsPage => rts.LiveInTheUkYesNoController.onPageLoad()
+    case PassportDetailsPage => rts.LiveInTheUkYesNoController.onPageLoad()
+    case NationalInsuranceNumberPage => rts.LiveInTheUkYesNoController.onPageLoad()
     case UkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
     case NonUkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
     case EmailAddressPage => rts.TelephoneNumberController.onPageLoad()

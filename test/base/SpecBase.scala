@@ -20,6 +20,7 @@ import java.time.LocalDate
 
 import connectors.EnrolmentStoreConnector
 import controllers.actions._
+import navigation.{FakeNavigator, Navigator}
 import org.scalatest.{BeforeAndAfter, TestSuite, TryValues}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
@@ -36,6 +37,8 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
   def emptyUserAnswers = models.UserAnswers(TestUserAnswers.userInternalId, "UTRUTRUTR", LocalDate.now())
 
   val bodyParsers = injector.instanceOf[BodyParsers.Default]
+
+  val fakeNavigator = new FakeNavigator()
 
   protected def applicationBuilder(userAnswers: Option[models.UserAnswers] = None,
                                    affinityGroup: AffinityGroup = AffinityGroup.Organisation,

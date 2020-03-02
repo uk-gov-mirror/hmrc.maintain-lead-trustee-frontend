@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.leadtrustee.individual.actions
+package pages.leadtrustee.organisation
 
-import models.UserAnswers
-import models.requests.DataRequest
-import play.api.mvc.WrappedRequest
+import pages.behaviours.PageBehaviours
 
-case class LeadTrusteeNameRequest[T](request: DataRequest[T], leadTrusteeName: String) extends WrappedRequest[T](request){
-  val userAnswers:UserAnswers = request.userAnswers
+class RegisteredInUkYesNoPageSpec extends PageBehaviours {
+
+  "RegisteredInUkYesNoPage" must {
+
+    beRetrievable[Boolean](RegisteredInUkYesNoPage)
+
+    beSettable[Boolean](RegisteredInUkYesNoPage)
+
+    beRemovable[Boolean](RegisteredInUkYesNoPage)
+
+  }
 }

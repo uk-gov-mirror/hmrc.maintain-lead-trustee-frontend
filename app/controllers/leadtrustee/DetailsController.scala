@@ -20,8 +20,8 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.TrustConnector
 import controllers.ReturnToStart
-import controllers.actions.StandardActionSets
-import controllers.leadtrustee.individual.actions.{LeadTrusteeNameRequest, NameRequiredAction}
+import controllers.actions.{LeadTrusteeNameRequest, StandardActionSets}
+import controllers.leadtrustee.individual.actions.NameRequiredAction
 import mapping.LeadTrusteesExtractor
 import models.{LeadTrusteeIndividual, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}

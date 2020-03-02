@@ -27,6 +27,6 @@ class StandardActionSets @Inject()(identify: IdentifierAction,
                                   ){
   val IdentifiedUserWithData: ActionBuilder[DataRequest, AnyContent] = identify andThen getData andThen requireData
 
-  val verifiedForUtr: ActionBuilder[DataRequest, AnyContent] = IdentifiedUserWithData andThen playbackIdentifier
+  val verifiedForUtr: ActionBuilder[DataRequest, AnyContent] = IdentifiedUserWithData// andThen playbackIdentifier
 
 }
