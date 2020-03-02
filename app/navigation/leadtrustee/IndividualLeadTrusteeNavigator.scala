@@ -16,18 +16,14 @@
 
 package navigation.leadtrustee
 
-import models.IdentificationDetailOptions.{IdCard, Passport}
 import models.UserAnswers
-import pages.leadtrustee.individual._
-import models.{AddATrustee, UserAnswers}
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 import controllers.leadtrustee.individual.{routes => rts}
 import controllers.leadtrustee.{routes => leadTrusteeRoutes}
 import models.IdentificationDetailOptions.{IdCard, Passport}
 import pages.leadtrustee.individual._
-import pages.trustee.{AddATrusteePage, AddATrusteeYesNoPage}
-import sections.Trustees
+import pages.trustee.AddATrusteeYesNoPage
 
 object IndividualLeadTrusteeNavigator {
 
@@ -51,7 +47,6 @@ object IndividualLeadTrusteeNavigator {
 
   private val parameterisedNavigation : PartialFunction[Page, UserAnswers => Call] = {
     case IdentificationDetailOptionsPage => idOptionsNavigation
-    case AddATrusteePage => addATrusteeRoute
     case AddATrusteeYesNoPage => addATrusteeYesNoRoute
   }
 
@@ -81,30 +76,6 @@ object IndividualLeadTrusteeNavigator {
       case Some(false) =>
         controllers.routes.IndexController.onPageLoad(userAnswers.utr)
       case _ =>  controllers.routes.SessionExpiredController.onPageLoad()
-    }
-  }
-
-  private def addATrusteeRoute(answers: UserAnswers) = {
-    val addAnother = answers.get(AddATrusteePage)
-
-    def routeToTrusteeIndex = {
-      val trustees = answers.get(Trustees).getOrElse(List.empty)
-      trustees match {
-        case Nil =>
-          controllers.trustee.individual.routes.NameController.onPageLoad(0)
-        case t if t.nonEmpty =>
-          controllers.trustee.individual.routes.NameController.onPageLoad(t.size)
-      }
-    }
-
-    addAnother match {
-      case Some(AddATrustee.YesNow) =>
-        routeToTrusteeIndex
-      case Some(AddATrustee.YesLater) =>
-        controllers.routes.IndexController.onPageLoad(answers.utr)
-      case Some(AddATrustee.NoComplete) =>
-        controllers.routes.IndexController.onPageLoad(answers.utr)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
 

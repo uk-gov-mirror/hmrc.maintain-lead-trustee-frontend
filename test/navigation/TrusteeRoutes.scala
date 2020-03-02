@@ -16,46 +16,29 @@
 
 package navigation
 
+import base.SpecBase
 import generators.Generators
-import models.{AddATrustee, NormalMode, UserAnswers}
+import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.prop.PropertyChecks
-import sections.Trustees
-import base.SpecBase
-import pages.trustee.{AddATrusteePage, AddATrusteeYesNoPage, IsThisLeadTrusteePage}
+import pages.trustee.AddATrusteeYesNoPage
 
 trait AddATrusteeRoutes {
 
   self: PropertyChecks with Generators with SpecBase =>
 
-  val index = 0
-
   def addATrusteeRoutes()(implicit navigator: Navigator) = {
 
     "there are no trustees" must {
-
-      "go to the next trustee from AddATrusteePage when selected add them now" in {
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-
-            val answers = userAnswers
-              .set(AddATrusteePage, AddATrustee.YesNow).success.value
-              .remove(Trustees).success.value
-
-            navigator.nextPage(AddATrusteePage, answers)
-              .mustBe(controllers.trustee.individual.routes.NameController.onPageLoad(index))
-        }
-      }
 
       "go to the next trustee from AddATrusteeYesNoPage when selecting yes" in {
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
 
             val answers = userAnswers.set(AddATrusteeYesNoPage, true).success.value
-                .remove(Trustees).success.value
 
             navigator.nextPage(AddATrusteeYesNoPage, answers)
-              .mustBe(controllers.trustee.individual.routes.NameController.onPageLoad(index))
+              .mustBe(controllers.trustee.individual.routes.NameController.onPageLoad(0))
         }
       }
 
@@ -64,51 +47,12 @@ trait AddATrusteeRoutes {
           userAnswers =>
 
             val answers = userAnswers.set(AddATrusteeYesNoPage, false).success.value
-              .remove(Trustees).success.value
 
             navigator.nextPage(AddATrusteeYesNoPage, answers)
               .mustBe(controllers.routes.IndexController.onPageLoad(answers.utr))
         }
       }
 
-    }
-
-    "there is at least one trustee" must {
-
-      "go to the next trustee from AddATrusteePage when selected add them now" in {
-
-            val answers = emptyUserAnswers
-              .set(IsThisLeadTrusteePage(index), true).success.value
-              .set(AddATrusteePage, AddATrustee.YesNow).success.value
-
-            navigator.nextPage(AddATrusteePage, answers)
-              .mustBe(controllers.trustee.individual.routes.NameController.onPageLoad(1))
-      }
-
-    }
-
-    "go to Index page from AddATrusteePage when selecting add them later" in {
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-
-          val answers = userAnswers.set(IsThisLeadTrusteePage(index), true).success.value
-            .set(AddATrusteePage, AddATrustee.YesLater).success.value
-
-          navigator.nextPage(AddATrusteePage, answers)
-            .mustBe(controllers.routes.IndexController.onPageLoad(answers.utr))
-      }
-    }
-
-    "go to Index page from AddATrusteePage when selecting added them all" in {
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-
-          val answers = userAnswers.set(IsThisLeadTrusteePage(index), true).success.value
-            .set(AddATrusteePage, AddATrustee.NoComplete).success.value
-
-          navigator.nextPage(AddATrusteePage, answers)
-            .mustBe(controllers.routes.IndexController.onPageLoad(answers.utr))
-      }
     }
 
   }

@@ -22,7 +22,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, ActionBuilder, AnyContent, Call}
 import play.twirl.api.HtmlFormat
-import queries.Settable
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.RemoveIndexView
 import repositories.PlaybackRepository
@@ -50,8 +49,6 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
 
   def formRoute(index: Int) : Call
 
-  def removeQuery(index : Int) : Settable[_]
-
   def content(index: Int)(implicit request: DataRequest[AnyContent]) : String
 
   def view(form: Form[_], index: Int)
@@ -74,10 +71,7 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
           Future.successful(BadRequest(view(formWithErrors, index))),
         value => {
           if (value) {
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.remove(removeQuery(index)))
-              _              <- repository.set(updatedAnswers)
-            } yield Redirect(redirect.url)
+            Future.successful(Redirect(redirect.url))
           } else {
             Future.successful(Redirect(redirect.url))
           }

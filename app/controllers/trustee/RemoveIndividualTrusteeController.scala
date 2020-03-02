@@ -25,7 +25,6 @@ import models.requests.DataRequest
 import pages.QuestionPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Call, MessagesControllerComponents}
-import queries.{RemoveTrusteeQuery, Settable}
 import repositories.PlaybackRepository
 import views.html.RemoveIndexView
 import pages.trustee.individual.NamePage
@@ -53,8 +52,6 @@ class RemoveIndividualTrusteeController @Inject()(
 
   override def formRoute(index: Int): Call =
     controllers.trustee.routes.RemoveIndividualTrusteeController.onSubmit(index)
-
-  override def removeQuery(index: Int): Settable[_] = RemoveTrusteeQuery(index)
 
   override def content(index: Int)(implicit request: DataRequest[AnyContent]) : String =
     request.userAnswers.get(page(index)).map(_.toString).getOrElse(Messages(s"$messagesPrefix.default"))
