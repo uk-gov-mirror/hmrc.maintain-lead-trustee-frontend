@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.leadtrustee.individual.actions
+package controllers.leadtrustee.actions
 
 import controllers.actions
 import controllers.actions.LeadTrusteeNameRequest
 import javax.inject.Inject
 import models.requests.DataRequest
-import pages.leadtrustee.individual.NamePage
+import pages.leadtrustee._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.ActionTransformer
 
@@ -31,9 +31,18 @@ class NameRequiredAction @Inject()(val executionContext: ExecutionContext, val m
 
   override protected def transform[A](request: DataRequest[A]): Future[LeadTrusteeNameRequest[A]] = {
     Future.successful(actions.LeadTrusteeNameRequest[A](request,
-      request.userAnswers.get(NamePage)
-      .map(_.displayName)
-      .getOrElse(request.messages(messagesApi)("leadTrusteeName.defaultText"))
+      getName(request)
     ))
+  }
+
+  private def getName[A](request: DataRequest[A]): String = {
+    val indName = request.userAnswers.get(individual.NamePage)
+    val orgName = request.userAnswers.get(organisation.NamePage)
+
+    (indName, orgName) match {
+      case (Some(name), _) => name.displayName
+      case (_, Some(name)) => name
+      case _ => request.messages(messagesApi)("leadTrusteeName.defaultText")
+    }
   }
 }

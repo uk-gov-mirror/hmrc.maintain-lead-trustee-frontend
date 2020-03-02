@@ -29,7 +29,7 @@ import scala.util.{Failure, Success}
 class LeadTrusteeExtractorSpec extends FreeSpec with ScalaCheckPropertyChecks with ModelGenerators with MustMatchers {
   "should round trip through user answers" in {
     forAll(arbitraryLeadTrusteeIndividual.arbitrary) { lt =>
-      val extractor = new LeadTrusteesExtractor()
+      val extractor = new LeadTrusteeIndividualExtractor()
       val userAnswers = new UserAnswers("Id", "UTRUTRUTR", LocalDate.of(1987, 12, 31), Json.obj())
       extractor.extractLeadTrusteeIndividual(userAnswers, lt) match {
         case Failure(_) => fail("Setting user answers failed")

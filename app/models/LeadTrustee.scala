@@ -26,7 +26,7 @@ object LeadTrustee {
 
   implicit val writes: Writes[LeadTrustee] = Writes[LeadTrustee] {
     case lti:LeadTrusteeIndividual => Json.toJson(lti)(LeadTrusteeIndividual.writes)
-    case _:LeadTrusteeOrganisation => ???
+    case lto:LeadTrusteeOrganisation => Json.toJson(lto)(LeadTrusteeOrganisation.writes)
   }
 
   implicit val reads : Reads[LeadTrustee] = Reads(json =>
@@ -62,26 +62,27 @@ object LeadTrusteeIndividual {
 }
 
 case class LeadTrusteeOrganisation(
-                                    lineNo: String,
-                                    bpMatchStatus: Option[String],
                                     name: String,
                                     phoneNumber: String,
                                     email: Option[String] = None,
                                     utr: Option[String],
-                                    address: Address,
-                                    entityStart: String
+                                    address: Address
                                   ) extends LeadTrustee
 
 object LeadTrusteeOrganisation {
   implicit val reads : Reads[LeadTrusteeOrganisation] =
-    ((__ \ 'lineNo).read[String] and
-    (__ \ 'bpMatchStatus).readNullable[String] and
-    (__ \ 'name).read[String] and
+    ((__ \ 'name).read[String] and
     (__ \ 'phoneNumber).read[String] and
     (__ \ 'email).readNullable[String] and
     (__ \ 'identification \ 'utr).readNullable[String] and
-    (__ \ 'identification \ 'address).read[Address] and
-    (__ \ 'entityStart).read[String]).apply(LeadTrusteeOrganisation.apply _)
+    (__ \ 'identification \ 'address).read[Address]).apply(LeadTrusteeOrganisation.apply _)
+
+  implicit val writes: Writes[LeadTrusteeOrganisation] =
+    ((__ \ 'name).write[String] and
+      (__ \ 'phoneNumber).write[String] and
+      (__ \ 'email).writeNullable[String] and
+      (__ \ 'identification \ 'utr).writeNullable[String] and
+      (__ \ 'identification \ 'address).write[Address]).apply(unlift(LeadTrusteeOrganisation.unapply))
 }
 
 

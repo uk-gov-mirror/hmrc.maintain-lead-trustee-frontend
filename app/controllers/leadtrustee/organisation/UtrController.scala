@@ -17,7 +17,7 @@
 package controllers.leadtrustee.organisation
 
 import controllers.actions.StandardActionSets
-import controllers.leadtrustee.organisation.actions.NameRequiredAction
+import controllers.leadtrustee.actions.NameRequiredAction
 import forms.UtrFormProvider
 import javax.inject.Inject
 import navigation.Navigator
