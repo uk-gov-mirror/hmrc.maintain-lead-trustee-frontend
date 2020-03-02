@@ -44,4 +44,7 @@ POST       /trustee/:index/when-was-trustee-added                           cont
 GET        /trustee/:index/check-details                                    controllers.trustee.CheckDetailsController.onPageLoad(index: Int)
 POST       /trustee/:index/check-details                                    controllers.trustee.CheckDetailsController.onSubmit(index: Int)
 
+GET        /trustee/:index/when-was-trustee-removed                         controllers.trustee.WhenRemovedController.onPageLoad(index: Int)
+POST       /trustee/:index/when-was-trustee-removed                         controllers.trustee.WhenRemovedController.onSubmit(index: Int)
+
 GET        /:utr                                                            controllers.IndexController.onPageLoad(utr: String)

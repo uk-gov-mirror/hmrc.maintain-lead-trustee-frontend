@@ -480,3 +480,14 @@ trustee.whenAdded.error.past = The date the trustee was added to the trust canno
 
 trustee.checkDetails.title = Check trustee details
 trustee.checkDetails.heading = Check trustee details
+
+trustee.whenRemoved.checkYourAnswersLabel = When was {0} removed as a trustee?
+trustee.whenRemoved.title = When was the trustee removed as a trustee?
+trustee.whenRemoved.heading = When was {0} removed as a trustee?
+trustee.whenRemoved.hint = Check the trust deed or the power of appointment document. For example, 31 3 1980
+trustee.whenRemoved.error.required.all = Enter the date the trustee was removed from the trust
+trustee.whenRemoved.error.required.two = The date the trustee was removed from the trust must include a {0} and {1}
+trustee.whenRemoved.error.required = The date the trustee was removed from the trust must include {0}
+trustee.whenRemoved.error.invalid = Enter a real date when the trustee was removed from the trust
+trustee.whenRemoved.error.future = The date the trustee was removed from the trust must be today or in the past
+trustee.whenRemoved.error.past = The date the trustee was was removed from trust cannot be before the start date of the trust
