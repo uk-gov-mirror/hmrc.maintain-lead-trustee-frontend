@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import utils.countryOptions.CountryOptions
+import utils.countryOptions.CountryOptionsNonUK
 import views.html.leadtrustee.organisation.NonUkAddressView
 
 import scala.concurrent.Future
@@ -41,7 +41,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val nonUkAddressRoute = routes.NonUkAddressController.onPageLoad().url
 
-  val countryOptions = injector.instanceOf[CountryOptions]
+  val countryOptions = injector.instanceOf[CountryOptionsNonUK]
 
   val name = "Org Name"
   val address = NonUkAddress("line 1", "line 2", None, "DE")
