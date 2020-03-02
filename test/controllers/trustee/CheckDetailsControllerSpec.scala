@@ -17,47 +17,38 @@
 package controllers.trustee
 
 import java.time.LocalDate
-import java.util.concurrent.TimeUnit
 
-import akka.util.Timeout
 import base.SpecBase
 import connectors.TrustConnector
 import models.IndividualOrBusiness.Individual
-import models.requests.{AgentUser, DataRequest}
 import models.{Name, UkAddress}
-import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import pages.trustee.individual.{NamePage, UkAddressPage}
+import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.PlaybackRepository
-import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
+import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.countryOptions.CountryOptions
 import utils.print.AnswerRowConverter
 import viewmodels.AnswerSection
 import views.html.trustee.CheckDetailsView
-import views.html.trustee.individual.UkAddressView
 
 import scala.concurrent.Future
-import scala.concurrent.duration.Duration
 
 class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
-  def onwardRoute = Call("GET", "/foo")
-  
+
   val index = 0
 
   val trusteeName = Name("FirstName", None, "LastName")
   val trusteeAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
 
-  lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoad(index).url
-  lazy val sendDetailsRoute = routes.CheckDetailsController.onSubmit(index).url
+  private lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoad(index).url
+  private lazy val submitDetailsRoute = routes.CheckDetailsController.onSubmit(index).url
+  private lazy val onwardRoute = controllers.routes.AddATrusteeController.onPageLoad().url
 
   "CheckDetails Controller" must {
 
@@ -91,7 +82,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
     }
   }
 
-    "redirect to the Agent declaration journey when affinity group is agent" in {
+    "redirect to the 'add a trustee' page when submitted" in {
 
       val mockTrustConnector = mock[TrustConnector]
 
@@ -108,39 +99,12 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockTrustConnector.addTrusteeIndividual(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
 
-      val request = FakeRequest(POST, sendDetailsRoute)
+      val request = FakeRequest(POST, submitDetailsRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value must include("/is-agency-address-in-uk")
+      redirectLocation(result).value mustEqual onwardRoute
     }
-
-  "redirect to the Ind/Org declaration journey when affinity group is not an agent" in {
-
-    val mockTrustConnector = mock[TrustConnector]
-
-    val userAnswers = emptyUserAnswers
-      .set(NamePage(index), trusteeName).success.value
-      .set(WhenAddedPage(index), LocalDate.now).success.value
-
-    val application =
-      applicationBuilder(userAnswers = Some(userAnswers),
-        affinityGroup = Organisation)
-        .overrides(
-          bind[TrustConnector].toInstance(mockTrustConnector)
-        ).build()
-
-    when(mockTrustConnector.addTrusteeIndividual(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
-
-    val request = FakeRequest(POST, sendDetailsRoute)
-
-    val result = route(application, request).value
-
-    status(result) mustEqual SEE_OTHER
-
-    redirectLocation(result).value must include("/individual-declaration")
-  }
-
 }

@@ -19,7 +19,6 @@ package controllers.leadtrustee
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.TrustConnector
-import controllers.ReturnToStart
 import controllers.actions.{LeadTrusteeNameRequest, StandardActionSets}
 import controllers.leadtrustee.actions.NameRequiredAction
 import mapping.{LeadTrusteeIndividualExtractor, LeadTrusteeOrganisationExtractor}
@@ -55,7 +54,7 @@ class CheckDetailsController @Inject()(
                                         countryOptions: CountryOptions,
                                         val appConfig: FrontendAppConfig
                                           )(implicit val executionContext: ExecutionContext)
-  extends FrontendBaseController with I18nSupport with ReturnToStart {
+  extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameRequiredAction).async {
     implicit request =>
@@ -109,17 +108,14 @@ class CheckDetailsController @Inject()(
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
       request.userAnswers.get(IndividualOrBusinessPage) match {
-        case Some(Individual) =>
+        case Some(_) =>
           leadTrusteeIndExtractor.mapLeadTrusteeIndividual(request.userAnswers) match {
             case None => Future.successful(InternalServerError)
-            case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ => returnToStart(request.user.affinityGroup))
+            case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ =>
+              Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+            )
           }
-        case Some(Business) =>
-          leadTrusteeOrgExtractor.mapLeadTrusteeOrganisation(request.userAnswers) match {
-            case None => Future.successful(InternalServerError)
-            case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ => returnToStart(request.user.affinityGroup))
-          }
-        case None =>
+         case None =>
           Future.successful(InternalServerError)
       }
 

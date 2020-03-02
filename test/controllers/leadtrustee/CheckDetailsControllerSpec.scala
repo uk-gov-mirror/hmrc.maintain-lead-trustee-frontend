@@ -111,29 +111,6 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value must include("/is-agency-address-in-uk")
+      redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
     }
-
-  "redirect to the Ind/Org declaration journey when affinity group is not an agent" in {
-
-    val mockTrustConnector = mock[TrustConnector]
-
-    val application =
-      applicationBuilder(userAnswers = Some(submittableUserAnswers),
-        affinityGroup = Organisation)
-        .overrides(
-          bind[TrustConnector].toInstance(mockTrustConnector)
-        ).build()
-
-    when(mockTrustConnector.amendLeadTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
-
-    val request = FakeRequest(POST, sendDetailsRoute)
-
-    val result = route(application, request).value
-
-    status(result) mustEqual SEE_OTHER
-
-    redirectLocation(result).value must include("/individual-declaration")
-  }
-
 }
