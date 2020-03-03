@@ -19,13 +19,13 @@ package services
 import java.time.LocalDate
 
 import connectors.TrustConnector
-import models.{AllTrustees, IndividualIdentification, LeadTrustee, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrusteeIndividual, TrusteeType, Trustees}
+import models.{AllTrustees, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrusteeType, Trustees}
 import org.joda.time.DateTime
-import org.scalatest.{FreeSpec, MustMatchers}
-import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.{FreeSpec, MustMatchers}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -39,6 +39,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
   "Trust service" - {
 
     "get all trustees" in {
+
       val trusteeInd = RemoveTrusteeIndividual(
         lineNo = Some("1"),
         bpMatchStatus = Some("01"),
@@ -117,23 +118,14 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
 
       val service = new TrustServiceImpl(mockConnector)
 
-      val trustee : RemoveTrustee =  RemoveTrustee(trustee = TrusteeType(
-        trusteeInd = Some(RemoveTrusteeIndividual(
-          lineNo = Some("1"),
-          bpMatchStatus = Some("01"),
-          name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
-          dateOfBirth = Some(DateTime.parse("1983-9-24")),
-          phoneNumber = None,
-          identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-          entityStart = DateTime.parse("2019-2-28"))
-        ),
-        trusteeOrg = None),
+      val trustee : RemoveTrustee =  RemoveTrustee(
+        index = 0,
         endDate = LocalDate.now()
       )
 
       implicit val hc : HeaderCarrier = HeaderCarrier()
 
-      val result = service.removeTrustee(trustee, "1234567890")
+      val result = service.removeTrustee("1234567890", trustee)
 
       whenReady(result) { r =>
         r.status mustBe 200

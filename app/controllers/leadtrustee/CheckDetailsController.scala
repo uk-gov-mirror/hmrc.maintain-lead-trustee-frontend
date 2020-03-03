@@ -19,15 +19,11 @@ package controllers.leadtrustee
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.TrustConnector
-import controllers.ReturnToStart
 import controllers.actions.StandardActionSets
-import controllers.actions.{LeadTrusteeNameRequest, StandardActionSets}
-import controllers.leadtrustee.actions.NameRequiredAction
-import mapping.{LeadTrusteeIndividualExtractor, LeadTrusteeOrganisationExtractor}
-import models.IndividualOrBusiness._
+import controllers.leadtrustee.{routes => ltRoutes}
+import mapping.{IndividualLeadTrusteeToUserAnswersMapper, LeadTrusteeOrganisationExtractor}
 import models.requests.DataRequest
 import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, UserAnswers}
-import pages.leadtrustee.IndividualOrBusinessPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -47,7 +43,7 @@ class CheckDetailsController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
                                         connector: TrustConnector,
-                                        leadTrusteeIndExtractor: LeadTrusteeIndividualExtractor,
+                                        leadTrusteeIndMapper: IndividualLeadTrusteeToUserAnswersMapper,
                                         leadTrusteeOrgExtractor: LeadTrusteeOrganisationExtractor,
                                         leadTrusteeIndPrintHelper: LeadTrusteeIndividualPrintHelper,
                                         leadTrusteeOrgPrintHelper: LeadTrusteeOrganisationPrintHelper,
@@ -55,15 +51,16 @@ class CheckDetailsController @Inject()(
                                         answerRowConverter: AnswerRowConverter,
                                         countryOptions: CountryOptions,
                                         val appConfig: FrontendAppConfig
-                                          )(implicit val executionContext: ExecutionContext)
+                                        )(implicit val executionContext: ExecutionContext)
+
   extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr).async {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       connector.getLeadTrustee(request.userAnswers.utr).flatMap {
         case trusteeInd: LeadTrusteeIndividual =>
-          val answers: Try[UserAnswers] = leadTrusteeIndExtractor.extractLeadTrusteeIndividual(request.userAnswers, trusteeInd)
+          val answers: Try[UserAnswers] = leadTrusteeIndMapper.populateUserAnswers(request.userAnswers, trusteeInd)
           for {
             updatedAnswers <- Future.fromTry(answers)
             _ <- repository.set(updatedAnswers)
@@ -78,19 +75,15 @@ class CheckDetailsController @Inject()(
           } yield {
             renderOrganisationLeadTrustee(updatedAnswers)
           }
-        case _ => val section = AnswerSection(None, Seq())
-
-          Future.successful(Ok(view(section)))
       }
   }
 
-  def onPageLoadUpdated(): Action[AnyContent] = (standardActionSets.verifiedForUtr) {
-    implicit request =>
-      request.userAnswers.get(IndividualOrBusinessPage) match {
-        case Some(Individual) => renderIndividualLeadTrustee(request.userAnswers)
-        case Some(Business) => renderOrganisationLeadTrustee(request.userAnswers)
-        case None => Ok(view(AnswerSection(None, Seq())))
-      }
+  def onPageLoadIndividualUpdated(): Action[AnyContent] = (standardActionSets.verifiedForUtr) {
+    implicit request => renderIndividualLeadTrustee(request.userAnswers)
+  }
+
+  def onPageLoadOrganisationUpdated(): Action[AnyContent] = (standardActionSets.verifiedForUtr) {
+    implicit request => renderOrganisationLeadTrustee(request.userAnswers)
   }
 
   private def renderIndividualLeadTrustee(updatedAnswers: UserAnswers)(implicit request: DataRequest[AnyContent]) = {
@@ -100,7 +93,7 @@ class CheckDetailsController @Inject()(
       updatedAnswers.get(pages.leadtrustee.individual.NamePage).map(_.displayName).getOrElse(request.messages(messagesApi)("leadTrusteeName.defaultText"))
     )
 
-    Ok(view(section))
+    Ok(view(section, ltRoutes.CheckDetailsController.onSubmitIndividual()))
   }
 
   private def renderOrganisationLeadTrustee(updatedAnswers: UserAnswers)(implicit request: DataRequest[AnyContent]) = {
@@ -110,22 +103,26 @@ class CheckDetailsController @Inject()(
       updatedAnswers.get(pages.leadtrustee.organisation.NamePage).getOrElse(request.messages(messagesApi)("leadTrusteeName.defaultText"))
     )
 
-    Ok(view(section))
+    Ok(view(section, ltRoutes.CheckDetailsController.onSubmitOrganisation()))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onSubmitIndividual(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
-      request.userAnswers.get(IndividualOrBusinessPage) match {
-        case Some(_) =>
-          leadTrusteeIndExtractor.mapLeadTrusteeIndividual(request.userAnswers) match {
-            case None => Future.successful(InternalServerError)
-            case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ =>
-              Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-            )
-          }
-        case None =>
-          Future.successful(InternalServerError)
-      }
+        leadTrusteeIndMapper.getFromUserAnswers(request.userAnswers) match {
+          case None => Future.successful(InternalServerError)
+          case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ =>
+            Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+          )
+        }
+  }
 
+  def onSubmitOrganisation(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+    implicit request =>
+        leadTrusteeOrgExtractor.mapLeadTrusteeOrganisation(request.userAnswers) match {
+          case None => Future.successful(InternalServerError)
+          case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ =>
+            Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+          )
+        }
   }
 }

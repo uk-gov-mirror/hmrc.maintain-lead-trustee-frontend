@@ -5,9 +5,6 @@ POST       /name                                    controllers.leadtrustee.indi
 GET        /date-of-birth                           controllers.leadtrustee.individual.DateOfBirthController.onPageLoad()
 POST       /date-of-birth                           controllers.leadtrustee.individual.DateOfBirthController.onSubmit()
 
-GET        /id-card                                 controllers.leadtrustee.individual.IdCardDetailsController.onPageLoad()
-POST       /id-card                                 controllers.leadtrustee.individual.IdCardDetailsController.onSubmit()
-
 GET        /lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoController.onPageLoad()
 POST       /lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoController.onSubmit()
 
@@ -17,8 +14,8 @@ POST       /national-insurance-number               controllers.leadtrustee.indi
 GET        /international-address                   controllers.leadtrustee.individual.NonUkAddressController.onPageLoad()
 POST       /international-address                   controllers.leadtrustee.individual.NonUkAddressController.onSubmit()
 
-GET        /passport                                controllers.leadtrustee.individual.PassportDetailsController.onPageLoad()
-POST       /passport                                controllers.leadtrustee.individual.PassportDetailsController.onSubmit()
+GET        /passport-or-id-card                     controllers.leadtrustee.individual.PassportOrIdCardController.onPageLoad()
+POST       /passport-or-id-card                     controllers.leadtrustee.individual.PassportOrIdCardController.onSubmit()
 
 GET        /uk-address                              controllers.leadtrustee.individual.UkAddressController.onPageLoad()
 POST       /uk-address                              controllers.leadtrustee.individual.UkAddressController.onSubmit()
@@ -31,9 +28,6 @@ POST       /email                                   controllers.leadtrustee.indi
 
 GET        /has-email                               controllers.leadtrustee.individual.EmailAddressYesNoController.onPageLoad()
 POST       /has-email                               controllers.leadtrustee.individual.EmailAddressYesNoController.onSubmit()
-
-GET        /what-identification                     controllers.leadtrustee.individual.IdentificationDetailOptionsController.onPageLoad()
-POST       /what-identification                     controllers.leadtrustee.individual.IdentificationDetailOptionsController.onSubmit()
 
 GET        /telephone-number                        controllers.leadtrustee.individual.TelephoneNumberController.onPageLoad()
 POST       /telephone-number                        controllers.leadtrustee.individual.TelephoneNumberController.onSubmit()

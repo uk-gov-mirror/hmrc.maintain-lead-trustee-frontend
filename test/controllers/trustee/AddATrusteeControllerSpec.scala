@@ -90,7 +90,7 @@ class AddATrusteeControllerSpec extends SpecBase {
     override def getTrustee(utr: String, index: Int)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[TrusteeType] =
       Future.successful(trustee)
 
-    override def removeTrustee(removeTrustee: RemoveTrustee, utr: String)
+    override def removeTrustee(utr: String, trustee: RemoveTrustee)
                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(200))
 
   }
@@ -175,7 +175,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.trustee.individual.routes.NameController.onPageLoad(0).url
+        redirectLocation(result).value mustEqual controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(0).url
 
         application.stop()
       }

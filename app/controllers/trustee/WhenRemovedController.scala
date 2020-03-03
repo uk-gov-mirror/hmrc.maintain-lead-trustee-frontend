@@ -20,11 +20,13 @@ import controllers.actions.StandardActionSets
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.DateRemovedFromTrustFormProvider
 import javax.inject.Inject
+import models.RemoveTrustee
 import navigation.Navigator
 import pages.trustee.WhenRemovedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
+import services.TrustService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.trustee.WhenRemovedView
 
@@ -38,7 +40,8 @@ class WhenRemovedController @Inject()(
                                      nameAction: TrusteeNameRequiredProvider,
                                      formProvider: DateRemovedFromTrustFormProvider,
                                      val controllerComponents: MessagesControllerComponents,
-                                     view: WhenRemovedView
+                                     view: WhenRemovedView,
+                                     trustService: TrustService
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
@@ -65,9 +68,8 @@ class WhenRemovedController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhenRemovedPage(index), value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(WhenRemovedPage(index), updatedAnswers))
+            _ <- trustService.removeTrustee(request.userAnswers.utr, RemoveTrustee(index, value))
+          } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
       )
   }
 }

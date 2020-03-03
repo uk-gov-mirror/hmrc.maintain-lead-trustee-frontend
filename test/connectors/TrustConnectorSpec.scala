@@ -43,7 +43,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
   private def getTrusteesUrl(utr: String) = s"/trusts/$utr/transformed/trustees"
 
-  private def removeTrusteeUrl(utr: String) = s"/trusts/remove-trustee/$utr"
+  private def removeTrusteeUrl(utr: String) = s"/trusts/$utr/trustees/remove"
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
 
@@ -226,17 +226,8 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       val utr = "1000000008"
 
-      val trustee = RemoveTrustee(trustee = TrusteeType(
-        trusteeInd = Some(RemoveTrusteeIndividual(
-          lineNo = Some("1"),
-          bpMatchStatus = Some("01"),
-          name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
-          dateOfBirth = Some(DateTime.parse("1983-9-24")),
-          phoneNumber = None,
-          identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-          entityStart = DateTime.parse("2019-2-28"))
-        ),
-        trusteeOrg = None),
+      val trustee = RemoveTrustee(
+        index = 0,
         endDate = LocalDate.now()
       )
 
@@ -251,7 +242,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo(removeTrusteeUrl(utr)))
+        put(urlEqualTo(removeTrusteeUrl(utr)))
           .willReturn(ok)
       )
 
@@ -266,17 +257,8 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       val utr = "1000000008"
 
-      val trustee = RemoveTrustee(trustee = TrusteeType(
-        trusteeInd = Some(RemoveTrusteeIndividual(
-          lineNo = Some("1"),
-          bpMatchStatus = Some("01"),
-          name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
-          dateOfBirth = Some(DateTime.parse("1983-9-24")),
-          phoneNumber = None,
-          identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-          entityStart = DateTime.parse("2019-2-28"))
-        ),
-        trusteeOrg = None),
+      val trustee = RemoveTrustee(
+        index = 0,
         endDate = LocalDate.now()
       )
 
@@ -291,7 +273,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo(removeTrusteeUrl(utr)))
+        put(urlEqualTo(removeTrusteeUrl(utr)))
           .willReturn(badRequest)
       )
 

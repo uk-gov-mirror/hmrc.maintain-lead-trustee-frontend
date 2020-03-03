@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package generators
+package generators.leadtrustee.individual
 
 import org.scalacheck.Arbitrary
-import pages._
 import pages.leadtrustee.individual._
 
 trait PageGenerators {
 
   implicit lazy val arbitraryTelephoneNumberPage: Arbitrary[TelephoneNumberPage.type] =
     Arbitrary(TelephoneNumberPage)
-
-  implicit lazy val arbitraryIdentificationDetailOptionsPage: Arbitrary[IdentificationDetailOptionsPage.type] =
-    Arbitrary(IdentificationDetailOptionsPage)
 
   implicit lazy val arbitraryEmailAddressYesNoPage: Arbitrary[EmailAddressYesNoPage.type] =
     Arbitrary(EmailAddressYesNoPage)
@@ -40,8 +36,8 @@ trait PageGenerators {
   implicit lazy val arbitraryUkAddressPage: Arbitrary[UkAddressPage.type] =
     Arbitrary(UkAddressPage)
 
-  implicit lazy val arbitraryPassportDetailsPage: Arbitrary[PassportDetailsPage.type] =
-    Arbitrary(PassportDetailsPage)
+  implicit lazy val arbitraryPassportDetailsPage: Arbitrary[PassportOrIdCardDetailsPage.type] =
+    Arbitrary(PassportOrIdCardDetailsPage)
 
   implicit lazy val arbitraryNonUkAddressPage: Arbitrary[NonUkAddressPage.type] =
     Arbitrary(NonUkAddressPage)
@@ -54,9 +50,6 @@ trait PageGenerators {
 
   implicit lazy val arbitraryLiveInTheUkYesNoPagePage: Arbitrary[LiveInTheUkYesNoPage.type] =
     Arbitrary(LiveInTheUkYesNoPage)
-
-  implicit lazy val arbitraryIdCardDetailsPage: Arbitrary[IdCardDetailsPage.type] =
-    Arbitrary(IdCardDetailsPage)
 
   implicit lazy val arbitraryDateOfBirthPage: Arbitrary[DateOfBirthPage.type] =
     Arbitrary(DateOfBirthPage)

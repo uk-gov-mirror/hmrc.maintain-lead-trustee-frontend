@@ -16,6 +16,15 @@
 
 package models
 
+import play.api.i18n.{Messages, MessagesProvider}
+
 case class AllTrustees(lead: Option[LeadTrustee], trustees: List[TrusteeType]) {
+
   val size: Int = lead.size + trustees.size
+
+  def addToHeading()(implicit mp: MessagesProvider) = size match {
+    case 0 => Messages("addATrustee.heading")
+    case 1 => Messages("addATrustee.singular.heading")
+    case l => Messages("addATrustee.count.heading", l)
+  }
 }

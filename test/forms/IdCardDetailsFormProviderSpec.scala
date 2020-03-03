@@ -14,36 +14,34 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
-import forms.{EmailAddressFormProvider, Validation}
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
-import wolfendale.scalacheck.regexp.RegexpGen
 
-class EmailAddressFormProviderSpec extends StringFieldBehaviours {
+class IdCardDetailsFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "leadtrustee.individual.emailAddress.error.required"
-  val lengthKey = "leadtrustee.individual.emailAddress.error.length"
-  val maxLength = 35
+  val requiredKey = "leadtrustee.individual.idCardDetails.country.error.required"
+  val lengthKey = "leadtrustee.individual.idCardDetails.country.error.length"
+  val maxLengthCountryField = 100
 
-  val form = new EmailAddressFormProvider().withPrefix("leadtrustee.individual.emailAddress")
+  val form = new IdCardDetailsFormProvider().withPrefix("leadtrustee")
 
-  ".value" must {
+  ".country" must {
 
-    val fieldName = "value"
+    val fieldName = "country"
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(Validation.emailRegex)
+      stringsWithMaxLength(maxLengthCountryField)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      maxLength = maxLengthCountryField,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLengthCountryField))
     )
 
     behave like mandatoryField(

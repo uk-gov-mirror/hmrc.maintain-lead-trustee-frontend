@@ -36,5 +36,3 @@ class Navigator @Inject()() {
       normalRoutes(page)(userAnswers)
 
 }
-
-

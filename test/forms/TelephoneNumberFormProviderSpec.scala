@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
-import forms.{NationalInsuranceNumberFormProvider, Validation}
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class NationalInsuranceNumberFormProviderSpec extends StringFieldBehaviours {
+class TelephoneNumberFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "leadtrustee.individual.nationalInsuranceNumber.error.required"
-  val invalidFormatKey = "leadtrustee.individual.nationalInsuranceNumber.error.invalidFormat"
+  val requiredKey = "leadtrustee.individual.telephoneNumber.error.required"
+  val lengthKey = "leadtrustee.individual.telephoneNumber.error.length"
+  val maxLength = 100
 
-  val form = new NationalInsuranceNumberFormProvider().withPrefix("leadtrustee.individual.nationalInsuranceNumber")
+  val form = new TelephoneNumberFormProvider().withPrefix("leadtrustee.individual.telephoneNumber")
 
   ".value" must {
 
@@ -35,25 +35,13 @@ class NationalInsuranceNumberFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(Validation.ninoRegex)
+      RegexpGen.from(Validation.telephoneRegex)
     )
 
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
-    )
-
-    behave like nonEmptyField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(fieldName))
-    )
-
-    behave like ninoField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, invalidFormatKey, Seq(fieldName))
     )
   }
 }
