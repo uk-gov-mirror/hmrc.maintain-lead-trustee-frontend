@@ -52,7 +52,8 @@ class AddATrusteeController @Inject()(
   with Enumerable.Implicits
   with ReturnToStart {
 
-  val addAnotherForm = addAnotherFormProvider()
+  val addAnotherForm : Form[AddATrustee] = addAnotherFormProvider()
+
   val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addATrusteeYesNo")
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
@@ -60,18 +61,17 @@ class AddATrusteeController @Inject()(
 
       trust.getAllTrustees(request.userAnswers.utr) map {
         case AllTrustees(None, Nil) => Ok(yesNoView(yesNoForm))
-        case all: AllTrustees => {
+        case all: AllTrustees =>
 
           val trustees = new AddATrusteeViewHelper(all).rows
 
-          Ok(addAnotherView(addAnotherForm,
-            trustees.inProgress,
-            trustees.complete,
-            isLeadTrusteeDefined = false,
-            heading(all.size)
+          Ok(addAnotherView(
+            form = addAnotherForm,
+            inProgressTrustees = trustees.inProgress,
+            completeTrustees = trustees.complete,
+            isLeadTrusteeDefined = all.lead.isDefined,
+            heading = all.addToHeading
           ))
-        }
-
       }
   }
 
@@ -106,7 +106,7 @@ class AddATrusteeController @Inject()(
                 rows.inProgress,
                 rows.complete,
                 isLeadTrusteeDefined = false,
-                heading(trustees.size)
+                trustees.addToHeading
               )
             )
           },
@@ -117,13 +117,5 @@ class AddATrusteeController @Inject()(
           }
         )
       }
-  }
-
-  private def heading(count: Int)(implicit mp: MessagesProvider) = {
-    count match {
-      case 0 => Messages("addATrustee.heading")
-      case 1 => Messages("addATrustee.singular.heading")
-      case size => Messages("addATrustee.count.heading", size)
-    }
   }
 }

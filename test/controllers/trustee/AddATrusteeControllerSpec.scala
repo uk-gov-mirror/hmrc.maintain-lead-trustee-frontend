@@ -344,7 +344,7 @@ class AddATrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addTrusteeForm ,Nil, leadAndTrusteeRows, isLeadTrusteeDefined = false, heading = "You have added 3 trustees")(fakeRequest, messages).toString
+          view(addTrusteeForm ,Nil, leadAndTrusteeRows, isLeadTrusteeDefined = true, heading = "You have added 3 trustees")(fakeRequest, messages).toString
 
         application.stop()
       }
