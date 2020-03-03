@@ -16,28 +16,28 @@
 
 package utils
 
-import models.{AllTrustees, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, TrusteeType}
+import models.{AllTrustees, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, Trustee, TrusteeIndividual, TrusteeOrganisation}
 import play.api.i18n.Messages
 import viewmodels.addAnother.{AddRow, AddToRows}
 
 class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) {
 
-  private def render(trustee : (TrusteeType, Int)) : AddRow = {
+  private def render(trustee : (Trustee, Int)) : AddRow = {
 
     trustee match {
-      case (TrusteeType(Some(trusteeInd), None), index) =>
+      case (trusteeInd: TrusteeIndividual, index) =>
         AddRow(
           name = trusteeInd.name.displayName,
           typeLabel = messages(s"entities.trustee.individual"),
           changeUrl = "#",
           removeUrl = controllers.trustee.routes.RemoveIndividualTrusteeController.onPageLoad(index).url
         )
-      case (TrusteeType(None, Some(trusteeOrg)), index) =>
+      case (trusteeOrg : TrusteeOrganisation, index) =>
         AddRow(
           name = trusteeOrg.name,
           typeLabel = messages(s"entities.trustee.organisation"),
           changeUrl = "#",
-          removeUrl = controllers.trustee.routes.RemoveIndividualTrusteeController.onPageLoad(index).url
+          removeUrl = "#"
         )
     }
   }

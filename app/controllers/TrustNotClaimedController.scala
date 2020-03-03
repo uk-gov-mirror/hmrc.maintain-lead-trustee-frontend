@@ -33,7 +33,7 @@ class TrustNotClaimedController @Inject()(
                                            view: TrustNotClaimedView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.identifiedUserWithData {
     implicit request =>
         Ok(view(request.userAnswers.utr))
       }
