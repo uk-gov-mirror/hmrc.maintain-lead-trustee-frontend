@@ -23,13 +23,13 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
-import models.{LeadTrusteeOrganisation, Name, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrustStartDate, TrusteeIndividual, TrusteeType, Trustees, UkAddress}
+import models.{LeadTrusteeOrganisation, Name, RemoveTrustee, TrustIdentification, TrustIdentificationOrgType, TrustStartDate, TrusteeIndividual, TrusteeOrganisation, Trustees, UkAddress}
 import org.joda.time.DateTime
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.HeaderCarrier
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -292,21 +292,35 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       val utr = "1000000008"
 
-      val json = Json.obj("trustees" -> Json.arr(Json.obj(
-        "trusteeInd" -> Json.obj(
-          "lineNo" -> "1",
-          "bpMatchStatus" -> "01",
-          "name" -> Json.obj(
-            "firstName" -> "1234567890 QwErTyUiOp ,.(/)&'- name",
-            "lastName" -> "1234567890 QwErTyUiOp ,.(/)&'- name"
-          ),
-          "dateOfBirth" -> "1983-09-24",
-          "identification" -> Json.obj(
-            "nino" -> "JS123456A"
-          ),
-          "entityStart" -> "2019-02-28"
-        )
-      )))
+      val json = Json.parse(
+        """
+          |{
+          | "trustees": [
+          |   {
+          |     "trusteeInd": {
+          |       "name": {
+          |         "firstName": "1234567890 QwErTyUiOp ,.(/)&'- name",
+          |         "lastName": "1234567890 QwErTyUiOp ,.(/)&'- name"
+          |       },
+          |       "dateOfBirth": "1983-09-24",
+          |       "identification": {
+          |         "nino": "JS123456A"
+          |       },
+          |       "entityStart": "2019-02-28"
+          |     }
+          |   },
+          |   {
+          |     "trusteeOrg": {
+          |       "name": "Trustee Org",
+          |       "identification": {
+          |         "utr": "1234567890"
+          |       },
+          |       "entityStart": "2019-02-28"
+          |     }
+          |   }
+          | ]
+          |}
+          |""".stripMargin)
 
       val application = applicationBuilder()
         .configure(
@@ -326,17 +340,28 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val processed = connector.getTrustees(utr)
 
       whenReady(processed) { trustees =>
-        trustees mustBe Trustees(List(TrusteeType(
-          trusteeInd = Some(RemoveTrusteeIndividual(
-            lineNo = Some("1"),
-            bpMatchStatus = Some("01"),
-            name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
-            dateOfBirth = Some(DateTime.parse("1983-9-24")),
-            phoneNumber = None,
-            identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-            entityStart = DateTime.parse("2019-2-28"))
-          ),
-          trusteeOrg = None)))
+        trustees mustBe Trustees(
+          List(
+            TrusteeIndividual(
+              name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
+              dateOfBirth = Some(LocalDate.parse("1983-09-24")),
+              phoneNumber = None,
+              identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+              entityStart = LocalDate.parse("2019-02-28")
+            ),
+            TrusteeOrganisation(
+              name = "Trustee Org",
+              phoneNumber = None,
+              email = None,
+              identification = Some(TrustIdentificationOrgType(
+                utr = Some("1234567890"),
+                safeId = None,
+                address = None
+              )),
+              entityStart = LocalDate.parse("2019-02-28")
+            )
+          )
+        )
       }
 
       application.stop()

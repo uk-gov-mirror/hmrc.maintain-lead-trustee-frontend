@@ -18,7 +18,7 @@ package models
 
 import play.api.i18n.{Messages, MessagesProvider}
 
-case class AllTrustees(lead: Option[LeadTrustee], trustees: List[TrusteeType]) {
+case class AllTrustees(lead: Option[LeadTrustee], trustees: List[Trustee]) {
 
   val size: Int = lead.size + trustees.size
 

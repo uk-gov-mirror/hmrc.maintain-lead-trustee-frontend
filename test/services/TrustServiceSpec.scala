@@ -19,7 +19,7 @@ package services
 import java.time.LocalDate
 
 import connectors.TrustConnector
-import models.{AllTrustees, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrusteeType, Trustees}
+import models.{AllTrustees, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrusteeIndividual, Trustees}
 import org.joda.time.DateTime
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -40,16 +40,15 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
 
     "get all trustees" in {
 
-      val trusteeInd = RemoveTrusteeIndividual(
-        lineNo = Some("1"),
-        bpMatchStatus = Some("01"),
+      val trusteeInd = TrusteeIndividual(
         name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
-        dateOfBirth = Some(DateTime.parse("1983-9-24")),
+        dateOfBirth = Some(LocalDate.parse("1983-09-24")),
         phoneNumber = None,
         identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-        entityStart = DateTime.parse("2019-2-28"))
+        entityStart = LocalDate.parse("2019-02-28")
+      )
 
-      val trustees = List(TrusteeType(Some(trusteeInd), None))
+      val trustees = List(trusteeInd)
 
       val leadTrusteeIndividual = LeadTrusteeIndividual(
         name = Name(
@@ -87,17 +86,16 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
 
     "get trustees" in {
 
-      val trusteeInd = RemoveTrusteeIndividual(
-        lineNo = Some("1"),
-        bpMatchStatus = Some("01"),
+      val trusteeInd = TrusteeIndividual(
         name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
-        dateOfBirth = Some(DateTime.parse("1983-9-24")),
+        dateOfBirth = Some(LocalDate.parse("1983-09-24")),
         phoneNumber = None,
         identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-        entityStart = DateTime.parse("2019-2-28"))
+        entityStart = LocalDate.parse("2019-02-28")
+      )
 
       when(mockConnector.getTrustees(any())(any(), any()))
-        .thenReturn(Future.successful(Trustees(List(TrusteeType(Some(trusteeInd), None)))))
+        .thenReturn(Future.successful(Trustees(List(trusteeInd))))
 
       val service = new TrustServiceImpl(mockConnector)
 
@@ -106,7 +104,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
       val result = service.getTrustees("1234567890")
 
       whenReady(result) { r =>
-        r mustBe Trustees(List(TrusteeType(Some(trusteeInd), None)))
+        r mustBe Trustees(List(trusteeInd))
       }
 
     }
@@ -136,18 +134,17 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
 
     "getTrusteeName" in {
 
-      def trusteeInd(id: Int) = RemoveTrusteeIndividual(
-        lineNo = Some("1"),
-        bpMatchStatus = Some("01"),
+      def trusteeInd(id: Int) = TrusteeIndividual(
         name = Name(firstName = s"First $id", middleName = None, lastName = s"Last $id"),
-        dateOfBirth = Some(DateTime.parse("1983-9-24")),
+        dateOfBirth = Some(LocalDate.parse("1983-09-24")),
         phoneNumber = None,
         identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-        entityStart = DateTime.parse("2019-2-28"))
+        entityStart = LocalDate.parse("2019-02-28")
+      )
 
-      val expectedResult = TrusteeType(Some(trusteeInd(2)), None)
+      val expectedResult = trusteeInd(2)
 
-      val trustees = List(TrusteeType(Some(trusteeInd(1)), None), expectedResult, TrusteeType(Some(trusteeInd(3)), None))
+      val trustees = List(trusteeInd(1), trusteeInd(2), trusteeInd(3))
 
       when(mockConnector.getTrustees(any())(any(), any()))
         .thenReturn(Future.successful(Trustees(trustees)))

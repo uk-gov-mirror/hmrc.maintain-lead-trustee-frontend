@@ -21,8 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
-import models.{AddATrustee, AllTrustees, LeadTrustee, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrusteeType, Trustees}
-import org.joda.time.DateTime
+import models.{AddATrustee, AllTrustees, LeadTrustee, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, TrustIdentification, Trustee, TrusteeIndividual, Trustees}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -66,14 +65,14 @@ class AddATrusteeControllerSpec extends SpecBase {
     address = None
   ))
 
-  private val trustee = TrusteeType(Some(RemoveTrusteeIndividual(
-    lineNo = Some("1"),
-    bpMatchStatus = Some("01"),
+  private val trustee = TrusteeIndividual(
     name = Name(firstName = "First", middleName = None, lastName = "Last"),
-    dateOfBirth = Some(DateTime.parse("1983-9-24")),
+    dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     phoneNumber = None,
     identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-    entityStart = DateTime.parse("2019-2-28"))), None)
+    entityStart = LocalDate.parse("2019-02-28")
+  )
+
   val trustees = Trustees(List(trustee, trustee))
 
 
@@ -87,7 +86,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
     override def getTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] = Future.successful(data)
 
-    override def getTrustee(utr: String, index: Int)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[TrusteeType] =
+    override def getTrustee(utr: String, index: Int)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Trustee] =
       Future.successful(trustee)
 
     override def removeTrustee(utr: String, trustee: RemoveTrustee)

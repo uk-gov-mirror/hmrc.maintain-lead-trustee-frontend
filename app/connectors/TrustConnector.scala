@@ -18,7 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.{LeadTrustee, LeadTrusteeIndividual, RemoveTrustee, TrustStartDate, TrusteeIndividual, TrusteeType, Trustees}
+import models.{LeadTrustee, RemoveTrustee, TrustStartDate, TrusteeIndividual, Trustees}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
