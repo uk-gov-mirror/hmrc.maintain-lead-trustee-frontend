@@ -18,7 +18,7 @@ package utils.print
 
 import java.time.format.DateTimeFormatter
 
-import models.{Address, IdCard, IdentificationDetailOptions, NonUkAddress, Passport, UkAddress}
+import models.{Address, CombinedPassportOrIdCard, IdCard, IdentificationDetailOptions, NonUkAddress, Passport, UkAddress}
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.domain.Nino
@@ -79,6 +79,18 @@ object CheckAnswersFormatters {
       case IdentificationDetailOptions.Passport => HtmlFormat.escape("Passport")
     }
   }
+
+  def formatPassportOrIdCardDetails(id: CombinedPassportOrIdCard, countryOptions: CountryOptions): Html = {
+    val lines =
+      Seq(
+        Some(country(id.countryOfIssue, countryOptions)),
+        Some(HtmlFormat.escape(id.number)),
+        Some(HtmlFormat.escape(id.expirationDate.format(dateFormatter)))
+      ).flatten
+
+    Html(lines.mkString("<br />"))
+  }
+
 
   def formatPassportDetails(passport: Passport, countryOptions: CountryOptions): Html = {
     val lines =

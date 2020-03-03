@@ -29,9 +29,18 @@ object LeadTrustee {
     case lto:LeadTrusteeOrganisation => Json.toJson(lto)(LeadTrusteeOrganisation.writes)
   }
 
-  implicit val reads : Reads[LeadTrustee] = Reads(json =>
-    json.validate[LeadTrusteeIndividual] orElse
-     json.validate[LeadTrusteeOrganisation])
+  implicit val reads : Reads[LeadTrustee] = Reads { (data:JsValue) =>
+    val allErrors: Either[Seq[(JsPath, Seq[JsonValidationError])], LeadTrustee] = for {
+      indErrs <- data.validate[LeadTrusteeIndividual].asEither.left
+      orgErrs <- data.validate[LeadTrusteeOrganisation].asEither.left
+    } yield indErrs.map(pair => (pair._1, JsonValidationError("Failed to read as LeadTrusteeIndividual") +: pair._2)) ++
+              orgErrs.map(pair => (pair._1, JsonValidationError("Failed to read as LeadTrusteeOrganisation") +: pair._2))
+
+    allErrors match {
+      case Right(lt) => JsSuccess(lt)
+      case Left(errs) => JsError(errs)
+    }
+  }
 }
 
 case class LeadTrusteeIndividual(

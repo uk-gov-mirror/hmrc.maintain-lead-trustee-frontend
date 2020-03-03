@@ -31,10 +31,7 @@ case object UkCitizenPage extends QuestionPage[Boolean] {
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
       case Some(true) =>
-        userAnswers
-          .remove(IdentificationDetailOptionsPage)
-          .flatMap(_.remove(IdCardDetailsPage))
-          .flatMap(_.remove(PassportDetailsPage))
+        userAnswers.remove(PassportOrIdCardDetailsPage)
       case Some(false) =>
         userAnswers.remove(NationalInsuranceNumberPage)
       case _ =>

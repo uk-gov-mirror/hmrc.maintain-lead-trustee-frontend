@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package models
+package pages.leadtrustee.individual
 
-import generators.ModelGenerators
-import org.scalatest.{FreeSpec, MustMatchers}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.Json
+import models.{CombinedPassportOrIdCard, Passport}
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class LeadTrusteeTest extends FreeSpec with ModelGenerators with MustMatchers with ScalaCheckPropertyChecks{
-  "JSON roundtrips with individual" in {
-    forAll(arbitraryLeadTrusteeIndividual.arbitrary) { lti =>
-      val a = Json.toJson(lti.asInstanceOf[LeadTrustee])(LeadTrustee.writes)
-      a.as[LeadTrustee](LeadTrustee.reads) mustBe lti
-    }
-  }
+case object PassportOrIdCardDetailsPage extends QuestionPage[CombinedPassportOrIdCard] {
+  override def path: JsPath = basePath \ toString
 
-  "JSON roundtrips with organisation" ignore {
-    ???
-  }
+  override def toString: String = "passportOrIdCardDetails"
 }

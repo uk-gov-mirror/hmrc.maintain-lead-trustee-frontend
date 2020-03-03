@@ -46,11 +46,10 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
   val trusteeName = Name("FirstName", None, "LastName")
   val trusteeAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
 
-  lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoadUpdated().url
-  lazy val sendDetailsRoute = routes.CheckDetailsController.onSubmit().url
+  lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoadIndividualUpdated().url
+  lazy val sendDetailsRoute = routes.CheckDetailsController.onSubmitIndividual()
 
   val submittableUserAnswers = emptyUserAnswers
-    .set(IndividualOrBusinessPage, Individual).success.value
     .set(NamePage, trusteeName).success.value
     .set(DateOfBirthPage, LocalDate.of(1996, 2, 3)).success.value
     .set(UkCitizenPage, true).success.value
@@ -88,7 +87,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(answerSection)(fakeRequest, messages).toString
+        view(answerSection, sendDetailsRoute)(fakeRequest, messages).toString
     }
   }
 
@@ -105,7 +104,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockTrustConnector.amendLeadTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
 
-      val request = FakeRequest(POST, sendDetailsRoute)
+      val request = FakeRequest(POST, sendDetailsRoute.url)
 
       val result = route(application, request).value
 
@@ -127,7 +126,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
     when(mockTrustConnector.amendLeadTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
 
-    val request = FakeRequest(POST, sendDetailsRoute)
+    val request = FakeRequest(POST, sendDetailsRoute.url)
 
     val result = route(application, request).value
 

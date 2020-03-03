@@ -14,34 +14,33 @@
  * limitations under the License.
  */
 
-package generators
+package generators.leadtrustee.individual
 
 import java.time.LocalDate
 
+import generators.Generators
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
-import pages._
+import pages.QuestionPage
 import pages.leadtrustee.individual._
-import play.api.libs.json.{JsPath, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
     arbitrary[(TelephoneNumberPage.type, JsValue)] ::
-    arbitrary[(IdentificationDetailOptionsPage.type, JsValue)] ::
     arbitrary[(EmailAddressYesNoPage.type, JsValue)] ::
     arbitrary[(EmailAddressPage.type, JsValue)] ::
     arbitrary[(UkCitizenPage.type, JsValue)] ::
     arbitrary[(UkAddressPage.type, JsValue)] ::
-    arbitrary[(PassportDetailsPage.type, JsValue)] ::
+    arbitrary[(PassportOrIdCardDetailsPage.type, JsValue)] ::
     arbitrary[(NonUkAddressPage.type, JsValue)] ::
     arbitrary[(NationalInsuranceNumberPage.type, JsValue)] ::
     arbitrary[(NamePage.type, JsValue)] ::
     arbitrary[(LiveInTheUkYesNoPage.type, JsValue)] ::
-    arbitrary[(IdCardDetailsPage.type, JsValue)] ::
     arbitrary[(DateOfBirthPage.type, JsValue)] ::
     Nil
 

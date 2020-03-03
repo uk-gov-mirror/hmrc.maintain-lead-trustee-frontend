@@ -14,20 +14,32 @@
  * limitations under the License.
  */
 
-package pages.leadtrustee.individual
+package forms
 
-import models.Passport
-import pages.behaviours.PageBehaviours
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
+class UkCitizenFormProviderSpec extends BooleanFieldBehaviours {
 
-class PassportDetailsPageSpec extends PageBehaviours {
+  val requiredKey = "leadtrustee.individual.ukCitizen.error.required"
+  val invalidKey = "error.boolean"
 
-  "PassportDetailsPage" must {
+  val form = new UkCitizenFormProvider()("leadtrustee.individual")
 
-    beRetrievable[Passport](PassportDetailsPage)
+  ".value" must {
 
-    beSettable[Passport](PassportDetailsPage)
+    val fieldName = "value"
 
-    beRemovable[Passport](PassportDetailsPage)
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }
