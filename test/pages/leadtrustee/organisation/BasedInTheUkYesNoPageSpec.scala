@@ -14,27 +14,35 @@
  * limitations under the License.
  */
 
-package pages.trustee.organisation
+package pages.leadtrustee.organisation
 
+import models.{NonUkAddress, UkAddress}
 import pages.behaviours.PageBehaviours
-import pages.leadtrustee.organisation.{RegisteredInUkYesNoPage, UtrPage}
 
-class RegisteredInUkYesNoPageSpec extends PageBehaviours {
+class BasedInTheUkYesNoPageSpec extends PageBehaviours {
 
   "RegisteredInUkYesNo page" must {
 
-    beRetrievable[Boolean](RegisteredInUkYesNoPage)
+    beRetrievable[Boolean](BasedInTheUkYesNoPage)
 
-    beSettable[Boolean](RegisteredInUkYesNoPage)
+    beSettable[Boolean](BasedInTheUkYesNoPage)
 
-    beRemovable[Boolean](RegisteredInUkYesNoPage)
+    beRemovable[Boolean](BasedInTheUkYesNoPage)
+
+    "implement cleanup logic when YES selected" in {
+      val userAnswers = emptyUserAnswers
+        .set(NonUkAddressPage, NonUkAddress("line1", "line2", None, "country"))
+        .flatMap(_.set(BasedInTheUkYesNoPage, true))
+
+      userAnswers.get.get(NonUkAddressPage) mustNot be(defined)
+    }
 
     "implement cleanup logic when NO selected" in {
       val userAnswers = emptyUserAnswers
-        .set(UtrPage, "1234567890")
-        .flatMap(_.set(RegisteredInUkYesNoPage, false))
+        .set(UkAddressPage, UkAddress("line1", "line2", None, None, "postcode"))
+        .flatMap(_.set(BasedInTheUkYesNoPage, false))
 
-      userAnswers.get.get(UtrPage) mustNot be(defined)
+      userAnswers.get.get(UkAddressPage) mustNot be(defined)
     }
   }
 }

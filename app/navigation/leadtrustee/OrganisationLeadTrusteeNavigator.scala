@@ -25,7 +25,7 @@ import play.api.mvc.Call
 object OrganisationLeadTrusteeNavigator {
 
   private val simpleNavigations : PartialFunction[Page, Call] = {
-    case UtrPage => rts.LiveInTheUkYesNoController.onPageLoad()
+    case UtrPage => rts.BasedInTheUkYesNoController.onPageLoad()
     case UkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
     case NonUkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
     case EmailAddressPage => rts.TelephoneNumberController.onPageLoad()
@@ -34,7 +34,7 @@ object OrganisationLeadTrusteeNavigator {
 
   private val yesNoNavigations : PartialFunction[Page, UserAnswers => Call] =
     yesNoNav(RegisteredInUkYesNoPage, rts.NameController.onPageLoad(), rts.NameController.onPageLoad()) orElse
-    yesNoNav(LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad()) orElse
+    yesNoNav(BasedInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad()) orElse
     yesNoNav(EmailAddressYesNoPage, rts.EmailAddressController.onPageLoad(), rts.TelephoneNumberController.onPageLoad())
 
   private val conditionalNavigations : PartialFunction[Page, UserAnswers => Call] = {
@@ -49,7 +49,7 @@ object OrganisationLeadTrusteeNavigator {
   private def nameNavigation(userAnswers: UserAnswers): Call = {
     userAnswers.get(RegisteredInUkYesNoPage).map {
       case true => rts.UtrController.onPageLoad()
-      case false => rts.LiveInTheUkYesNoController.onPageLoad()
+      case false => rts.BasedInTheUkYesNoController.onPageLoad()
     }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
 

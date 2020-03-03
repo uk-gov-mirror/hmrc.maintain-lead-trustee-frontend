@@ -19,10 +19,13 @@ package controllers.leadtrustee
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.TrustConnector
+import controllers.ReturnToStart
+import controllers.actions.StandardActionSets
 import controllers.actions.{LeadTrusteeNameRequest, StandardActionSets}
 import controllers.leadtrustee.actions.NameRequiredAction
 import mapping.{LeadTrusteeIndividualExtractor, LeadTrusteeOrganisationExtractor}
 import models.IndividualOrBusiness._
+import models.requests.DataRequest
 import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, UserAnswers}
 import pages.leadtrustee.IndividualOrBusinessPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -50,13 +53,12 @@ class CheckDetailsController @Inject()(
                                         leadTrusteeOrgPrintHelper: LeadTrusteeOrganisationPrintHelper,
                                         repository: PlaybackRepository,
                                         answerRowConverter: AnswerRowConverter,
-                                        nameRequiredAction: NameRequiredAction,
                                         countryOptions: CountryOptions,
                                         val appConfig: FrontendAppConfig
                                           )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameRequiredAction).async {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr).async {
     implicit request =>
 
       connector.getLeadTrustee(request.userAnswers.utr).flatMap {
@@ -82,7 +84,7 @@ class CheckDetailsController @Inject()(
       }
   }
 
-  def onPageLoadUpdated(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameRequiredAction) {
+  def onPageLoadUpdated(): Action[AnyContent] = (standardActionSets.verifiedForUtr) {
     implicit request =>
       request.userAnswers.get(IndividualOrBusinessPage) match {
         case Some(Individual) => renderIndividualLeadTrustee(request.userAnswers)
@@ -91,16 +93,22 @@ class CheckDetailsController @Inject()(
       }
   }
 
-  private def renderIndividualLeadTrustee(updatedAnswers: UserAnswers)(implicit request: LeadTrusteeNameRequest[AnyContent]) = {
+  private def renderIndividualLeadTrustee(updatedAnswers: UserAnswers)(implicit request: DataRequest[AnyContent]) = {
 
-    val section = leadTrusteeIndPrintHelper(updatedAnswers, request.leadTrusteeName)
+    val section = leadTrusteeIndPrintHelper(
+      updatedAnswers,
+      updatedAnswers.get(pages.leadtrustee.individual.NamePage).map(_.displayName).getOrElse(request.messages(messagesApi)("leadTrusteeName.defaultText"))
+    )
 
     Ok(view(section))
   }
 
-  private def renderOrganisationLeadTrustee(updatedAnswers: UserAnswers)(implicit request: LeadTrusteeNameRequest[AnyContent]) = {
+  private def renderOrganisationLeadTrustee(updatedAnswers: UserAnswers)(implicit request: DataRequest[AnyContent]) = {
 
-    val section = leadTrusteeOrgPrintHelper(updatedAnswers, request.leadTrusteeName)
+    val section = leadTrusteeOrgPrintHelper(
+      updatedAnswers,
+      updatedAnswers.get(pages.leadtrustee.organisation.NamePage).getOrElse(request.messages(messagesApi)("leadTrusteeName.defaultText"))
+    )
 
     Ok(view(section))
   }
@@ -115,7 +123,7 @@ class CheckDetailsController @Inject()(
               Redirect(controllers.routes.AddATrusteeController.onPageLoad())
             )
           }
-         case None =>
+        case None =>
           Future.successful(InternalServerError)
       }
 

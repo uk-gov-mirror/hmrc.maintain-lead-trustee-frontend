@@ -20,7 +20,7 @@ import pages.behaviours.PageBehaviours
 
 class RegisteredInUkYesNoPageSpec extends PageBehaviours {
 
-  "RegisteredInUkYesNoPage" must {
+  "RegisteredInUkYesNo page" must {
 
     beRetrievable[Boolean](RegisteredInUkYesNoPage)
 
@@ -28,5 +28,12 @@ class RegisteredInUkYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](RegisteredInUkYesNoPage)
 
+    "implement cleanup logic when NO selected" in {
+      val userAnswers = emptyUserAnswers
+        .set(UtrPage, "1234567890")
+        .flatMap(_.set(RegisteredInUkYesNoPage, false))
+
+      userAnswers.get.get(UtrPage) mustNot be(defined)
+    }
   }
 }

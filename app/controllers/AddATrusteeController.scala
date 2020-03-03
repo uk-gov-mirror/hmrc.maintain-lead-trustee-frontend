@@ -67,7 +67,7 @@ class AddATrusteeController @Inject()(
           Ok(addAnotherView(addAnotherForm,
             trustees.inProgress,
             trustees.complete,
-            isLeadTrusteeDefined = false,
+            isLeadTrusteeDefined = all.lead.isDefined,
             heading(all.size)
           ))
         }
@@ -105,7 +105,7 @@ class AddATrusteeController @Inject()(
                 formWithErrors,
                 rows.inProgress,
                 rows.complete,
-                isLeadTrusteeDefined = false,
+                isLeadTrusteeDefined = trustees.lead.isDefined,
                 heading(trustees.size)
               )
             )

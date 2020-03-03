@@ -87,6 +87,9 @@ class AddATrusteeControllerSpec extends SpecBase {
 
     override def getTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] = Future.successful(data)
 
+    override def getTrustee(utr: String, index: Int)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[TrusteeType] =
+      Future.successful(trustee)
+
     override def removeTrustee(removeTrustee: RemoveTrustee, utr: String)
                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(200))
 
@@ -344,7 +347,7 @@ class AddATrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addTrusteeForm ,Nil, leadAndTrusteeRows, isLeadTrusteeDefined = false, heading = "You have added 3 trustees")(fakeRequest, messages).toString
+          view(addTrusteeForm ,Nil, leadAndTrusteeRows, isLeadTrusteeDefined = true, heading = "You have added 3 trustees")(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -375,7 +378,7 @@ class AddATrusteeControllerSpec extends SpecBase {
             boundForm,
             Nil,
             leadAndTrusteeRows,
-            isLeadTrusteeDefined = false,
+            isLeadTrusteeDefined = true,
             heading = "You have added 3 trustees"
           )(fakeRequest, messages).toString
 

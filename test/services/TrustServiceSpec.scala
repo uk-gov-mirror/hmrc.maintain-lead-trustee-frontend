@@ -141,6 +141,37 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
 
     }
 
+
+    "getTrusteeName" in {
+
+      def trusteeInd(id: Int) = RemoveTrusteeIndividual(
+        lineNo = Some("1"),
+        bpMatchStatus = Some("01"),
+        name = Name(firstName = s"First $id", middleName = None, lastName = s"Last $id"),
+        dateOfBirth = Some(DateTime.parse("1983-9-24")),
+        phoneNumber = None,
+        identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+        entityStart = DateTime.parse("2019-2-28"))
+
+      val expectedResult = TrusteeType(Some(trusteeInd(2)), None)
+
+      val trustees = List(TrusteeType(Some(trusteeInd(1)), None), expectedResult, TrusteeType(Some(trusteeInd(3)), None))
+
+      when(mockConnector.getTrustees(any())(any(), any()))
+        .thenReturn(Future.successful(Trustees(trustees)))
+
+      val service = new TrustServiceImpl(mockConnector)
+
+      implicit val hc : HeaderCarrier = HeaderCarrier()
+
+      val result = service.getTrustee("1234567890", 1)
+
+      whenReady(result) { r =>
+        r mustBe expectedResult
+      }
+
+    }
+
   }
 
 }
