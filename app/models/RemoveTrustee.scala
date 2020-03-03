@@ -20,9 +20,10 @@ import java.time.LocalDate
 
 import play.api.libs.json.{Format, Json, Reads}
 
-case class RemoveTrustee(trustee: TrusteeType, endDate: LocalDate)
+case class RemoveTrustee(index : Int, endDate: LocalDate)
 
 object RemoveTrustee {
+
   implicit val formats : Format[RemoveTrustee] = Json.format[RemoveTrustee]
 
   implicit val reads : Reads[RemoveTrusteeIndividual] = Reads(json =>

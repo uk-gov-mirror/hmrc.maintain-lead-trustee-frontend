@@ -87,7 +87,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
     override def getTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] = Future.successful(data)
 
-    override def removeTrustee(removeTrustee: RemoveTrustee, utr: String)
+    override def removeTrustee(utr: String, trustee: RemoveTrustee)
                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(200))
 
   }

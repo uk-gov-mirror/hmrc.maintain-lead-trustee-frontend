@@ -31,7 +31,7 @@ trait TrustService {
 
   def getTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees]
 
-  def removeTrustee(removeTrustee: RemoveTrustee, utr: String)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
+  def removeTrustee(utr: String, trustee: RemoveTrustee)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
 }
 
 class TrustServiceImpl @Inject()(
@@ -54,8 +54,8 @@ class TrustServiceImpl @Inject()(
     connector.getTrustees(utr)
   }
 
-  override def removeTrustee(removeTrustee: RemoveTrustee, utr: String)(implicit hc:HeaderCarrier, ec:ExecutionContext) = {
-    connector.removeTrustee(utr, removeTrustee)
+  override def removeTrustee(utr: String, trustee: RemoveTrustee)(implicit hc:HeaderCarrier, ec:ExecutionContext) = {
+    connector.removeTrustee(utr, trustee)
   }
 
 }
