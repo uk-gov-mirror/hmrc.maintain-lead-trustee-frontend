@@ -45,7 +45,7 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
 
   def actions(index: Int) : ActionBuilder[DataRequest, AnyContent]
 
-  def redirect : Call
+  def redirect(remove : Boolean, index: Int) : Call
 
   def formRoute(index: Int) : Call
 
@@ -71,9 +71,9 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
           Future.successful(BadRequest(view(formWithErrors, index))),
         value => {
           if (value) {
-            Future.successful(Redirect(redirect.url))
+            Future.successful(Redirect(redirect(value, index).url))
           } else {
-            Future.successful(Redirect(redirect.url))
+            Future.successful(Redirect(redirect(value, index).url))
           }
         }
       )

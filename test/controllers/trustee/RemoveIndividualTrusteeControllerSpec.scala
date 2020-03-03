@@ -43,6 +43,7 @@ class RemoveIndividualTrusteeControllerSpec extends SpecBase with PropertyChecks
   "TrusteeRemove Controller" when {
 
     "no name provided" must {
+
       "return OK and the correct view for a GET" in {
 
         val userAnswers = emptyUserAnswers
@@ -64,6 +65,7 @@ class RemoveIndividualTrusteeControllerSpec extends SpecBase with PropertyChecks
     }
 
     "name has been provided" must {
+
       "return OK and the correct view for a GET" in {
 
         val userAnswers = emptyUserAnswers
@@ -90,25 +92,21 @@ class RemoveIndividualTrusteeControllerSpec extends SpecBase with PropertyChecks
       val userAnswers = emptyUserAnswers
         .set(NamePage(0), Name("John", None, "Smith")).success.value
 
-      forAll(arbitrary[Boolean]) {
-        value =>
-          val application =
-            applicationBuilder(userAnswers = Some(userAnswers))
-              .build()
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .build()
 
-          val request =
-            FakeRequest(POST, routes.RemoveIndividualTrusteeController.onSubmit(index).url)
-              .withFormUrlEncodedBody(("value", value.toString))
+      val request =
+        FakeRequest(POST, routes.RemoveIndividualTrusteeController.onSubmit(index).url)
+          .withFormUrlEncodedBody(("value", "true"))
 
-          val result = route(application, request).value
+      val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+      status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.trustee.routes.WhenRemovedController.onPageLoad(0).url
 
-          application.stop()
-      }
-
+      application.stop()
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

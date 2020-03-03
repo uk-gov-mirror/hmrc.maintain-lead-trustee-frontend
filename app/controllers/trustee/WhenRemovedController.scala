@@ -68,9 +68,7 @@ class WhenRemovedController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhenRemovedPage(index), value))
-            _              <- sessionRepository.set(updatedAnswers)
-            _              <- trustService.removeTrustee(request.userAnswers.utr, RemoveTrustee(index, value))
+            _ <- trustService.removeTrustee(request.userAnswers.utr, RemoveTrustee(index, value))
           } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
       )
   }
