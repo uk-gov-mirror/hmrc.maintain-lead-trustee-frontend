@@ -21,17 +21,17 @@ import forms.YesNoFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.leadtrustee.organisation.BasedInTheUkYesNoView
+import views.html.leadtrustee.organisation.AddressInTheUkYesNoView
 
-class BasedInTheUkYesNoViewSpec extends YesNoViewBehaviours {
+class AddressInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "leadtrustee.organisation.basedInTheUkYesNo"
+  val messageKeyPrefix = "leadtrustee.organisation.addressInTheUkYesNo"
 
   val form = (new YesNoFormProvider).withPrefix("prefix")
 
   "BasedInTheUkYesNoPage view" must {
 
-    val view = viewFor[BasedInTheUkYesNoView](Some(emptyUserAnswers))
+    val view = viewFor[AddressInTheUkYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, "Lead Trustee")(fakeRequest, messages)
@@ -40,6 +40,6 @@ class BasedInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some("Lead Trustee"), routes.BasedInTheUkYesNoController.onSubmit().url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some("Lead Trustee"), routes.AddressInTheUkYesNoController.onSubmit().url)
   }
 }

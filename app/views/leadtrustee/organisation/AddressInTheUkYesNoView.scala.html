@@ -24,10 +24,10 @@
 @(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("leadtrustee.organisation.basedInTheUkYesNo.title", name)}"
+    title = s"${errorPrefix(form)} ${messages("leadtrustee.organisation.addressInTheUkYesNo.title", name)}"
     ) {
 
-    @formHelper(action = BasedInTheUkYesNoController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = AddressInTheUkYesNoController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
@@ -35,7 +35,7 @@
 
         @components.input_yes_no(
             field = form("value"),
-            legend = messages("leadtrustee.organisation.basedInTheUkYesNo.heading", name),
+            legend = messages("leadtrustee.organisation.addressInTheUkYesNo.heading", name),
             headingIsLegend = true
         )
 
