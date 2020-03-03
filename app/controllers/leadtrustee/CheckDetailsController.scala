@@ -76,8 +76,8 @@ class CheckDetailsController @Inject()(
           } yield {
             renderOrganisationLeadTrustee(updatedAnswers)
           }
-        case _ => val section = AnswerSection(None, Seq())
-
+        case _ =>
+          val section = AnswerSection(None, Seq())
           Future.successful(Ok(view(section)))
       }
   }
@@ -85,9 +85,12 @@ class CheckDetailsController @Inject()(
   def onPageLoadUpdated(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameRequiredAction) {
     implicit request =>
       request.userAnswers.get(IndividualOrBusinessPage) match {
-        case Some(Individual) => renderIndividualLeadTrustee(request.userAnswers)
-        case Some(Business) => renderOrganisationLeadTrustee(request.userAnswers)
-        case None => Ok(view(AnswerSection(None, Seq())))
+        case Some(Individual) =>
+          renderIndividualLeadTrustee(request.userAnswers)
+        case Some(Business) =>
+          renderOrganisationLeadTrustee(request.userAnswers)
+        case None =>
+          Ok(view(AnswerSection(None, Seq())))
       }
   }
 
@@ -108,12 +111,21 @@ class CheckDetailsController @Inject()(
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
       request.userAnswers.get(IndividualOrBusinessPage) match {
-        case Some(_) =>
+        case Some(Individual) =>
           leadTrusteeIndExtractor.mapLeadTrusteeIndividual(request.userAnswers) match {
             case None => Future.successful(InternalServerError)
-            case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ =>
+            case Some(lt) =>
+              connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ =>
               Redirect(controllers.routes.AddATrusteeController.onPageLoad())
             )
+          }
+        case Some(Business) =>
+          leadTrusteeOrgExtractor.mapLeadTrusteeOrganisation(request.userAnswers) match {
+            case None => Future.successful(InternalServerError)
+            case Some(lt) =>
+              connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ =>
+                Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+              )
           }
          case None =>
           Future.successful(InternalServerError)

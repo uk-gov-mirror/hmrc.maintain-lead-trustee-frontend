@@ -20,8 +20,8 @@ import java.time.LocalDate
 
 import base.SpecBase
 import connectors.TrustConnector
-import models.IndividualOrBusiness.Individual
-import models.{Name, UkAddress}
+import models.IndividualOrBusiness.{Business, Individual}
+import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, Name, UkAddress}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -31,7 +31,7 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
+import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.countryOptions.CountryOptions
 import utils.print.AnswerRowConverter
@@ -60,57 +60,127 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
     .set(EmailAddressYesNoPage, false).success.value
     .set(TelephoneNumberPage, "tel").success.value
 
-  "CheckDetails Controller" must {
 
-    "return OK and the correct view for a GET" in {
+  val submittableUserAnswersOrg = emptyUserAnswers
+    .set(IndividualOrBusinessPage, Business).success.value
+    .set(pages.leadtrustee.organisation.NamePage, "Lead Org").success.value
+    .set(pages.leadtrustee.organisation.LiveInTheUkYesNoPage, true).success.value
+    .set(pages.leadtrustee.organisation.RegisteredInUkYesNoPage, true).success.value
+    .set(pages.leadtrustee.organisation.UtrPage, "1234567892").success.value
+    .set(pages.leadtrustee.organisation.UkAddressPage, UkAddress("line1", "line2", None, None, "postcode")).success.value
+    .set(pages.leadtrustee.organisation.EmailAddressYesNoPage, false).success.value
+    .set(pages.leadtrustee.organisation.TelephoneNumberPage, "0191222222").success.value
 
-      val userAnswers = emptyUserAnswers
-        .set(IndividualOrBusinessPage, Individual).success.value
-        .set(NamePage, trusteeName).success.value
-        .set(UkAddressPage, trusteeAddress).success.value
+  "CheckDetails Controller" when {
 
-      val bound = new AnswerRowConverter().bind(userAnswers, trusteeName.displayName, mock[CountryOptions])
+    "trust has a lead trustee individual" must {
 
-      val answerSection = AnswerSection(None, Seq(
-        bound.nameQuestion(NamePage, "leadtrustee.individual.name", controllers.leadtrustee.individual.routes.NameController.onPageLoad().url),
-        bound.addressQuestion(UkAddressPage, "leadtrustee.individual.ukAddress", controllers.leadtrustee.individual.routes.UkAddressController.onPageLoad().url)
-      ).flatten
-      )
+      "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val userAnswers = emptyUserAnswers
+          .set(IndividualOrBusinessPage, Individual).success.value
+          .set(NamePage, trusteeName).success.value
+          .set(UkAddressPage, trusteeAddress).success.value
 
-      val request = FakeRequest(GET, checkDetailsRoute)
+        val bound = new AnswerRowConverter().bind(userAnswers, trusteeName.displayName, mock[CountryOptions])
 
-      val result = route(application, request).value
+        val answerSection = AnswerSection(None, Seq(
+          bound.nameQuestion(NamePage, "leadtrustee.individual.name", controllers.leadtrustee.individual.routes.NameController.onPageLoad().url),
+          bound.addressQuestion(UkAddressPage, "leadtrustee.individual.ukAddress", controllers.leadtrustee.individual.routes.UkAddressController.onPageLoad().url)
+        ).flatten
+        )
 
-      val view = application.injector.instanceOf[CheckDetailsView]
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      status(result) mustEqual OK
+        val request = FakeRequest(GET, checkDetailsRoute)
 
-      contentAsString(result) mustEqual
-        view(answerSection)(fakeRequest, messages).toString
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[CheckDetailsView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(answerSection)(fakeRequest, messages).toString
+      }
+
+      "redirect to the the next page" in {
+
+        val mockTrustConnector = mock[TrustConnector]
+
+        val application =
+          applicationBuilder(userAnswers = Some(submittableUserAnswers),
+            affinityGroup = Agent)
+            .overrides(
+              bind[TrustConnector].toInstance(mockTrustConnector)
+            ).build()
+
+        when(mockTrustConnector.amendLeadTrustee(any(), any[LeadTrusteeIndividual]())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
+
+        val request = FakeRequest(POST, sendDetailsRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+      }
+
     }
+
+    "trust has a lead trustee organisation" must {
+
+      "return OK and the correct view for a GET" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(IndividualOrBusinessPage, Business).success.value
+          .set(pages.leadtrustee.organisation.NamePage, "Lead Org").success.value
+          .set(pages.leadtrustee.organisation.UkAddressPage, trusteeAddress).success.value
+
+        val bound = new AnswerRowConverter().bind(userAnswers, "Lead Org", mock[CountryOptions])
+
+        val answerSection = AnswerSection(None, Seq(
+          bound.stringQuestion(pages.leadtrustee.organisation.NamePage, "leadtrustee.organisation.name", controllers.leadtrustee.organisation.routes.NameController.onPageLoad().url),
+          bound.addressQuestion(pages.leadtrustee.organisation.UkAddressPage, "leadtrustee.organisation.ukAddress", controllers.leadtrustee.organisation.routes.UkAddressController.onPageLoad().url)
+        ).flatten
+        )
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+        val request = FakeRequest(GET, checkDetailsRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[CheckDetailsView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(answerSection)(fakeRequest, messages).toString
+      }
+
+      "redirect to the the next page" in {
+
+        val mockTrustConnector = mock[TrustConnector]
+
+        val application =
+          applicationBuilder(userAnswers = Some(submittableUserAnswersOrg),
+            affinityGroup = Agent)
+            .overrides(
+              bind[TrustConnector].toInstance(mockTrustConnector)
+            ).build()
+
+        when(mockTrustConnector.amendLeadTrustee(any(), any[LeadTrusteeOrganisation]())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
+
+        val request = FakeRequest(POST, sendDetailsRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+      }
+    }
+
   }
-
-    "redirect to the Agent declaration journey when affinity group is agent" in {
-
-      val mockTrustConnector = mock[TrustConnector]
-
-      val application =
-        applicationBuilder(userAnswers = Some(submittableUserAnswers),
-          affinityGroup = Agent)
-          .overrides(
-            bind[TrustConnector].toInstance(mockTrustConnector)
-          ).build()
-
-      when(mockTrustConnector.amendLeadTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
-
-      val request = FakeRequest(POST, sendDetailsRoute)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
-    }
 }
