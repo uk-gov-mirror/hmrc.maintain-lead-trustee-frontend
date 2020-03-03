@@ -14,25 +14,7 @@
  * limitations under the License.
  */
 
-package navigation
+package viewmodels.addAnother
 
-import javax.inject.{Inject, Singleton}
-import models.UserAnswers
-import navigation.leadtrustee.LeadTrusteeNavigator
-import navigation.trustee.TrusteeNavigator
-import pages.Page
-import play.api.mvc.Call
+case class AddRow(name: String, typeLabel: String, changeUrl: String, removeUrl: String)
 
-@Singleton
-class Navigator @Inject()() {
-
-  private val normalRoutes: Page => UserAnswers => Call =
-    LeadTrusteeNavigator.routes orElse
-    TrusteeNavigator.routes orElse {
-    case _ => ua => controllers.routes.IndexController.onPageLoad(ua.utr)
-  }
-
-  def nextPage(page: Page, userAnswers: UserAnswers): Call =
-      normalRoutes(page)(userAnswers)
-
-}

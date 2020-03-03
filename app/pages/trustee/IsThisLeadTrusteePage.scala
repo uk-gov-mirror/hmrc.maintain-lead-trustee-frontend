@@ -14,25 +14,15 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.trustee
 
-import javax.inject.{Inject, Singleton}
-import models.UserAnswers
-import navigation.leadtrustee.LeadTrusteeNavigator
-import navigation.trustee.TrusteeNavigator
-import pages.Page
-import play.api.mvc.Call
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-@Singleton
-class Navigator @Inject()() {
+final case class IsThisLeadTrusteePage(index : Int) extends QuestionPage[Boolean] {
 
-  private val normalRoutes: Page => UserAnswers => Call =
-    LeadTrusteeNavigator.routes orElse
-    TrusteeNavigator.routes orElse {
-    case _ => ua => controllers.routes.IndexController.onPageLoad(ua.utr)
-  }
+  override def path: JsPath = basePath \ index \ toString
 
-  def nextPage(page: Page, userAnswers: UserAnswers): Call =
-      normalRoutes(page)(userAnswers)
+  override def toString: String = "isThisLeadTrustee"
 
 }

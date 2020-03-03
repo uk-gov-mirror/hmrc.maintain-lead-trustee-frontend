@@ -12,6 +12,8 @@ site.textarea.char_limit = (Limit is {0} characters)
 site.sign_out = Sign out
 site.save.continue = Save and continue
 site.date.hint = For example, 31 3 1980
+site.inprogress = In Progress
+site.complete = Completed
 
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
@@ -125,6 +127,38 @@ nonUkAddress.error.line3.length = Address line 3 must be 35 characters or less
 nonUkAddress.error.line1.invalidCharacters = Address line 1 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 nonUkAddress.error.line2.invalidCharacters = Address line 2 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 nonUkAddress.error.line3.invalidCharacters = Address line 3 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+
+entities.lead = Lead
+entities.trustee = Trustee
+entities.leadtrustee.individual = Lead Trustee Individual
+entities.leadtrustee.organisation = Lead Trustee Company
+entities.trustee.individual = Trustee Individual
+entities.trustee.organisation = Trustee Company
+entities.no.name.added = No name added
+entities.no.value.added = No value added
+
+addATrusteeYesNo.title = Do you want to add a trustee?
+addATrusteeYesNo.heading = Do you want to add a trustee?
+addATrusteeYesNo.error.required = Select yes if you want to add a trustee
+
+addATrustee.title = Add a trustee
+addATrustee.heading = Add a trustee
+addATrustee.singular.heading = Add a trustee
+addATrustee.count.heading = You have added {0} trustees
+addATrustee.additional-content = Do you need to add another trustee?
+addATrustee.add-them-now = Yes, I want to add them now
+addATrustee.add-them-later = Yes, I want to add them later
+addATrustee.no-complete = No, I have added all trustees
+addATrustee.checkYourAnswersLabel = Add A Trustee
+addATrustee.individual = Trustee Individual
+addATrustee.business = Trustee Company
+addATrustee.error.required = Select yes if you want to add another trustee
+addATrustee.lead-trustee.required = You need to add or nominate a lead trustee.
+
+removeATrustee.title = Are you sure you want to remove {0}?
+removeATrustee.heading = Are you sure you want to remove {0}?
+removeATrustee.default = the trustee
+removeATrustee.error.required = Select yes if you want to remove the trustee
 
 leadTrusteeName.defaultText = the lead trustee
 trusteeName.defaultText = the trustee
@@ -418,3 +452,14 @@ trustee.whenAdded.error.past = The date the trustee was added to the trust canno
 
 trustee.checkDetails.title = Check trustee details
 trustee.checkDetails.heading = Check trustee details
+
+trustee.whenRemoved.checkYourAnswersLabel = When was {0} removed as a trustee?
+trustee.whenRemoved.title = When was the trustee removed as a trustee?
+trustee.whenRemoved.heading = When was {0} removed as a trustee?
+trustee.whenRemoved.hint = Check the trust deed or the power of appointment document. For example, 31 3 1980
+trustee.whenRemoved.error.required.all = Enter the date the trustee was removed from the trust
+trustee.whenRemoved.error.required.two = The date the trustee was removed from the trust must include a {0} and {1}
+trustee.whenRemoved.error.required = The date the trustee was removed from the trust must include {0}
+trustee.whenRemoved.error.invalid = Enter a real date when the trustee was removed from the trust
+trustee.whenRemoved.error.future = The date the trustee was removed from the trust must be today or in the past
+trustee.whenRemoved.error.past = The date the trustee was was removed from trust cannot be before the start date of the trust

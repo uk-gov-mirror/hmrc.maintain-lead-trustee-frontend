@@ -20,8 +20,9 @@ import play.api.libs.json._
 
 case class Name (firstName: String, middleName: Option[String], lastName: String) {
   lazy val displayName : String = firstName + " " + lastName
+  override def toString = s"$firstName $lastName"
 }
 
 object Name {
-  implicit val format = Json.format[Name]
+  implicit lazy val formats: OFormat[Name] = Json.format[Name]
 }

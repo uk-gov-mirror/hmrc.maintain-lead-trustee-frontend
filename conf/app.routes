@@ -21,6 +21,13 @@ GET        /trust-not-claimed                                               cont
 
 GET        /agent-not-authorised                                            controllers.AgentNotAuthorisedController.onPageLoad()
 
+GET        /add                                                             controllers.AddATrusteeController.onPageLoad()
+POST       /add                                                             controllers.AddATrusteeController.submitOne()
+POST       /add-another                                                     controllers.AddATrusteeController.submitAnother()
+
+GET        /trustee/:index/remove                                           controllers.trustee.RemoveIndividualTrusteeController.onPageLoad(index : Int)
+POST       /trustee/:index/remove                                           controllers.trustee.RemoveIndividualTrusteeController.onSubmit(index : Int)
+
 GET        /lead-trustee/individual-or-business                             controllers.leadtrustee.IndividualOrBusinessController.onPageLoad()
 POST       /lead-trustee/individual-or-business                             controllers.leadtrustee.IndividualOrBusinessController.onSubmit()
 
@@ -38,5 +45,8 @@ POST       /trustee/:index/when-was-trustee-added                           cont
 
 GET        /trustee/:index/check-details                                    controllers.trustee.CheckDetailsController.onPageLoad(index: Int)
 POST       /trustee/:index/check-details                                    controllers.trustee.CheckDetailsController.onSubmit(index: Int)
+
+GET        /trustee/:index/when-was-trustee-removed                         controllers.trustee.WhenRemovedController.onPageLoad(index: Int)
+POST       /trustee/:index/when-was-trustee-removed                         controllers.trustee.WhenRemovedController.onSubmit(index: Int)
 
 GET        /:utr                                                            controllers.IndexController.onPageLoad(utr: String)

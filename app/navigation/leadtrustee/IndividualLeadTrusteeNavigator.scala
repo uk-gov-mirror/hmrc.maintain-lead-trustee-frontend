@@ -16,12 +16,12 @@
 
 package navigation.leadtrustee
 
+import controllers.leadtrustee.individual.{routes => rts}
+import controllers.leadtrustee.{routes => leadTrusteeRoutes}
 import models.UserAnswers
 import pages.leadtrustee.individual._
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
-import controllers.leadtrustee.individual.{routes => rts}
-import controllers.leadtrustee.{routes => leadTrusteeRoutes}
 
 object IndividualLeadTrusteeNavigator {
   private val simpleNavigations : PartialFunction[Page, Call] = {
@@ -51,4 +51,5 @@ object IndividualLeadTrusteeNavigator {
               .map(if (_) yesCall else noCall)
               .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
+
 }

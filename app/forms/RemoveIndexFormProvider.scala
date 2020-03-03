@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package navigation
+package forms
 
-import javax.inject.{Inject, Singleton}
-import models.UserAnswers
-import navigation.leadtrustee.LeadTrusteeNavigator
-import navigation.trustee.TrusteeNavigator
-import pages.Page
-import play.api.mvc.Call
+import javax.inject.Inject
 
-@Singleton
-class Navigator @Inject()() {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  private val normalRoutes: Page => UserAnswers => Call =
-    LeadTrusteeNavigator.routes orElse
-    TrusteeNavigator.routes orElse {
-    case _ => ua => controllers.routes.IndexController.onPageLoad(ua.utr)
-  }
+trait RemoveForm {
 
-  def nextPage(page: Page, userAnswers: UserAnswers): Call =
-      normalRoutes(page)(userAnswers)
+  def apply(prefix : String) : Form[Boolean]
 
+}
+
+class RemoveIndexFormProvider @Inject() extends Mappings with RemoveForm {
+
+  override def apply(prefix : String): Form[Boolean] =
+    Form(
+      "value" -> boolean(s"$prefix.error.required")
+    )
 }

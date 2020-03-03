@@ -16,12 +16,15 @@
 
 package connectors
 
+import java.time.LocalDate
+
 import base.SpecBase
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
-import models.{LeadTrusteeOrganisation, TrustStartDate, UkAddress}
+import models.{LeadTrusteeOrganisation, Name, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrustStartDate, TrusteeIndividual, TrusteeType, Trustees, UkAddress}
+import org.joda.time.DateTime
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.Json
@@ -37,6 +40,10 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   private def getLeadTrusteeUrl(utr: String): String = s"/trusts/$utr/transformed/lead-trustee"
 
   private def getTrustStartDateUrl(utr: String): String = s"/trusts/$utr/trust-start-date"
+
+  private def getTrusteesUrl(utr: String) = s"/trusts/$utr/transformed/trustees"
+
+  private def removeTrusteeUrl(utr: String) = s"/trusts/$utr/trustees/remove"
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
 
@@ -212,4 +219,129 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       application.stop()
     }
   }
+
+  "TrustConnector removeTrustee" must {
+
+    "return Ok when the request is successful" in {
+
+      val utr = "1000000008"
+
+      val trustee = RemoveTrustee(
+        index = 0,
+        endDate = LocalDate.now()
+      )
+
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        put(urlEqualTo(removeTrusteeUrl(utr)))
+          .willReturn(ok)
+      )
+
+      val result = connector.removeTrustee(utr, trustee)
+
+      result.futureValue.status mustBe (OK)
+
+      application.stop()
+    }
+
+    "return Bad Request when the request is unsuccessful" in {
+
+      val utr = "1000000008"
+
+      val trustee = RemoveTrustee(
+        index = 0,
+        endDate = LocalDate.now()
+      )
+
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        put(urlEqualTo(removeTrusteeUrl(utr)))
+          .willReturn(badRequest)
+      )
+
+      val result = connector.removeTrustee(utr, trustee)
+
+      result.map(response => response.status mustBe BAD_REQUEST)
+
+      application.stop()
+    }
+
+  }
+
+  "TrustConnector getTrustees" must {
+
+    "must return playback data inside a Processed trust" in {
+
+      val utr = "1000000008"
+
+      val json = Json.obj("trustees" -> Json.arr(Json.obj(
+        "trusteeInd" -> Json.obj(
+          "lineNo" -> "1",
+          "bpMatchStatus" -> "01",
+          "name" -> Json.obj(
+            "firstName" -> "1234567890 QwErTyUiOp ,.(/)&'- name",
+            "lastName" -> "1234567890 QwErTyUiOp ,.(/)&'- name"
+          ),
+          "dateOfBirth" -> "1983-09-24",
+          "identification" -> Json.obj(
+            "nino" -> "JS123456A"
+          ),
+          "entityStart" -> "2019-02-28"
+        )
+      )))
+
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        get(urlEqualTo(getTrusteesUrl(utr)))
+          .willReturn(okJson(json.toString))
+      )
+
+      val processed = connector.getTrustees(utr)
+
+      whenReady(processed) { trustees =>
+        trustees mustBe Trustees(List(TrusteeType(
+          trusteeInd = Some(RemoveTrusteeIndividual(
+            lineNo = Some("1"),
+            bpMatchStatus = Some("01"),
+            name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
+            dateOfBirth = Some(DateTime.parse("1983-9-24")),
+            phoneNumber = None,
+            identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+            entityStart = DateTime.parse("2019-2-28"))
+          ),
+          trusteeOrg = None)))
+      }
+
+      application.stop()
+    }
+  }
+
+
 }

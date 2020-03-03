@@ -45,7 +45,7 @@ class IndexControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(controllers.leadtrustee.routes.CheckDetailsController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.AddATrusteeController.onPageLoad().url)
 
       application.stop()
     }

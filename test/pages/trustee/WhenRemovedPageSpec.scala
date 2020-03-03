@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.trustee
 
-import javax.inject.{Inject, Singleton}
-import models.UserAnswers
-import navigation.leadtrustee.LeadTrusteeNavigator
-import navigation.trustee.TrusteeNavigator
-import pages.Page
-import play.api.mvc.Call
+import java.time.LocalDate
 
-@Singleton
-class Navigator @Inject()() {
+import org.scalacheck.Arbitrary
+import pages.behaviours.PageBehaviours
 
-  private val normalRoutes: Page => UserAnswers => Call =
-    LeadTrusteeNavigator.routes orElse
-    TrusteeNavigator.routes orElse {
-    case _ => ua => controllers.routes.IndexController.onPageLoad(ua.utr)
+class WhenRemovedPageSpec extends PageBehaviours {
+
+  "WhenRemovedPage" must {
+
+    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
+      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.now())
+    }
+
+    beRetrievable[LocalDate](WhenRemovedPage(0))
+
+    beSettable[LocalDate](WhenRemovedPage(0))
+
+    beRemovable[LocalDate](WhenRemovedPage(0))
   }
-
-  def nextPage(page: Page, userAnswers: UserAnswers): Call =
-      normalRoutes(page)(userAnswers)
-
 }

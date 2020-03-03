@@ -46,7 +46,7 @@ class IndexController @Inject()(
             utr,
             LocalDate.parse(date.startDate)
           )).map(_ =>
-            Redirect(controllers.leadtrustee.routes.CheckDetailsController.onPageLoad())
+            Redirect(controllers.routes.AddATrusteeController.onPageLoad())
           )
         }).recover {case _ => InternalServerError}
     }

@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package navigation
+package models
 
-import javax.inject.{Inject, Singleton}
-import models.UserAnswers
-import navigation.leadtrustee.LeadTrusteeNavigator
-import navigation.trustee.TrusteeNavigator
-import pages.Page
-import play.api.mvc.Call
+sealed trait TrusteeStatus
 
-@Singleton
-class Navigator @Inject()() {
+object TrusteeStatus extends Enumerable.Implicits {
 
-  private val normalRoutes: Page => UserAnswers => Call =
-    LeadTrusteeNavigator.routes orElse
-    TrusteeNavigator.routes orElse {
-    case _ => ua => controllers.routes.IndexController.onPageLoad(ua.utr)
-  }
+  case object Completed extends WithName("completed") with TrusteeStatus
 
-  def nextPage(page: Page, userAnswers: UserAnswers): Call =
-      normalRoutes(page)(userAnswers)
+  case object InProgress extends WithName("progress") with TrusteeStatus
 
+  val values: Set[TrusteeStatus] = Set(
+    Completed, InProgress
+  )
+
+  implicit val enumerable: Enumerable[TrusteeStatus] =
+    Enumerable(values.toSeq.map(v => v.toString -> v): _*)
 }
+
+

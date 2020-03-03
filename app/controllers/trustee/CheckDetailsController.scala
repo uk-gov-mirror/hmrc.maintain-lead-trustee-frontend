@@ -18,7 +18,6 @@ package controllers.trustee
 
 import config.FrontendAppConfig
 import connectors.TrustConnector
-import controllers.ReturnToStart
 import controllers.actions._
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import javax.inject.Inject
@@ -46,10 +45,10 @@ class CheckDetailsController @Inject()(
                                         view: CheckDetailsView,
                                         nameAction: TrusteeNameRequiredProvider,
                                         helper: TrusteeIndividualPrintHelper,
-                                        service: TrusteeBuilder,
+                                        trusteeBuilder: TrusteeBuilder,
                                         trustConnector: TrustConnector,
                                         val appConfig: FrontendAppConfig
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with ReturnToStart {
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
     implicit request =>
@@ -69,8 +68,10 @@ class CheckDetailsController @Inject()(
         Future.successful(Redirect(routes.WhenAddedController.onPageLoad(index)))
       } {
         date =>
-          val trusteeInd: TrusteeIndividual = service.createTrusteeIndividual(request.userAnswers, date, index)
-          trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd).map { _ => returnToStart(request.user.affinityGroup)}
+          val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date, index)
+          trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd).map {
+            _ => Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+          }
       }
   }
 }

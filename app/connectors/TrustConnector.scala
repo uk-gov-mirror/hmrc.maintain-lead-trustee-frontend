@@ -18,7 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.{LeadTrustee, LeadTrusteeIndividual, TrustStartDate, TrusteeIndividual}
+import models.{LeadTrustee, LeadTrusteeIndividual, RemoveTrustee, TrustStartDate, TrusteeIndividual, TrusteeType, Trustees}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -50,6 +50,19 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
   def amendLeadTrustee(utr: String, leadTrustee: LeadTrustee)(implicit hc: HeaderCarrier, ec : ExecutionContext) : Future[HttpResponse] = {
     http.POST[LeadTrustee, HttpResponse](amendLeadTrusteeUrl(utr), leadTrustee)(LeadTrustee.writes, HttpReads.readRaw, hc, ec)
   }
+
+  private def getTrusteesUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/trustees"
+
+  def getTrustees(utr: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[Trustees] = {
+    http.GET[Trustees](getTrusteesUrl(utr))
+  }
+
+  private def removeTrusteeUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/trustees/remove"
+
+  def removeTrustee(utr: String, trustee: RemoveTrustee)(implicit hc: HeaderCarrier, ec : ExecutionContext)= {
+    http.PUT[JsValue, HttpResponse](removeTrusteeUrl(utr), Json.toJson(trustee))
+  }
+
 }
 
 

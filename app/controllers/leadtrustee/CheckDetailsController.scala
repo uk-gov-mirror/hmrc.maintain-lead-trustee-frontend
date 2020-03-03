@@ -19,7 +19,6 @@ package controllers.leadtrustee
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.TrustConnector
-import controllers.ReturnToStart
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.{routes => ltRoutes}
 import mapping.{IndividualLeadTrusteeToUserAnswersMapper, LeadTrusteeOrganisationExtractor}
@@ -52,10 +51,11 @@ class CheckDetailsController @Inject()(
                                         answerRowConverter: AnswerRowConverter,
                                         countryOptions: CountryOptions,
                                         val appConfig: FrontendAppConfig
-                                          )(implicit val executionContext: ExecutionContext)
-  extends FrontendBaseController with I18nSupport with ReturnToStart {
+                                        )(implicit val executionContext: ExecutionContext)
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr).async {
+  extends FrontendBaseController with I18nSupport {
+
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       connector.getLeadTrustee(request.userAnswers.utr).flatMap {
@@ -110,7 +110,9 @@ class CheckDetailsController @Inject()(
     implicit request =>
         leadTrusteeIndMapper.getFromUserAnswers(request.userAnswers) match {
           case None => Future.successful(InternalServerError)
-          case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ => returnToStart(request.user.affinityGroup))
+          case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ =>
+            Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+          )
         }
   }
 
@@ -118,7 +120,9 @@ class CheckDetailsController @Inject()(
     implicit request =>
         leadTrusteeOrgExtractor.mapLeadTrusteeOrganisation(request.userAnswers) match {
           case None => Future.successful(InternalServerError)
-          case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ => returnToStart(request.user.affinityGroup))
+          case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ =>
+            Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+          )
         }
   }
 }

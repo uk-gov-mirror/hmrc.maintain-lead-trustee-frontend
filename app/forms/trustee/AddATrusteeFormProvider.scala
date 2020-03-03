@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package navigation
+package forms.trustee
 
-import javax.inject.{Inject, Singleton}
-import models.UserAnswers
-import navigation.leadtrustee.LeadTrusteeNavigator
-import navigation.trustee.TrusteeNavigator
-import pages.Page
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import javax.inject.Inject
+import models.AddATrustee
+import play.api.data.Form
 
-@Singleton
-class Navigator @Inject()() {
+class AddATrusteeFormProvider @Inject() extends Mappings {
 
-  private val normalRoutes: Page => UserAnswers => Call =
-    LeadTrusteeNavigator.routes orElse
-    TrusteeNavigator.routes orElse {
-    case _ => ua => controllers.routes.IndexController.onPageLoad(ua.utr)
-  }
-
-  def nextPage(page: Page, userAnswers: UserAnswers): Call =
-      normalRoutes(page)(userAnswers)
-
+  def apply(): Form[AddATrustee] =
+    Form(
+      "value" -> enumerable[AddATrustee]("addATrustee.error.required")
+    )
 }

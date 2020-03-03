@@ -169,4 +169,10 @@ trait ModelGenerators {
       } yield TrusteeIndividual(name, Some(dob), phone, id, enitityStart)
     }
   }
+
+  implicit lazy val arbitraryLocalDate : Arbitrary[LocalDate] =
+    Arbitrary {
+      Gen.const(LocalDate.of(2010, 10, 10))
+    }
+
 }

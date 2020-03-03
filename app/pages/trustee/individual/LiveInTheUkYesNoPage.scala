@@ -23,6 +23,7 @@ import pages.trustee.basePath
 import scala.util.Try
 
 case class LiveInTheUkYesNoPage(index: Int) extends QuestionPage[Boolean] {
+
   override def path: JsPath = basePath \ index \ toString
 
   override def toString: String = "liveInTheUkYesNo"

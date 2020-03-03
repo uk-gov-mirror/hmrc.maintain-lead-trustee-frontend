@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package navigation
+package models
 
-import javax.inject.{Inject, Singleton}
-import models.UserAnswers
-import navigation.leadtrustee.LeadTrusteeNavigator
-import navigation.trustee.TrusteeNavigator
-import pages.Page
-import play.api.mvc.Call
+import java.time.LocalDate
 
-@Singleton
-class Navigator @Inject()() {
+import play.api.libs.json.{Format, Json, Reads}
 
-  private val normalRoutes: Page => UserAnswers => Call =
-    LeadTrusteeNavigator.routes orElse
-    TrusteeNavigator.routes orElse {
-    case _ => ua => controllers.routes.IndexController.onPageLoad(ua.utr)
-  }
+case class RemoveTrustee(index : Int, endDate: LocalDate)
 
-  def nextPage(page: Page, userAnswers: UserAnswers): Call =
-      normalRoutes(page)(userAnswers)
+object RemoveTrustee {
+
+  implicit val formats : Format[RemoveTrustee] = Json.format[RemoveTrustee]
+
+  implicit val reads : Reads[RemoveTrusteeIndividual] = Reads(json =>
+    json.validate[RemoveTrusteeIndividual])
 
 }

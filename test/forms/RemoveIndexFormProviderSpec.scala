@@ -14,25 +14,32 @@
  * limitations under the License.
  */
 
-package navigation
+package forms
 
-import javax.inject.{Inject, Singleton}
-import models.UserAnswers
-import navigation.leadtrustee.LeadTrusteeNavigator
-import navigation.trustee.TrusteeNavigator
-import pages.Page
-import play.api.mvc.Call
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-@Singleton
-class Navigator @Inject()() {
+class RemoveIndexFormProviderSpec extends BooleanFieldBehaviours {
 
-  private val normalRoutes: Page => UserAnswers => Call =
-    LeadTrusteeNavigator.routes orElse
-    TrusteeNavigator.routes orElse {
-    case _ => ua => controllers.routes.IndexController.onPageLoad(ua.utr)
+  val requiredKey = "removeIndex.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new RemoveIndexFormProvider()("removeIndex")
+
+  ".value" must {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
-
-  def nextPage(page: Page, userAnswers: UserAnswers): Call =
-      normalRoutes(page)(userAnswers)
-
 }

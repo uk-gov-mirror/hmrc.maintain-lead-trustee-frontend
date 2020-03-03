@@ -16,24 +16,25 @@
 
 package forms
 
-import forms.behaviours.OptionFieldBehaviours
-import models.IdentificationDetailOptions
+import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class IdentificationDetailOptionsFormProviderSpec extends OptionFieldBehaviours {
+class YesNoFormProviderSpec extends BooleanFieldBehaviours {
 
-  val form = new IdentificationDetailOptionsFormProvider().withPrefix("leadtrustee")
+  val messagePrefix = "yesNo"
+  val requiredKey = s"$messagePrefix.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new YesNoFormProvider().withPrefix(messagePrefix)
 
   ".value" must {
 
     val fieldName = "value"
-    val requiredKey = "leadtrustee.individual.identificationDetailOptions.error.required"
 
-    behave like optionsField[IdentificationDetailOptions](
+    behave like booleanField(
       form,
       fieldName,
-      validValues  = IdentificationDetailOptions.values.toSet,
-      invalidError = FormError(fieldName, "error.invalid")
+      invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(
@@ -42,4 +43,6 @@ class IdentificationDetailOptionsFormProviderSpec extends OptionFieldBehaviours 
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
 }
+

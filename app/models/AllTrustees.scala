@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package navigation
+package models
 
-import javax.inject.{Inject, Singleton}
-import models.UserAnswers
-import navigation.leadtrustee.LeadTrusteeNavigator
-import navigation.trustee.TrusteeNavigator
-import pages.Page
-import play.api.mvc.Call
+import play.api.i18n.{Messages, MessagesProvider}
 
-@Singleton
-class Navigator @Inject()() {
+case class AllTrustees(lead: Option[LeadTrustee], trustees: List[TrusteeType]) {
 
-  private val normalRoutes: Page => UserAnswers => Call =
-    LeadTrusteeNavigator.routes orElse
-    TrusteeNavigator.routes orElse {
-    case _ => ua => controllers.routes.IndexController.onPageLoad(ua.utr)
+  val size: Int = lead.size + trustees.size
+
+  def addToHeading()(implicit mp: MessagesProvider) = size match {
+    case 0 => Messages("addATrustee.heading")
+    case 1 => Messages("addATrustee.singular.heading")
+    case l => Messages("addATrustee.count.heading", l)
   }
-
-  def nextPage(page: Page, userAnswers: UserAnswers): Call =
-      normalRoutes(page)(userAnswers)
-
 }
