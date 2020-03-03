@@ -19,19 +19,20 @@ package controllers.trustee
 import java.time.{LocalDate, ZoneOffset}
 
 import base.SpecBase
+import connectors.TrustConnector
 import forms.DateRemovedFromTrustFormProvider
 import models.Name
-import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.WhenRemovedPage
 import pages.trustee.individual.NamePage
 import play.api.inject.bind
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.PlaybackRepository
+import services.{TrustService, TrustServiceImpl}
+import uk.gov.hmrc.http.HttpResponse
 import views.html.trustee.WhenRemovedView
 
 import scala.concurrent.Future
@@ -41,11 +42,13 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new DateRemovedFromTrustFormProvider()
   private def form = formProvider.withPrefixAndTrustStartDate("trustee.whenRemoved", LocalDate.now())
 
-  def onwardRoute = Call("GET", "/foo")
-
   val validAnswer = LocalDate.now(ZoneOffset.UTC)
   val index = 0
   val name: Name = Name("FirstName", None, "LastName")
+
+  val mockConnector = mock[TrustConnector]
+
+  val fakeService = new TrustServiceImpl(mockConnector)
 
   lazy val dateRemovedFromTrustRoute = routes.WhenRemovedController.onPageLoad(index).url
 
@@ -102,14 +105,12 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
-
-      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+      when(mockConnector.removeTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(200)))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
+            bind[TrustService].toInstance(fakeService)
           )
           .build()
 
@@ -117,7 +118,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
 
       application.stop()
     }
