@@ -25,7 +25,7 @@ import models._
 import controllers.routes.IndexController
 import org.scalatest.prop.PropertyChecks
 
-class NavigatorSpec extends SpecBase with PropertyChecks with Generators with AddATrusteeRoutes {
+class NavigatorSpec extends SpecBase with PropertyChecks with Generators {
 
   implicit val navigator = new Navigator
 
@@ -35,7 +35,7 @@ class NavigatorSpec extends SpecBase with PropertyChecks with Generators with Ad
         import pages.leadtrustee.individual._
         import controllers.leadtrustee.individual.routes._
 
-        "navigating away from the tustee name question should go to the Do you know Date of birth question" in {
+        "navigating away from the trustee name question should go to the Do you know Date of birth question" in {
           val value1 = DateOfBirthController.onPageLoad()
           navigator.nextPage(NamePage, UserAnswers("id", "UTRUTRUTR", LocalDate.now())) mustBe value1
         }
@@ -46,8 +46,6 @@ class NavigatorSpec extends SpecBase with PropertyChecks with Generators with Ad
         case object UnknownPage extends Page
         navigator.nextPage(UnknownPage, UserAnswers("id", "UTRUTRUTR", LocalDate.now())) mustBe IndexController.onPageLoad("UTRUTRUTR")
       }
-
-    behave like addATrusteeRoutes
-
+    
     }
 }

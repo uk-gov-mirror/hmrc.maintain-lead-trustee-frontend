@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
-import forms.IdentificationDetailOptionsFormProvider
 import forms.behaviours.OptionFieldBehaviours
 import models.IdentificationDetailOptions
 import play.api.data.FormError

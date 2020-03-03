@@ -19,11 +19,9 @@ package controllers.leadtrustee.actions
 import java.time.LocalDate
 
 import controllers.actions.LeadTrusteeNameRequest
-import controllers.leadtrustee.actions.NameRequiredAction
 import models.UserAnswers
 import models.requests.DataRequest
 import org.mockito.Matchers.any
-import org.mockito.Mockito
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{MustMatchers, WordSpec}

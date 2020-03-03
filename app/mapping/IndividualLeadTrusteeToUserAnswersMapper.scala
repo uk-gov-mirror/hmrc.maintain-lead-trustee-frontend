@@ -19,42 +19,38 @@ package mapping
 import java.time.LocalDate
 
 import com.google.inject.Inject
-import models.IndividualOrBusiness.Individual
-import models.{Address, IdCard, IdentificationDetailOptions, IndividualIdentification, LeadTrusteeIndividual, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
+import models.{Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, LeadTrusteeIndividual, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
 import org.slf4j.LoggerFactory
-import pages.leadtrustee.{IndividualOrBusinessPage, individual => ltind}
+import pages.leadtrustee.{individual => ltind}
+import play.api.libs.json.{JsError, JsSuccess, Reads, __}
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsError, JsSuccess, Reads}
 
 import scala.util.{Success, Try}
 
-class LeadTrusteeIndividualExtractor @Inject()() {
+class IndividualLeadTrusteeToUserAnswersMapper @Inject()() {
 
   private val logger = LoggerFactory.getLogger("application." + this.getClass.getCanonicalName)
 
-  def mapLeadTrusteeIndividual(answers: UserAnswers) : Option[LeadTrusteeIndividual] = {
+  def getFromUserAnswers(answers: UserAnswers) : Option[LeadTrusteeIndividual] = {
     val readFromUserAnswers: Reads[LeadTrusteeIndividual] =
       (
         ltind.NamePage.path.read[Name] and
-        ltind.DateOfBirthPage.path.read[LocalDate] and
-        ltind.TelephoneNumberPage.path.read[String] and
-        ltind.EmailAddressYesNoPage.path.read[Boolean].flatMap[Option[String]] {
-          case true => ltind.EmailAddressPage.path.read[String].map(Some(_))
-          case false => Reads( _=> JsSuccess(None))
-        } and
-        ltind.UkCitizenPage.path.read[Boolean].flatMap {
-          case true => ltind.NationalInsuranceNumberPage.path.read[String].map(NationalInsuranceNumber(_)).widen[IndividualIdentification]
-          case false => ltind.IdentificationDetailOptionsPage.path.read[IdentificationDetailOptions].flatMap {
-            case IdentificationDetailOptions.Passport => ltind.PassportDetailsPage.path.read[Passport].widen[IndividualIdentification]
-            case IdentificationDetailOptions.IdCard => ltind.IdCardDetailsPage.path.read[IdCard].widen[IndividualIdentification]
+          ltind.DateOfBirthPage.path.read[LocalDate] and
+          ltind.TelephoneNumberPage.path.read[String] and
+          ltind.EmailAddressYesNoPage.path.read[Boolean].flatMap[Option[String]] {
+            case true => ltind.EmailAddressPage.path.read[String].map(Some(_))
+            case false => Reads( _=> JsSuccess(None))
+          } and
+          ltind.UkCitizenPage.path.read[Boolean].flatMap {
+            case true => ltind.NationalInsuranceNumberPage.path.read[String].map(NationalInsuranceNumber(_)).widen[IndividualIdentification]
+            case false => ltind.PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].widen[IndividualIdentification]
+          } and
+          ltind.LiveInTheUkYesNoPage.path.readNullable[Boolean].flatMap {
+            case Some(true) => ltind.UkAddressPage.path.readNullable[UkAddress].widen[Option[Address]]
+            case Some(false) => ltind.NonUkAddressPage.path.readNullable[NonUkAddress].widen[Option[Address]]
+            case _ => Reads(_ => JsSuccess(None)).widen[Option[Address]]
           }
-        } and
-        ltind.LiveInTheUkYesNoPage.path.readNullable[Boolean].flatMap {
-          case Some(true) => ltind.UkAddressPage.path.readNullable[UkAddress].widen[Option[Address]]
-          case Some(false) => ltind.NonUkAddressPage.path.readNullable[NonUkAddress].widen[Option[Address]]
-          case _ => Reads(_ => JsSuccess(None)).widen[Option[Address]]
-        }
-      ).apply(LeadTrusteeIndividual.apply _ )
+        ).apply(LeadTrusteeIndividual.apply _ )
 
     answers.data.validate[LeadTrusteeIndividual](readFromUserAnswers) match {
       case JsError(errors) =>
@@ -64,9 +60,8 @@ class LeadTrusteeIndividualExtractor @Inject()() {
     }
   }
 
-  def extractLeadTrusteeIndividual(answers: UserAnswers, leadIndividual: LeadTrusteeIndividual): Try[UserAnswers] = {
-    answers.set(IndividualOrBusinessPage, Individual)
-      .flatMap(_.set(ltind.NamePage, leadIndividual.name))
+  def populateUserAnswers(answers: UserAnswers, leadIndividual: LeadTrusteeIndividual): Try[UserAnswers] = {
+    answers.set(ltind.NamePage, leadIndividual.name)
       .flatMap(_.set(ltind.DateOfBirthPage, leadIndividual.dateOfBirth))
       .flatMap(answers => extractLeadIndividualIdentification(leadIndividual, answers))
       .flatMap(answers => extractEmail(leadIndividual.email, answers))
@@ -82,12 +77,13 @@ class LeadTrusteeIndividualExtractor @Inject()() {
           .flatMap(_.set(ltind.NationalInsuranceNumberPage, nino))
       case passport:Passport =>
         answers.set(ltind.UkCitizenPage, false)
-          .flatMap(_.set(ltind.IdentificationDetailOptionsPage, IdentificationDetailOptions.Passport))
-          .flatMap(_.set(ltind.PassportDetailsPage, passport))
+          .flatMap(_.set(ltind.PassportOrIdCardDetailsPage, passport.asCombined))
       case idCard:IdCard =>
         answers.set(ltind.UkCitizenPage, false)
-          .flatMap(_.set(ltind.IdentificationDetailOptionsPage, IdentificationDetailOptions.IdCard))
-          .flatMap(_.set(ltind.IdCardDetailsPage, idCard))
+          .flatMap(_.set(ltind.PassportOrIdCardDetailsPage, idCard.asCombined))
+      case comb:CombinedPassportOrIdCard =>
+        answers.set(ltind.UkCitizenPage, false)
+          .flatMap(_.set(ltind.PassportOrIdCardDetailsPage, comb))
     }
   }
 

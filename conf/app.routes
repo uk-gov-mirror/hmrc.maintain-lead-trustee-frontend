@@ -32,8 +32,10 @@ GET        /lead-trustee/individual-or-business                             cont
 POST       /lead-trustee/individual-or-business                             controllers.leadtrustee.IndividualOrBusinessController.onSubmit()
 
 GET        /lead-trustee/details                                            controllers.leadtrustee.CheckDetailsController.onPageLoad()
-GET        /lead-trustee/details/updated                                    controllers.leadtrustee.CheckDetailsController.onPageLoadUpdated()
-POST       /lead-trustee/details                                            controllers.leadtrustee.CheckDetailsController.onSubmit()
+GET        /lead-trustee/details/individual-updated                         controllers.leadtrustee.CheckDetailsController.onPageLoadIndividualUpdated()
+GET        /lead-trustee/details/organisation-updated                       controllers.leadtrustee.CheckDetailsController.onPageLoadOrganisationUpdated()
+POST       /lead-trustee/details/individual-updated                         controllers.leadtrustee.CheckDetailsController.onSubmitIndividual()
+POST       /lead-trustee/details/organisation-updated                       controllers.leadtrustee.CheckDetailsController.onSubmitOrganisation()
 
 GET        /trustee/:index/individual-or-business                           controllers.trustee.IndividualOrBusinessController.onPageLoad(index: Int)
 POST       /trustee/:index/individual-or-business                           controllers.trustee.IndividualOrBusinessController.onSubmit(index: Int)

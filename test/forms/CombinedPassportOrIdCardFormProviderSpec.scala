@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
-import forms.IdCardDetailsFormProvider
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class IdCardDetailsFormProviderSpec extends StringFieldBehaviours {
+class CombinedPassportOrIdCardFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "leadtrustee.individual.idCardDetails.country.error.required"
-  val lengthKey = "leadtrustee.individual.idCardDetails.country.error.length"
+  val requiredKey = "leadtrustee.individual.passportOrIdCardDetails.country.error.required"
+  val lengthKey = "leadtrustee.individual.passportOrIdCardDetails.country.error.length"
   val maxLengthCountryField = 100
+  val maxLengthNumberField = 30
 
-  val form = new IdCardDetailsFormProvider().withPrefix("leadtrustee")
+  val form = new CombinedPassportOrIdCardDetailsFormProvider().withPrefix("leadtrustee")
 
   ".country" must {
 
@@ -51,4 +51,6 @@ class IdCardDetailsFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
+
 }

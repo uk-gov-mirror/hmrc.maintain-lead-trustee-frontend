@@ -46,8 +46,10 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
   val trusteeName = Name("FirstName", None, "LastName")
   val trusteeAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
 
-  lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoadUpdated().url
-  lazy val sendDetailsRoute = routes.CheckDetailsController.onSubmit().url
+  lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoadIndividualUpdated()
+  lazy val checkDetailsOrgRoute = routes.CheckDetailsController.onPageLoadOrganisationUpdated()
+  lazy val sendDetailsRoute = routes.CheckDetailsController.onSubmitIndividual()
+  lazy val sendDetailsOrgRoute = routes.CheckDetailsController.onSubmitOrganisation()
 
   val submittableUserAnswers = emptyUserAnswers
     .set(IndividualOrBusinessPage, Individual).success.value
@@ -91,7 +93,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-        val request = FakeRequest(GET, checkDetailsRoute)
+        val request = FakeRequest(GET, checkDetailsRoute.url)
 
         val result = route(application, request).value
 
@@ -100,7 +102,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(answerSection)(fakeRequest, messages).toString
+          view(answerSection, sendDetailsRoute)(fakeRequest, messages).toString
       }
 
       "redirect to the the next page" in {
@@ -116,7 +118,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
         when(mockTrustConnector.amendLeadTrustee(any(), any[LeadTrusteeIndividual]())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
 
-        val request = FakeRequest(POST, sendDetailsRoute)
+        val request = FakeRequest(POST, sendDetailsRoute.url)
 
         val result = route(application, request).value
 
@@ -146,7 +148,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-        val request = FakeRequest(GET, checkDetailsRoute)
+        val request = FakeRequest(GET, checkDetailsOrgRoute.url)
 
         val result = route(application, request).value
 
@@ -155,7 +157,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(answerSection)(fakeRequest, messages).toString
+          view(answerSection, sendDetailsOrgRoute)(fakeRequest, messages).toString
       }
 
       "redirect to the the next page" in {
@@ -171,7 +173,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
         when(mockTrustConnector.amendLeadTrustee(any(), any[LeadTrusteeOrganisation]())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
 
-        val request = FakeRequest(POST, sendDetailsRoute)
+        val request = FakeRequest(POST, sendDetailsOrgRoute.url)
 
         val result = route(application, request).value
 

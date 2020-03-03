@@ -25,10 +25,12 @@ import models.{AddATrustee, AllTrustees, Enumerable}
 import navigation.Navigator
 import pages.trustee.AddATrusteeYesNoPage
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.PlaybackRepository
 import services.TrustService
+import uk.gov.hmrc.auth.core.AffinityGroup
+import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.AddATrusteeViewHelper
 import views.html.trustee.{AddATrusteeView, AddATrusteeYesNoView}
@@ -49,12 +51,16 @@ class AddATrusteeController @Inject()(
                                        val appConfig: FrontendAppConfig
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController
   with I18nSupport
-  with Enumerable.Implicits
-  with ReturnToStart {
+  with Enumerable.Implicits {
 
   val addAnotherForm : Form[AddATrustee] = addAnotherFormProvider()
 
   val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addATrusteeYesNo")
+
+  private def returnToStart(userAffinityGroup : AffinityGroup): Result = {userAffinityGroup match {
+    case Agent => Redirect(appConfig.maintainATrustAgentDeclarationUrl)
+    case _ => Redirect(appConfig.maintainATrustIndividualDeclarationUrl)
+  }}
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
@@ -82,11 +88,18 @@ class AddATrusteeController @Inject()(
         (formWithErrors: Form[_]) => {
           Future.successful(BadRequest(yesNoView(formWithErrors)))
         },
-        value => {
+        addNow => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddATrusteeYesNoPage, value))
+            trustees <- trust.getAllTrustees(request.userAnswers.utr)
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddATrusteeYesNoPage, addNow))
             _ <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddATrusteeYesNoPage, updatedAnswers))
+          } yield {
+            if (addNow) {
+              Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(trustees.trustees.size))
+            } else {
+              returnToStart(request.user.affinityGroup)
+            }
+          }
         }
       )
   }
@@ -111,9 +124,12 @@ class AddATrusteeController @Inject()(
             )
           },
           {
-            case AddATrustee.YesNow => Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(trustees.trustees.size))
-            case AddATrustee.YesLater => returnToStart(request.user.affinityGroup)
-            case AddATrustee.NoComplete => returnToStart(request.user.affinityGroup)
+            case AddATrustee.YesNow =>
+              Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(trustees.trustees.size))
+            case AddATrustee.YesLater =>
+              returnToStart(request.user.affinityGroup)
+            case AddATrustee.NoComplete =>
+              returnToStart(request.user.affinityGroup)
           }
         )
       }

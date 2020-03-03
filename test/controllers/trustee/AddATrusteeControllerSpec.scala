@@ -172,7 +172,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.trustee.individual.routes.NameController.onPageLoad(0).url
+        redirectLocation(result).value mustEqual controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(0).url
 
         application.stop()
       }

@@ -25,20 +25,20 @@
 @(form: Form[_], name: String, countryOptions:Seq[InputOption])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("leadtrustee.individual.idCardDetails.title", name)}"
-    ) {
+    title = s"${errorPrefix(form)} ${messages("leadtrustee.individual.passportOrIdCardDetails.title", name)}"
+) {
 
-    @formHelper(action = IdCardDetailsController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = PassportOrIdCardController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.heading("leadtrustee.individual.idCardDetails.heading", Some(name))
+        @components.heading("leadtrustee.individual.passportOrIdCardDetails.heading", Some(name))
 
         @components.select(
             field = form("country"),
-            label = messages("leadtrustee.individual.idCardDetails.country"),
+            label = messages("leadtrustee.individual.passportOrIdCardDetails.country"),
             labelClasses = Set("form-control-1-2 bold"),
             options = countryOptions,
             placeholder = Some("address.country.select"),
@@ -48,15 +48,15 @@
 
         @components.input_text(
             field = form("number"),
-            label = messages("leadtrustee.individual.idCardDetails.number")
+            label = messages("leadtrustee.individual.passportOrIdCardDetails.number")
         )
 
         @components.input_date(
             field = form("expiryDate"),
-            legend = messages("leadtrustee.individual.idCardDetails.expiryDate.title"),
+            legend = messages("leadtrustee.individual.passportOrIdCardDetails.expiryDate.title"),
             legendClass = "bold",
             headingIsLegend = false,
-            hint = Some(messages(s"leadtrustee.individual.idCardDetails.expiryDate.hint"))
+            hint = Some(messages(s"leadtrustee.individual.passportOrIdCardDetails.expiryDate.hint"))
         )
 
         @components.submit_button()

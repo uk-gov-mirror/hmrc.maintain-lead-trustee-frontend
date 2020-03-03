@@ -14,27 +14,35 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
-import forms.UkCitizenFormProvider
-import forms.behaviours.BooleanFieldBehaviours
+import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class UkCitizenFormProviderSpec extends BooleanFieldBehaviours {
+class PassportDetailsFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "leadtrustee.individual.ukCitizen.error.required"
-  val invalidKey = "error.boolean"
+  val requiredKey = "prefix.individual.passportDetails.country.error.required"
+  val lengthKey = "prefix.individual.passportDetails.country.error.length"
+  val maxLengthCountryField = 100
+  val maxLengthNumberField = 30
 
-  val form = new UkCitizenFormProvider()("leadtrustee.individual")
+  val form = new PassportDetailsFormProvider().withPrefix("prefix")
 
-  ".value" must {
+  ".country" must {
 
-    val fieldName = "value"
+    val fieldName = "country"
 
-    behave like booleanField(
+    behave like fieldThatBindsValidData(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+      stringsWithMaxLength(maxLengthCountryField)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLengthCountryField,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLengthCountryField))
     )
 
     behave like mandatoryField(
@@ -43,4 +51,6 @@ class UkCitizenFormProviderSpec extends BooleanFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
+
 }

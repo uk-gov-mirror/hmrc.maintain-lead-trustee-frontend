@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package forms.leadtrustee.individual
+package forms
 
 import java.time.{LocalDate, ZoneOffset}
 
-import forms.DateOfBirthFormProvider
 import forms.behaviours.DateBehaviours
 import play.api.data.FormError
 
