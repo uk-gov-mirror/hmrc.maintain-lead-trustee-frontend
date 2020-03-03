@@ -38,7 +38,7 @@ class LeadTrusteeOrganisationPrintHelper @Inject()(answerRowConverter: AnswerRow
         bound.yesNoQuestion(RegisteredInUkYesNoPage, "leadtrustee.organisation.registeredInUkYesNo", controllers.leadtrustee.organisation.routes.RegisteredInUkYesNoController.onPageLoad().url),
         bound.stringQuestion(NamePage, "leadtrustee.organisation.name", controllers.leadtrustee.organisation.routes.NameController.onPageLoad().url),
         bound.stringQuestion(UtrPage, "leadtrustee.organisation.utr", controllers.leadtrustee.organisation.routes.UtrController.onPageLoad().url),
-        bound.yesNoQuestion(BasedInTheUkYesNoPage, "leadtrustee.organisation.basedInTheUkYesNo", controllers.leadtrustee.organisation.routes.BasedInTheUkYesNoController.onPageLoad().url),
+        bound.yesNoQuestion(AddressInTheUkYesNoPage, "leadtrustee.organisation.addressInTheUkYesNo", controllers.leadtrustee.organisation.routes.AddressInTheUkYesNoController.onPageLoad().url),
         bound.addressQuestion(UkAddressPage, "leadtrustee.organisation.ukAddress", controllers.leadtrustee.organisation.routes.UkAddressController.onPageLoad().url),
         bound.addressQuestion(NonUkAddressPage, "leadtrustee.organisation.nonUkAddress", controllers.leadtrustee.organisation.routes.NonUkAddressController.onPageLoad().url),
         bound.yesNoQuestion(EmailAddressYesNoPage, "leadtrustee.organisation.emailAddressYesNo", controllers.leadtrustee.organisation.routes.EmailAddressYesNoController.onPageLoad().url),

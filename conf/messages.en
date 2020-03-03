@@ -283,10 +283,10 @@ leadtrustee.organisation.utr.p1 = You can
 leadtrustee.organisation.utr.link = find a lost UTR number (opens in a new window or tab)
 leadtrustee.organisation.utr.checkYourAnswersLabel = What is {0}’s Unique Taxpayer Reference (UTR) number?
 
-leadtrustee.organisation.basedInTheUkYesNo.title = Is {0} based in the UK?
-leadtrustee.organisation.basedInTheUkYesNo.heading = Is {0} based in the UK?
-leadtrustee.organisation.basedInTheUkYesNo.checkYourAnswersLabel = Is {0} based in the UK?
-leadtrustee.organisation.basedInTheUkYesNo.error.required = Select yes if the lead trustee is based in the UK
+leadtrustee.organisation.addressInTheUkYesNo.title = Is {0}’s address in the UK?
+leadtrustee.organisation.addressInTheUkYesNo.heading = Is {0}’s address in the UK?
+leadtrustee.organisation.addressInTheUkYesNo.checkYourAnswersLabel = Is {0}’s address in the UK?
+leadtrustee.organisation.addressInTheUkYesNo.error.required = Select yes if the lead trustee’s address is in the UK
 
 leadtrustee.organisation.ukAddress.title = What is {0}’s address?
 leadtrustee.organisation.ukAddress.heading = What is {0}’s address?
