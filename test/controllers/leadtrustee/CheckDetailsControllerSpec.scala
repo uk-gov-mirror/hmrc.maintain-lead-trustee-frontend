@@ -64,8 +64,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
   val submittableUserAnswersOrg = emptyUserAnswers
     .set(IndividualOrBusinessPage, Business).success.value
     .set(pages.leadtrustee.organisation.NamePage, "Lead Org").success.value
-    .set(pages.leadtrustee.organisation.LiveInTheUkYesNoPage, true).success.value
-    .set(pages.leadtrustee.organisation.RegisteredInUkYesNoPage, true).success.value
+    .set(pages.leadtrustee.organisation.BasedInTheUkYesNoPage, true).success.value
     .set(pages.leadtrustee.organisation.UtrPage, "1234567892").success.value
     .set(pages.leadtrustee.organisation.UkAddressPage, UkAddress("line1", "line2", None, None, "postcode")).success.value
     .set(pages.leadtrustee.organisation.EmailAddressYesNoPage, false).success.value
