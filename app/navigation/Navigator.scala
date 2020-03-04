@@ -17,16 +17,22 @@
 package navigation
 
 import javax.inject.{Inject, Singleton}
+import models.TrusteeType._
 import models.UserAnswers
 import navigation.leadtrustee.LeadTrusteeNavigator
 import navigation.trustee.TrusteeNavigator
-import pages.Page
+import pages.{Page, TrusteeTypePage}
 import play.api.mvc.Call
 
 @Singleton
 class Navigator @Inject()() {
 
+  private val parameterisedNavigation : PartialFunction[Page, UserAnswers => Call] = {
+    case TrusteeTypePage => trusteeTypeNavigation()
+  }
+
   private val normalRoutes: Page => UserAnswers => Call =
+    parameterisedNavigation orElse
     LeadTrusteeNavigator.routes orElse
     TrusteeNavigator.routes orElse {
     case _ => ua => controllers.routes.IndexController.onPageLoad(ua.utr)
@@ -34,5 +40,12 @@ class Navigator @Inject()() {
 
   def nextPage(page: Page, userAnswers: UserAnswers): Call =
       normalRoutes(page)(userAnswers)
+
+  private def trusteeTypeNavigation()(userAnswers: UserAnswers): Call = {
+    userAnswers.get(TrusteeTypePage).map {
+      case LeadTrustee => controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad()
+      case Trustee => controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(0)
+    }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+  }
 
 }

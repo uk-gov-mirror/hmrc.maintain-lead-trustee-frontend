@@ -14,29 +14,33 @@
  * limitations under the License.
  *@
 
-@import controllers.leadtrustee.organisation.routes._
+@import controllers.routes._
+@import models.TrusteeType
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+  main_template: MainTemplate,
+  formHelper: FormWithCSRF
 )
 
-@(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("leadtrustee.organisation.basedInTheUkYesNo.title", name)}"
-    ) {
+  title = s"${errorPrefix(form)} ${messages("leadTrusteeOrTrustee.title")}"
+) {
 
-    @formHelper(action = BasedInTheUkYesNoController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = LeadTrusteeOrTrusteeController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.input_yes_no(
+        @components.input_radio(
             field = form("value"),
-            legend = messages("leadtrustee.organisation.basedInTheUkYesNo.heading", name),
-            headingIsLegend = true
+            legend = messages("leadTrusteeOrTrustee.heading"),
+            fieldSetClass = Some("inline"),
+            inputs = TrusteeType.options.toSeq,
+            headingIsLegend = true,
+            hint = Some(messages("leadTrusteeOrTrustee.hint"))
         )
 
         @components.submit_button()

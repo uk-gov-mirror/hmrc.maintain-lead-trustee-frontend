@@ -14,71 +14,69 @@
  * limitations under the License.
  */
 
-package controllers.leadtrustee.organisation
+package controllers
 
 import base.SpecBase
-import forms.YesNoFormProvider
+import forms.TrusteeTypeFormProvider
+import models.IndividualOrBusiness.Individual
+import models.TrusteeType._
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.organisation.{BasedInTheUkYesNoPage, NamePage}
+import pages.TrusteeTypePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.leadtrustee.organisation.BasedInTheUkYesNoView
+import views.html.LeadTrusteeOrTrusteeView
+import views.html.trustee.IndividualOrBusinessView
 
 import scala.concurrent.Future
 
-class BasedInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
+class LeadTrusteeOrTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.organisation.basedInTheUkYesNo")
+  val formProvider = new TrusteeTypeFormProvider()
+  val form = formProvider.withPrefix("leadTrusteeOrTrustee")
+  
+  lazy val leadTrusteeOrTrusteeRoute = routes.LeadTrusteeOrTrusteeController.onPageLoad().url
 
-  lazy val liveInTheUkYesNoPageRoute = routes.BasedInTheUkYesNoController.onPageLoad().url
-
-  val name = "Lead trustee org"
-
-  override val emptyUserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
-
-  "BasedInTheUkYesNo Controller" must {
+  "LeadTrusteeOrTrustee controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, liveInTheUkYesNoPageRoute)
+      val request = FakeRequest(GET, leadTrusteeOrTrusteeRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[BasedInTheUkYesNoView]
+      val view = application.injector.instanceOf[LeadTrusteeOrTrusteeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name)(fakeRequest, messages).toString
+        view(form)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(BasedInTheUkYesNoPage, true).success.value
+      val userAnswers = emptyUserAnswers.set(TrusteeTypePage, LeadTrustee).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, liveInTheUkYesNoPageRoute)
+      val request = FakeRequest(GET, leadTrusteeOrTrusteeRoute)
 
-      val view = application.injector.instanceOf[BasedInTheUkYesNoView]
+      val view = application.injector.instanceOf[LeadTrusteeOrTrusteeView]
 
       val result = route(application, request).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), name)(fakeRequest, messages).toString
+        view(form.fill(LeadTrustee))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -89,14 +87,13 @@ class BasedInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[Navigator].toInstance(fakeNavigator))
-          .build()
-
       val request =
-        FakeRequest(POST, liveInTheUkYesNoPageRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, leadTrusteeOrTrusteeRoute)
+          .withFormUrlEncodedBody(("value", "trustee"))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[Navigator].toInstance(fakeNavigator))
+        .build()
 
       val result = route(application, request).value
 
@@ -112,19 +109,19 @@ class BasedInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, liveInTheUkYesNoPageRoute)
+        FakeRequest(POST, leadTrusteeOrTrusteeRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[BasedInTheUkYesNoView]
+      val view = application.injector.instanceOf[LeadTrusteeOrTrusteeView]
 
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name)(fakeRequest, messages).toString
+        view(boundForm)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -133,7 +130,7 @@ class BasedInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, liveInTheUkYesNoPageRoute)
+      val request = FakeRequest(GET, leadTrusteeOrTrusteeRoute)
 
       val result = route(application, request).value
 
@@ -149,8 +146,8 @@ class BasedInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, liveInTheUkYesNoPageRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, leadTrusteeOrTrusteeRoute)
+          .withFormUrlEncodedBody(("value", "trustee"))
 
       val result = route(application, request).value
 

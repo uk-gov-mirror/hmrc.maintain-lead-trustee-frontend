@@ -38,7 +38,7 @@ class LeadTrusteeOrganisationExtractor @Inject()() {
         ltorg.TelephoneNumberPage.path.read[String] and
         ltorg.EmailAddressPage.path.readNullable[String] and
         ltorg.UtrPage.path.readNullable[String] and
-        ltorg.BasedInTheUkYesNoPage.path.read[Boolean].flatMap {
+        ltorg.AddressInTheUkYesNoPage.path.read[Boolean].flatMap {
           case true => ltorg.UkAddressPage.path.read[UkAddress].widen[Address]
           case false => ltorg.NonUkAddressPage.path.read[Address].widen[Address]
         }
@@ -83,10 +83,10 @@ class LeadTrusteeOrganisationExtractor @Inject()() {
     address match {
       case uk: UkAddress =>
         answers.set(ltorg.UkAddressPage, uk)
-          .flatMap(_.set(ltorg.BasedInTheUkYesNoPage, true))
+          .flatMap(_.set(ltorg.AddressInTheUkYesNoPage, true))
       case nonUk: NonUkAddress =>
         answers.set(ltorg.NonUkAddressPage, nonUk)
-          .flatMap(_.set(ltorg.BasedInTheUkYesNoPage, false))
+          .flatMap(_.set(ltorg.AddressInTheUkYesNoPage, false))
       case _ => Success(answers)
     }
   }

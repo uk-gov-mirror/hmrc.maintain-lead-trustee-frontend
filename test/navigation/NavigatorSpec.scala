@@ -19,11 +19,12 @@ package navigation
 import java.time.LocalDate
 
 import base.SpecBase
-import generators.Generators
-import pages._
-import models._
 import controllers.routes.IndexController
+import generators.Generators
+import models.TrusteeType._
+import models.UserAnswers
 import org.scalatest.prop.PropertyChecks
+import pages._
 
 class NavigatorSpec extends SpecBase with PropertyChecks with Generators {
 
@@ -31,21 +32,37 @@ class NavigatorSpec extends SpecBase with PropertyChecks with Generators {
 
   "Navigator" when {
 
-      "navigating individual lead trustee change journey" when {
-        import pages.leadtrustee.individual._
-        import controllers.leadtrustee.individual.routes._
+    "navigating individual lead trustee change journey" when {
+      import controllers.leadtrustee.individual.routes._
+      import pages.leadtrustee.individual._
 
-        "navigating away from the trustee name question should go to the Do you know Date of birth question" in {
-          val value1 = DateOfBirthController.onPageLoad()
-          navigator.nextPage(NamePage, UserAnswers("id", "UTRUTRUTR", LocalDate.now())) mustBe value1
-        }
+      "navigating away from the trustee name question should go to the Do you know Date of birth question" in {
+        val value1 = DateOfBirthController.onPageLoad()
+        navigator.nextPage(NamePage, UserAnswers("id", "UTRUTRUTR", LocalDate.now())) mustBe value1
       }
-
-      "go to Index from a page that doesn't exist in the route map" in {
-
-        case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, UserAnswers("id", "UTRUTRUTR", LocalDate.now())) mustBe IndexController.onPageLoad("UTRUTRUTR")
-      }
-    
     }
+
+    "go to Index from a page that doesn't exist in the route map" in {
+
+      case object UnknownPage extends Page
+      navigator.nextPage(UnknownPage, UserAnswers("id", "UTRUTRUTR", LocalDate.now())) mustBe IndexController.onPageLoad("UTRUTRUTR")
+    }
+
+    "Lead trustee or trustee page -> Lead trustee -> Lead trustee individual or business page" in {
+      val answers = emptyUserAnswers
+        .set(TrusteeTypePage, LeadTrustee).success.value
+
+      navigator.nextPage(TrusteeTypePage, answers)
+        .mustBe(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad())
+    }
+
+    "Lead trustee or trustee page -> Trustee -> Trustee individual or business page" in {
+      val answers = emptyUserAnswers
+        .set(TrusteeTypePage, Trustee).success.value
+
+      navigator.nextPage(TrusteeTypePage, answers)
+        .mustBe(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(0))
+    }
+    
+  }
 }

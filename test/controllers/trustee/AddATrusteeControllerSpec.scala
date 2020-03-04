@@ -21,8 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
-import models.{AddATrustee, AllTrustees, LeadTrustee, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrusteeType, Trustees}
-import org.joda.time.DateTime
+import models.{AddATrustee, AllTrustees, LeadTrustee, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, TrustIdentification, Trustee, TrusteeIndividual, Trustees}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -43,14 +42,14 @@ class AddATrusteeControllerSpec extends SpecBase {
   val yesNoForm = new YesNoFormProvider().withPrefix("addATrusteeYesNo")
 
   val trusteeRows = List(
-    AddRow("First Last", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/0/remove"),
-    AddRow("First Last", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/1/remove")
+    AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "#", "Remove", "/maintain-a-trust/trustees/trustee/0/remove"),
+    AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "#", "Remove", "/maintain-a-trust/trustees/trustee/1/remove")
   )
 
   val leadAndTrusteeRows = List(
-    AddRow("Lead First Last", typeLabel = "Lead Trustee Individual", "/maintain-a-trust/trustees/lead-trustee/details", "#"),
-    AddRow("First Last", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/0/remove"),
-    AddRow("First Last", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/1/remove")
+    AddRow("Lead First Last", typeLabel = "Lead Trustee Individual", "Change details", "/maintain-a-trust/trustees/lead-trustee/details","Remove", "#"),
+    AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "#", "Remove", "/maintain-a-trust/trustees/trustee/0/remove"),
+    AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "#", "Remove", "/maintain-a-trust/trustees/trustee/1/remove")
   )
 
   private val leadTrusteeIndividual = Some(LeadTrusteeIndividual(
@@ -66,14 +65,14 @@ class AddATrusteeControllerSpec extends SpecBase {
     address = None
   ))
 
-  private val trustee = TrusteeType(Some(RemoveTrusteeIndividual(
-    lineNo = Some("1"),
-    bpMatchStatus = Some("01"),
+  private val trustee = TrusteeIndividual(
     name = Name(firstName = "First", middleName = None, lastName = "Last"),
-    dateOfBirth = Some(DateTime.parse("1983-9-24")),
+    dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     phoneNumber = None,
     identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-    entityStart = DateTime.parse("2019-2-28"))), None)
+    entityStart = LocalDate.parse("2019-02-28")
+  )
+
   val trustees = Trustees(List(trustee, trustee))
 
 
@@ -87,7 +86,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
     override def getTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] = Future.successful(data)
 
-    override def getTrustee(utr: String, index: Int)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[TrusteeType] =
+    override def getTrustee(utr: String, index: Int)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Trustee] =
       Future.successful(trustee)
 
     override def removeTrustee(utr: String, trustee: RemoveTrustee)
@@ -175,7 +174,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(0).url
+        redirectLocation(result).value mustEqual controllers.routes.LeadTrusteeOrTrusteeController.onPageLoad().url
 
         application.stop()
       }
@@ -226,7 +225,7 @@ class AddATrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addTrusteeForm ,Nil, trusteeRows, isLeadTrusteeDefined = false, heading = "You have added 2 trustees")(fakeRequest, messages).toString
+          view(addTrusteeForm ,Nil, trusteeRows, isLeadTrusteeDefined = false, heading = "The trust has 2 trustees")(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -247,7 +246,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(2).url
+        redirectLocation(result).value mustEqual controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(0).url
 
         application.stop()
       }
@@ -273,7 +272,7 @@ class AddATrusteeControllerSpec extends SpecBase {
         application.stop()
       }
 
-      "redirect to the declaration when the user says they want to add later (TBD)" in {
+      "redirect to the declaration when the user says they want to add later" ignore {
 
         val fakeService = new FakeService(trustees)
 
@@ -320,7 +319,7 @@ class AddATrusteeControllerSpec extends SpecBase {
             Nil,
             trusteeRows,
             isLeadTrusteeDefined = false,
-            heading = "You have added 2 trustees"
+            heading = "The trust has 2 trustees"
           )(fakeRequest, messages).toString
 
         application.stop()
@@ -347,7 +346,7 @@ class AddATrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addTrusteeForm ,Nil, leadAndTrusteeRows, isLeadTrusteeDefined = true, heading = "You have added 3 trustees")(fakeRequest, messages).toString
+          view(addTrusteeForm ,Nil, leadAndTrusteeRows, isLeadTrusteeDefined = true, heading = "The trust has 3 trustees")(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -379,7 +378,7 @@ class AddATrusteeControllerSpec extends SpecBase {
             Nil,
             leadAndTrusteeRows,
             isLeadTrusteeDefined = true,
-            heading = "You have added 3 trustees"
+            heading = "The trust has 3 trustees"
           )(fakeRequest, messages).toString
 
         application.stop()

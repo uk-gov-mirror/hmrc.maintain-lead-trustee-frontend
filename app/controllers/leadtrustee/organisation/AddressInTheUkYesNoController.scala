@@ -21,16 +21,16 @@ import controllers.leadtrustee.actions.NameRequiredAction
 import forms.YesNoFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.leadtrustee.organisation.BasedInTheUkYesNoPage
+import pages.leadtrustee.organisation.AddressInTheUkYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.leadtrustee.organisation.BasedInTheUkYesNoView
+import views.html.leadtrustee.organisation.AddressInTheUkYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class BasedInTheUkYesNoController @Inject()(
+class AddressInTheUkYesNoController @Inject()(
                                          override val messagesApi: MessagesApi,
                                          playbackRepository: PlaybackRepository,
                                          navigator: Navigator,
@@ -38,15 +38,15 @@ class BasedInTheUkYesNoController @Inject()(
                                          nameAction: NameRequiredAction,
                                          formProvider: YesNoFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
-                                         view: BasedInTheUkYesNoView
+                                         view: AddressInTheUkYesNoView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("leadtrustee.organisation.basedInTheUkYesNo")
+  val form = formProvider.withPrefix("leadtrustee.organisation.addressInTheUkYesNo")
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(BasedInTheUkYesNoPage) match {
+      val preparedForm = request.userAnswers.get(AddressInTheUkYesNoPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -63,9 +63,9 @@ class BasedInTheUkYesNoController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(BasedInTheUkYesNoPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddressInTheUkYesNoPage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BasedInTheUkYesNoPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(AddressInTheUkYesNoPage, updatedAnswers))
       )
   }
 }

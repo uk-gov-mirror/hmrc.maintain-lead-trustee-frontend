@@ -19,17 +19,16 @@ package controllers.trustee
 import base.SpecBase
 import connectors.TrustConnector
 import forms.RemoveIndexFormProvider
-import models.{Name, RemoveTrusteeIndividual, TrustIdentification, TrusteeType, Trustees}
-import org.joda.time.DateTime
+import models.{Name, TrustIdentification, TrusteeIndividual, Trustees}
+import java.time.LocalDate
+
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.prop.PropertyChecks
-import pages.trustee.individual.NamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.TrustServiceImpl
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.RemoveIndexView
 
@@ -51,18 +50,16 @@ class RemoveTrusteeControllerSpec extends SpecBase with PropertyChecks with Scal
 
   val mockConnector: TrustConnector = mock[TrustConnector]
 
-  def trusteeInd(id: Int) = RemoveTrusteeIndividual(
-    lineNo = Some("1"),
-    bpMatchStatus = Some("01"),
+  def trusteeInd(id: Int) = TrusteeIndividual(
     name = Name(firstName = s"First $id", middleName = None, lastName = s"Last $id"),
-    dateOfBirth = Some(DateTime.parse("1983-9-24")),
+    dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     phoneNumber = None,
     identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-    entityStart = DateTime.parse("2019-2-28"))
+    entityStart = LocalDate.parse("2019-02-28"))
 
-  val expectedResult = TrusteeType(Some(trusteeInd(2)), None)
+  val expectedResult = trusteeInd(2)
 
-  val trustees = List(TrusteeType(Some(trusteeInd(1)), None), expectedResult, TrusteeType(Some(trusteeInd(3)), None))
+  val trustees = List(trusteeInd(1), expectedResult, trusteeInd(3))
 
   "RemoveTrustee Controller" when {
 

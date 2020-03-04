@@ -14,15 +14,26 @@
  * limitations under the License.
  */
 
-package pages.leadtrustee.individual
+package models
 
-import models.TrusteeStatus
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import viewmodels.RadioOption
 
-case object LeadTrusteeStatusPage extends QuestionPage[TrusteeStatus] {
+sealed trait TrusteeType
 
-  override def path: JsPath = basePath \ toString
+object TrusteeType extends Enumerable.Implicits {
 
-  override def toString: String = "status"
+  case object LeadTrustee extends WithName("leadTrustee") with TrusteeType
+  case object Trustee extends WithName("trustee") with TrusteeType
+
+  val values: Set[TrusteeType] = Set(
+    LeadTrustee, Trustee
+  )
+
+  val options: Set[RadioOption] = values.map {
+    value =>
+      RadioOption("trusteeType", value.toString)
+  }
+
+  implicit val enumerable: Enumerable[TrusteeType] =
+    Enumerable(values.toSeq.map(v => v.toString -> v): _*)
 }

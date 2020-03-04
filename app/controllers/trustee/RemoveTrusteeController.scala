@@ -20,9 +20,8 @@ import controllers.actions.StandardActionSets
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.RemoveIndexFormProvider
 import javax.inject.Inject
-import models.TrusteeType
+import models.{TrusteeIndividual, TrusteeOrganisation}
 import navigation.Navigator
-import pages.trustee.WhenAddedPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -52,22 +51,22 @@ class RemoveTrusteeController @Inject()(
 
   private val form = formProvider.apply(messagesPrefix)
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
       for {
         trustee <- trust.getTrustee(request.userAnswers.utr, index)
       } yield {
         val trusteeName = trustee match {
-          case TrusteeType(Some(trusteeInd), None) => trusteeInd.name.displayName
-          case TrusteeType(None, Some(trusteeOrg)) => trusteeOrg.name
+          case lti:TrusteeIndividual => lti.name.displayName
+          case lto:TrusteeOrganisation => lto.name
         }
         Ok(view(messagesPrefix, form, index, trusteeName, formRoute(index)))
       }
 
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
       import scala.concurrent.ExecutionContext.Implicits._
@@ -86,8 +85,8 @@ class RemoveTrusteeController @Inject()(
             trustee <- trust.getTrustee(request.userAnswers.utr, index)
           } yield {
             val trusteeName = trustee match {
-              case TrusteeType(Some(trusteeInd), None) => trusteeInd.name.displayName
-              case TrusteeType(None, Some(trusteeOrg)) => trusteeOrg.name
+              case lti:TrusteeIndividual => lti.name.displayName
+              case lto:TrusteeOrganisation => lto.name
             }
             BadRequest(view(messagesPrefix, formWithErrors, index, trusteeName, formRoute(index)))
           }

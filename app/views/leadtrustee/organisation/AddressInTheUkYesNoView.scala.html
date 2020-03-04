@@ -14,31 +14,28 @@
  * limitations under the License.
  *@
 
-@import controllers.trustee.routes._
-@import models.IndividualOrBusiness
+@import controllers.leadtrustee.organisation.routes._
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
 )
 
-@(form: Form[_], index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("trustee.individualOrBusiness.title")}"
-) {
+    title = s"${errorPrefix(form)} ${messages("leadtrustee.organisation.addressInTheUkYesNo.title", name)}"
+    ) {
 
-    @formHelper(action = IndividualOrBusinessController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = AddressInTheUkYesNoController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.input_radio(
+        @components.input_yes_no(
             field = form("value"),
-            legend = messages("trustee.individualOrBusiness.heading"),
-            fieldSetClass = Some("inline"),
-            inputs = IndividualOrBusiness.options.toSeq,
+            legend = messages("leadtrustee.organisation.addressInTheUkYesNo.heading", name),
             headingIsLegend = true
         )
 

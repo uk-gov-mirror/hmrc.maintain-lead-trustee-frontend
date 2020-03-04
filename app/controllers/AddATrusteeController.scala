@@ -23,7 +23,6 @@ import forms.trustee.AddATrusteeFormProvider
 import javax.inject.Inject
 import models.{AddATrustee, AllTrustees, Enumerable}
 import navigation.Navigator
-import pages.trustee.AddATrusteeYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -81,7 +80,7 @@ class AddATrusteeController @Inject()(
       }
   }
 
-  def submitOne(): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def submitOne(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
       yesNoForm.bindFromRequest().fold(
@@ -91,11 +90,9 @@ class AddATrusteeController @Inject()(
         addNow => {
           for {
             trustees <- trust.getAllTrustees(request.userAnswers.utr)
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddATrusteeYesNoPage, addNow))
-            _ <- registrationsRepository.set(updatedAnswers)
           } yield {
             if (addNow) {
-              Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(trustees.trustees.size))
+              Redirect(controllers.routes.LeadTrusteeOrTrusteeController.onPageLoad())
             } else {
               returnToStart(request.user.affinityGroup)
             }
@@ -104,7 +101,7 @@ class AddATrusteeController @Inject()(
       )
   }
 
-  def submitAnother(): Action[AnyContent] = standardActionSets.IdentifiedUserWithData.async {
+  def submitAnother(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
       trust.getAllTrustees(request.userAnswers.utr).map { trustees =>
@@ -125,7 +122,7 @@ class AddATrusteeController @Inject()(
           },
           {
             case AddATrustee.YesNow =>
-              Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(trustees.trustees.size))
+              Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(0))
             case AddATrustee.YesLater =>
               returnToStart(request.user.affinityGroup)
             case AddATrustee.NoComplete =>

@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
-sealed trait TrusteeStatus
+import forms.mappings.Mappings
+import javax.inject.Inject
+import models.TrusteeType
+import play.api.data.Form
 
-object TrusteeStatus extends Enumerable.Implicits {
+class TrusteeTypeFormProvider @Inject() extends Mappings {
 
-  case object Completed extends WithName("completed") with TrusteeStatus
-
-  case object InProgress extends WithName("progress") with TrusteeStatus
-
-  val values: Set[TrusteeStatus] = Set(
-    Completed, InProgress
-  )
-
-  implicit val enumerable: Enumerable[TrusteeStatus] =
-    Enumerable(values.toSeq.map(v => v.toString -> v): _*)
+  def withPrefix(messagePrefix: String): Form[TrusteeType] =
+    Form(
+      "value" -> enumerable[TrusteeType](s"$messagePrefix.error.required")
+    )
 }
-
-

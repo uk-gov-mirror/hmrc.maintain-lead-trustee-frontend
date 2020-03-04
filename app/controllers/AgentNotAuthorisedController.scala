@@ -30,7 +30,7 @@ class AgentNotAuthorisedController @Inject()(
                                               view: AgentNotAuthorisedView
                                             ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.IdentifiedUserWithData {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.identifiedUserWithData {
     implicit request =>
       Ok(view(request.userAnswers.utr))
   }
