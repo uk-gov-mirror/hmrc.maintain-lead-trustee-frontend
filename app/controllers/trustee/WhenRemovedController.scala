@@ -53,13 +53,12 @@ class WhenRemovedController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      for {
-        trustee <- trust.getTrustee(request.userAnswers.utr, index)
-      } yield {
-        val trusteeName = trustee match {
-          case lti:TrusteeIndividual => lti.name.displayName
-          case lto:TrusteeOrganisation => lto.name
-        }
+      trust.getTrustee(request.userAnswers.utr, index).map {
+        trustee =>
+          val trusteeName = trustee match {
+            case lti:TrusteeIndividual => lti.name.displayName
+            case lto:TrusteeOrganisation => lto.name
+          }
         Ok(view(preparedForm, index, trusteeName))
       }
 
@@ -73,13 +72,12 @@ class WhenRemovedController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>{
-          for {
-            trustee <- trust.getTrustee(request.userAnswers.utr, index)
-          } yield {
-            val trusteeName = trustee match {
-              case lti:TrusteeIndividual => lti.name.displayName
-              case lto:TrusteeOrganisation => lto.name
-            }
+          trust.getTrustee(request.userAnswers.utr, index).map {
+            trustee =>
+              val trusteeName = trustee match {
+                case lti:TrusteeIndividual => lti.name.displayName
+                case lto:TrusteeOrganisation => lto.name
+              }
             BadRequest(view(formWithErrors, index, trusteeName))
           }
         },

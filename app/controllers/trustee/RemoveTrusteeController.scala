@@ -54,13 +54,12 @@ class RemoveTrusteeController @Inject()(
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      for {
-        trustee <- trust.getTrustee(request.userAnswers.utr, index)
-      } yield {
-        val trusteeName = trustee match {
-          case lti:TrusteeIndividual => lti.name.displayName
-          case lto:TrusteeOrganisation => lto.name
-        }
+      trust.getTrustee(request.userAnswers.utr, index).map {
+        trustee =>
+          val trusteeName = trustee match {
+            case lti:TrusteeIndividual => lti.name.displayName
+            case lto:TrusteeOrganisation => lto.name
+          }
         Ok(view(messagesPrefix, form, index, trusteeName, formRoute(index)))
       }
 
@@ -73,14 +72,13 @@ class RemoveTrusteeController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          for {
-            trustee <- trust.getTrustee(request.userAnswers.utr, index)
-          } yield {
-            val trusteeName = trustee match {
-              case lti:TrusteeIndividual => lti.name.displayName
-              case lto:TrusteeOrganisation => lto.name
-            }
-            BadRequest(view(messagesPrefix, formWithErrors, index, trusteeName, formRoute(index)))
+          trust.getTrustee(request.userAnswers.utr, index).map {
+            trustee =>
+              val trusteeName = trustee match {
+                case lti:TrusteeIndividual => lti.name.displayName
+                case lto:TrusteeOrganisation => lto.name
+              }
+              BadRequest(view(messagesPrefix, formWithErrors, index, trusteeName, formRoute(index)))
           }
         },
         value => {
