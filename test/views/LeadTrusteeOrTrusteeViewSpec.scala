@@ -16,22 +16,22 @@
 
 package views
 
-import forms.IndividualOrBusinessFormProvider
-import models.IndividualOrBusiness
+import forms.TrusteeTypeFormProvider
+import models.TrusteeType
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.OptionsViewBehaviours
-import views.html.leadtrustee.IndividualOrBusinessView
+import views.html.LeadTrusteeOrTrusteeView
 
 class LeadTrusteeOrTrusteeViewSpec extends OptionsViewBehaviours {
 
-  val messageKeyPrefix = "leadtrustee.individualOrBusiness"
+  val messageKeyPrefix = "leadTrusteeOrTrustee"
 
-  val form = new IndividualOrBusinessFormProvider().withPrefix(messageKeyPrefix)
+  val form = new TrusteeTypeFormProvider().withPrefix(messageKeyPrefix)
 
-  "IndividualOrBusinessView" must {
+  "LeadTrusteeOrTrustee view" must {
 
-    val view = viewFor[IndividualOrBusinessView](Some(emptyUserAnswers))
+    val view = viewFor[LeadTrusteeOrTrusteeView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form)(fakeRequest, messages)
@@ -40,6 +40,6 @@ class LeadTrusteeOrTrusteeViewSpec extends OptionsViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like pageWithOptions(form, applyView, IndividualOrBusiness.options)
+    behave like pageWithOptions(form, applyView, TrusteeType.options)
   }
 }
