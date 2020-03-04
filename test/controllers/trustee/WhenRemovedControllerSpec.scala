@@ -21,12 +21,11 @@ import java.time.{LocalDate, ZoneOffset}
 import base.SpecBase
 import connectors.TrustConnector
 import forms.DateRemovedFromTrustFormProvider
-import models.Name
+import models.{Name, TrustIdentification, TrusteeIndividual, Trustees}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.WhenRemovedPage
-import pages.trustee.individual.NamePage
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
@@ -40,19 +39,20 @@ import scala.concurrent.Future
 class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new DateRemovedFromTrustFormProvider()
+
   private def form = formProvider.withPrefixAndTrustStartDate("trustee.whenRemoved", LocalDate.now())
 
   val validAnswer = LocalDate.now(ZoneOffset.UTC)
+
   val index = 0
-  val name: Name = Name("FirstName", None, "LastName")
+
+  lazy val name : String = "First 1 Last 1"
 
   val mockConnector = mock[TrustConnector]
 
   val fakeService = new TrustServiceImpl(mockConnector)
 
   lazy val dateRemovedFromTrustRoute = routes.WhenRemovedController.onPageLoad(index).url
-
-  val userAnswersWithName = emptyUserAnswers.set(NamePage(index), name).success.value
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, dateRemovedFromTrustRoute)
@@ -65,11 +65,23 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
         "value.year"  -> validAnswer.getYear.toString
       )
 
+  def trusteeInd(id: Int) = TrusteeIndividual(
+    name = Name(firstName = s"First $id", middleName = None, lastName = s"Last $id"),
+    dateOfBirth = Some(LocalDate.parse("1983-09-24")),
+    phoneNumber = None,
+    identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+    entityStart = LocalDate.parse("2019-02-28"))
+
+  val trustees = List(trusteeInd(1), trusteeInd(2), trusteeInd(3))
+
   "WhenRemoved Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithName)).build()
+      when(mockConnector.getTrustees(any())(any(), any()))
+        .thenReturn(Future.successful(Trustees(trustees)))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustConnector].toInstance(mockConnector)).build()
 
       val result = route(application, getRequest()).value
 
@@ -78,7 +90,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, name.displayName)(fakeRequest, messages).toString
+        view(form, index, name)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -86,10 +98,12 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage(index), name).success.value
         .set(WhenRemovedPage(index), validAnswer).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      when(mockConnector.getTrustees(any())(any(), any()))
+        .thenReturn(Future.successful(Trustees(trustees)))
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(bind[TrustConnector].toInstance(mockConnector)).build()
 
       val view = application.injector.instanceOf[WhenRemovedView]
 
@@ -98,7 +112,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), index, name.displayName)(getRequest(), messages).toString
+        view(form.fill(validAnswer), index, name)(getRequest(), messages).toString
 
       application.stop()
     }
@@ -125,7 +139,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithName)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustConnector].toInstance(mockConnector)).build()
 
       val request =
         FakeRequest(POST, dateRemovedFromTrustRoute)
@@ -140,7 +154,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, index, name)(fakeRequest, messages).toString
 
       application.stop()
     }
