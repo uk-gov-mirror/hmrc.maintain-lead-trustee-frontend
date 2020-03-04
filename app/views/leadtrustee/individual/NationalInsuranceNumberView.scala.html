@@ -34,9 +34,10 @@
         @components.error_summary(form.errors)
 
         @components.input_text(
-          field = form("value"),
-          label = messages("leadtrustee.individual.nationalInsuranceNumber.heading", name),
-          headingIsLabel = true
+            field = form("value"),
+            label = messages("leadtrustee.individual.nationalInsuranceNumber.heading", name),
+            headingIsLabel = true,
+            hint = Some(messages("leadtrustee.individual.nationalInsuranceNumber.hint"))
         )
 
         @components.submit_button()
