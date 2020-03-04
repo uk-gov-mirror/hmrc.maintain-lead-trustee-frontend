@@ -29,14 +29,18 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
         AddRow(
           name = trusteeInd.name.displayName,
           typeLabel = messages(s"entities.trustee.individual"),
+          changeLabel = messages("site.change.details"),
           changeUrl = "#",
+          removeLabel =  messages("site.delete"),
           removeUrl = controllers.trustee.routes.RemoveIndividualTrusteeController.onPageLoad(index).url
         )
       case (trusteeOrg : TrusteeOrganisation, index) =>
         AddRow(
           name = trusteeOrg.name,
           typeLabel = messages(s"entities.trustee.organisation"),
+          changeLabel = messages("site.change.details"),
           changeUrl = "#",
+          removeLabel =  messages("site.delete"),
           removeUrl = "#"
         )
     }
@@ -49,14 +53,18 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
         List(AddRow(
           name = leadInd.name.displayName,
           typeLabel = messages(s"entities.leadtrustee.individual"),
+          changeLabel = messages("site.change.details"),
           changeUrl = controllers.leadtrustee.routes.CheckDetailsController.onPageLoad().url,
+          removeLabel =  messages("site.delete"),
           removeUrl = "#"
         ))
       case Some(leadIOrg: LeadTrusteeOrganisation) =>
         List(AddRow(
           name = leadIOrg.name,
           typeLabel = messages(s"entities.leadtrustee.organisation"),
+          changeLabel = messages("site.change.details"),
           changeUrl = controllers.leadtrustee.routes.CheckDetailsController.onPageLoad().url,
+          removeLabel =  messages("site.delete"),
           removeUrl = "#"
         ))
       case _ => Nil
