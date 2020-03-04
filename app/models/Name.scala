@@ -18,9 +18,8 @@ package models
 
 import play.api.libs.json._
 
-case class Name (firstName: String, middleName: Option[String], lastName: String) {
+case class Name(firstName: String, middleName: Option[String], lastName: String) {
   lazy val displayName : String = firstName + " " + lastName
-  override def toString = s"$firstName $lastName"
 }
 
 object Name {

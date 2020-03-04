@@ -18,7 +18,7 @@ package services
 
 import connectors.TrustConnector
 import javax.inject.Inject
-import models.{AllTrustees, LeadTrustee, RemoveTrustee, Trustees}
+import models.{AllTrustees, LeadTrustee, RemoveTrustee, Trustee, Trustees}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,6 +32,9 @@ trait TrustService {
   def getTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees]
 
   def removeTrustee(utr: String, trustee: RemoveTrustee)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
+
+  def getTrustee(utr: String, index: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustee]
+
 }
 
 class TrustServiceImpl @Inject()(
@@ -56,6 +59,10 @@ class TrustServiceImpl @Inject()(
 
   override def removeTrustee(utr: String, trustee: RemoveTrustee)(implicit hc:HeaderCarrier, ec:ExecutionContext) = {
     connector.removeTrustee(utr, trustee)
+  }
+
+  override def getTrustee(utr: String, index: Int)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Trustee] = {
+    getTrustees(utr).map(_.trustees(index))
   }
 
 }

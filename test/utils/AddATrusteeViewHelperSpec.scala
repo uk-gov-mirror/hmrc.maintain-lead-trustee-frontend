@@ -16,21 +16,23 @@
 
 package utils
 
+import java.time.LocalDate
+
 import base.SpecBase
-import models.{AllTrustees, Name, RemoveTrusteeIndividual, TrustIdentification, TrusteeType}
-import org.joda.time.DateTime
+import models.{AllTrustees, Name, TrustIdentification, TrusteeIndividual}
 import viewmodels.addAnother.AddRow
 
 class AddATrusteeViewHelperSpec extends SpecBase {
 
-  val userAnswersWithTrustees = List(TrusteeType(Some(RemoveTrusteeIndividual(
-    lineNo = Some("1"),
-    bpMatchStatus = Some("01"),
-    name = Name(firstName = "First", middleName = None, lastName = "Last"),
-    dateOfBirth = Some(DateTime.parse("1983-9-24")),
-    phoneNumber = None,
-    identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-    entityStart = DateTime.parse("2019-2-28"))), None))
+  val trustees = List(
+    TrusteeIndividual(
+      name = Name(firstName = "First", middleName = None, lastName = "Last"),
+      dateOfBirth = Some(LocalDate.parse("1983-09-24")),
+      phoneNumber = None,
+      identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+      entityStart = LocalDate.parse("2019-02-28")
+    )
+  )
 
   "AddATrusteeViewHelper" when {
 
@@ -53,7 +55,7 @@ class AddATrusteeViewHelperSpec extends SpecBase {
       }
 
       "generate rows complete trustees" in {
-        val rows = new AddATrusteeViewHelper(AllTrustees(None, userAnswersWithTrustees)).rows
+        val rows = new AddATrusteeViewHelper(AllTrustees(None, trustees)).rows
         rows.complete mustBe List(
           AddRow("First Last", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/0/remove")
         )

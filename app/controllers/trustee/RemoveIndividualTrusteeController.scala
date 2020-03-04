@@ -45,7 +45,7 @@ class RemoveIndividualTrusteeController @Inject()(
   override def page(index: Int) : QuestionPage[Name] = NamePage(index)
 
   override def actions(index: Int) =
-    standardActionSets.IdentifiedUserWithData
+    standardActionSets.identifiedUserWithData
 
   override def redirect(remove: Boolean, index : Int) : Call = {
     if (remove) {
@@ -59,6 +59,6 @@ class RemoveIndividualTrusteeController @Inject()(
     controllers.trustee.routes.RemoveIndividualTrusteeController.onSubmit(index)
 
   override def content(index: Int)(implicit request: DataRequest[AnyContent]) : String =
-    request.userAnswers.get(page(index)).map(_.toString).getOrElse(Messages(s"$messagesPrefix.default"))
+    request.userAnswers.get(page(index)).map(_.displayName).getOrElse(Messages(s"$messagesPrefix.default"))
 
 }

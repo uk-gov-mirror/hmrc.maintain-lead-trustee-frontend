@@ -107,5 +107,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
       verify(playbackRepository).set(emptyUserAnswers)
 
       redirectLocation(result).value mustEqual onwardRoute
+
+      application.stop()
     }
 }

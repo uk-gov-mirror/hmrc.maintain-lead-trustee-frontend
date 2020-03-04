@@ -8,8 +8,8 @@ POST       /name                                        controllers.leadtrustee.
 GET        /utr                                         controllers.leadtrustee.organisation.UtrController.onPageLoad()
 POST       /utr                                         controllers.leadtrustee.organisation.UtrController.onSubmit()
 
-GET        /based-in-uk                                 controllers.leadtrustee.organisation.BasedInTheUkYesNoController.onPageLoad()
-POST       /based-in-uk                                 controllers.leadtrustee.organisation.BasedInTheUkYesNoController.onSubmit()
+GET        /address-in-uk                               controllers.leadtrustee.organisation.AddressInTheUkYesNoController.onPageLoad()
+POST       /address-in-uk                               controllers.leadtrustee.organisation.AddressInTheUkYesNoController.onSubmit()
 
 GET        /uk-address                                  controllers.leadtrustee.organisation.UkAddressController.onPageLoad()
 POST       /uk-address                                  controllers.leadtrustee.organisation.UkAddressController.onSubmit()
