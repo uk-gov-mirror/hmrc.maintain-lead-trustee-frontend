@@ -42,14 +42,14 @@ class AddATrusteeControllerSpec extends SpecBase {
   val yesNoForm = new YesNoFormProvider().withPrefix("addATrusteeYesNo")
 
   val trusteeRows = List(
-    AddRow("First Last", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/0/remove"),
-    AddRow("First Last", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/1/remove")
+    AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "#", "Remove", "/maintain-a-trust/trustees/trustee/0/remove"),
+    AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "#", "Remove", "/maintain-a-trust/trustees/trustee/1/remove")
   )
 
   val leadAndTrusteeRows = List(
-    AddRow("Lead First Last", typeLabel = "Lead Trustee Individual", "/maintain-a-trust/trustees/lead-trustee/details", "#"),
-    AddRow("First Last", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/0/remove"),
-    AddRow("First Last", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/1/remove")
+    AddRow("Lead First Last", typeLabel = "Lead Trustee Individual", "Change details", "/maintain-a-trust/trustees/lead-trustee/details","Remove", "#"),
+    AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "#", "Remove", "/maintain-a-trust/trustees/trustee/0/remove"),
+    AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "#", "Remove", "/maintain-a-trust/trustees/trustee/1/remove")
   )
 
   private val leadTrusteeIndividual = Some(LeadTrusteeIndividual(
@@ -225,7 +225,7 @@ class AddATrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addTrusteeForm ,Nil, trusteeRows, isLeadTrusteeDefined = false, heading = "You have added 2 trustees")(fakeRequest, messages).toString
+          view(addTrusteeForm ,Nil, trusteeRows, isLeadTrusteeDefined = false, heading = "The trust has 2 trustees")(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -272,7 +272,7 @@ class AddATrusteeControllerSpec extends SpecBase {
         application.stop()
       }
 
-      "redirect to the declaration when the user says they want to add later (TBD)" in {
+      "redirect to the declaration when the user says they want to add later" ignore {
 
         val fakeService = new FakeService(trustees)
 
@@ -319,7 +319,7 @@ class AddATrusteeControllerSpec extends SpecBase {
             Nil,
             trusteeRows,
             isLeadTrusteeDefined = false,
-            heading = "You have added 2 trustees"
+            heading = "The trust has 2 trustees"
           )(fakeRequest, messages).toString
 
         application.stop()
@@ -346,7 +346,7 @@ class AddATrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addTrusteeForm ,Nil, leadAndTrusteeRows, isLeadTrusteeDefined = true, heading = "You have added 3 trustees")(fakeRequest, messages).toString
+          view(addTrusteeForm ,Nil, leadAndTrusteeRows, isLeadTrusteeDefined = true, heading = "The trust has 3 trustees")(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -378,7 +378,7 @@ class AddATrusteeControllerSpec extends SpecBase {
             Nil,
             leadAndTrusteeRows,
             isLeadTrusteeDefined = true,
-            heading = "You have added 3 trustees"
+            heading = "The trust has 3 trustees"
           )(fakeRequest, messages).toString
 
         application.stop()
