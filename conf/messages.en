@@ -217,6 +217,7 @@ leadtrustee.individual.ukCitizen.error.required = Select yes if you know the lea
 leadtrustee.individual.nationalInsuranceNumber.title = What is {0}’s National Insurance number?
 leadtrustee.individual.nationalInsuranceNumber.heading = What is {0}’s National Insurance number?
 leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel = What is {0}’s National Insurance number?
+leadtrustee.individual.nationalInsuranceNumber.hint = It is on their National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
 leadtrustee.individual.nationalInsuranceNumber.error.required = Enter the lead trustee’s National Insurance number
 leadtrustee.individual.nationalInsuranceNumber.error.invalidFormat = Enter the lead trustee’s National Insurance number in the correct format
 
@@ -375,6 +376,7 @@ trustee.individual.nationalInsuranceNumberYesNo.error.required = Select yes if y
 trustee.individual.nationalInsuranceNumber.checkYourAnswersLabel = What is {0}’s National Insurance number?
 trustee.individual.nationalInsuranceNumber.title = What is the trustee’s National Insurance number?
 trustee.individual.nationalInsuranceNumber.heading = What is {0}’s National Insurance number?
+trustee.individual.nationalInsuranceNumber.hint = It is on their National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
 trustee.individual.nationalInsuranceNumber.error.required = Enter the trustee’s National Insurance number
 trustee.individual.nationalInsuranceNumber.error.invalidFormat = Enter the trustee’s National Insurance number in the correct format
 
