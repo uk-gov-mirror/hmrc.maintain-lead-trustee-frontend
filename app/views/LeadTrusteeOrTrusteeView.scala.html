@@ -14,7 +14,8 @@
  * limitations under the License.
  *@
 
-@import controllers.trustee.routes._
+@import controllers.routes._
+@import models.TrusteeType
 
 @this(
   main_template: MainTemplate,
@@ -27,22 +28,19 @@
   title = s"${errorPrefix(form)} ${messages("leadTrusteeOrTrustee.title")}"
 ) {
 
-    @formHelper(action = AddATrusteeController.submitOne(), 'autoComplete -> "off") {
+    @formHelper(action = LeadTrusteeOrTrusteeController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.heading("leadTrusteeOrTrustee.heading")
-
-        @components.input_yes_no(
+        @components.input_radio(
             field = form("value"),
-            legend = messages("addATrusteeYesNo.heading"),
-            legendClass = Some("visually-hidden"),
+            legend = messages("leadTrusteeOrTrustee.heading"),
+            inputs = TrusteeType.options.toSeq,
+            headingIsLegend = true,
             hint = Some(messages("leadTrusteeOrTrustee.hint"))
         )
-
-        <p><a href="#">@messages("addATrusteeYesNo.return.link")</a></p>
 
         @components.submit_button()
     }

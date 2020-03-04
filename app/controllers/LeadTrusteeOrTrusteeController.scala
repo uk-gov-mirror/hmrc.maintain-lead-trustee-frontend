@@ -19,14 +19,14 @@ package controllers
 import controllers.actions.StandardActionSets
 import forms.TrusteeTypeFormProvider
 import javax.inject.Inject
-import models.IndividualOrBusiness
+import models.TrusteeType
 import navigation.Navigator
-import pages.trustee.IndividualOrBusinessPage
+import pages.TrusteeTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.trustee.IndividualOrBusinessView
+import views.html.LeadTrusteeOrTrusteeView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,36 +37,36 @@ class LeadTrusteeOrTrusteeController @Inject()(
                                                 standardActionSets: StandardActionSets,
                                                 formProvider: TrusteeTypeFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                view: IndividualOrBusinessView
+                                                view: LeadTrusteeOrTrusteeView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("leadTrusteeOrTrustee")
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(IndividualOrBusinessPage(index)) match {
+      val preparedForm = request.userAnswers.get(TrusteeTypePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index))
+      Ok(view(preparedForm))
   }
 
 
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, index))),
+          Future.successful(BadRequest(view(formWithErrors))),
 
-        (value: IndividualOrBusiness) =>
+        (value: TrusteeType) =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(IndividualOrBusinessPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(TrusteeTypePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IndividualOrBusinessPage(index), updatedAnswers))
+          } yield Redirect(navigator.nextPage(TrusteeTypePage, updatedAnswers))
       )
   }
 }

@@ -35,8 +35,6 @@
 
     @components.heading("addATrusteeYesNo.heading")
 
-    <p>@messages("addATrusteeYesNo.p1") <a href="@controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad().url">@messages("addATrusteeYesNo.p1.a")</a>.</p>
-
     @components.input_yes_no(
       field = form("value"),
       legend = messages("addATrusteeYesNo.heading"),

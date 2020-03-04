@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package pages.trustee
+package pages
 
 import models.{TrusteeType, UserAnswers}
-import pages.QuestionPage
 import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-case class TrusteeTypePage(index: Int) extends QuestionPage[TrusteeType] {
+object TrusteeTypePage extends QuestionPage[TrusteeType] {
 
-  override def path: JsPath = basePath \ index \ toString
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "trusteeType"
 

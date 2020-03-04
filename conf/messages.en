@@ -147,7 +147,6 @@ leadTrusteeOrTrustee.title = Are you entering details for the lead trustee or a 
 leadTrusteeOrTrustee.heading = Are you entering details for the lead trustee or a trustee?
 leadTrusteeOrTrustee.error.required = Select Lead trustee if this is the trust’s lead trustee
 leadTrusteeOrTrustee.hint = The lead trustee is the main point of contact for the trust. Do not enter agent details unless they are legally the lead trustee or a trustee.
-leadTrusteeOrTrustee.return.link = Return to registration process
 
 trusteeType.leadTrustee = Lead trustee
 trusteeType.trustee = Trustee
