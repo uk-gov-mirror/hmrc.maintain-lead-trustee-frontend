@@ -47,7 +47,7 @@ class AddATrusteeControllerSpec extends SpecBase {
   )
 
   val leadAndTrusteeRows = List(
-    AddRow("Lead First Last", typeLabel = "Lead Trustee Individual", "Change details", "/maintain-a-trust/trustees/lead-trustee/details","Remove", "#"),
+    AddRow("Lead First Last", typeLabel = "Lead Trustee Individual", "Change details", "/maintain-a-trust/trustees/lead-trustee/details","Remove", "/maintain-a-trust/trustees/lead-trustee/unable-to-remove"),
     AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "#", "Remove", "/maintain-a-trust/trustees/trustee/0/remove"),
     AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "#", "Remove", "/maintain-a-trust/trustees/trustee/1/remove")
   )

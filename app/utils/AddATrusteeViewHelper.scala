@@ -56,7 +56,7 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
           changeLabel = messages("site.change.details"),
           changeUrl = controllers.leadtrustee.routes.CheckDetailsController.onPageLoad().url,
           removeLabel =  messages("site.delete"),
-          removeUrl = "#"
+          removeUrl = controllers.leadtrustee.routes.UnableToRemoveController.onPageLoad().url
         ))
       case Some(leadIOrg: LeadTrusteeOrganisation) =>
         List(AddRow(
@@ -65,7 +65,7 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
           changeLabel = messages("site.change.details"),
           changeUrl = controllers.leadtrustee.routes.CheckDetailsController.onPageLoad().url,
           removeLabel =  messages("site.delete"),
-          removeUrl = "#"
+          removeUrl = controllers.leadtrustee.routes.UnableToRemoveController.onPageLoad().url
         ))
       case _ => Nil
     }
