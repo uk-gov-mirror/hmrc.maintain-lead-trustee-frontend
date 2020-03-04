@@ -47,9 +47,9 @@ class AddATrusteeViewHelperSpec extends SpecBase {
       "generate rows from user answers for trustees" ignore {
         val rows = new AddATrusteeViewHelper(AllTrustees(None, Nil)).rows
         rows.inProgress mustBe List(
-          AddRow("First 0 Last 0", typeLabel = "Trustee", "#", "/maintain-a-trust/trustees/trustee/0/remove"),
-          AddRow("First 1 Last 1", typeLabel = "Trustee", "#", "/maintain-a-trust/trustees/trustee/1/remove"),
-          AddRow("No name added", typeLabel = "Trustee", "#", "/maintain-a-trust/trustees/trustee/2/remove")
+          AddRow("First 0 Last 0", typeLabel = "Trustee", "Change details", "#", "Remove", "/maintain-a-trust/trustees/trustee/0/remove"),
+          AddRow("First 1 Last 1", typeLabel = "Trustee", "Change details" ,"#",  "Remove", "/maintain-a-trust/trustees/trustee/1/remove"),
+          AddRow("No name added", typeLabel = "Trustee", "Change details", "#", "Remove","/maintain-a-trust/trustees/trustee/2/remove")
         )
         rows.complete mustBe Nil
       }
@@ -57,7 +57,7 @@ class AddATrusteeViewHelperSpec extends SpecBase {
       "generate rows complete trustees" in {
         val rows = new AddATrusteeViewHelper(AllTrustees(None, trustees)).rows
         rows.complete mustBe List(
-          AddRow("First Last", typeLabel = "Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/0/remove")
+          AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "#", "Remove", "/maintain-a-trust/trustees/trustee/0/remove")
         )
         rows.inProgress mustBe Nil
       }
@@ -65,10 +65,10 @@ class AddATrusteeViewHelperSpec extends SpecBase {
       "generate rows from user answers for complete and in progress trustees" ignore {
         val rows = new AddATrusteeViewHelper(AllTrustees(None, Nil)).rows
         rows.complete mustBe List(
-          AddRow("First Last", typeLabel = "Lead Trustee Individual", "#", "/maintain-a-trust/trustees/trustee/0/remove")
+          AddRow("First Last", typeLabel = "Lead Trustee Individual", "Change details", "#", "Remove","/maintain-a-trust/trustees/trustee/0/remove")
         )
         rows.inProgress mustBe List(
-          AddRow("First 0 Last 0", typeLabel = "Trustee", "#", "/maintain-a-trust/trustees/trustee/0/remove")
+          AddRow("First 0 Last 0", typeLabel = "Trustee", "Change details", "#", "Remove","/maintain-a-trust/trustees/trustee/0/remove")
         )
       }
 
