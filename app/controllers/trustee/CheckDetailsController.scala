@@ -16,6 +16,8 @@
 
 package controllers.trustee
 
+import java.time.LocalDateTime
+
 import config.FrontendAppConfig
 import connectors.TrustConnector
 import controllers.actions._
@@ -26,6 +28,7 @@ import models.{TrusteeIndividual, UserAnswers}
 import navigation.Navigator
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrusteeBuilder
@@ -71,11 +74,12 @@ class CheckDetailsController @Inject()(
         date =>
           val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date, index)
           trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd).flatMap { _ =>
-            playbackRepository.set(UserAnswers(
-              request.userAnswers.internalAuthId,
-              request.userAnswers.utr,
-              request.userAnswers.whenTrustSetup
-            )) map ( _ => Redirect(controllers.routes.AddATrusteeController.onPageLoad()) )
+            playbackRepository.set(
+              request.userAnswers.copy(
+                data = Json.obj(),
+                updatedAt = LocalDateTime.now
+              )
+            ) map ( _ => Redirect(controllers.routes.AddATrusteeController.onPageLoad()) )
           }
       }
   }

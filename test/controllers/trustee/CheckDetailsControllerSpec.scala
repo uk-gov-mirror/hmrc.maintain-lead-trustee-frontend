@@ -66,8 +66,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
       val answerSection = AnswerSection(None, Seq(
         bound.nameQuestion(NamePage(index), "trustee.individual.name", controllers.trustee.individual.routes.NameController.onPageLoad(index).url),
         bound.addressQuestion(UkAddressPage(index), "trustee.individual.ukAddress", controllers.trustee.individual.routes.UkAddressController.onPageLoad(index).url)
-      ).flatten
-      )
+      ).flatten)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
