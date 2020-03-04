@@ -30,14 +30,14 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
           name = trusteeInd.name.displayName,
           typeLabel = messages(s"entities.trustee.individual"),
           changeUrl = "#",
-          removeUrl = controllers.trustee.routes.RemoveIndividualTrusteeController.onPageLoad(index).url
+          removeUrl = controllers.trustee.routes.RemoveTrusteeController.onPageLoad(index).url
         )
       case (TrusteeType(None, Some(trusteeOrg)), index) =>
         AddRow(
           name = trusteeOrg.name,
           typeLabel = messages(s"entities.trustee.organisation"),
           changeUrl = "#",
-          removeUrl = controllers.trustee.routes.RemoveIndividualTrusteeController.onPageLoad(index).url
+          removeUrl = controllers.trustee.routes.RemoveTrusteeController.onPageLoad(index).url
         )
     }
   }

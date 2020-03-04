@@ -134,7 +134,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
     }
 
 
-    "getTrusteeName" in {
+    "get trustee" in {
 
       def trusteeInd(id: Int) = RemoveTrusteeIndividual(
         lineNo = Some("1"),
