@@ -64,6 +64,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
       contentAsString(result) mustEqual
         view(form, index, trusteeName.displayName)(fakeRequest, messages).toString
 
+      application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -85,6 +86,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
       contentAsString(result) mustEqual
         view(form.fill(validAnswer), index, trusteeName.displayName)(fakeRequest, messages).toString
 
+      application.stop()
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -110,6 +112,8 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      application.stop()
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

@@ -358,6 +358,7 @@ trustee.individual.dateOfBirthYesNo.error.required = Select yes if you know the 
 trustee.individual.dateOfBirth.checkYourAnswersLabel = What is {0}’s date of birth?
 trustee.individual.dateOfBirth.title = What is the trustee’s date of birth?
 trustee.individual.dateOfBirth.heading = What is {0}’s date of birth?
+trustee.individual.dateOfBirth.hint = For example, 31 3 1980
 trustee.individual.dateOfBirth.checkYourAnswersLabel = What is {0}’s date of birth?
 trustee.individual.dateOfBirth.error.required.all = Enter a date of birth
 trustee.individual.dateOfBirth.error.required.two = Date of birth must include a {0} and a {1}

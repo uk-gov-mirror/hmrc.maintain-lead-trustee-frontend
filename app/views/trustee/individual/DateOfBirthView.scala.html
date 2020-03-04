@@ -37,7 +37,8 @@
             field = form("value"),
             legend = messages("trustee.individual.dateOfBirth.heading", trusteeName),
             legendClass = "heading-large",
-            headingIsLegend = true
+            headingIsLegend = true,
+            hint = Some(messages("trustee.individual.dateOfBirth.hint"))
         )
 
         @components.submit_button()
