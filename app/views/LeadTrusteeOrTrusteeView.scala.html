@@ -14,21 +14,21 @@
  * limitations under the License.
  *@
 
-@import controllers.leadtrustee.routes._
-@import models.IndividualOrBusiness
+@import controllers.routes._
+@import models.TrusteeType
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+  main_template: MainTemplate,
+  formHelper: FormWithCSRF
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("leadtrustee.individualOrBusiness.title")}"
+  title = s"${errorPrefix(form)} ${messages("leadTrusteeOrTrustee.title")}"
 ) {
 
-    @formHelper(action = IndividualOrBusinessController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = LeadTrusteeOrTrusteeController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
@@ -36,10 +36,11 @@
 
         @components.input_radio(
             field = form("value"),
-            legend = messages("leadtrustee.individualOrBusiness.heading"),
+            legend = messages("leadTrusteeOrTrustee.heading"),
             fieldSetClass = Some("inline"),
-            inputs = IndividualOrBusiness.options.toSeq,
-            headingIsLegend = true
+            inputs = TrusteeType.options.toSeq,
+            headingIsLegend = true,
+            hint = Some(messages("leadTrusteeOrTrustee.hint"))
         )
 
         @components.submit_button()

@@ -141,6 +141,16 @@ entities.no.value.added = No value added
 addATrusteeYesNo.title = Do you want to add a trustee?
 addATrusteeYesNo.heading = Do you want to add a trustee?
 addATrusteeYesNo.error.required = Select yes if you want to add a trustee
+addATrusteeYesNo.p1 = You can
+addATrusteeYesNo.p1.a = change the lead trustee
+
+leadTrusteeOrTrustee.title = Are you entering details for the lead trustee or a trustee?
+leadTrusteeOrTrustee.heading = Are you entering details for the lead trustee or a trustee?
+leadTrusteeOrTrustee.error.required = Select Lead trustee if this is the trust’s lead trustee
+leadTrusteeOrTrustee.hint = The lead trustee is the main point of contact for the trust. Do not enter agent details unless they are legally the lead trustee or a trustee.
+
+trusteeType.leadTrustee = Lead trustee
+trusteeType.trustee = Trustee
 
 addATrustee.title = Add a trustee
 addATrustee.heading = Add a trustee
@@ -170,9 +180,9 @@ individualOrBusiness.business = Business
 leadTrusteeDetails.title = Check lead trustee details
 leadTrusteeDetails.heading = Check lead trustee details
 
-leadtrustee.individualOrBusiness.title = Is the trustee an individual or a business?
-leadtrustee.individualOrBusiness.heading = Is the trustee an individual or a business?
-leadtrustee.individualOrBusiness.error.required = Select if the trustee is an individual or a business
+leadtrustee.individualOrBusiness.title = Is the lead trustee an individual or a business?
+leadtrustee.individualOrBusiness.heading = Is the lead trustee an individual or a business?
+leadtrustee.individualOrBusiness.error.required = Select if the lead trustee is an individual or a business
 
 leadtrustee.individual.name.title = What is the lead trustee’s name?
 leadtrustee.individual.name.heading = What is the lead trustee’s name?

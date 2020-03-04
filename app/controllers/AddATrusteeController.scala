@@ -92,7 +92,7 @@ class AddATrusteeController @Inject()(
             trustees <- trust.getAllTrustees(request.userAnswers.utr)
           } yield {
             if (addNow) {
-              Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(0))
+              Redirect(controllers.routes.LeadTrusteeOrTrusteeController.onPageLoad())
             } else {
               returnToStart(request.user.affinityGroup)
             }
