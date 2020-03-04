@@ -37,6 +37,7 @@
         @components.input_radio(
             field = form("value"),
             legend = messages("leadTrusteeOrTrustee.heading"),
+            fieldSetClass = Some("inline"),
             inputs = TrusteeType.options.toSeq,
             headingIsLegend = true,
             hint = Some(messages("leadTrusteeOrTrustee.hint"))
