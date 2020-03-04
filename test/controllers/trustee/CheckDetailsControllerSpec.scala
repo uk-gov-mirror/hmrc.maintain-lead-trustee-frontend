@@ -30,7 +30,8 @@ import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.PlaybackRepository
+import org.mockito.ArgumentCaptor
+import play.api.libs.json.Json
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.countryOptions.CountryOptions
@@ -98,13 +99,19 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockTrustConnector.addTrusteeIndividual(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
 
+      when(playbackRepository.set(any())).thenReturn(Future.successful(true))
+
+      val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass[UserAnswers](classOf[UserAnswers])
+
       val request = FakeRequest(POST, submitDetailsRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      verify(playbackRepository).set(emptyUserAnswers)
+      verify(playbackRepository).set(captor.capture)
+
+      captor.getValue.data mustBe Json.obj()
 
       redirectLocation(result).value mustEqual onwardRoute
 
