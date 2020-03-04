@@ -28,7 +28,9 @@ object AddATrustee extends Enumerable.Implicits {
 
   val values: List[AddATrustee] = List(
     YesNow, YesLater, NoComplete
-  )
+  ).filterNot{x =>
+    // Filtering showing YesLater to in progress not being available
+    x == YesLater}
 
   val options: List[RadioOption] = values.map {
     value =>
