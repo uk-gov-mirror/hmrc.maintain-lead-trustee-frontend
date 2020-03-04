@@ -21,15 +21,16 @@ import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustConnector
 import models.IndividualOrBusiness.Individual
-import models.{Name, UkAddress}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import models.{Name, UkAddress, UserAnswers}
+import org.mockito.Matchers._
+import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.individual.{NamePage, UkAddressPage}
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.PlaybackRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.countryOptions.CountryOptions
@@ -91,11 +92,9 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
         .set(WhenAddedPage(index), LocalDate.now).success.value
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers),
-          affinityGroup = Agent)
-          .overrides(
-            bind[TrustConnector].toInstance(mockTrustConnector)
-          ).build()
+        applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
+          .overrides(bind[TrustConnector].toInstance(mockTrustConnector))
+          .build()
 
       when(mockTrustConnector.addTrusteeIndividual(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
 
@@ -104,6 +103,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
+      verify(playbackRepository).set(emptyUserAnswers)
 
       redirectLocation(result).value mustEqual onwardRoute
     }

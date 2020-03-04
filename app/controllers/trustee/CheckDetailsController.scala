@@ -22,7 +22,7 @@ import controllers.actions._
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import javax.inject.Inject
 import models.IndividualOrBusiness._
-import models.TrusteeIndividual
+import models.{TrusteeIndividual, UserAnswers}
 import navigation.Navigator
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -47,7 +47,8 @@ class CheckDetailsController @Inject()(
                                         helper: TrusteeIndividualPrintHelper,
                                         trusteeBuilder: TrusteeBuilder,
                                         trustConnector: TrustConnector,
-                                        val appConfig: FrontendAppConfig
+                                        val appConfig: FrontendAppConfig,
+                                        playbackRepository: PlaybackRepository
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
@@ -69,8 +70,12 @@ class CheckDetailsController @Inject()(
       } {
         date =>
           val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date, index)
-          trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd).map {
-            _ => Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+          trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd).flatMap { _ =>
+            playbackRepository.set(UserAnswers(
+              request.userAnswers.internalAuthId,
+              request.userAnswers.utr,
+              request.userAnswers.whenTrustSetup
+            )) map ( _ => Redirect(controllers.routes.AddATrusteeController.onPageLoad()) )
           }
       }
   }
