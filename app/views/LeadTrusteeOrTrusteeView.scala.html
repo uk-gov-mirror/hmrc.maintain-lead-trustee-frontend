@@ -24,25 +24,26 @@
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = s"${errorPrefix(form)} ${messages("addATrusteeYesNo.title")}"
+  title = s"${errorPrefix(form)} ${messages("leadTrusteeOrTrustee.title")}"
 ) {
 
-@formHelper(action = AddATrusteeController.submitOne(), 'autoComplete -> "off") {
+    @formHelper(action = AddATrusteeController.submitOne(), 'autoComplete -> "off") {
 
-    @components.back_link()
+        @components.back_link()
 
-    @components.error_summary(form.errors)
+        @components.error_summary(form.errors)
 
-    @components.heading("addATrusteeYesNo.heading")
+        @components.heading("leadTrusteeOrTrustee.heading")
 
-    <p>@messages("addATrusteeYesNo.p1") <a href="@controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad().url">@messages("addATrusteeYesNo.p1.a")</a>.</p>
+        @components.input_yes_no(
+            field = form("value"),
+            legend = messages("addATrusteeYesNo.heading"),
+            legendClass = Some("visually-hidden"),
+            hint = Some(messages("leadTrusteeOrTrustee.hint"))
+        )
 
-    @components.input_yes_no(
-      field = form("value"),
-      legend = messages("addATrusteeYesNo.heading"),
-      legendClass = Some("visually-hidden")
-    )
+        <p><a href="#">@messages("addATrusteeYesNo.return.link")</a></p>
 
-    @components.submit_button()
-  }
+        @components.submit_button()
+    }
 }
