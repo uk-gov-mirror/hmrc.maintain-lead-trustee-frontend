@@ -71,14 +71,6 @@ class RemoveTrusteeController @Inject()(
 
       import scala.concurrent.ExecutionContext.Implicits._
 
-      def redirect(remove: Boolean, index: Int): Call = {
-        if (remove) {
-          controllers.trustee.routes.WhenRemovedController.onPageLoad(index)
-        } else {
-          controllers.routes.AddATrusteeController.onPageLoad()
-        }
-      }
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           for {
@@ -93,9 +85,9 @@ class RemoveTrusteeController @Inject()(
         },
         value => {
           if (value) {
-            Future.successful(Redirect(redirect(value, index).url))
+            Future.successful(Redirect(controllers.trustee.routes.WhenRemovedController.onPageLoad(index).url))
           } else {
-            Future.successful(Redirect(redirect(value, index).url))
+            Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad().url))
           }
         }
       )
