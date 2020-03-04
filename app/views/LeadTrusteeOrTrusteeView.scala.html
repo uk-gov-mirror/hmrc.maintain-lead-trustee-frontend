@@ -14,33 +14,35 @@
  * limitations under the License.
  *@
 
-@import controllers.trustee.individual.routes._
+@import controllers.routes._
+@import models.TrusteeType
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+  main_template: MainTemplate,
+  formHelper: FormWithCSRF
 )
 
-@(form: Form[_], index: Int, trusteeName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("trustee.individual.nationalInsuranceNumber.title")}"
-    ) {
+  title = s"${errorPrefix(form)} ${messages("leadTrusteeOrTrustee.title")}"
+) {
 
-    @formHelper(action = NationalInsuranceNumberController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = LeadTrusteeOrTrusteeController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.input_text(
+        @components.input_radio(
             field = form("value"),
-            label = messages("trustee.individual.nationalInsuranceNumber.heading", trusteeName),
-            headingIsLabel = true,
-            hint = Some(messages("trustee.individual.nationalInsuranceNumber.hint"))
+            legend = messages("leadTrusteeOrTrustee.heading"),
+            fieldSetClass = Some("inline"),
+            inputs = TrusteeType.options.toSeq,
+            headingIsLegend = true,
+            hint = Some(messages("leadTrusteeOrTrustee.hint"))
         )
 
         @components.submit_button()
     }
 }
-
