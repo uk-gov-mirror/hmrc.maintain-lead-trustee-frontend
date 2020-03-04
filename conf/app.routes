@@ -25,8 +25,8 @@ GET        /add                                                             cont
 POST       /add                                                             controllers.AddATrusteeController.submitOne()
 POST       /add-another                                                     controllers.AddATrusteeController.submitAnother()
 
-GET        /trustee/:index/remove                                           controllers.trustee.RemoveIndividualTrusteeController.onPageLoad(index : Int)
-POST       /trustee/:index/remove                                           controllers.trustee.RemoveIndividualTrusteeController.onSubmit(index : Int)
+GET        /trustee/:index/remove                                           controllers.trustee.RemoveTrusteeController.onPageLoad(index : Int)
+POST       /trustee/:index/remove                                           controllers.trustee.RemoveTrusteeController.onSubmit(index : Int)
 
 GET        /is-this-lead-trustee                                            controllers.LeadTrusteeOrTrusteeController.onPageLoad()
 POST       /is-this-lead-trustee                                            controllers.LeadTrusteeOrTrusteeController.onSubmit()

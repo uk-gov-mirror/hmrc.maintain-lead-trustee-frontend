@@ -17,63 +17,62 @@
 package controllers.trustee
 
 import base.SpecBase
+import connectors.TrustConnector
 import forms.RemoveIndexFormProvider
-import models.Name
-import org.scalacheck.Arbitrary.arbitrary
+import models.{Name, TrustIdentification, TrusteeIndividual, Trustees}
+import java.time.LocalDate
+
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.prop.PropertyChecks
-import pages.trustee.individual.NamePage
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.RemoveIndexView
 
-class RemoveIndividualTrusteeControllerSpec extends SpecBase with PropertyChecks {
+import scala.concurrent.Future
+
+class RemoveTrusteeControllerSpec extends SpecBase with PropertyChecks with ScalaFutures {
 
   val messagesPrefix = "removeATrustee"
 
   lazy val formProvider = new RemoveIndexFormProvider()
   lazy val form = formProvider(messagesPrefix)
 
-  lazy val formRoute = routes.RemoveIndividualTrusteeController.onSubmit(0)
+  lazy val formRoute = routes.RemoveTrusteeController.onSubmit(0)
 
-  lazy val content : String = "John Smith"
+  lazy val content : String = "First 1 Last 1"
   lazy val defaultContent : String = "the trustee"
 
   val index = 0
 
-  "TrusteeRemove Controller" when {
+  val mockConnector: TrustConnector = mock[TrustConnector]
 
-    "no name provided" must {
+  def trusteeInd(id: Int) = TrusteeIndividual(
+    name = Name(firstName = s"First $id", middleName = None, lastName = s"Last $id"),
+    dateOfBirth = Some(LocalDate.parse("1983-09-24")),
+    phoneNumber = None,
+    identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+    entityStart = LocalDate.parse("2019-02-28"))
 
-      "return OK and the correct view for a GET" in {
+  val expectedResult = trusteeInd(2)
 
-        val userAnswers = emptyUserAnswers
+  val trustees = List(trusteeInd(1), expectedResult, trusteeInd(3))
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-        val request = FakeRequest(GET, routes.RemoveIndividualTrusteeController.onPageLoad(index).url)
-
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[RemoveIndexView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual view(messagesPrefix, form, index, defaultContent, formRoute)(fakeRequest, messages).toString
-
-        application.stop()
-      }
-    }
-
-    "name has been provided" must {
+  "RemoveTrustee Controller" when {
 
       "return OK and the correct view for a GET" in {
 
-        val userAnswers = emptyUserAnswers
-          .set(NamePage(0), Name("John", None, "Smith")).success.value
+        implicit val hc : HeaderCarrier = HeaderCarrier()
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        when(mockConnector.getTrustees(any())(any(), any()))
+          .thenReturn(Future.successful(Trustees(trustees)))
 
-        val request = FakeRequest(GET, routes.RemoveIndividualTrusteeController.onPageLoad(index).url)
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustConnector].toInstance(mockConnector)).build()
+
+        val request = FakeRequest(GET, routes.RemoveTrusteeController.onPageLoad(index).url)
 
         val result = route(application, request).value
 
@@ -85,19 +84,13 @@ class RemoveIndividualTrusteeControllerSpec extends SpecBase with PropertyChecks
 
         application.stop()
       }
-    }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers
-        .set(NamePage(0), Name("John", None, "Smith")).success.value
-
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustConnector].toInstance(mockConnector)).build()
 
       val request =
-        FakeRequest(POST, routes.RemoveIndividualTrusteeController.onSubmit(index).url)
+        FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
@@ -111,13 +104,10 @@ class RemoveIndividualTrusteeControllerSpec extends SpecBase with PropertyChecks
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers
-        .set(NamePage(0), Name("John", None, "Smith")).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustConnector].toInstance(mockConnector)).build()
 
       val request =
-        FakeRequest(POST, routes.RemoveIndividualTrusteeController.onSubmit(index).url)
+        FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
@@ -138,7 +128,7 @@ class RemoveIndividualTrusteeControllerSpec extends SpecBase with PropertyChecks
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, routes.RemoveIndividualTrusteeController.onPageLoad(index).url)
+      val request = FakeRequest(GET, routes.RemoveTrusteeController.onPageLoad(index).url)
 
       val result = route(application, request).value
 
@@ -154,7 +144,7 @@ class RemoveIndividualTrusteeControllerSpec extends SpecBase with PropertyChecks
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, routes.RemoveIndividualTrusteeController.onSubmit(index).url)
+        FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value

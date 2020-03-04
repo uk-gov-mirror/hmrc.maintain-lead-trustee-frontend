@@ -17,10 +17,9 @@
 package controllers.trustee
 
 import controllers.actions.StandardActionSets
-import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.DateRemovedFromTrustFormProvider
 import javax.inject.Inject
-import models.RemoveTrustee
+import models.{RemoveTrustee, TrusteeIndividual, TrusteeOrganisation}
 import navigation.Navigator
 import pages.trustee.WhenRemovedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,21 +29,21 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.trustee.WhenRemovedView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class WhenRemovedController @Inject()(
                                      override val messagesApi: MessagesApi,
                                      sessionRepository: PlaybackRepository,
                                      navigator: Navigator,
                                      standardActionSets: StandardActionSets,
-                                     nameAction: TrusteeNameRequiredProvider,
                                      formProvider: DateRemovedFromTrustFormProvider,
+                                     trust: TrustService,
                                      val controllerComponents: MessagesControllerComponents,
                                      view: WhenRemovedView,
                                      trustService: TrustService
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       val form = formProvider.withPrefixAndTrustStartDate("trustee.whenRemoved", request.userAnswers.whenTrustSetup)
@@ -54,18 +53,34 @@ class WhenRemovedController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index, request.trusteeName))
+      trust.getTrustee(request.userAnswers.utr, index).map {
+        trustee =>
+          val trusteeName = trustee match {
+            case lti:TrusteeIndividual => lti.name.displayName
+            case lto:TrusteeOrganisation => lto.name
+          }
+        Ok(view(preparedForm, index, trusteeName))
+      }
+
+
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       val form = formProvider.withPrefixAndTrustStartDate("trustee.whenRemoved", request.userAnswers.whenTrustSetup)
 
       form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, index, request.trusteeName))),
-
+        formWithErrors =>{
+          trust.getTrustee(request.userAnswers.utr, index).map {
+            trustee =>
+              val trusteeName = trustee match {
+                case lti:TrusteeIndividual => lti.name.displayName
+                case lto:TrusteeOrganisation => lto.name
+              }
+            BadRequest(view(formWithErrors, index, trusteeName))
+          }
+        },
         value =>
           for {
             _ <- trustService.removeTrustee(request.userAnswers.utr, RemoveTrustee(index, value))

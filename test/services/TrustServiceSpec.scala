@@ -19,8 +19,7 @@ package services
 import java.time.LocalDate
 
 import connectors.TrustConnector
-import models.{AllTrustees, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, RemoveTrusteeIndividual, TrustIdentification, TrusteeIndividual, Trustees}
-import org.joda.time.DateTime
+import models.{AllTrustees, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, TrustIdentification, TrusteeIndividual, Trustees}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -132,7 +131,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
     }
 
 
-    "getTrusteeName" in {
+    "get trustee" in {
 
       def trusteeInd(id: Int) = TrusteeIndividual(
         name = Name(firstName = s"First $id", middleName = None, lastName = s"Last $id"),
