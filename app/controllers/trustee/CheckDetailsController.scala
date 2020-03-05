@@ -16,16 +16,19 @@
 
 package controllers.trustee
 
+import java.time.LocalDateTime
+
 import config.FrontendAppConfig
 import connectors.TrustConnector
 import controllers.actions._
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import javax.inject.Inject
 import models.IndividualOrBusiness._
-import models.TrusteeIndividual
+import models.{TrusteeIndividual, UserAnswers}
 import navigation.Navigator
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrusteeBuilder
@@ -47,7 +50,8 @@ class CheckDetailsController @Inject()(
                                         helper: TrusteeIndividualPrintHelper,
                                         trusteeBuilder: TrusteeBuilder,
                                         trustConnector: TrustConnector,
-                                        val appConfig: FrontendAppConfig
+                                        val appConfig: FrontendAppConfig,
+                                        playbackRepository: PlaybackRepository
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
@@ -69,8 +73,13 @@ class CheckDetailsController @Inject()(
       } {
         date =>
           val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date, index)
-          trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd).map {
-            _ => Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+          trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd).flatMap { _ =>
+            playbackRepository.set(
+              request.userAnswers.copy(
+                data = Json.obj(),
+                updatedAt = LocalDateTime.now
+              )
+            ) map ( _ => Redirect(controllers.routes.AddATrusteeController.onPageLoad()) )
           }
       }
   }
