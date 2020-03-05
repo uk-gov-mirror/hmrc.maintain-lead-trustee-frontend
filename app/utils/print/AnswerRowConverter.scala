@@ -41,7 +41,7 @@ class AnswerRowConverter @Inject()() {
       userAnswers.get(query) map {x =>
         AnswerRow(
           HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel")),
-          HtmlFormat.escape(x.displayName),
+          HtmlFormat.escape(x.displayFullName),
           changeUrl
         )
       }

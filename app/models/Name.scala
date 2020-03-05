@@ -20,6 +20,8 @@ import play.api.libs.json._
 
 case class Name(firstName: String, middleName: Option[String], lastName: String) {
   lazy val displayName : String = firstName + " " + lastName
+  private val middleNameFormat: String = if (middleName.isDefined) {" " + middleName.get + " "} else {" "}
+  lazy val displayFullName : String = firstName + middleNameFormat + lastName
 }
 
 object Name {
