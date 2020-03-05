@@ -36,6 +36,11 @@ p.font-xsmall{
   display: block;
 }
 
+.govuk-list--number, .app-prose-scope ol {
+    padding-left: 20px;
+    list-style-type: decimal;
+}
+
 
 /* CYA padding in line with current GDS */
 @media screen and (min-width: 769px) {
