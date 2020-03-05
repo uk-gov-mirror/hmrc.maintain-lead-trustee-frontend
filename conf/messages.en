@@ -47,6 +47,17 @@ session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.
 
+unableToRemove.heading = How to remove a lead trustee: step by step
+unableToRemove.title = How to remove a lead trustee: step by step
+unableToRemove.paragraph.1 = You cannot remove a lead trustee directly. You must follow these steps:
+unableToRemove.paragraph.2 = You must first
+unableToRemove.paragraph.3 =You will also be asked to provide some additional details.
+unableToRemove.paragraph.4 = Once you have selected a new lead trustee, {0} will remain on the trust as trustee.
+unableToRemove.paragraph.5 = If {0} is no longer a trustee for the trust, you will now be able to remove this trustee.
+unableToRemove.link = select a trustee to become the new lead trustee
+unableToRemove.subheading.1 = Select a new lead trustee
+unableToRemove.subheading.2 = Remove the trustee
+
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
