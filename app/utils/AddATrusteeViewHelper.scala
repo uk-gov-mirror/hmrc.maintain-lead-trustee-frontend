@@ -32,7 +32,7 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
           changeLabel = messages("site.change.details"),
           changeUrl = "#",
           removeLabel =  messages("site.delete"),
-          removeUrl = controllers.trustee.routes.RemoveIndividualTrusteeController.onPageLoad(index).url
+          removeUrl = controllers.trustee.routes.RemoveTrusteeController.onPageLoad(index).url
         )
       case (trusteeOrg : TrusteeOrganisation, index) =>
         AddRow(
@@ -41,7 +41,7 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
           changeLabel = messages("site.change.details"),
           changeUrl = "#",
           removeLabel =  messages("site.delete"),
-          removeUrl = "#"
+          removeUrl = controllers.trustee.routes.RemoveTrusteeController.onPageLoad(index).url
         )
     }
   }
