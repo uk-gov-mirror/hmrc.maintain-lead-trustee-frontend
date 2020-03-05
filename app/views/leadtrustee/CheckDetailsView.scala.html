@@ -28,11 +28,13 @@
     title = messages("leadTrusteeDetails.title")
     ) {
 
+    @components.back_link()
+
     @components.heading("leadTrusteeDetails.heading")
 
     @components.answer_section(answerSection)
 
     @formHelper(action = submissionCall, 'autoComplete -> "off") {
         @components.submit_button()
-    }
+    }q
 }
