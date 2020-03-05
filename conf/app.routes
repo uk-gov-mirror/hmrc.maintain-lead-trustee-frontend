@@ -53,3 +53,5 @@ GET        /trustee/:index/when-was-trustee-removed                         cont
 POST       /trustee/:index/when-was-trustee-removed                         controllers.trustee.WhenRemovedController.onSubmit(index: Int)
 
 GET        /:utr                                                            controllers.IndexController.onPageLoad(utr: String)
+
+GET        /lead-trustee/unable-to-remove                                   controllers.leadtrustee.UnableToRemoveController.onPageLoad()
