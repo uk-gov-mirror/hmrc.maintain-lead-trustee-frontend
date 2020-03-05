@@ -23,15 +23,16 @@ import views.html.leadtrustee.UnableToRemoveView
 class UnableToRemoveViewSpec extends OptionsViewBehaviours {
 
   val messageKeyPrefix = "unableToRemove"
+  val name = "Test Name"
 
   "UnableToRemoveView" must {
 
     val view = viewFor[UnableToRemoveView](Some(emptyUserAnswers))
 
     def applyView(): HtmlFormat.Appendable =
-      view.apply()(fakeRequest, messages)
+      view.apply(name)(fakeRequest, messages)
 
-    behave like normalPage(applyView(), messageKeyPrefix)
+    behave like dynamicTitlePage(applyView(), messageKeyPrefix, name)
 
     behave like pageWithBackLink(applyView())
 

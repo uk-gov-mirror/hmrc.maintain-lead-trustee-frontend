@@ -20,7 +20,7 @@
 main_template: MainTemplate
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
 title = messages("unableToRemove.title")
@@ -35,12 +35,12 @@ title = messages("unableToRemove.title")
  <li>
    <h2>@messages("unableToRemove.subheading.1")</h2>
    <p>@messages("unableToRemove.paragraph.2") <a id="help-link" href="#" target="_blank">@messages("unableToRemove.link")</a>. @messages("unableToRemove.paragraph.3")</p>
-   <p>@messages("unableToRemove.paragraph.4")</p>
+   <p>@messages("unableToRemove.paragraph.4", name)</p>
  </li>
  <li>
   <h2>@messages("unableToRemove.subheading.2")</h2>
  </li>
 </ol>
-<p>@messages("unableToRemove.paragraph.5")</p>
+<p>@messages("unableToRemove.paragraph.5", name)</p>
 
 }
