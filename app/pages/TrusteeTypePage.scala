@@ -41,7 +41,7 @@ object TrusteeTypePage extends QuestionPage[TrusteeType] {
           .flatMap(_.remove(ind.NationalInsuranceNumberPage(0)))
           .flatMap(_.remove(ind.AddressYesNoPage(0)))
           .flatMap(_.remove(ind.LiveInTheUkYesNoPage(0)))
-          .flatMap(_.remove(ind.AddressPage(0)))
+          .flatMap(_.remove(ind.UkAddressPage(0)))
           .flatMap(_.remove(ind.NonUkAddressPage(0)))
           .flatMap(_.remove(ind.PassportDetailsYesNoPage(0)))
           .flatMap(_.remove(ind.PassportDetailsPage(0)))

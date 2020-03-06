@@ -49,6 +49,8 @@
             @components.inset_text("addATrustee.lead-trustee.required", "addATrustee")
         }
 
+        <p>@messages("addATrustee.p1") <a href="@controllers.routes.ReplacingLeadTrusteeController.onPageLoad().url">@messages("addATrustee.p1.a")</a>.</p>
+
         @components.input_radio(
             field = form("value"),
             legend = messages("addATrustee.additional-content"),

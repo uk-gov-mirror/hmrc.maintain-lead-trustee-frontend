@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package pages.trustee.individual
+package models
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import pages.trustee.basePath
+import viewmodels.RadioOption
 
-case class AddressPage(index:Int) extends QuestionPage[String] {
+case class ReplaceLeadTrusteeType(name: String, index: Int)
 
-  override def path: JsPath = basePath \ index \ toString
+class ReplaceLeadTrustee(trustees: List[ReplaceLeadTrusteeType]) {
 
-  override def toString: String = "address"
+  val options: List[RadioOption] = trustees.map {
+    value =>
+      RadioOption("replaceLeadTrustee", value.name)
+  }
 }
