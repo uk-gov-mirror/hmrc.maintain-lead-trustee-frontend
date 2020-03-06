@@ -69,9 +69,11 @@ class CheckDetailsController @Inject()(
       } {
         date =>
           val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date, index)
-          trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd).map {
-            _ => Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-          }
+          for {
+            updatedUserAnswers <- Future.fromTry(request.userAnswers.deleteAtPath(pages.trustee.basePath))
+            _ <- sessionRepository.set(updatedUserAnswers)
+            _ <- trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd)
+          } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
       }
   }
 }

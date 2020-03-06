@@ -31,7 +31,6 @@ final case class UserAnswers(
                               data: JsObject = Json.obj(),
                               updatedAt: LocalDateTime = LocalDateTime.now
                             ) {
-
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
     Reads.at(page.path).reads(data) match {
       case JsSuccess(value, _) => Some(value)
@@ -82,6 +81,13 @@ final case class UserAnswers(
         val updatedAnswers = copy(data = d)
         query.cleanup(None, updatedAnswers)
     }
+  }
+
+  def deleteAtPath(path: JsPath): Try[UserAnswers] = {
+    data.removeObject(path).map(obj => copy(data = obj)).fold(
+      errors => Failure(JsResultException(errors)),
+      result => Success(result)
+    )
   }
 }
 
