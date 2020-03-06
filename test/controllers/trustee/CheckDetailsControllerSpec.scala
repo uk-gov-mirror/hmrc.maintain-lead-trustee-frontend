@@ -33,6 +33,8 @@ import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import org.mockito.ArgumentCaptor
+import play.api.libs.json.Json
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.countryOptions.CountryOptions
@@ -67,8 +69,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       val answerSection = AnswerSection(None, Seq(
         bound.nameQuestion(NamePage(index), "trustee.individual.name", controllers.trustee.individual.routes.NameController.onPageLoad(index).url),
         bound.addressQuestion(UkAddressPage(index), "trustee.individual.ukAddress", controllers.trustee.individual.routes.UkAddressController.onPageLoad(index).url)
-      ).flatten
-      )
+      ).flatten)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -94,19 +95,25 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
         .set(WhenAddedPage(index), LocalDate.now).success.value
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers),
-          affinityGroup = Agent)
-          .overrides(
-            bind[TrustConnector].toInstance(mockTrustConnector)
-          ).build()
+        applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
+          .overrides(bind[TrustConnector].toInstance(mockTrustConnector))
+          .build()
 
       when(mockTrustConnector.addTrusteeIndividual(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
+
+      when(playbackRepository.set(any())).thenReturn(Future.successful(true))
+
+      val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass[UserAnswers](classOf[UserAnswers])
 
       val request = FakeRequest(POST, submitDetailsRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
+      verify(playbackRepository).set(captor.capture)
+
+      captor.getValue.data mustBe Json.obj()
 
       redirectLocation(result).value mustEqual onwardRoute
 

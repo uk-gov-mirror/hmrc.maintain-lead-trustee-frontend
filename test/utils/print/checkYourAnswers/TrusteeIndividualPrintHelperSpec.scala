@@ -61,7 +61,7 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
       result mustBe AnswerSection(
         headingKey = None,
         rows = Seq(
-          AnswerRow(label = Html(messages("trustee.individual.name.checkYourAnswersLabel")), answer = Html("First Last"), changeUrl = controllers.trustee.individual.routes.NameController.onPageLoad(index).url),
+          AnswerRow(label = Html(messages("trustee.individual.name.checkYourAnswersLabel")), answer = Html("First Middle Last"), changeUrl = controllers.trustee.individual.routes.NameController.onPageLoad(index).url),
           AnswerRow(label = Html(messages("trustee.individual.dateOfBirthYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.individual.routes.DateOfBirthYesNoController.onPageLoad(index).url),
           AnswerRow(label = Html(messages("trustee.individual.dateOfBirth.checkYourAnswersLabel", name.displayName)), answer = Html("10 October 2010"), changeUrl = controllers.trustee.individual.routes.DateOfBirthController.onPageLoad(index).url),
           AnswerRow(label = Html(messages("trustee.individual.nationalInsuranceNumberYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad(index).url),

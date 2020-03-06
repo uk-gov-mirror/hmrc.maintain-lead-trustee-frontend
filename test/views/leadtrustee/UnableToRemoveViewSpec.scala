@@ -14,17 +14,27 @@
  * limitations under the License.
  */
 
-package models
+package views.leadtrustee
 
-import play.api.libs.json._
+import play.twirl.api.HtmlFormat
+import views.behaviours.OptionsViewBehaviours
+import views.html.leadtrustee.UnableToRemoveView
 
-case class Name(firstName: String, middleName: Option[String], lastName: String) {
-  lazy val displayName : String = firstName + " " + lastName
+class UnableToRemoveViewSpec extends OptionsViewBehaviours {
 
-  private val middleNameFormatted = middleName.fold(" ")(m => s" $m ")
-  lazy val displayFullName : String = firstName + middleNameFormatted + lastName
-}
+  val messageKeyPrefix = "unableToRemove"
+  val name = "Test Name"
 
-object Name {
-  implicit lazy val formats: OFormat[Name] = Json.format[Name]
+  "UnableToRemoveView" must {
+
+    val view = viewFor[UnableToRemoveView](Some(emptyUserAnswers))
+
+    def applyView(): HtmlFormat.Appendable =
+      view.apply(name)(fakeRequest, messages)
+
+    behave like dynamicTitlePage(applyView(), messageKeyPrefix, name)
+
+    behave like pageWithBackLink(applyView())
+
+  }
 }
