@@ -47,10 +47,6 @@
   }
 }
 
-.hmrc-add-to-a-list__contents > dt, dd {
-    @include media()
-}
-
 .hmrc-add-to-a-list__identifier,
 .hmrc-add-to-a-list__remove,
 .hmrc-add-to-a-list__change {
