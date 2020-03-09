@@ -73,18 +73,12 @@ class CheckDetailsController @Inject()(
       } {
         date =>
           val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date, index)
-
           for {
+            updatedUserAnswers <- Future.fromTry(request.userAnswers.deleteAtPath(pages.trustee.basePath))
+            _ <- sessionRepository.set(updatedUserAnswers)
             _ <- trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd)
-            _ <- playbackRepository.set(
-              request.userAnswers.copy(
-                data = Json.obj(),
-                updatedAt = LocalDateTime.now
-              )
-            )
-          } yield {
-            Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-          }
+          } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+
       }
   }
 }

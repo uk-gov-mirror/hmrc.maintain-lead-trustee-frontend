@@ -53,8 +53,6 @@ class IndividualOrBusinessController @Inject()(
       Ok(view(preparedForm, index))
   }
 
-
-
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 

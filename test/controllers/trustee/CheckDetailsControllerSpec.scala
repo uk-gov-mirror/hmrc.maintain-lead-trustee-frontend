@@ -22,12 +22,15 @@ import base.SpecBase
 import connectors.TrustConnector
 import models.IndividualOrBusiness.Individual
 import models.{Name, UkAddress, UserAnswers}
-import org.mockito.Matchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentCaptor
+import org.mockito.Matchers.any
+import org.mockito.Mockito.{verify, when, reset}
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.individual.{NamePage, UkAddressPage}
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import org.mockito.ArgumentCaptor
@@ -41,7 +44,7 @@ import views.html.trustee.CheckDetailsView
 
 import scala.concurrent.Future
 
-class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
+class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
   val index = 0
 
@@ -116,4 +119,32 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
       application.stop()
     }
+
+    "Clear out the user answers for the addTrustee journey on submission" in {
+      val mockTrustConnector = mock[TrustConnector]
+
+      reset(playbackRepository)
+
+      val userAnswers = emptyUserAnswers
+        .set(NamePage(index), trusteeName).success.value
+        .set(WhenAddedPage(index), LocalDate.now).success.value
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers),
+          affinityGroup = Agent)
+          .overrides(
+            bind[TrustConnector].toInstance(mockTrustConnector)
+          ).build()
+
+      when(mockTrustConnector.addTrusteeIndividual(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
+      when(playbackRepository.set(any())).thenReturn(Future.successful(true))
+
+      val request = FakeRequest(POST, submitDetailsRoute)
+
+      whenReady (route(application, request).value) { _ =>
+        val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(playbackRepository).set(uaCaptor.capture())
+        uaCaptor.getValue.data mustBe Json.obj()
+      }
+  }
 }
