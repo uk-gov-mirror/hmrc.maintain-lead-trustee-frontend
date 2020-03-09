@@ -31,4 +31,6 @@
     @components.form_hint(Some(messages("answerNewQuestions.hint", leadTrusteeName)))
 
     @components.button_link("site.continue", controllers.leadtrustee.organisation.routes.RegisteredInUkYesNoController.onPageLoad().url)
+
+    <p><a href="@controllers.routes.AddATrusteeController.onPageLoad().url">@messages("answerNewQuestions.return.link")</a></p>
 }
