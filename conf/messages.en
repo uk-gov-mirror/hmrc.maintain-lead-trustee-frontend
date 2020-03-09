@@ -149,6 +149,8 @@ entities.trustee.organisation = Trustee Company
 entities.no.name.added = No name added
 entities.no.value.added = No value added
 
+entities.trustees = Trustees
+
 addATrusteeYesNo.title = Do you want to add a trustee?
 addATrusteeYesNo.heading = Do you want to add a trustee?
 addATrusteeYesNo.error.required = Select yes if you want to add a trustee
