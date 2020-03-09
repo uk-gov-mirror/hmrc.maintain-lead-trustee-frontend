@@ -38,7 +38,9 @@ class TrusteeBuilder {
           userAnswers.get(PassportDetailsPage(index)),
           buildAddress(userAnswers, index)
         )
-      ), date)
+      ), date,
+      provisional = true
+    )
   }
 
   private def buildAddress(userAnswers: UserAnswers, index: Int): Option[AddressType] = {

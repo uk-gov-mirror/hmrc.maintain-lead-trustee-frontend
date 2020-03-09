@@ -306,7 +306,8 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
           |       "identification": {
           |         "nino": "JS123456A"
           |       },
-          |       "entityStart": "2019-02-28"
+          |       "entityStart": "2019-02-28",
+          |       "provisional": true
           |     }
           |   },
           |   {
@@ -315,7 +316,8 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
           |       "identification": {
           |         "utr": "1234567890"
           |       },
-          |       "entityStart": "2019-02-28"
+          |       "entityStart": "2019-02-28",
+          |       "provisional": false
           |     }
           |   }
           | ]
@@ -347,7 +349,8 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
               dateOfBirth = Some(LocalDate.parse("1983-09-24")),
               phoneNumber = None,
               identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-              entityStart = LocalDate.parse("2019-02-28")
+              entityStart = LocalDate.parse("2019-02-28"),
+              provisional = true
             ),
             TrusteeOrganisation(
               name = "Trustee Org",
@@ -358,7 +361,8 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
                 safeId = None,
                 address = None
               )),
-              entityStart = LocalDate.parse("2019-02-28")
+              entityStart = LocalDate.parse("2019-02-28"),
+              provisional = false
             )
           )
         )

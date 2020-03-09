@@ -29,7 +29,7 @@ import org.scalatest.prop.PropertyChecks
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import views.html.RemoveIndexView
 
 import scala.concurrent.Future
@@ -46,63 +46,137 @@ class RemoveTrusteeControllerSpec extends SpecBase with PropertyChecks with Scal
   lazy val content : String = "First 1 Last 1"
   lazy val defaultContent : String = "the trustee"
 
-  val index = 0
-
   val mockConnector: TrustConnector = mock[TrustConnector]
 
-  def trusteeInd(id: Int) = TrusteeIndividual(
+  def trusteeInd(id: Int, provisional : Boolean) = TrusteeIndividual(
     name = Name(firstName = s"First $id", middleName = None, lastName = s"Last $id"),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     phoneNumber = None,
     identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-    entityStart = LocalDate.parse("2019-02-28"))
+    entityStart = LocalDate.parse("2019-02-28"),
+    provisional = provisional
+  )
 
-  val expectedResult = trusteeInd(2)
+  val expectedResult = trusteeInd(2, provisional = true)
 
-  val trustees = List(trusteeInd(1), expectedResult, trusteeInd(3))
+  val trustees = List(
+    trusteeInd(1, provisional = false),
+    expectedResult,
+    trusteeInd(3, provisional = true)
+  )
 
   "RemoveTrustee Controller" when {
 
-      "return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET" in {
 
-        implicit val hc : HeaderCarrier = HeaderCarrier()
+      val index = 0
 
-        when(mockConnector.getTrustees(any())(any(), any()))
-          .thenReturn(Future.successful(Trustees(trustees)))
+      implicit val hc : HeaderCarrier = HeaderCarrier()
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustConnector].toInstance(mockConnector)).build()
+      when(mockConnector.getTrustees(any())(any(), any()))
+        .thenReturn(Future.successful(Trustees(trustees)))
 
-        val request = FakeRequest(GET, routes.RemoveTrusteeController.onPageLoad(index).url)
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustConnector].toInstance(mockConnector))
+        .build()
 
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[RemoveIndexView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual view(messagesPrefix, form, index, content, formRoute)(fakeRequest, messages).toString
-
-        application.stop()
-      }
-
-    "redirect to the next page when valid data is submitted" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustConnector].toInstance(mockConnector)).build()
-
-      val request =
-        FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(GET, routes.RemoveTrusteeController.onPageLoad(index).url)
 
       val result = route(application, request).value
 
-      status(result) mustEqual SEE_OTHER
+      val view = application.injector.instanceOf[RemoveIndexView]
 
-      redirectLocation(result).value mustEqual controllers.trustee.routes.WhenRemovedController.onPageLoad(0).url
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual view(messagesPrefix, form, index, content, formRoute)(fakeRequest, messages).toString
 
       application.stop()
     }
 
+    "not removing the trustee" must {
+
+      "redirect to the add to page when valid data is submitted" in {
+
+        val index = 0
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[TrustConnector].toInstance(mockConnector))
+          .build()
+
+        val request =
+          FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
+            .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+
+        application.stop()
+      }
+    }
+
+    "removing an existing trustee" must {
+
+      "redirect to the next page when valid data is submitted" in {
+
+        val index = 0
+
+        when(mockConnector.getTrustees(any())(any(), any()))
+          .thenReturn(Future.successful(Trustees(trustees)))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[TrustConnector].toInstance(mockConnector))
+          .build()
+
+        val request =
+          FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.trustee.routes.WhenRemovedController.onPageLoad(0).url
+
+        application.stop()
+      }
+    }
+
+    "removing a new trustee" must {
+
+      "redirect to the add to page, removing the trustee" in {
+
+        val index = 2
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[TrustConnector].toInstance(mockConnector))
+          .build()
+
+        when(mockConnector.getTrustees(any())(any(), any()))
+          .thenReturn(Future.successful(Trustees(trustees)))
+
+        when(mockConnector.removeTrustee(any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(200)))
+
+        val request =
+          FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+
+        application.stop()
+      }
+    }
+
     "return a Bad Request and errors when invalid data is submitted" in {
+
+      val index = 0
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustConnector].toInstance(mockConnector)).build()
 
@@ -126,6 +200,8 @@ class RemoveTrusteeControllerSpec extends SpecBase with PropertyChecks with Scal
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
+      val index = 0
+
       val application = applicationBuilder(userAnswers = None).build()
 
       val request = FakeRequest(GET, routes.RemoveTrusteeController.onPageLoad(index).url)
@@ -140,6 +216,8 @@ class RemoveTrusteeControllerSpec extends SpecBase with PropertyChecks with Scal
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
+
+      val index = 0
 
       val application = applicationBuilder(userAnswers = None).build()
 
