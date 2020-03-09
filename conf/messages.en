@@ -161,6 +161,7 @@ replacingLeadTrustee.error.required = Select who is replacing the current lead t
 
 answerNewQuestions.title = You need to answer new questions for {0}
 answerNewQuestions.heading = You need to answer new questions for {0}
+answerNewQuestions.hint = Because you told us that {0} is the new lead trustee, we have added new questions about the roles of the lead trustee.
 
 leadTrusteeOrTrustee.title = Are you entering details for the lead trustee or a trustee?
 leadTrusteeOrTrustee.heading = Are you entering details for the lead trustee or a trustee?

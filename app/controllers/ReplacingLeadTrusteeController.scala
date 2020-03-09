@@ -21,8 +21,13 @@ import java.time.LocalDate
 import controllers.actions.StandardActionSets
 import forms.ReplaceLeadTrusteeFormProvider
 import javax.inject.Inject
-import models.{Address, AllTrustees, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, NonUkAddress, Passport, TrustIdentification, TrusteeIndividual, TrusteeOrganisation, UkAddress, UserAnswers}
+import mapping.PlaybackImplicits._
+import models.IndividualOrBusiness._
+import models.requests.DataRequest
+import models.{Address, AllTrustees, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, NonUkAddress, TrustIdentification, TrustIdentificationOrgType, TrusteeIndividual, TrusteeOrganisation, UkAddress, UserAnswers}
 import navigation.Navigator
+import pages.leadtrustee.organisation.UtrPage
+import pages.leadtrustee.{IndividualOrBusinessPage, individual => ltind, organisation => ltorg}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -30,14 +35,13 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import viewmodels.RadioOption
 import views.html.ReplacingLeadTrusteeView
-import mapping.PlaybackImplicits._
-import pages.leadtrustee.individual._
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Success, Try}
 
 class ReplacingLeadTrusteeController @Inject()(
                                                 override val messagesApi: MessagesApi,
+                                                playbackRepository: PlaybackRepository,
                                                 sessionRepository: PlaybackRepository,
                                                 navigator: Navigator,
                                                 trust: TrustService,
@@ -68,7 +72,7 @@ class ReplacingLeadTrusteeController @Inject()(
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      trust.getAllTrustees(request.userAnswers.utr) map {
+      trust.getAllTrustees(request.userAnswers.utr) flatMap {
         case AllTrustees(leadTrustee, trustees) =>
           val trusteeNames = trustees.map {
             case ind: TrusteeIndividual => ind.name.displayName
@@ -79,86 +83,148 @@ class ReplacingLeadTrusteeController @Inject()(
 
           form.bindFromRequest().fold(
             formWithErrors =>
-              BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), trusteeNames)),
+              Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), trusteeNames))),
             value => {
               value.toInt match {
                 case -1 =>
-                  Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad())
+                  Future.successful(Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad()))
                 case index =>
                   trustees(index) match {
                     case ind: TrusteeIndividual =>
-                      request.userAnswers.set(IndexPage, index)
-                        .flatMap(_.set(NamePage, ind.name))
-                        .flatMap(answers => extractDateOfBirth(ind.dateOfBirth, answers))
-                        // TODO: uk citizen, nino, passport/id card, lives in uk, address
-                        .flatMap(_.set(EmailAddressYesNoPage, false))
-                        .flatMap(answers => extractTelephoneNumber(ind.phoneNumber, answers))
+                      for {
+                        updatedAnswers <- Future.fromTry(
+                          request.userAnswers.set(IndividualOrBusinessPage, Individual)
+                            .flatMap(_.set(ltind.IndexPage, index))
+                            .flatMap(_.set(ltind.NamePage, ind.name))
+                            .flatMap(answers => extractDateOfBirth(ind.dateOfBirth, answers))
+                            .flatMap(answers => extractIndIdentification(ind.identification, answers))
+                            .flatMap(_.set(ltind.EmailAddressYesNoPage, false))
+                            .flatMap(answers => extractIndTelephoneNumber(ind.phoneNumber, answers))
+                        )
+                        _ <- playbackRepository.set(updatedAnswers)
+                      } yield Redirect(controllers.leadtrustee.individual.routes.NeedToAnswerQuestionsController.onPageLoad())
 
-                      // TODO: redirect to lead trustee ind name page
-                    case org: TrusteeOrganisation => ???
-                      // TODO: set user answers and redirect to is UK registered business?
+                    case org: TrusteeOrganisation =>
+                      for {
+                        updatedAnswers <- Future.fromTry(
+                          request.userAnswers.set(IndividualOrBusinessPage, Business)
+                            .flatMap(_.set(ltorg.IndexPage, index))
+                            .flatMap(answers => extractOrgIdentification(org.identification, answers))
+                            .flatMap(_.set(ltorg.NamePage, org.name))
+                            .flatMap(answers => extractOrgEmail(org.email, answers))
+                            .flatMap(answers => extractOrgTelephoneNumber(org.phoneNumber, answers))
+                        )
+                        _ <- playbackRepository.set(updatedAnswers)
+                      } yield Redirect(controllers.leadtrustee.organisation.routes.NeedToAnswerQuestionsController.onPageLoad())
                   }
-                  Redirect(controllers.routes.ReplacingLeadTrusteeController.onPageLoad())
               }
             }
           )
       }
   }
 
-  private def extractDateOfBirth(dateOfBirth: Option[LocalDate], answers: UserAnswers): Try[UserAnswers] = {
-    dateOfBirth match {
-      case Some(dob) =>
-        answers.set(DateOfBirthPage, dob)
-      case _ =>
-        Success(answers)
-    }
-  }
-
-  private def extractIdentification(trustee: TrusteeIndividual, answers: UserAnswers) = {
-    trustee.identification map {
-
-      case TrustIdentification(_, Some(nino), None, None) =>
-        answers.set(UkCitizenPage, true)
-          .flatMap(_.set(NationalInsuranceNumberPage, nino))
-
-      case TrustIdentification(_, None, Some(passport), Some(address)) =>
-        answers.set(UkCitizenPage, false)
-        // TODO: set address and passport. Passport and ID card will need shared view
-
-    } getOrElse {
-      ???
-    }
-  }
-
-  private def extractPassportOrIdCard(passport: Passport, answers: UserAnswers) = {
-    ???
-  }
-
-  private def extractAddress(address: Address, answers: UserAnswers) = {
-    address match {
-      case uk: UkAddress =>
-        answers.set(UkAddressPage, uk)
-          .flatMap(_.set(LiveInTheUkYesNoPage, true))
-      case nonUk: NonUkAddress =>
-        answers.set(NonUkAddressPage, nonUk)
-          .flatMap(_.set(LiveInTheUkYesNoPage, false))
-    }
-  }
-
-  private def extractTelephoneNumber(phoneNumber: Option[String], answers: UserAnswers) = {
-    phoneNumber match {
-      case Some(tel) =>
-        answers.set(TelephoneNumberPage, tel)
-      case _ =>
-        Success(answers)
-    }
-  }
-
-  private def getLeadTrusteeName(leadTrustee: Option[LeadTrustee]): String = {
+  private def getLeadTrusteeName(leadTrustee: Option[LeadTrustee])(implicit request: DataRequest[AnyContent]): String = {
     leadTrustee match {
       case Some(ltInd: LeadTrusteeIndividual) => ltInd.name.displayName
       case Some(ltOrg: LeadTrusteeOrganisation) => ltOrg.name
-      case None => ???
+      case None => request.messages(messagesApi)("leadTrusteeName.defaultText")
     }
   }
+
+  private def extractDateOfBirth(dateOfBirth: Option[LocalDate], answers: UserAnswers): Try[UserAnswers] = {
+    dateOfBirth match {
+      case Some(dob) =>
+        answers.set(ltind.DateOfBirthPage, dob)
+      case _ =>
+        Success(answers)
+    }
+  }
+
+  private def extractIndIdentification(identification: Option[TrustIdentification], answers: UserAnswers) = {
+    identification map {
+
+      case TrustIdentification(_, Some(nino), None, None) =>
+        answers.set(ltind.UkCitizenPage, true)
+          .flatMap(_.set(ltind.NationalInsuranceNumberPage, nino))
+
+      case TrustIdentification(_, None, Some(passport), Some(address)) =>
+        answers.set(ltind.UkCitizenPage, false)
+          .flatMap(answers => extractIndAddress(address.convert, answers))
+          .flatMap(_.set(ltind.PassportOrIdCardDetailsPage, passport.asCombined))
+
+      case TrustIdentification(_, None, None, Some(address)) =>
+        extractIndAddress(address.convert, answers)
+
+      case _ => Success(answers)
+
+    } getOrElse {
+      Success(answers)
+    }
+  }
+
+  private def extractIndAddress(address: Address, answers: UserAnswers) = {
+    address match {
+      case uk: UkAddress =>
+        answers.set(ltind.LiveInTheUkYesNoPage, true)
+          .flatMap(_.set(ltind.UkAddressPage, uk))
+      case nonUk: NonUkAddress =>
+        answers.set(ltind.LiveInTheUkYesNoPage, false)
+          .flatMap(_.set(ltind.NonUkAddressPage, nonUk))
+    }
+  }
+
+  private def extractIndTelephoneNumber(phoneNumber: Option[String], answers: UserAnswers) = {
+    phoneNumber match {
+      case Some(tel) =>
+        answers.set(ltind.TelephoneNumberPage, tel)
+      case _ =>
+        Success(answers)
+    }
+  }
+
+  private def extractOrgIdentification(identification: Option[TrustIdentificationOrgType], answers: UserAnswers) = {
+    identification map {
+      case TrustIdentificationOrgType(_, Some(utr), None) =>
+        answers.set(ltorg.RegisteredInUkYesNoPage, true)
+          .flatMap(_.set(UtrPage, utr))
+      case TrustIdentificationOrgType(_, None, Some(address)) =>
+        answers.set(ltorg.RegisteredInUkYesNoPage, false)
+          .flatMap(answers => extractOrgAddress(address.convert, answers))
+      case _ => Success(answers)
+    } getOrElse {
+      Success(answers)
+    }
+  }
+
+  private def extractOrgAddress(address: Address, answers: UserAnswers) = {
+    address match {
+      case uk: UkAddress =>
+        answers.set(ltorg.AddressInTheUkYesNoPage, true)
+          .flatMap(_.set(ltorg.UkAddressPage, uk))
+      case nonUk: NonUkAddress =>
+        answers.set(ltorg.AddressInTheUkYesNoPage, false)
+          .flatMap(_.set(ltorg.NonUkAddressPage, nonUk))
+
+    }
+  }
+
+  private def extractOrgEmail(emailAddress: Option[String], answers: UserAnswers) = {
+    emailAddress match {
+      case Some(email) =>
+        answers.set(ltorg.EmailAddressYesNoPage, true)
+          .flatMap(_.set(ltorg.EmailAddressPage, email))
+      case _ =>
+        answers.set(ltorg.EmailAddressYesNoPage, false)
+    }
+  }
+
+  private def extractOrgTelephoneNumber(phoneNumber: Option[String], answers: UserAnswers) = {
+    phoneNumber match {
+      case Some(tel) =>
+        answers.set(ltorg.TelephoneNumberPage, tel)
+      case _ =>
+        Success(answers)
+    }
+  }
+
 }
