@@ -23,7 +23,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
-import models.{LeadTrusteeOrganisation, Name, RemoveTrustee, TrustIdentification, TrustIdentificationOrgType, TrustStartDate, TrusteeIndividual, TrusteeOrganisation, Trustees, UkAddress}
+import models.{IndividualIdentification, LeadTrusteeIndividual, LeadTrusteeOrganisation, Name, NationalInsuranceNumber, RemoveTrustee, TrustIdentification, TrustIdentificationOrgType, TrustStartDate, TrusteeIndividual, TrusteeOrganisation, Trustees, UkAddress}
 import org.joda.time.DateTime
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
@@ -44,6 +44,8 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   private def getTrusteesUrl(utr: String) = s"/trusts/$utr/transformed/trustees"
 
   private def removeTrusteeUrl(utr: String) = s"/trusts/$utr/trustees/remove"
+
+  private def promoteTrusteeUrl(utr: String, index: Int) = s"/trusts/promote-trustee/$utr/$index"
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
 
@@ -368,5 +370,88 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
     }
   }
 
+  "TrustConnector promoteTrustee" must {
+
+    "return Ok when the request is successful" in {
+
+      val utr = "1000000008"
+      val index = 0
+
+      val newLeadTrustee = LeadTrusteeIndividual(
+        name = Name(
+          firstName = "Lead First",
+          middleName = None,
+          lastName = "Last"
+        ),
+        dateOfBirth = LocalDate.parse("2010-10-10"),
+        phoneNumber = "+446565657",
+        email = None,
+        identification = NationalInsuranceNumber("JP121212A"),
+        address = None
+      )
+
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        post(urlEqualTo(promoteTrusteeUrl(utr, index)))
+          .willReturn(ok)
+      )
+
+      val result = connector.promoteTrustee(utr, index, newLeadTrustee)
+
+      result.futureValue.status mustBe (OK)
+
+      application.stop()
+    }
+
+    "return Bad Request when the request is unsuccessful" in {
+
+      val utr = "1000000008"
+      val index = 0
+
+      val newLeadTrustee = LeadTrusteeIndividual(
+        name = Name(
+          firstName = "Lead First",
+          middleName = None,
+          lastName = "Last"
+        ),
+        dateOfBirth = LocalDate.parse("2010-10-10"),
+        phoneNumber = "+446565657",
+        email = None,
+        identification = NationalInsuranceNumber("JP121212A"),
+        address = None
+      )
+
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        post(urlEqualTo(promoteTrusteeUrl(utr, index)))
+          .willReturn(badRequest)
+      )
+
+      val result = connector.promoteTrustee(utr, index, newLeadTrustee)
+
+      result.map(response => response.status mustBe BAD_REQUEST)
+
+      application.stop()
+    }
+
+  }
 
 }

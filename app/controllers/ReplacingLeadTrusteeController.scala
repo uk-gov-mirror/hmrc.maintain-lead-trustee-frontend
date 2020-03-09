@@ -25,7 +25,6 @@ import mapping.PlaybackImplicits._
 import models.IndividualOrBusiness._
 import models.requests.DataRequest
 import models.{Address, AllTrustees, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, NonUkAddress, TrustIdentification, TrustIdentificationOrgType, TrusteeIndividual, TrusteeOrganisation, UkAddress, UserAnswers}
-import navigation.Navigator
 import pages.leadtrustee.organisation.UtrPage
 import pages.leadtrustee.{IndividualOrBusinessPage, individual => ltind, organisation => ltorg}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,8 +41,6 @@ import scala.util.{Success, Try}
 class ReplacingLeadTrusteeController @Inject()(
                                                 override val messagesApi: MessagesApi,
                                                 playbackRepository: PlaybackRepository,
-                                                sessionRepository: PlaybackRepository,
-                                                navigator: Navigator,
                                                 trust: TrustService,
                                                 standardActionSets: StandardActionSets,
                                                 formProvider: ReplaceLeadTrusteeFormProvider,
@@ -51,7 +48,10 @@ class ReplacingLeadTrusteeController @Inject()(
                                                 view: ReplacingLeadTrusteeView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("replacingLeadTrustee")
+  val messageKeyPrefix: String = "replacingLeadTrustee"
+
+  val form = formProvider.withPrefix(messageKeyPrefix)
+  val defaultRadioOption: RadioOption = RadioOption(s"$messageKeyPrefix.-1", "-1", s"$messageKeyPrefix.add-new")
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
@@ -62,8 +62,8 @@ class ReplacingLeadTrusteeController @Inject()(
             case ind: TrusteeIndividual => ind.name.displayName
             case org: TrusteeOrganisation => org.name
           }.zipWithIndex.map(
-            x => RadioOption(s"replacingLeadTrustee.${x._2}", s"${x._2}", x._1)
-          ) :+ RadioOption("replacingLeadTrustee.-1", "-1", "replacingLeadTrustee.add-new")
+            x => RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", x._1)
+          )
 
           Ok(view(form, getLeadTrusteeName(leadTrustee), trusteeNames))
       }
@@ -78,44 +78,18 @@ class ReplacingLeadTrusteeController @Inject()(
             case ind: TrusteeIndividual => ind.name.displayName
             case org: TrusteeOrganisation => org.name
           }.zipWithIndex.map(
-            x => RadioOption(s"replacingLeadTrustee.${x._2}", s"${x._2}", x._1)
-          ) :+ RadioOption("replacingLeadTrustee.-1", "-1", "replacingLeadTrustee.add-new")
+            x => RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", x._1)
+          )
 
           form.bindFromRequest().fold(
             formWithErrors =>
               Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), trusteeNames))),
             value => {
               value.toInt match {
-                case -1 =>
-                  Future.successful(Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad()))
                 case index =>
                   trustees(index) match {
-                    case ind: TrusteeIndividual =>
-                      for {
-                        updatedAnswers <- Future.fromTry(
-                          request.userAnswers.set(IndividualOrBusinessPage, Individual)
-                            .flatMap(_.set(ltind.IndexPage, index))
-                            .flatMap(_.set(ltind.NamePage, ind.name))
-                            .flatMap(answers => extractDateOfBirth(ind.dateOfBirth, answers))
-                            .flatMap(answers => extractIndIdentification(ind.identification, answers))
-                            .flatMap(_.set(ltind.EmailAddressYesNoPage, false))
-                            .flatMap(answers => extractIndTelephoneNumber(ind.phoneNumber, answers))
-                        )
-                        _ <- playbackRepository.set(updatedAnswers)
-                      } yield Redirect(controllers.leadtrustee.individual.routes.NeedToAnswerQuestionsController.onPageLoad())
-
-                    case org: TrusteeOrganisation =>
-                      for {
-                        updatedAnswers <- Future.fromTry(
-                          request.userAnswers.set(IndividualOrBusinessPage, Business)
-                            .flatMap(_.set(ltorg.IndexPage, index))
-                            .flatMap(answers => extractOrgIdentification(org.identification, answers))
-                            .flatMap(_.set(ltorg.NamePage, org.name))
-                            .flatMap(answers => extractOrgEmail(org.email, answers))
-                            .flatMap(answers => extractOrgTelephoneNumber(org.phoneNumber, answers))
-                        )
-                        _ <- playbackRepository.set(updatedAnswers)
-                      } yield Redirect(controllers.leadtrustee.organisation.routes.NeedToAnswerQuestionsController.onPageLoad())
+                    case ind: TrusteeIndividual => populateUserAnswersAndRedirect(request.userAnswers, ind, index)
+                    case org: TrusteeOrganisation => populateUserAnswersAndRedirect(request.userAnswers, org, index)
                   }
               }
             }
@@ -129,6 +103,35 @@ class ReplacingLeadTrusteeController @Inject()(
       case Some(ltOrg: LeadTrusteeOrganisation) => ltOrg.name
       case None => request.messages(messagesApi)("leadTrusteeName.defaultText")
     }
+  }
+
+  private def populateUserAnswersAndRedirect(userAnswers: UserAnswers, trustee: TrusteeIndividual, index: Int) = {
+    for {
+      updatedAnswers <- Future.fromTry(
+        userAnswers.set(IndividualOrBusinessPage, Individual)
+          .flatMap(_.set(ltind.IndexPage, index))
+          .flatMap(_.set(ltind.NamePage, trustee.name))
+          .flatMap(answers => extractDateOfBirth(trustee.dateOfBirth, answers))
+          .flatMap(answers => extractIndIdentification(trustee.identification, answers))
+          .flatMap(_.set(ltind.EmailAddressYesNoPage, false))
+          .flatMap(answers => extractIndTelephoneNumber(trustee.phoneNumber, answers))
+      )
+      _ <- playbackRepository.set(updatedAnswers)
+    } yield Redirect(controllers.leadtrustee.individual.routes.NeedToAnswerQuestionsController.onPageLoad())
+  }
+
+  private def populateUserAnswersAndRedirect(userAnswers: UserAnswers, trustee: TrusteeOrganisation, index: Int) = {
+    for {
+      updatedAnswers <- Future.fromTry(
+        userAnswers.set(IndividualOrBusinessPage, Business)
+          .flatMap(_.set(ltorg.IndexPage, index))
+          .flatMap(answers => extractOrgIdentification(trustee.identification, answers))
+          .flatMap(_.set(ltorg.NamePage, trustee.name))
+          .flatMap(answers => extractOrgEmail(trustee.email, answers))
+          .flatMap(answers => extractOrgTelephoneNumber(trustee.phoneNumber, answers))
+      )
+      _ <- playbackRepository.set(updatedAnswers)
+    } yield Redirect(controllers.leadtrustee.organisation.routes.NeedToAnswerQuestionsController.onPageLoad())
   }
 
   private def extractDateOfBirth(dateOfBirth: Option[LocalDate], answers: UserAnswers): Try[UserAnswers] = {

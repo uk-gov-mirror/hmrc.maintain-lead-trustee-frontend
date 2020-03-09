@@ -111,13 +111,24 @@ trait ViewBehaviours extends ViewSpecBase {
   }
 
   def pageWithHint[A](form: Form[A],
-                   createView: Form[A] => HtmlFormat.Appendable,
-                   expectedHintKey: String): Unit = {
+    createView: Form[A] => HtmlFormat.Appendable,
+    expectedHintKey: String): Unit = {
 
     "behave like a page with hint text" in {
 
       val doc = asDocument(createView(form))
       assertContainsHint(doc, "value", Some(messages(expectedHintKey)))
+    }
+  }
+
+  def pageWithDynamicHint(view: HtmlFormat.Appendable,
+                      expectedHintKey: String,
+                      expectedHintParam: String): Unit = {
+
+    "behave like a page with hint text" in {
+
+      val doc = asDocument(view)
+      assertContainsHint(doc, "value", Some(messages(expectedHintKey + ".hint", expectedHintParam)))
     }
   }
 
@@ -139,6 +150,21 @@ trait ViewBehaviours extends ViewSpecBase {
       "have a submit button" in {
         val doc = asDocument(view)
         assertRenderedById(doc, "submit")
+      }
+    }
+  }
+
+  def pageWithContinueButton(view: HtmlFormat.Appendable, url: String) = {
+
+    "behave like a page with a Continue button" must {
+      "have a continue button" in {
+        val doc = asDocument(view)
+        assertContainsTextForId(doc, "button", "Continue")
+        assertAttributeValueForElement(
+          doc.getElementById("button"),
+          "href",
+          url
+        )
       }
     }
   }
