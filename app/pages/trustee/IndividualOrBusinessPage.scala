@@ -29,28 +29,35 @@ case class IndividualOrBusinessPage(index: Int) extends QuestionPage[IndividualO
 
   override def toString: String = "individualOrBusiness"
 
-  override def cleanup(value: Option[IndividualOrBusiness], userAnswers: UserAnswers): Try[UserAnswers] = {
-    value match {
-      case Some(Business) =>
-        userAnswers.remove(NamePage(index))
-          .flatMap(_.remove(DateOfBirthYesNoPage(index)))
-          .flatMap(_.remove(DateOfBirthPage(index)))
-          .flatMap(_.remove(NationalInsuranceNumberYesNoPage(index)))
-          .flatMap(_.remove(NationalInsuranceNumberPage(index)))
-          .flatMap(_.remove(AddressYesNoPage(index)))
-          .flatMap(_.remove(LiveInTheUkYesNoPage(index)))
-          .flatMap(_.remove(UkAddressPage(index)))
-          .flatMap(_.remove(NonUkAddressPage(index)))
-          .flatMap(_.remove(PassportDetailsYesNoPage(index)))
-          .flatMap(_.remove(PassportDetailsPage(index)))
-          .flatMap(_.remove(IdCardDetailsYesNoPage(index)))
-          .flatMap(_.remove(IdCardDetailsPage(index)))
-          .flatMap(_.remove(WhenAddedPage(index)))
-      case Some(Individual) =>
-        userAnswers.remove(WhenAddedPage(index))
-      case _ =>
-        super.cleanup(value, userAnswers)
-    }
+  private def removeIndividualData(userAnswers: UserAnswers): Try[UserAnswers] = {
+    userAnswers.remove(NamePage(index))
+      .flatMap(_.remove(DateOfBirthYesNoPage(index)))
+      .flatMap(_.remove(DateOfBirthPage(index)))
+      .flatMap(_.remove(NationalInsuranceNumberYesNoPage(index)))
+      .flatMap(_.remove(NationalInsuranceNumberPage(index)))
+      .flatMap(_.remove(AddressYesNoPage(index)))
+      .flatMap(_.remove(LiveInTheUkYesNoPage(index)))
+      .flatMap(_.remove(UkAddressPage(index)))
+      .flatMap(_.remove(NonUkAddressPage(index)))
+      .flatMap(_.remove(PassportDetailsYesNoPage(index)))
+      .flatMap(_.remove(PassportDetailsPage(index)))
+      .flatMap(_.remove(IdCardDetailsYesNoPage(index)))
+      .flatMap(_.remove(IdCardDetailsPage(index)))
+      .flatMap(_.remove(WhenAddedPage(index)))
   }
 
+  private def removeOrganisationData(userAnswers: UserAnswers): Try[UserAnswers] = {
+    userAnswers.remove(WhenAddedPage(index))
+  }
+
+  override def cleanup(value: Option[IndividualOrBusiness], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(Business) => removeIndividualData(userAnswers)
+      case Some(Individual) => removeOrganisationData(userAnswers)
+      case _ => for  {
+        a <- removeIndividualData(userAnswers)
+        b <- removeOrganisationData(a)
+      } yield b
+    }
+  }
 }

@@ -1,12 +1,13 @@
 .hmrc-add-to-a-list {
   font-size: 19px;
-  @include media(desktop) {
+
+  @include media(tablet) {
     display: table;
   }
 }
 
 .hmrc-add-to-a-list--short {
-  @include media(desktop) {
+  @include media(tablet) {
     // to make group of q&a line up horizontally (unless there is just one group)
     width: 100%;
     // recommended for mostly short questions
@@ -17,7 +18,7 @@
 }
 
 .hmrc-add-to-a-list--long {
-  @include media(desktop) {
+  @include media(tablet) {
     // to make group of q&a line up horizontally (unless there is just one group)
     width: 100%;
     // recommended for mostly long questions
@@ -31,7 +32,8 @@
   position: relative;
   padding-bottom: 5px;
   border-bottom: 1px solid $border-colour;
-  @include media(desktop) {
+
+  @include media(tablet) {
     display: table-row;
     padding-bottom: 0;
     border-bottom-width: 0;
@@ -39,7 +41,7 @@
 }
 
 .hmrc-add-to-a-list__contents:first-child dt {
-  @include media(desktop) {
+  @include media(tablet) {
     padding-top: 0;
     padding-right: 5px;
   }
@@ -48,9 +50,14 @@
 .hmrc-add-to-a-list__identifier,
 .hmrc-add-to-a-list__remove,
 .hmrc-add-to-a-list__change {
+
+  position: relative;
   display: block;
   margin: 0;
-  @include media(desktop) {
+  text-align: left;
+  font-weight: normal;
+
+  @include media(tablet) {
     display: table-cell;
     padding: 15px 0;
     border-bottom: 1px solid $border-colour;
@@ -58,37 +65,15 @@
 }
 
 .hmrc-add-to-a-list__identifier {
-  margin: 10px 40px 0 0;
-  font-weight: bold;
-  @include media(desktop) {
+  margin: 10px auto;
+
+  @include media(tablet) {
     margin: 0;
+    padding-right: 5px;
   }
 }
 
 .hmrc-add-to-a-list__identifier--light {
   font-weight: normal;
-  padding-right: 5px;
-}
-
-.hmrc-add-to-a-list__remove {
-  text-align: right;
-  margin-bottom: 10px;
-  margin-top: 10px;
-  @include media(desktop) {
-    padding-right: 0;
-  }
-}
-
-.hmrc-add-to-a-list__change {
-  position: absolute;
-  top: 0;
-  right: 0;
-  text-align: right;
-  padding-right: 5px;
-  @include media(desktop) {
-    position: static;
-    + .hmrc-add-to-a-list__remove {
-      width: 6em;
-    }
-  }
+  padding: 0;
 }
