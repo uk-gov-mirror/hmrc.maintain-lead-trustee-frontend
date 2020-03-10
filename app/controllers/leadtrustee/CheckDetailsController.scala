@@ -17,7 +17,6 @@
 package controllers.leadtrustee
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.TrustConnector
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.{routes => ltRoutes}
@@ -28,8 +27,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.countryOptions.CountryOptions
-import utils.print.AnswerRowConverter
 import utils.print.checkYourAnswers.{LeadTrusteeIndividualPrintHelper, LeadTrusteeOrganisationPrintHelper}
 import views.html.leadtrustee.CheckDetailsView
 import pages.leadtrustee.{individual => lind, organisation => lorg}
@@ -47,10 +44,7 @@ class CheckDetailsController @Inject()(
                                         leadTrusteeOrgExtractor: LeadTrusteeOrganisationExtractor,
                                         leadTrusteeIndPrintHelper: LeadTrusteeIndividualPrintHelper,
                                         leadTrusteeOrgPrintHelper: LeadTrusteeOrganisationPrintHelper,
-                                        repository: PlaybackRepository,
-                                        answerRowConverter: AnswerRowConverter,
-                                        countryOptions: CountryOptions,
-                                        val appConfig: FrontendAppConfig
+                                        repository: PlaybackRepository
                                         )(implicit val executionContext: ExecutionContext)
 
   extends FrontendBaseController with I18nSupport {
@@ -78,11 +72,11 @@ class CheckDetailsController @Inject()(
       }
   }
 
-  def onPageLoadIndividualUpdated(): Action[AnyContent] = (standardActionSets.verifiedForUtr) {
+  def onPageLoadIndividualUpdated(): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request => renderIndividualLeadTrustee(request.userAnswers)
   }
 
-  def onPageLoadOrganisationUpdated(): Action[AnyContent] = (standardActionSets.verifiedForUtr) {
+  def onPageLoadOrganisationUpdated(): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request => renderOrganisationLeadTrustee(request.userAnswers)
   }
 

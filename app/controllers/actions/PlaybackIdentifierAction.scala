@@ -17,17 +17,15 @@
 package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
-import connectors.EnrolmentStoreConnector
 import models.requests.DataRequest
-import play.api.mvc.{ActionRefiner, BodyParsers, Result}
+import play.api.mvc.{ActionRefiner, Result}
 import services.AuthenticationService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PlaybackIdentifierActionImpl @Inject()(val parser: BodyParsers.Default,
-                                             enrolmentStoreConnector: EnrolmentStoreConnector,
+class PlaybackIdentifierActionImpl @Inject()(
                                              playbackAuthenticationService: AuthenticationService
                                             )(override implicit val executionContext: ExecutionContext) extends PlaybackIdentifierAction {
 
