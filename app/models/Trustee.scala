@@ -20,7 +20,11 @@ import java.time.LocalDate
 
 import play.api.libs.json.{Format, JsError, JsPath, JsSuccess, JsValue, Json, JsonValidationError, Reads, Writes}
 
-sealed trait Trustee
+sealed trait Trustee {
+  val provisional : Boolean
+
+  def isNewlyAdded : Boolean = provisional
+}
 
 object Trustee {
 
@@ -47,7 +51,8 @@ case class TrusteeIndividual(name: Name,
                              dateOfBirth: Option[LocalDate],
                              phoneNumber: Option[String],
                              identification: Option[TrustIdentification],
-                             entityStart: LocalDate) extends Trustee
+                             entityStart: LocalDate,
+                             provisional: Boolean) extends Trustee
 
 object TrusteeIndividual {
 
@@ -60,7 +65,8 @@ case class TrusteeOrganisation(name: String,
                                phoneNumber: Option[String] = None,
                                email: Option[String] = None,
                                identification: Option[TrustIdentificationOrgType],
-                               entityStart: LocalDate) extends Trustee
+                               entityStart: LocalDate,
+                               provisional: Boolean) extends Trustee
 
 object TrusteeOrganisation {
   implicit val dateFormat: Format[LocalDate] = Format[LocalDate](Reads.DefaultLocalDateReads, Writes.DefaultLocalDateWrites)

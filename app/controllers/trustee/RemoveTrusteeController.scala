@@ -16,11 +16,13 @@
 
 package controllers.trustee
 
+import java.time.LocalDate
+
 import controllers.actions.StandardActionSets
 import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.RemoveIndexFormProvider
 import javax.inject.Inject
-import models.{TrusteeIndividual, TrusteeOrganisation}
+import models.{RemoveTrustee, TrusteeIndividual, TrusteeOrganisation}
 import navigation.Navigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -83,7 +85,17 @@ class RemoveTrusteeController @Inject()(
         },
         value => {
           if (value) {
-            Future.successful(Redirect(controllers.trustee.routes.WhenRemovedController.onPageLoad(index).url))
+
+            trust.getTrustee(request.userAnswers.utr, index).flatMap {
+              trustee =>
+                if (trustee.isNewlyAdded) {
+                  for {
+                    _ <- trust.removeTrustee(request.userAnswers.utr, RemoveTrustee(index))
+                  } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+                } else {
+                  Future.successful(Redirect(controllers.trustee.routes.WhenRemovedController.onPageLoad(index).url))
+                }
+            }
           } else {
             Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad().url))
           }

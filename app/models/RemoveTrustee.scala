@@ -29,4 +29,6 @@ object RemoveTrustee {
   implicit val reads : Reads[RemoveTrusteeIndividual] = Reads(json =>
     json.validate[RemoveTrusteeIndividual])
 
+  def apply(index: Int): RemoveTrustee =  RemoveTrustee(index, LocalDate.now)
+
 }

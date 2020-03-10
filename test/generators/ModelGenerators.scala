@@ -166,7 +166,8 @@ trait ModelGenerators {
         phone <- arbitrary[Option[String]]
         id <- arbitrary[Option[TrustIdentification]]
         enitityStart <- datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(2019, 12, 31))
-      } yield TrusteeIndividual(name, Some(dob), phone, id, enitityStart)
+        provisional <- arbitrary[Boolean]
+      } yield TrusteeIndividual(name, Some(dob), phone, id, enitityStart, provisional)
     }
   }
 

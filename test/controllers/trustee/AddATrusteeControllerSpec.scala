@@ -70,7 +70,8 @@ class AddATrusteeControllerSpec extends SpecBase {
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     phoneNumber = None,
     identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
-    entityStart = LocalDate.parse("2019-02-28")
+    entityStart = LocalDate.parse("2019-02-28"),
+    provisional = true
   )
 
   val trustees = Trustees(List(trustee, trustee))
