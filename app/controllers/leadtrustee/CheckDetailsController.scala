@@ -31,8 +31,8 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import utils.print.AnswerRowConverter
 import utils.print.checkYourAnswers.{LeadTrusteeIndividualPrintHelper, LeadTrusteeOrganisationPrintHelper}
-import viewmodels.AnswerSection
 import views.html.leadtrustee.CheckDetailsView
+import pages.leadtrustee.{individual => lind, organisation => lorg}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
@@ -110,9 +110,15 @@ class CheckDetailsController @Inject()(
     implicit request =>
         leadTrusteeIndMapper.getFromUserAnswers(request.userAnswers) match {
           case None => Future.successful(InternalServerError)
-          case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ =>
-            Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-          )
+          case Some(lt) =>
+            request.userAnswers.get(lind.IndexPage) match {
+              case None => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ =>
+                Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+              )
+              case Some(index) => connector.promoteTrustee(request.userAnswers.utr, index, lt).map(_ =>
+                Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+              )
+            }
         }
   }
 
@@ -120,9 +126,15 @@ class CheckDetailsController @Inject()(
     implicit request =>
         leadTrusteeOrgExtractor.mapLeadTrusteeOrganisation(request.userAnswers) match {
           case None => Future.successful(InternalServerError)
-          case Some(lt) => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ =>
-            Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-          )
+          case Some(lt) =>
+            request.userAnswers.get(lorg.IndexPage) match {
+              case None => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ =>
+                Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+              )
+              case Some(index) => connector.promoteTrustee(request.userAnswers.utr, index, lt).map(_ =>
+                Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+              )
+            }
         }
   }
 }

@@ -63,6 +63,12 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
     http.PUT[JsValue, HttpResponse](removeTrusteeUrl(utr), Json.toJson(trustee))
   }
 
+  private def promoteTrusteeUrl(utr: String, index: Int) = s"${config.trustsUrl}/trusts/promote-trustee/$utr/$index"
+
+  def promoteTrustee(utr: String, index: Int, newLeadTrustee: LeadTrustee)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
+    http.POST[LeadTrustee, HttpResponse](promoteTrusteeUrl(utr, index), newLeadTrustee)(LeadTrustee.writes, HttpReads.readRaw, hc, ec)
+  }
+
 }
 
 

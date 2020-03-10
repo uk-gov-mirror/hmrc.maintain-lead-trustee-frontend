@@ -1,3 +1,4 @@
+GET        /answer-new-questions                        controllers.leadtrustee.organisation.NeedToAnswerQuestionsController.onPageLoad()
 
 GET        /registered-in-uk                            controllers.leadtrustee.organisation.RegisteredInUkYesNoController.onPageLoad()
 POST       /registered-in-uk                            controllers.leadtrustee.organisation.RegisteredInUkYesNoController.onSubmit()

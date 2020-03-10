@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package pages.trustee.individual
+package pages.leadtrustee.organisation
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import pages.trustee.basePath
 
-case class AddressPage(index:Int) extends QuestionPage[String] {
+object IndexPage extends QuestionPage[Int] {
 
-  override def path: JsPath = basePath \ index \ toString
+  override def path: JsPath = basePath \ toString
 
-  override def toString: String = "address"
+  override def toString: String = "index"
+
 }

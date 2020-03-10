@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(
-messageKey: String = "",
-href: String
-)(implicit messages: Messages)
+package forms
 
-<div class="section">
-    <a id="button" href="@href" role="button" class="button">@messages(messageKey)</a>
-</div>
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
+
+class ReplaceLeadTrusteeFormProvider @Inject() extends Mappings {
+
+  def withPrefix(messagePrefix: String) =
+    Form(
+      "value" -> text(s"$messagePrefix.error.required")
+    )
+}

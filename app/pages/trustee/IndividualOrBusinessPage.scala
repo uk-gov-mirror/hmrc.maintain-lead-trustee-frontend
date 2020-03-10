@@ -37,7 +37,7 @@ case class IndividualOrBusinessPage(index: Int) extends QuestionPage[IndividualO
       .flatMap(_.remove(NationalInsuranceNumberPage(index)))
       .flatMap(_.remove(AddressYesNoPage(index)))
       .flatMap(_.remove(LiveInTheUkYesNoPage(index)))
-      .flatMap(_.remove(AddressPage(index)))
+      .flatMap(_.remove(UkAddressPage(index)))
       .flatMap(_.remove(NonUkAddressPage(index)))
       .flatMap(_.remove(PassportDetailsYesNoPage(index)))
       .flatMap(_.remove(PassportDetailsPage(index)))

@@ -33,7 +33,7 @@ case class NationalInsuranceNumberYesNoPage(index: Int) extends QuestionPage[Boo
       case Some(true) =>
         userAnswers.remove(AddressYesNoPage(index))
           .flatMap(_.remove(LiveInTheUkYesNoPage(index)))
-          .flatMap(_.remove(AddressPage(index)))
+          .flatMap(_.remove(UkAddressPage(index)))
           .flatMap(_.remove(NonUkAddressPage(index)))
           .flatMap(_.remove(PassportDetailsYesNoPage(index)))
           .flatMap(_.remove(PassportDetailsPage(index)))

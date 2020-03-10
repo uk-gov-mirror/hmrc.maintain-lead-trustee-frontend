@@ -1,3 +1,4 @@
+GET        /answer-new-questions                    controllers.leadtrustee.individual.NeedToAnswerQuestionsController.onPageLoad()
 
 GET        /name                                    controllers.leadtrustee.individual.NameController.onPageLoad()
 POST       /name                                    controllers.leadtrustee.individual.NameController.onSubmit()

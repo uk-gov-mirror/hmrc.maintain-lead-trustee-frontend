@@ -32,7 +32,8 @@ object IndividualOrBusinessPage extends QuestionPage[IndividualOrBusiness] {
   override def cleanup(value: Option[IndividualOrBusiness], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
       case Some(Business) =>
-        userAnswers.remove(individual.NamePage)
+        userAnswers.remove(individual.IndexPage)
+          .flatMap(_.remove(individual.NamePage))
           .flatMap(_.remove(individual.DateOfBirthPage))
           .flatMap(_.remove(individual.UkCitizenPage))
           .flatMap(_.remove(individual.NationalInsuranceNumberPage))
@@ -44,7 +45,8 @@ object IndividualOrBusinessPage extends QuestionPage[IndividualOrBusiness] {
           .flatMap(_.remove(individual.EmailAddressPage))
           .flatMap(_.remove(individual.TelephoneNumberPage))
       case Some(Individual) =>
-        userAnswers.remove(organisation.RegisteredInUkYesNoPage)
+        userAnswers.remove(organisation.IndexPage)
+          .flatMap(_.remove(organisation.RegisteredInUkYesNoPage))
           .flatMap(_.remove(organisation.NamePage))
           .flatMap(_.remove(organisation.UtrPage))
           .flatMap(_.remove(organisation.AddressInTheUkYesNoPage))
