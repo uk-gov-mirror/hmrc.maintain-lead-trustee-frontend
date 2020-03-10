@@ -164,7 +164,7 @@ replacingLeadTrustee.return.link = Return to add a trustee
 
 answerNewQuestions.title = You need to answer new questions for {0}
 answerNewQuestions.heading = You need to answer new questions for {0}
-answerNewQuestions.hint = Because you want to add {0} as the new leas trustee, you need to answer some extra questions about them.
+answerNewQuestions.hint = Because you want to add {0} as the new lead trustee, you need to answer some extra questions about them.
 answerNewQuestions.return.link = Return to add a trustee
 
 leadTrusteeOrTrustee.title = Are you entering details for the lead trustee or a trustee?
