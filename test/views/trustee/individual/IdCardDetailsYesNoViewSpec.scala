@@ -22,12 +22,11 @@ import models.Name
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.trustee.individual.{IdCardDetailsYesNoView, PassportDetailsYesNoView}
+import views.html.trustee.individual.IdCardDetailsYesNoView
 
 class IdCardDetailsYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "trustee.individual.idCardDetailsYesNo"
-  val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
@@ -37,13 +36,13 @@ class IdCardDetailsYesNoViewSpec extends YesNoViewBehaviours {
     val view = viewFor[IdCardDetailsYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, name.displayName)(fakeRequest, messages)
+      view.apply(form, name.displayName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.IdCardDetailsYesNoController.onSubmit(index).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.IdCardDetailsYesNoController.onSubmit().url)
 
     behave like pageWithASubmitButton(applyView(form))
   }

@@ -29,7 +29,6 @@ import views.html.trustee.individual.NonUkAddressView
 class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
 
   val messageKeyPrefix = "trustee.individual.nonUkAddress"
-  val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
   override val form: Form[NonUkAddress] = new NonUkAddressFormProvider().apply()
@@ -41,7 +40,7 @@ class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
     val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, countryOptions, index, name.displayName)(fakeRequest, messages)
+      view.apply(form, countryOptions, name.displayName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
@@ -50,7 +49,7 @@ class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
     behave like nonUkAddress(
       applyView,
       Some(messageKeyPrefix),
-      routes.NonUkAddressController.onSubmit(index).url,
+      routes.NonUkAddressController.onSubmit().url,
       name.displayName
     )
 

@@ -40,14 +40,13 @@ import views.html.trustee.CheckDetailsView
 class CheckDetailsViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "trustee.checkDetails"
-  val index = 0
 
   "CheckDetails view" must {
 
     val view = viewFor[CheckDetailsView](Some(emptyUserAnswers))
 
     def applyView(): HtmlFormat.Appendable =
-      view.apply(AnswerSection(None, Seq()), index)(fakeRequest, messages)
+      view.apply(AnswerSection(None, Seq()))(fakeRequest, messages)
 
     behave like normalPage(applyView(), messageKeyPrefix)
 

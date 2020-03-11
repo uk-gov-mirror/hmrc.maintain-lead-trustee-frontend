@@ -27,7 +27,6 @@ import views.html.trustee.individual.NameView
 class NameViewSpec extends QuestionViewBehaviours[Name] {
 
   val messageKeyPrefix = "trustee.individual.name"
-  val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
   override val form: Form[Name] = new IndividualNameFormProvider().withPrefix(messageKeyPrefix)
@@ -37,7 +36,7 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
     val view = viewFor[NameView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index)(fakeRequest, messages)
+      view.apply(form)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
@@ -50,7 +49,7 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
         applyView,
         messageKeyPrefix,
         None,
-        routes.PassportDetailsController.onSubmit(index).url,
+        routes.PassportDetailsController.onSubmit().url,
         "firstName",
         "middleName",
         "lastName"

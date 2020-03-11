@@ -39,11 +39,9 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new IndividualNameFormProvider()
   val form = formProvider.withPrefix("trustee.individual.name")
-  val index = 0
   val trusteeName = Name("FirstName", None, "LastName")
 
-  lazy val nameRoute = routes.NameController.onPageLoad(index).url
-
+  lazy val nameRoute = routes.NameController.onPageLoad().url
 
   "Name Controller" must {
 
@@ -60,13 +58,13 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index)(request, messages).toString
+        view(form)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val ua = emptyUserAnswers.set(NamePage(index), Name("FirstName", None, "LastName"))
+      val ua = emptyUserAnswers.set(NamePage, Name("FirstName", None, "LastName"))
       val application = applicationBuilder(userAnswers = Some(ua.success.value)).build()
 
       val request = FakeRequest(GET, nameRoute)
@@ -78,7 +76,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Name("FirstName", None, "LastName")), index)(fakeRequest, messages).toString
+        view(form.fill(Name("FirstName", None, "LastName")))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -127,7 +125,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index)(fakeRequest, messages).toString
+        view(boundForm)(fakeRequest, messages).toString
 
       application.stop()
     }

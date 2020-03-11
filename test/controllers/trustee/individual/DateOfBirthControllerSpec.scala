@@ -20,7 +20,7 @@ import java.time.{LocalDate, ZoneOffset}
 
 import base.SpecBase
 import forms.DateOfBirthFormProvider
-import models.{Name, UserAnswers}
+import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -43,13 +43,12 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val validAnswer = LocalDate.now(ZoneOffset.UTC)
-  val index = 0
   val trusteeName = "FirstName LastName"
   val name = Name("FirstName", None, "LastName")
 
-  lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad(index).url
+  lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad().url
 
-  val userAnswersWithName = emptyUserAnswers.set(NamePage(index), name)
+  val userAnswersWithName = emptyUserAnswers.set(NamePage, name)
     .success.value
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
@@ -76,7 +75,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, messages("trusteeName.defaultText"))(fakeRequest, messages).toString
+        view(form, messages("trusteeName.defaultText"))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -84,8 +83,8 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(DateOfBirthPage(index), validAnswer).success.value
-        .set(NamePage(index), name).success.value
+        .set(DateOfBirthPage, validAnswer).success.value
+        .set(NamePage, name).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -96,7 +95,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), index, name.displayName)(getRequest(), messages).toString
+        view(form.fill(validAnswer), name.displayName)(getRequest(), messages).toString
 
       application.stop()
     }
@@ -140,7 +139,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }

@@ -26,7 +26,6 @@ import views.html.trustee.individual.NationalInsuranceNumberView
 class NationalInsuranceNumberViewSpec extends QuestionViewBehaviours[String] {
 
   val messageKeyPrefix = "trustee.individual.nationalInsuranceNumber"
-  val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
   override val form: Form[String] = new NationalInsuranceNumberFormProvider().withPrefix(messageKeyPrefix)
@@ -36,7 +35,7 @@ class NationalInsuranceNumberViewSpec extends QuestionViewBehaviours[String] {
     val view = viewFor[NationalInsuranceNumberView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, name.displayName)(fakeRequest, messages)
+      view.apply(form, name.displayName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 

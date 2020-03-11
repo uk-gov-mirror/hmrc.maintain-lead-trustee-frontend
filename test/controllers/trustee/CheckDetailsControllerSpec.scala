@@ -24,7 +24,7 @@ import models.IndividualOrBusiness.Individual
 import models.{Name, UkAddress, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{verify, when, reset}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.individual.{NamePage, UkAddressPage}
@@ -33,8 +33,6 @@ import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import org.mockito.ArgumentCaptor
-import play.api.libs.json.Json
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.countryOptions.CountryOptions
@@ -46,13 +44,11 @@ import scala.concurrent.Future
 
 class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  val index = 0
-
   val trusteeName = Name("FirstName", None, "LastName")
   val trusteeAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
 
-  private lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoad(index).url
-  private lazy val submitDetailsRoute = routes.CheckDetailsController.onSubmit(index).url
+  private lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoad().url
+  private lazy val submitDetailsRoute = routes.CheckDetailsController.onSubmit().url
   private lazy val onwardRoute = controllers.routes.AddATrusteeController.onPageLoad().url
 
   "CheckDetails Controller" must {
@@ -60,15 +56,15 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
     "return OK and the correct view for a GET" in {
 
       val userAnswers = emptyUserAnswers
-        .set(IndividualOrBusinessPage(index), Individual).success.value
-        .set(NamePage(index), trusteeName).success.value
-        .set(UkAddressPage(index), trusteeAddress).success.value
+        .set(IndividualOrBusinessPage, Individual).success.value
+        .set(NamePage, trusteeName).success.value
+        .set(UkAddressPage, trusteeAddress).success.value
 
       val bound = new AnswerRowConverter().bind(userAnswers, trusteeName.displayName, mock[CountryOptions])
 
       val answerSection = AnswerSection(None, Seq(
-        bound.nameQuestion(NamePage(index), "trustee.individual.name", controllers.trustee.individual.routes.NameController.onPageLoad(index).url),
-        bound.addressQuestion(UkAddressPage(index), "trustee.individual.ukAddress", controllers.trustee.individual.routes.UkAddressController.onPageLoad(index).url)
+        bound.nameQuestion(NamePage, "trustee.individual.name", controllers.trustee.individual.routes.NameController.onPageLoad().url),
+        bound.addressQuestion(UkAddressPage, "trustee.individual.ukAddress", controllers.trustee.individual.routes.UkAddressController.onPageLoad().url)
       ).flatten)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
@@ -82,17 +78,17 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(answerSection, index)(fakeRequest, messages).toString
+        view(answerSection)(fakeRequest, messages).toString
     }
-  }
 
     "redirect to the 'add a trustee' page when submitted" in {
 
       val mockTrustConnector = mock[TrustConnector]
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage(index), trusteeName).success.value
-        .set(WhenAddedPage(index), LocalDate.now).success.value
+        .set(IndividualOrBusinessPage, Individual).success.value
+        .set(NamePage, trusteeName).success.value
+        .set(WhenAddedPage, LocalDate.now).success.value
 
       val application =
         applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
@@ -126,8 +122,9 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       reset(playbackRepository)
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage(index), trusteeName).success.value
-        .set(WhenAddedPage(index), LocalDate.now).success.value
+        .set(IndividualOrBusinessPage, Individual).success.value
+        .set(NamePage, trusteeName).success.value
+        .set(WhenAddedPage, LocalDate.now).success.value
 
       val application =
         applicationBuilder(userAnswers = Some(userAnswers),
@@ -141,10 +138,12 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       val request = FakeRequest(POST, submitDetailsRoute)
 
-      whenReady (route(application, request).value) { _ =>
+      whenReady(route(application, request).value) { _ =>
         val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(playbackRepository).set(uaCaptor.capture())
         uaCaptor.getValue.data mustBe Json.obj()
       }
+    }
+
   }
 }

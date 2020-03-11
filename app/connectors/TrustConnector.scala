@@ -18,7 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.{LeadTrustee, RemoveTrustee, TrustStartDate, Trustee, TrusteeIndividual, Trustees}
+import models.{LeadTrustee, RemoveTrustee, TrustStartDate, Trustee, Trustees}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -42,7 +42,7 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
   private def addTrusteeUrl(utr: String) = s"${config.trustsUrl}/trusts/add-trustee/$utr"
 
   def addTrustee(utr: String, trustee: Trustee)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
-    http.POST[JsValue, HttpResponse](addTrusteeUrl(utr), Json.toJson(trustee))
+    http.POST[Trustee, HttpResponse](addTrusteeUrl(utr), trustee)(Trustee.writes, HttpReads.readRaw, hc, ec)
   }
 
   private def amendLeadTrusteeUrl(utr: String) = s"${config.trustsUrl}/trusts/amend-lead-trustee/$utr"

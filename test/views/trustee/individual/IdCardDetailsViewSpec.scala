@@ -29,7 +29,6 @@ import views.html.trustee.individual.IdCardDetailsView
 class IdCardDetailsViewSpec extends QuestionViewBehaviours[IdCard] {
 
   val messageKeyPrefix = "trustee.individual.idCardDetails"
-  val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
   override val form: Form[IdCard] = new IdCardDetailsFormProvider().withPrefix(messageKeyPrefix)
@@ -41,7 +40,7 @@ class IdCardDetailsViewSpec extends QuestionViewBehaviours[IdCard] {
     val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, countryOptions, index, name.displayName)(fakeRequest, messages)
+      view.apply(form, countryOptions, name.displayName)(fakeRequest, messages)
     
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
@@ -53,7 +52,7 @@ class IdCardDetailsViewSpec extends QuestionViewBehaviours[IdCard] {
         form,
         applyView,
         messageKeyPrefix,
-        routes.IdCardDetailsController.onSubmit(index).url,
+        routes.IdCardDetailsController.onSubmit().url,
         Seq(("country", None), ("number", None)),
         "expiryDate",
         name.displayName
