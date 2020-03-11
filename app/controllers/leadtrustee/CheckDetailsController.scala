@@ -22,7 +22,7 @@ import controllers.actions.StandardActionSets
 import controllers.leadtrustee.{routes => ltRoutes}
 import mapping.{IndividualLeadTrusteeToUserAnswersMapper, LeadTrusteeOrganisationExtractor}
 import models.requests.DataRequest
-import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, UserAnswers}
+import models.{LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -30,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.print.checkYourAnswers.{LeadTrusteeIndividualPrintHelper, LeadTrusteeOrganisationPrintHelper}
 import views.html.leadtrustee.CheckDetailsView
 import pages.leadtrustee.{individual => lind, organisation => lorg}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
@@ -106,12 +107,10 @@ class CheckDetailsController @Inject()(
           case None => Future.successful(InternalServerError)
           case Some(lt) =>
             request.userAnswers.get(lind.IndexPage) match {
-              case None => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ =>
-                Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-              )
-              case Some(index) => connector.promoteTrustee(request.userAnswers.utr, index, lt).map(_ =>
-                Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-              )
+              case None =>
+                amendLeadTrustee(request.userAnswers, lt)
+              case Some(index) =>
+                promoteTrustee(request.userAnswers, lt, index)
             }
         }
   }
@@ -122,13 +121,27 @@ class CheckDetailsController @Inject()(
           case None => Future.successful(InternalServerError)
           case Some(lt) =>
             request.userAnswers.get(lorg.IndexPage) match {
-              case None => connector.amendLeadTrustee(request.userAnswers.utr, lt).map(_ =>
-                Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-              )
-              case Some(index) => connector.promoteTrustee(request.userAnswers.utr, index, lt).map(_ =>
-                Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-              )
+              case None =>
+                amendLeadTrustee(request.userAnswers, lt)
+              case Some(index) =>
+                promoteTrustee(request.userAnswers, lt, index)
             }
         }
+  }
+
+  private def amendLeadTrustee(userAnswers: UserAnswers, lt: LeadTrustee)(implicit hc: HeaderCarrier) = {
+    for {
+      _ <- connector.amendLeadTrustee(userAnswers.utr, lt)
+      updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.leadtrustee.basePath))
+      _ <- repository.set(updatedUserAnswers)
+    } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+  }
+
+  private def promoteTrustee(userAnswers: UserAnswers, lt: LeadTrustee, index: Int)(implicit hc: HeaderCarrier) = {
+    for {
+      _ <- connector.promoteTrustee(userAnswers.utr, index, lt)
+      updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.leadtrustee.basePath))
+      _ <- repository.set(updatedUserAnswers)
+    } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
   }
 }
