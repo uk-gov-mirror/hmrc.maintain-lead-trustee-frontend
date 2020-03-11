@@ -217,7 +217,7 @@ class ReplacingLeadTrusteeController @Inject()(
         answers.set(ltorg.EmailAddressYesNoPage, true)
           .flatMap(_.set(ltorg.EmailAddressPage, email))
       case _ =>
-        answers.set(ltorg.EmailAddressYesNoPage, false)
+        Success(answers)
     }
   }
 
