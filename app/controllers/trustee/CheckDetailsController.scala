@@ -22,7 +22,7 @@ import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import javax.inject.Inject
 import models.IndividualOrBusiness._
-import models.TrusteeIndividual
+import models.{TrusteeIndividual, TrusteeOrganisation}
 import navigation.Navigator
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -72,13 +72,26 @@ class CheckDetailsController @Inject()(
         Future.successful(Redirect(routes.WhenAddedController.onPageLoad()))
       } {
         date =>
-          val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date)
-          for {
-            updatedUserAnswers <- Future.fromTry(request.userAnswers.deleteAtPath(pages.trustee.basePath))
-            _ <- sessionRepository.set(updatedUserAnswers)
-            _ <- trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd)
-          } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+          request.userAnswers.get(IndividualOrBusinessPage) match {
+              
+            case Some(Individual) =>
+              val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date)
+              for {
+                updatedUserAnswers <- Future.fromTry(request.userAnswers.deleteAtPath(pages.trustee.basePath))
+                _ <- sessionRepository.set(updatedUserAnswers)
+                _ <- trustConnector.addTrustee(request.userAnswers.utr, trusteeInd)
+              } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
 
+            case Some(Business) =>
+              val trusteeOrg: TrusteeOrganisation = trusteeBuilder.createTrusteeOrganisation(request.userAnswers, date)
+              for {
+                updatedUserAnswers <- Future.fromTry(request.userAnswers.deleteAtPath(pages.trustee.basePath))
+                _ <- sessionRepository.set(updatedUserAnswers)
+                _ <- trustConnector.addTrustee(request.userAnswers.utr, trusteeOrg)
+              } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+
+            case None => Future.successful(InternalServerError)
+          }
       }
   }
 }

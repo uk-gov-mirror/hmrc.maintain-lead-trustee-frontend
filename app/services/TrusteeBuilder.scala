@@ -18,9 +18,8 @@ package services
 
 import java.time.LocalDate
 
-import models.{AddressType, TrusteeIndividual, NonUkAddress, TrustIdentification, UkAddress, UserAnswers}
-import pages.trustee.individual._
-
+import models.{AddressType, NonUkAddress, TrustIdentification, TrustIdentificationOrgType, TrusteeIndividual, TrusteeOrganisation, UkAddress, UserAnswers}
+import pages.trustee.{individual => ind, organisation => org}
 
 class TrusteeBuilder {
 
@@ -28,29 +27,59 @@ class TrusteeBuilder {
 
   def createTrusteeIndividual(userAnswers: UserAnswers, date: LocalDate) = {
     TrusteeIndividual(
-      userAnswers.get(NamePage).get,
-      userAnswers.get(DateOfBirthPage),
+      userAnswers.get(ind.NamePage).get,
+      userAnswers.get(ind.DateOfBirthPage),
       None,
       Some(
         TrustIdentification(
           None,
-          userAnswers.get(NationalInsuranceNumberPage),
-          userAnswers.get(PassportDetailsPage),
-          buildAddress(userAnswers)
+          userAnswers.get(ind.NationalInsuranceNumberPage),
+          userAnswers.get(ind.PassportDetailsPage),
+          buildIndAddress(userAnswers)
         )
-      ), date,
+      ),
+      date,
       provisional = true
     )
   }
 
-  private def buildAddress(userAnswers: UserAnswers): Option[AddressType] = {
+  private def buildIndAddress(userAnswers: UserAnswers): Option[AddressType] = {
 
-    val uk: Option[UkAddress] = userAnswers.get(UkAddressPage)
-    val nonUk: Option[NonUkAddress] = userAnswers.get(NonUkAddressPage)
+    val uk: Option[UkAddress] = userAnswers.get(ind.UkAddressPage)
+    val nonUk: Option[NonUkAddress] = userAnswers.get(ind.NonUkAddressPage)
     (uk, nonUk) match {
       case (Some(ukAddress), None) => Some(ukAddress.convert)
       case (None, Some(nonUkAddress)) => Some(nonUkAddress.convert)
       case _ => None
     }
   }
+
+  def createTrusteeOrganisation(userAnswers: UserAnswers, date: LocalDate) = {
+    TrusteeOrganisation(
+      userAnswers.get(org.NamePage).get,
+      None,
+      None,
+      Some(
+        TrustIdentificationOrgType(
+          None,
+          userAnswers.get(org.UtrPage),
+          buildOrgAddress(userAnswers)
+        )
+      ),
+      date,
+      provisional = true
+    )
+  }
+
+  private def buildOrgAddress(userAnswers: UserAnswers): Option[AddressType] = {
+
+    val uk: Option[UkAddress] = userAnswers.get(org.UkAddressPage)
+    val nonUk: Option[NonUkAddress] = userAnswers.get(org.NonUkAddressPage)
+    (uk, nonUk) match {
+      case (Some(ukAddress), None) => Some(ukAddress.convert)
+      case (None, Some(nonUkAddress)) => Some(nonUkAddress.convert)
+      case _ => None
+    }
+  }
+
 }

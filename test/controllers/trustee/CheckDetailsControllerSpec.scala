@@ -99,7 +99,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           .overrides(bind[TrustConnector].toInstance(mockTrustConnector))
           .build()
 
-      when(mockTrustConnector.addTrusteeIndividual(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
+      when(mockTrustConnector.addTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
 
       when(playbackRepository.set(any())).thenReturn(Future.successful(true))
 
@@ -136,7 +136,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
             bind[TrustConnector].toInstance(mockTrustConnector)
           ).build()
 
-      when(mockTrustConnector.addTrusteeIndividual(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
+      when(mockTrustConnector.addTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
       when(playbackRepository.set(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(POST, submitDetailsRoute)
