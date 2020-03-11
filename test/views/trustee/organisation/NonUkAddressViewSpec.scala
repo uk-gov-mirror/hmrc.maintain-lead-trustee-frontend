@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package views.trustee.individual
+package views.trustee.organisation
 
 import controllers.trustee.individual.routes
 import forms.NonUkAddressFormProvider
-import models.{Name, NonUkAddress}
+import models.NonUkAddress
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.InputOption
 import utils.countryOptions.CountryOptionsNonUK
 import views.behaviours.NonUkAddressViewBehaviours
-import views.html.trustee.individual.NonUkAddressView
+import views.html.trustee.organisation.NonUkAddressView
 
 class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
 
-  val messageKeyPrefix = "trustee.individual.nonUkAddress"
-  val name: Name = Name("First", Some("Middle"), "Last")
+  val messageKeyPrefix = "trustee.organisation.nonUkAddress"
+  val name: String = "Trustee Name"
 
   override val form: Form[NonUkAddress] = new NonUkAddressFormProvider().apply()
 
@@ -40,9 +40,9 @@ class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
     val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, countryOptions, name.displayName)(fakeRequest, messages)
+      view.apply(form, countryOptions, name)(fakeRequest, messages)
 
-    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 
     behave like pageWithBackLink(applyView(form))
 
@@ -50,7 +50,7 @@ class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
       applyView,
       Some(messageKeyPrefix),
       routes.NonUkAddressController.onSubmit().url,
-      name.displayName
+      name
     )
 
     behave like pageWithASubmitButton(applyView(form))

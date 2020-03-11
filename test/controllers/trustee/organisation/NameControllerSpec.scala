@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 class NameControllerSpec extends SpecBase with MockitoSugar {
 
-  val form = new BusinessNameFormProvider().withPrefix("trustee")
+  val form = new BusinessNameFormProvider().withPrefix("trustee.organisation.name")
 
   lazy val nameRoute = routes.NameController.onPageLoad().url
 

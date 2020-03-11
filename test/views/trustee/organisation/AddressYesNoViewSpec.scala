@@ -14,35 +14,32 @@
  * limitations under the License.
  */
 
-package views.leadtrustee.organisation
+package views.trustee.organisation
 
-import controllers.leadtrustee.organisation.routes
-import forms.UtrFormProvider
+import controllers.trustee.organisation.routes
+import forms.YesNoFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.StringViewBehaviours
-import views.html.leadtrustee.organisation.UtrView
+import views.behaviours.YesNoViewBehaviours
+import views.html.trustee.organisation.AddressYesNoView
 
-class UtrViewSpec extends StringViewBehaviours {
+class AddressYesNoViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "leadtrustee.organisation.utr"
-  val name = "Business Name"
+  val messageKeyPrefix = "trustee.organisation.addressYesNo"
+  val form = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
+  val name = "Trustee Name"
 
-  val form = new UtrFormProvider().withPrefix(messageKeyPrefix)
+  "AddressYesNoPage view" must {
 
-  "TrusteeUtrView view" must {
-
-    val view = viewFor[UtrView](Some(emptyUserAnswers))
+    val view = viewFor[AddressYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, name)(fakeRequest, messages)
 
-    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name, "hint", "p1", "link")
-
-    behave like pageWithHint(form, applyView, messageKeyPrefix + ".hint")
-
-    behave like stringPage(form, applyView, messageKeyPrefix, Some(name), routes.UtrController.onSubmit().url)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 
     behave like pageWithBackLink(applyView(form))
+
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), routes.AddressYesNoController.onSubmit().url)
   }
 }

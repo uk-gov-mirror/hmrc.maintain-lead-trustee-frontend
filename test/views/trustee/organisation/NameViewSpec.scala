@@ -14,35 +14,40 @@
  * limitations under the License.
  */
 
-package views.leadtrustee.organisation
+package views.trustee.organisation
 
-import controllers.leadtrustee.organisation.routes
-import forms.UtrFormProvider
+import forms.BusinessNameFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours
-import views.html.leadtrustee.organisation.UtrView
+import views.html.trustee.organisation.NameView
 
-class UtrViewSpec extends StringViewBehaviours {
+class NameViewSpec extends StringViewBehaviours {
 
-  val messageKeyPrefix = "leadtrustee.organisation.utr"
-  val name = "Business Name"
+  val messageKeyPrefix = "trustee.organisation.name"
 
-  val form = new UtrFormProvider().withPrefix(messageKeyPrefix)
+  val form = new BusinessNameFormProvider().withPrefix("trustee.organisation.name")
+  val view = viewFor[NameView](Some(emptyUserAnswers))
 
-  "TrusteeUtrView view" must {
-
-    val view = viewFor[UtrView](Some(emptyUserAnswers))
+  "Name view" must {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name)(fakeRequest, messages)
+      view.apply(form)(fakeRequest, messages)
 
-    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name, "hint", "p1", "link")
-
-    behave like pageWithHint(form, applyView, messageKeyPrefix + ".hint")
-
-    behave like stringPage(form, applyView, messageKeyPrefix, Some(name), routes.UtrController.onSubmit().url)
+    behave like normalPage(applyView(form), messageKeyPrefix)
 
     behave like pageWithBackLink(applyView(form))
+
+    behave like pageWithTextFields(
+      form,
+      applyView,
+      messageKeyPrefix,
+      None,
+      controllers.leadtrustee.organisation.routes.NameController.onSubmit().url,
+      "value"
+    )
+
+    behave like pageWithASubmitButton(applyView(form))
   }
+
 }
