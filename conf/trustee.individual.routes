@@ -1,38 +1,38 @@
-GET        /:index/name                                  controllers.trustee.individual.NameController.onPageLoad(index: Int)
-POST       /:index/name                                  controllers.trustee.individual.NameController.onSubmit(index: Int)
+GET        /name                                  controllers.trustee.individual.NameController.onPageLoad()
+POST       /name                                  controllers.trustee.individual.NameController.onSubmit()
 
-GET        /:index/know-date-of-birth                    controllers.trustee.individual.DateOfBirthYesNoController.onPageLoad(index: Int)
-POST       /:index/know-date-of-birth                    controllers.trustee.individual.DateOfBirthYesNoController.onSubmit(index: Int)
+GET        /know-date-of-birth                    controllers.trustee.individual.DateOfBirthYesNoController.onPageLoad()
+POST       /know-date-of-birth                    controllers.trustee.individual.DateOfBirthYesNoController.onSubmit()
 
-GET        /:index/date-of-birth                         controllers.trustee.individual.DateOfBirthController.onPageLoad(index: Int)
-POST       /:index/date-of-birth                         controllers.trustee.individual.DateOfBirthController.onSubmit(index: Int)
+GET        /date-of-birth                         controllers.trustee.individual.DateOfBirthController.onPageLoad()
+POST       /date-of-birth                         controllers.trustee.individual.DateOfBirthController.onSubmit()
 
-GET        /:index/has-national-insurance-number         controllers.trustee.individual.NationalInsuranceNumberYesNoController.onPageLoad(index: Int)
-POST       /:index/has-national-insurance-number         controllers.trustee.individual.NationalInsuranceNumberYesNoController.onSubmit(index: Int)
+GET        /has-national-insurance-number         controllers.trustee.individual.NationalInsuranceNumberYesNoController.onPageLoad()
+POST       /has-national-insurance-number         controllers.trustee.individual.NationalInsuranceNumberYesNoController.onSubmit()
 
-GET        /:index/national-insurance-number             controllers.trustee.individual.NationalInsuranceNumberController.onPageLoad(index: Int)
-POST       /:index/national-insurance-number             controllers.trustee.individual.NationalInsuranceNumberController.onSubmit(index: Int)
+GET        /national-insurance-number             controllers.trustee.individual.NationalInsuranceNumberController.onPageLoad()
+POST       /national-insurance-number             controllers.trustee.individual.NationalInsuranceNumberController.onSubmit()
 
-GET        /:index/has-address                           controllers.trustee.individual.AddressYesNoController.onPageLoad(index: Int)
-POST       /:index/has-address                           controllers.trustee.individual.AddressYesNoController.onSubmit(index: Int)
+GET        /has-address                           controllers.trustee.individual.AddressYesNoController.onPageLoad()
+POST       /has-address                           controllers.trustee.individual.AddressYesNoController.onSubmit()
 
-GET        /:index/has-uk-address                        controllers.trustee.individual.LiveInTheUkYesNoController.onPageLoad(index: Int)
-POST       /:index/has-uk-address                        controllers.trustee.individual.LiveInTheUkYesNoController.onSubmit(index: Int)
+GET        /has-uk-address                        controllers.trustee.individual.LiveInTheUkYesNoController.onPageLoad()
+POST       /has-uk-address                        controllers.trustee.individual.LiveInTheUkYesNoController.onSubmit()
 
-GET        /:index/uk-address                            controllers.trustee.individual.UkAddressController.onPageLoad(index: Int)
-POST       /:index/uk-address                            controllers.trustee.individual.UkAddressController.onSubmit(index: Int)
+GET        /uk-address                            controllers.trustee.individual.UkAddressController.onPageLoad()
+POST       /uk-address                            controllers.trustee.individual.UkAddressController.onSubmit()
 
-GET        /:index/non-uk-address                        controllers.trustee.individual.NonUkAddressController.onPageLoad(index: Int)
-POST       /:index/non-uk-address                        controllers.trustee.individual.NonUkAddressController.onSubmit(index: Int)
+GET        /non-uk-address                        controllers.trustee.individual.NonUkAddressController.onPageLoad()
+POST       /non-uk-address                        controllers.trustee.individual.NonUkAddressController.onSubmit()
 
-GET        /:index/has-passport                          controllers.trustee.individual.PassportDetailsYesNoController.onPageLoad(index: Int)
-POST       /:index/has-passport                          controllers.trustee.individual.PassportDetailsYesNoController.onSubmit(index: Int)
+GET        /has-passport                          controllers.trustee.individual.PassportDetailsYesNoController.onPageLoad()
+POST       /has-passport                          controllers.trustee.individual.PassportDetailsYesNoController.onSubmit()
 
-GET        /:index/passport                              controllers.trustee.individual.PassportDetailsController.onPageLoad(index: Int)
-POST       /:index/passport                              controllers.trustee.individual.PassportDetailsController.onSubmit(index: Int)
+GET        /passport                              controllers.trustee.individual.PassportDetailsController.onPageLoad()
+POST       /passport                              controllers.trustee.individual.PassportDetailsController.onSubmit()
 
-GET        /:index/has-id-card                           controllers.trustee.individual.IdCardDetailsYesNoController.onPageLoad(index: Int)
-POST       /:index/has-id-card                           controllers.trustee.individual.IdCardDetailsYesNoController.onSubmit(index: Int)
+GET        /has-id-card                           controllers.trustee.individual.IdCardDetailsYesNoController.onPageLoad()
+POST       /has-id-card                           controllers.trustee.individual.IdCardDetailsYesNoController.onSubmit()
 
-GET        /:index/id-card                               controllers.trustee.individual.IdCardDetailsController.onPageLoad(index: Int)
-POST       /:index/id-card                               controllers.trustee.individual.IdCardDetailsController.onSubmit(index: Int)
+GET        /id-card                               controllers.trustee.individual.IdCardDetailsController.onPageLoad()
+POST       /id-card                               controllers.trustee.individual.IdCardDetailsController.onSubmit()

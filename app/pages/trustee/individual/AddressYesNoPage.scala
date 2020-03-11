@@ -22,22 +22,22 @@ import play.api.libs.json.JsPath
 import pages.trustee.basePath
 import scala.util.Try
 
-case class AddressYesNoPage(index: Int) extends QuestionPage[Boolean] {
+case object AddressYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = basePath \ index \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "addressYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
       case Some(false) =>
-        userAnswers.remove(LiveInTheUkYesNoPage(index))
-          .flatMap(_.remove(UkAddressPage(index)))
-          .flatMap(_.remove(NonUkAddressPage(index)))
-          .flatMap(_.remove(PassportDetailsYesNoPage(index)))
-          .flatMap(_.remove(PassportDetailsPage(index)))
-          .flatMap(_.remove(IdCardDetailsYesNoPage(index)))
-          .flatMap(_.remove(IdCardDetailsPage(index)))
+        userAnswers.remove(LiveInTheUkYesNoPage)
+          .flatMap(_.remove(UkAddressPage))
+          .flatMap(_.remove(NonUkAddressPage))
+          .flatMap(_.remove(PassportDetailsYesNoPage))
+          .flatMap(_.remove(PassportDetailsPage))
+          .flatMap(_.remove(IdCardDetailsYesNoPage))
+          .flatMap(_.remove(IdCardDetailsPage))
       case _ =>
         super.cleanup(value, userAnswers)
     }

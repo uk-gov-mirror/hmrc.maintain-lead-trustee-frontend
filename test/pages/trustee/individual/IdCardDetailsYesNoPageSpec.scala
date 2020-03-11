@@ -23,24 +23,22 @@ import pages.behaviours.PageBehaviours
 
 class IdCardDetailsYesNoPageSpec extends PageBehaviours {
 
-  val index = 0
-
   val data: Passport = Passport("country", "number", LocalDate.of(2020, 1, 1))
 
   "IdCardDetailsYesNo page" must {
 
-    beRetrievable[Boolean](IdCardDetailsYesNoPage(0))
+    beRetrievable[Boolean](IdCardDetailsYesNoPage)
 
-    beSettable[Boolean](IdCardDetailsYesNoPage(0))
+    beSettable[Boolean](IdCardDetailsYesNoPage)
 
-    beRemovable[Boolean](IdCardDetailsYesNoPage(0))
+    beRemovable[Boolean](IdCardDetailsYesNoPage)
 
     "implement cleanup logic when NO selected" in {
       val userAnswers = emptyUserAnswers
-        .set(PassportDetailsPage(index), data)
-        .flatMap(_.set(IdCardDetailsYesNoPage(index), false))
+        .set(PassportDetailsPage, data)
+        .flatMap(_.set(IdCardDetailsYesNoPage, false))
 
-      userAnswers.get.get(IdCardDetailsPage(index)) mustNot be(defined)
+      userAnswers.get.get(IdCardDetailsPage) mustNot be(defined)
     }
   }
 }

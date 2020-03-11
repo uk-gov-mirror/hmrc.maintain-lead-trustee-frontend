@@ -18,7 +18,6 @@ package navigation.trustee
 
 import base.SpecBase
 import models.IndividualOrBusiness._
-import models._
 import navigation.Navigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.trustee._
@@ -26,29 +25,28 @@ import pages.trustee._
 class TrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks  {
 
   val navigator = new Navigator
-  val index = 0
 
   "Trustee navigator" when {
 
     "Individual or business page -> Individual -> Trustee name page" in {
       val answers = emptyUserAnswers
-        .set(IndividualOrBusinessPage(index), Individual).success.value
+        .set(IndividualOrBusinessPage, Individual).success.value
 
-      navigator.nextPage(IndividualOrBusinessPage(index), answers)
-        .mustBe(controllers.trustee.individual.routes.NameController.onPageLoad(index))
+      navigator.nextPage(IndividualOrBusinessPage, answers)
+        .mustBe(controllers.trustee.individual.routes.NameController.onPageLoad())
     }
 
     "Individual or business page -> Business -> Business name page" in {
       val answers = emptyUserAnswers
-        .set(IndividualOrBusinessPage(index), Business).success.value
+        .set(IndividualOrBusinessPage, Business).success.value
 
-      navigator.nextPage(IndividualOrBusinessPage(index), answers)
-        .mustBe(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(index))
+      navigator.nextPage(IndividualOrBusinessPage, answers)
+        .mustBe(controllers.trustee.organisation.routes.NameController.onPageLoad())
     }
 
     "When added page -> Check your answers page" in {
-      navigator.nextPage(WhenAddedPage(index), emptyUserAnswers)
-        .mustBe(controllers.trustee.routes.CheckDetailsController.onPageLoad(index))
+      navigator.nextPage(WhenAddedPage, emptyUserAnswers)
+        .mustBe(controllers.trustee.routes.CheckDetailsController.onPageLoad())
     }
   }
 }

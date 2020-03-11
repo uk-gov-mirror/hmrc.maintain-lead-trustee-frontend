@@ -18,7 +18,6 @@ package views.trustee.individual
 
 import java.time.LocalDate
 
-import controllers.trustee.individual.routes
 import forms.DateOfBirthFormProvider
 import models.Name
 import play.api.data.Form
@@ -29,7 +28,6 @@ import views.html.trustee.individual.DateOfBirthView
 class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   val messageKeyPrefix = "trustee.individual.dateOfBirth"
-  val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
   override val form: Form[LocalDate] = new DateOfBirthFormProvider().withPrefix(messageKeyPrefix)
@@ -40,7 +38,7 @@ class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, name.displayName)(fakeRequest, messages)
+      view.apply(form, name.displayName)(fakeRequest, messages)
     
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 

@@ -123,7 +123,7 @@ class AddATrusteeController @Inject()(
           },
           {
             case AddATrustee.YesNow =>
-              Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(0))
+              Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad())
             case AddATrustee.YesLater =>
               returnToStart(request.user.affinityGroup)
             case AddATrustee.NoComplete =>

@@ -22,15 +22,15 @@ import play.api.libs.json.JsPath
 import pages.trustee.basePath
 import scala.util.Try
 
-case class IdCardDetailsYesNoPage(index: Int) extends QuestionPage[Boolean] {
+case object IdCardDetailsYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = basePath \ index \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "idCardDetailsYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
     case Some(false) =>
-      userAnswers.remove(IdCardDetailsPage(index))
+      userAnswers.remove(IdCardDetailsPage)
     case _ =>
       super.cleanup(value, userAnswers)
   }

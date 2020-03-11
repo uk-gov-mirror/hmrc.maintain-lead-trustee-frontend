@@ -41,13 +41,12 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
   private def form = formProvider.withPrefix("trustee.individual.idCardDetailsYesNo")
 
   def onwardRoute: Call = Call("GET", "/foo")
-  val index = 0
   val name: Name = Name("FirstName", None, "LastName")
 
   override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage(index), name).success.value
+    .set(NamePage, name).success.value
 
-  val idCardDetailsYesNoRoute: String = routes.IdCardDetailsYesNoController.onPageLoad(index).url
+  val idCardDetailsYesNoRoute: String = routes.IdCardDetailsYesNoController.onPageLoad().url
 
   val getRequest = FakeRequest(GET, idCardDetailsYesNoRoute)
 
@@ -64,7 +63,7 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, name.displayName)(fakeRequest, messages).toString
+        view(form, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -72,8 +71,8 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage(index), name).success.value
-        .set(IdCardDetailsYesNoPage(index), true).success.value
+        .set(NamePage, name).success.value
+        .set(IdCardDetailsYesNoPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -84,7 +83,7 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), index, name.displayName)(fakeRequest, messages).toString
+        view(form.fill(true), name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -132,7 +131,7 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }

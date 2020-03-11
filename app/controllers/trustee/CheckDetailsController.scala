@@ -16,24 +16,22 @@
 
 package controllers.trustee
 
-import java.time.LocalDateTime
-
 import config.FrontendAppConfig
 import connectors.TrustConnector
 import controllers.actions._
-import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
+import controllers.trustee.actions.NameRequiredAction
 import javax.inject.Inject
 import models.IndividualOrBusiness._
-import models.{TrusteeIndividual, UserAnswers}
+import models.{Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
 import navigation.Navigator
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrusteeBuilder
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.print.checkYourAnswers.TrusteeIndividualPrintHelper
+import utils.print.checkYourAnswers.{TrusteeIndividualPrintHelper, TrusteeOrganisationPrintHelper}
 import viewmodels.AnswerSection
 import views.html.trustee.CheckDetailsView
 
@@ -46,39 +44,55 @@ class CheckDetailsController @Inject()(
                                         standardActionSets: StandardActionSets,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
-                                        nameAction: TrusteeNameRequiredProvider,
-                                        helper: TrusteeIndividualPrintHelper,
+                                        nameAction: NameRequiredAction,
+                                        indHelper: TrusteeIndividualPrintHelper,
+                                        orgHelper: TrusteeOrganisationPrintHelper,
                                         trusteeBuilder: TrusteeBuilder,
                                         trustConnector: TrustConnector,
                                         val appConfig: FrontendAppConfig,
                                         playbackRepository: PlaybackRepository
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
 
-      val section: AnswerSection = request.userAnswers.get(IndividualOrBusinessPage(index)) match {
+      val section: AnswerSection = request.userAnswers.get(IndividualOrBusinessPage) match {
         case Some(Individual) =>
-          helper(request.userAnswers, request.trusteeName, index)
+          indHelper(request.userAnswers, request.trusteeName)
+        case Some(Business) =>
+          orgHelper(request.userAnswers, request.trusteeName)
         case _ => AnswerSection(None, Seq())
       }
-      Ok(view(section, index))
+      Ok(view(section))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
-      request.userAnswers.get(WhenAddedPage(index)).fold {
-        Future.successful(Redirect(routes.WhenAddedController.onPageLoad(index)))
+      request.userAnswers.get(WhenAddedPage).fold {
+        Future.successful(Redirect(routes.WhenAddedController.onPageLoad()))
       } {
         date =>
-          val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date, index)
-          for {
-            updatedUserAnswers <- Future.fromTry(request.userAnswers.deleteAtPath(pages.trustee.basePath))
-            _ <- sessionRepository.set(updatedUserAnswers)
-            _ <- trustConnector.addTrusteeIndividual(request.userAnswers.utr, trusteeInd)
-          } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+          request.userAnswers.get(IndividualOrBusinessPage) match {
+              
+            case Some(Individual) =>
+              val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date)
+              addTrustee(request.userAnswers, trusteeInd)
 
+            case Some(Business) =>
+              val trusteeOrg: TrusteeOrganisation = trusteeBuilder.createTrusteeOrganisation(request.userAnswers, date)
+              addTrustee(request.userAnswers, trusteeOrg)
+
+            case None => Future.successful(InternalServerError)
+          }
       }
+  }
+
+  private def addTrustee(userAnswers: UserAnswers, t: Trustee)(implicit hc: HeaderCarrier) = {
+    for {
+      _ <- trustConnector.addTrustee(userAnswers.utr, t)
+      updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.trustee.basePath))
+      _ <- sessionRepository.set(updatedUserAnswers)
+    } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
   }
 }

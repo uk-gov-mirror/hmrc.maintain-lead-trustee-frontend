@@ -27,7 +27,6 @@ import views.html.trustee.individual.UkAddressView
 class UkAddressViewSpec extends UkAddressViewBehaviours {
 
   val messageKeyPrefix = "trustee.individual.ukAddress"
-  val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
   override val form: Form[UkAddress] = new UkAddressFormProvider().apply()
@@ -37,7 +36,7 @@ class UkAddressViewSpec extends UkAddressViewBehaviours {
     val view = viewFor[UkAddressView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, name.displayName)(fakeRequest, messages)
+      view.apply(form, name.displayName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
@@ -46,7 +45,7 @@ class UkAddressViewSpec extends UkAddressViewBehaviours {
     behave like ukAddressPage(
       applyView,
       Some(messageKeyPrefix),
-      routes.UkAddressController.onSubmit(index).url,
+      routes.UkAddressController.onSubmit().url,
       name.displayName
     )
 

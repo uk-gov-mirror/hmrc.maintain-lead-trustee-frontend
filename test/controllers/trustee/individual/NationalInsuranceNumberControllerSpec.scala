@@ -18,7 +18,7 @@ package controllers.trustee.individual
 
 import base.SpecBase
 import forms.NationalInsuranceNumberFormProvider
-import models.{Name, NormalMode}
+import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -39,17 +39,16 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new NationalInsuranceNumberFormProvider()
   val form = formProvider.withPrefix("trustee.individual.nationalInsuranceNumber")
-  val index = 0
 
   val trusteeName = Name("FirstName", None, "LastName")
 
-  lazy val nationalInsuranceNumberRoute = routes.NationalInsuranceNumberController.onPageLoad(index).url
+  lazy val nationalInsuranceNumberRoute = routes.NationalInsuranceNumberController.onPageLoad().url
 
   "NationalInsuranceNumber Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val userAnswers = emptyUserAnswers.set(NamePage(index), trusteeName).success.value
+      val userAnswers = emptyUserAnswers.set(NamePage, trusteeName).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -62,7 +61,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, trusteeName.displayName)(fakeRequest, messages).toString
+        view(form, trusteeName.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -70,8 +69,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage(index), trusteeName).success.value
-        .set(NationalInsuranceNumberPage(index), "answer").success.value
+        .set(NamePage, trusteeName).success.value
+        .set(NationalInsuranceNumberPage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -84,7 +83,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), index, trusteeName.displayName)(fakeRequest, messages).toString
+        view(form.fill("answer"), trusteeName.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -116,7 +115,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.set(NamePage(index), trusteeName).success.value
+      val userAnswers = emptyUserAnswers.set(NamePage, trusteeName).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -133,7 +132,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, trusteeName.displayName)(fakeRequest, messages).toString
+        view(boundForm, trusteeName.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }

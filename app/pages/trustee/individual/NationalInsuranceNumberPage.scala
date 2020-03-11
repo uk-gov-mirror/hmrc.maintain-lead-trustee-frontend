@@ -20,9 +20,9 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import pages.trustee.basePath
 
-case class NationalInsuranceNumberPage(index:Int) extends QuestionPage[String] {
+case object NationalInsuranceNumberPage extends QuestionPage[String] {
 
-  override def path: JsPath = basePath \ index \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "nationalInsuranceNumber"
 }

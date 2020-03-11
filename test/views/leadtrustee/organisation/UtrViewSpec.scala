@@ -26,7 +26,6 @@ import views.html.leadtrustee.organisation.UtrView
 class UtrViewSpec extends StringViewBehaviours {
 
   val messageKeyPrefix = "leadtrustee.organisation.utr"
-  val index = 0
   val name = "Business Name"
 
   val form = new UtrFormProvider().withPrefix(messageKeyPrefix)

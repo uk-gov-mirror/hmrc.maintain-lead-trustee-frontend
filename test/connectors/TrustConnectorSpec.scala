@@ -108,7 +108,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
           .willReturn(ok)
       )
 
-      val result = connector.addTrusteeIndividual("UTRUTRUTR", arbitraryTrusteeIndividual.arbitrary.sample.get)
+      val result = connector.addTrustee("UTRUTRUTR", arbitraryTrusteeIndividual.arbitrary.sample.get)
       result.futureValue.status mustBe (OK)
 
       application.stop()
@@ -130,7 +130,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
           .willReturn(badRequest)
       )
 
-      val result = connector.addTrusteeIndividual("UTRUTRUTR", arbitraryTrusteeIndividual.arbitrary.sample.get)
+      val result = connector.addTrustee("UTRUTRUTR", arbitraryTrusteeIndividual.arbitrary.sample.get)
 
       result.map(response => response.status mustBe BAD_REQUEST)
 

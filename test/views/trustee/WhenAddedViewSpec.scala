@@ -28,7 +28,6 @@ import views.html.trustee.WhenAddedView
 class WhenAddedViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   val messageKeyPrefix = "trustee.whenAdded"
-  val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
   override val form: Form[LocalDate] = new DateAddedToTrustFormProvider().withPrefixAndTrustStartDate(messageKeyPrefix, LocalDate.now())
@@ -38,7 +37,7 @@ class WhenAddedViewSpec extends QuestionViewBehaviours[LocalDate] {
     val view = viewFor[WhenAddedView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, name.displayName)(fakeRequest, messages)
+      view.apply(form, name.displayName)(fakeRequest, messages)
     
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 

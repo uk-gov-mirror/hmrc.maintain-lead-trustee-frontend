@@ -17,7 +17,7 @@
 package controllers.trustee.individual
 
 import controllers.actions.StandardActionSets
-import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
+import controllers.trustee.actions.NameRequiredAction
 import forms.YesNoFormProvider
 import javax.inject.Inject
 import navigation.Navigator
@@ -35,7 +35,7 @@ class AddressYesNoController @Inject()(
                                             sessionRepository: PlaybackRepository,
                                             navigator: Navigator,
                                             standardActionSets: StandardActionSets,
-                                            nameAction: TrusteeNameRequiredProvider,
+                                            nameAction: NameRequiredAction,
                                             formProvider: YesNoFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: AddressYesNoView
@@ -43,29 +43,29 @@ class AddressYesNoController @Inject()(
 
   val form = formProvider.withPrefix("trustee.individual.addressYesNo")
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(AddressYesNoPage(index)) match {
+      val preparedForm = request.userAnswers.get(AddressYesNoPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index, request.trusteeName))
+      Ok(view(preparedForm, request.trusteeName))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, index, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddressYesNoPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddressYesNoPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddressYesNoPage(index), updatedAnswers))
+          } yield Redirect(navigator.nextPage(AddressYesNoPage, updatedAnswers))
       )
   }
 }

@@ -17,7 +17,7 @@
 package controllers.trustee
 
 import controllers.actions.StandardActionSets
-import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
+import controllers.trustee.actions.NameRequiredAction
 import forms.DateAddedToTrustFormProvider
 import javax.inject.Inject
 import navigation.Navigator
@@ -35,39 +35,39 @@ class WhenAddedController @Inject()(
                                      sessionRepository: PlaybackRepository,
                                      navigator: Navigator,
                                      standardActionSets: StandardActionSets,
-                                     nameAction: TrusteeNameRequiredProvider,
+                                     nameAction: NameRequiredAction,
                                      formProvider: DateAddedToTrustFormProvider,
                                      val controllerComponents: MessagesControllerComponents,
                                      view: WhenAddedView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val form = formProvider.withPrefixAndTrustStartDate("trustee.whenAdded", request.userAnswers.whenTrustSetup)
 
-      val preparedForm = request.userAnswers.get(WhenAddedPage(index)) match {
+      val preparedForm = request.userAnswers.get(WhenAddedPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index, request.trusteeName))
+      Ok(view(preparedForm, request.trusteeName))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       val form = formProvider.withPrefixAndTrustStartDate("trustee.whenAdded", request.userAnswers.whenTrustSetup)
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, index, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhenAddedPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhenAddedPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(WhenAddedPage(index), updatedAnswers))
+          } yield Redirect(navigator.nextPage(WhenAddedPage, updatedAnswers))
       )
   }
 }

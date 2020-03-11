@@ -21,9 +21,9 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import pages.trustee.basePath
 
-case class IdCardDetailsPage(index: Int) extends QuestionPage[IdCard] {
+case object IdCardDetailsPage extends QuestionPage[IdCard] {
 
-  override def path: JsPath = basePath \ index \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "idCardDetails"
 
