@@ -30,7 +30,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrusteeBuilder
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.print.checkYourAnswers.TrusteeIndividualPrintHelper
+import utils.print.checkYourAnswers.{TrusteeIndividualPrintHelper, TrusteeOrganisationPrintHelper}
 import viewmodels.AnswerSection
 import views.html.trustee.CheckDetailsView
 
@@ -44,7 +44,8 @@ class CheckDetailsController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
                                         nameAction: NameRequiredAction,
-                                        helper: TrusteeIndividualPrintHelper,
+                                        indHelper: TrusteeIndividualPrintHelper,
+                                        orgHelper: TrusteeOrganisationPrintHelper,
                                         trusteeBuilder: TrusteeBuilder,
                                         trustConnector: TrustConnector,
                                         val appConfig: FrontendAppConfig,
@@ -57,7 +58,9 @@ class CheckDetailsController @Inject()(
 
       val section: AnswerSection = request.userAnswers.get(IndividualOrBusinessPage) match {
         case Some(Individual) =>
-          helper(request.userAnswers, request.trusteeName)
+          indHelper(request.userAnswers, request.trusteeName)
+        case Some(Business) =>
+          orgHelper(request.userAnswers, request.trusteeName)
         case _ => AnswerSection(None, Seq())
       }
       Ok(view(section))

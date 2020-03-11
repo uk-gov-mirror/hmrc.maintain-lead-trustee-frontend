@@ -25,12 +25,18 @@ import play.api.mvc.Call
 object OrganisationTrusteeNavigator {
   private val simpleNavigation: PartialFunction[Page, Call] = {
     case NamePage => rts.UtrYesNoController.onPageLoad()
-    case UtrPage => rts.UtrController.onPageLoad
+    case UtrPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
+    case UkAddressPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
+    case NonUkAddressPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
   }
 
   private val yesNoNavigation : PartialFunction[Page, UserAnswers => Call] = {
     case UtrYesNoPage => ua =>
-      yesNoNav(ua, UtrYesNoPage, rts.UtrController.onPageLoad(), rts.UtrYesNoController.onPageLoad())
+      yesNoNav(ua, UtrYesNoPage, rts.UtrController.onPageLoad(), rts.AddressYesNoController.onPageLoad())
+    case AddressYesNoPage => ua =>
+      yesNoNav(ua, AddressYesNoPage, rts.AddressInTheUkYesNoController.onPageLoad(), controllers.trustee.routes.WhenAddedController.onPageLoad())
+    case AddressUkYesNoPage => ua =>
+      yesNoNav(ua, AddressUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
   }
 
   val routes: PartialFunction[Page, UserAnswers => Call] =
