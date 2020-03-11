@@ -34,7 +34,7 @@ class TrusteeBuilder {
         TrustIdentification(
           None,
           userAnswers.get(ind.NationalInsuranceNumberPage),
-          userAnswers.get(ind.PassportDetailsPage),
+          userAnswers.get(ind.PassportDetailsPage).orElse(userAnswers.get(ind.IdCardDetailsPage)),
           buildIndAddress(userAnswers)
         )
       ),
