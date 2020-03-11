@@ -21,9 +21,9 @@ import pages.trustee.basePath
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case class DateOfBirthPage(index: Int) extends QuestionPage[LocalDate] {
+case object DateOfBirthPage extends QuestionPage[LocalDate] {
 
-  override def path: JsPath = basePath \ index \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "dateOfBirth"
 }

@@ -16,8 +16,7 @@
 
 package controllers.leadtrustee.actions
 
-import controllers.actions
-import controllers.actions.LeadTrusteeNameRequest
+import controllers.{actions, leadtrustee}
 import javax.inject.Inject
 import models.requests.DataRequest
 import pages.leadtrustee._
@@ -30,7 +29,7 @@ class NameRequiredAction @Inject()(val executionContext: ExecutionContext, val m
   extends ActionTransformer[DataRequest, LeadTrusteeNameRequest] with I18nSupport {
 
   override protected def transform[A](request: DataRequest[A]): Future[LeadTrusteeNameRequest[A]] = {
-    Future.successful(actions.LeadTrusteeNameRequest[A](request,
+    Future.successful(leadtrustee.actions.LeadTrusteeNameRequest[A](request,
       getName(request)
     ))
   }

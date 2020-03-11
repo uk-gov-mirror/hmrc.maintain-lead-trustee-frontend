@@ -3,7 +3,8 @@
 ->         /lead-trustee/individual         leadtrustee.individual.Routes
 ->         /lead-trustee/organisation       leadtrustee.organisation.Routes
 
-->         /trustee/individual          trustee.individual.Routes
+->         /trustee/individual              trustee.individual.Routes
+->         /trustee/organisation            trustee.organisation.Routes
 
 GET        /assets/*file                                                    controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -40,14 +41,14 @@ GET        /lead-trustee/details/organisation-updated                       cont
 POST       /lead-trustee/details/individual-updated                         controllers.leadtrustee.CheckDetailsController.onSubmitIndividual()
 POST       /lead-trustee/details/organisation-updated                       controllers.leadtrustee.CheckDetailsController.onSubmitOrganisation()
 
-GET        /trustee/:index/individual-or-business                           controllers.trustee.IndividualOrBusinessController.onPageLoad(index: Int)
-POST       /trustee/:index/individual-or-business                           controllers.trustee.IndividualOrBusinessController.onSubmit(index: Int)
+GET        /trustee/individual-or-business                                  controllers.trustee.IndividualOrBusinessController.onPageLoad()
+POST       /trustee/individual-or-business                                  controllers.trustee.IndividualOrBusinessController.onSubmit()
 
-GET        /trustee/:index/when-was-trustee-added                           controllers.trustee.WhenAddedController.onPageLoad(index: Int)
-POST       /trustee/:index/when-was-trustee-added                           controllers.trustee.WhenAddedController.onSubmit(index: Int)
+GET        /trustee/when-was-trustee-added                                  controllers.trustee.WhenAddedController.onPageLoad()
+POST       /trustee/when-was-trustee-added                                  controllers.trustee.WhenAddedController.onSubmit()
 
-GET        /trustee/:index/check-details                                    controllers.trustee.CheckDetailsController.onPageLoad(index: Int)
-POST       /trustee/:index/check-details                                    controllers.trustee.CheckDetailsController.onSubmit(index: Int)
+GET        /trustee/check-details                                           controllers.trustee.CheckDetailsController.onPageLoad()
+POST       /trustee/check-details                                           controllers.trustee.CheckDetailsController.onSubmit()
 
 GET        /trustee/:index/when-was-trustee-removed                         controllers.trustee.WhenRemovedController.onPageLoad(index: Int)
 POST       /trustee/:index/when-was-trustee-removed                         controllers.trustee.WhenRemovedController.onSubmit(index: Int)

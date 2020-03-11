@@ -26,27 +26,27 @@ class TrusteeBuilder {
 
   import mapping.PlaybackImplicits._
 
-  def createTrusteeIndividual(userAnswers: UserAnswers, date: LocalDate, index: Int) = {
+  def createTrusteeIndividual(userAnswers: UserAnswers, date: LocalDate) = {
     TrusteeIndividual(
-      userAnswers.get(NamePage(index)).get,
-      userAnswers.get(DateOfBirthPage(index)),
+      userAnswers.get(NamePage).get,
+      userAnswers.get(DateOfBirthPage),
       None,
       Some(
         TrustIdentification(
           None,
-          userAnswers.get(NationalInsuranceNumberPage(index)),
-          userAnswers.get(PassportDetailsPage(index)),
-          buildAddress(userAnswers, index)
+          userAnswers.get(NationalInsuranceNumberPage),
+          userAnswers.get(PassportDetailsPage),
+          buildAddress(userAnswers)
         )
       ), date,
       provisional = true
     )
   }
 
-  private def buildAddress(userAnswers: UserAnswers, index: Int): Option[AddressType] = {
+  private def buildAddress(userAnswers: UserAnswers): Option[AddressType] = {
 
-    val uk: Option[UkAddress] = userAnswers.get(UkAddressPage(index))
-    val nonUk: Option[NonUkAddress] = userAnswers.get(NonUkAddressPage(index))
+    val uk: Option[UkAddress] = userAnswers.get(UkAddressPage)
+    val nonUk: Option[NonUkAddress] = userAnswers.get(NonUkAddressPage)
     (uk, nonUk) match {
       case (Some(ukAddress), None) => Some(ukAddress.convert)
       case (None, Some(nonUkAddress)) => Some(nonUkAddress.convert)

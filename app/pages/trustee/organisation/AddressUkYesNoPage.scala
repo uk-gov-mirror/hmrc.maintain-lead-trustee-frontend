@@ -14,12 +14,29 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package pages.trustee.organisation
 
 import models.UserAnswers
-import models.requests.DataRequest
-import play.api.mvc.WrappedRequest
+import pages.QuestionPage
+import pages.trustee.basePath
+import play.api.libs.json.JsPath
 
-case class LeadTrusteeNameRequest[T](request: DataRequest[T], leadTrusteeName: String) extends WrappedRequest[T](request){
-  val userAnswers:UserAnswers = request.userAnswers
+import scala.util.Try
+
+case object AddressUkYesNoPage extends QuestionPage[Boolean] {
+
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "addressUkYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(true) =>
+        userAnswers.remove(NonUkAddressPage)
+      case Some(false) =>
+        userAnswers.remove(UkAddressPage)
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
+  }
 }

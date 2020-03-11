@@ -21,9 +21,9 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import pages.trustee.basePath
 
-case class NonUkAddressPage(index:Int) extends QuestionPage[NonUkAddress] {
+case object NonUkAddressPage extends QuestionPage[NonUkAddress] {
 
-  override def path: JsPath = basePath \ index \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "nonUkAddress"
 }

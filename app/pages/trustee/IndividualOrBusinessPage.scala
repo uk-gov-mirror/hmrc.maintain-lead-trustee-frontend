@@ -19,35 +19,42 @@ package pages.trustee
 import models.IndividualOrBusiness._
 import models.{IndividualOrBusiness, UserAnswers}
 import pages.QuestionPage
-import pages.trustee.individual._
+import pages.trustee.{individual => ind, organisation => org}
 import play.api.libs.json.JsPath
 import scala.util.Try
 
-case class IndividualOrBusinessPage(index: Int) extends QuestionPage[IndividualOrBusiness] {
+case object IndividualOrBusinessPage extends QuestionPage[IndividualOrBusiness] {
 
-  override def path: JsPath = basePath \ index \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "individualOrBusiness"
 
   private def removeIndividualData(userAnswers: UserAnswers): Try[UserAnswers] = {
-    userAnswers.remove(NamePage(index))
-      .flatMap(_.remove(DateOfBirthYesNoPage(index)))
-      .flatMap(_.remove(DateOfBirthPage(index)))
-      .flatMap(_.remove(NationalInsuranceNumberYesNoPage(index)))
-      .flatMap(_.remove(NationalInsuranceNumberPage(index)))
-      .flatMap(_.remove(AddressYesNoPage(index)))
-      .flatMap(_.remove(LiveInTheUkYesNoPage(index)))
-      .flatMap(_.remove(UkAddressPage(index)))
-      .flatMap(_.remove(NonUkAddressPage(index)))
-      .flatMap(_.remove(PassportDetailsYesNoPage(index)))
-      .flatMap(_.remove(PassportDetailsPage(index)))
-      .flatMap(_.remove(IdCardDetailsYesNoPage(index)))
-      .flatMap(_.remove(IdCardDetailsPage(index)))
-      .flatMap(_.remove(WhenAddedPage(index)))
+    userAnswers.remove(ind.NamePage)
+      .flatMap(_.remove(ind.DateOfBirthYesNoPage))
+      .flatMap(_.remove(ind.DateOfBirthPage))
+      .flatMap(_.remove(ind.NationalInsuranceNumberYesNoPage))
+      .flatMap(_.remove(ind.NationalInsuranceNumberPage))
+      .flatMap(_.remove(ind.AddressYesNoPage))
+      .flatMap(_.remove(ind.LiveInTheUkYesNoPage))
+      .flatMap(_.remove(ind.UkAddressPage))
+      .flatMap(_.remove(ind.NonUkAddressPage))
+      .flatMap(_.remove(ind.PassportDetailsYesNoPage))
+      .flatMap(_.remove(ind.PassportDetailsPage))
+      .flatMap(_.remove(ind.IdCardDetailsYesNoPage))
+      .flatMap(_.remove(ind.IdCardDetailsPage))
+      .flatMap(_.remove(WhenAddedPage))
   }
 
   private def removeOrganisationData(userAnswers: UserAnswers): Try[UserAnswers] = {
-    userAnswers.remove(WhenAddedPage(index))
+    userAnswers.remove(org.NamePage)
+      .flatMap(_.remove(org.UtrYesNoPage))
+      .flatMap(_.remove(org.UtrPage))
+      .flatMap(_.remove(org.AddressYesNoPage))
+      .flatMap(_.remove(org.AddressUkYesNoPage))
+      .flatMap(_.remove(org.UkAddressPage))
+      .flatMap(_.remove(org.NonUkAddressPage))
+      .flatMap(_.remove(WhenAddedPage))
   }
 
   override def cleanup(value: Option[IndividualOrBusiness], userAnswers: UserAnswers): Try[UserAnswers] = {

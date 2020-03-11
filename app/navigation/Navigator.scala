@@ -44,7 +44,7 @@ class Navigator @Inject()() {
   private def trusteeTypeNavigation()(userAnswers: UserAnswers): Call = {
     userAnswers.get(TrusteeTypePage).map {
       case LeadTrustee => controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad()
-      case Trustee => controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(0)
+      case Trustee => controllers.trustee.routes.IndividualOrBusinessController.onPageLoad()
     }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
 

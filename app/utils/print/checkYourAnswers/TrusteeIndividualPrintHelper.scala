@@ -29,27 +29,27 @@ class TrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowConver
                                              countryOptions: CountryOptions
                                  ) {
 
-  def apply(userAnswers: UserAnswers, trusteeName: String, index: Int)(implicit messages: Messages) = {
+  def apply(userAnswers: UserAnswers, trusteeName: String)(implicit messages: Messages) = {
 
     val bound = answerRowConverter.bind(userAnswers, trusteeName, countryOptions)
 
     AnswerSection(
       None,
       Seq(
-        bound.nameQuestion(NamePage(index), "trustee.individual.name", controllers.trustee.individual.routes.NameController.onPageLoad(index).url),
-        bound.yesNoQuestion(DateOfBirthYesNoPage(index), "trustee.individual.dateOfBirthYesNo", controllers.trustee.individual.routes.DateOfBirthYesNoController.onPageLoad(index).url),
-        bound.dateQuestion(DateOfBirthPage(index), "trustee.individual.dateOfBirth", controllers.trustee.individual.routes.DateOfBirthController.onPageLoad(index).url),
-        bound.yesNoQuestion(NationalInsuranceNumberYesNoPage(index), "trustee.individual.nationalInsuranceNumberYesNo", controllers.trustee.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad(index).url),
-        bound.ninoQuestion(NationalInsuranceNumberPage(index), "trustee.individual.nationalInsuranceNumber", controllers.trustee.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad(index).url),
-        bound.yesNoQuestion(AddressYesNoPage(index), "trustee.individual.addressYesNo", controllers.trustee.individual.routes.AddressYesNoController.onPageLoad(index).url),
-        bound.yesNoQuestion(LiveInTheUkYesNoPage(index), "trustee.individual.liveInTheUkYesNo", controllers.trustee.individual.routes.LiveInTheUkYesNoController.onPageLoad(index).url),
-        bound.addressQuestion(UkAddressPage(index), "trustee.individual.ukAddress", controllers.trustee.individual.routes.UkAddressController.onPageLoad(index).url),
-        bound.addressQuestion(NonUkAddressPage(index), "trustee.individual.nonUkAddress", controllers.trustee.individual.routes.NonUkAddressController.onPageLoad(index).url),
-        bound.yesNoQuestion(PassportDetailsYesNoPage(index), "trustee.individual.passportDetailsYesNo", controllers.trustee.individual.routes.PassportDetailsYesNoController.onPageLoad(index).url),
-        bound.passportDetailsQuestion(PassportDetailsPage(index), "trustee.individual.passportDetails", controllers.trustee.individual.routes.PassportDetailsController.onPageLoad(index).url),
-        bound.yesNoQuestion(IdCardDetailsYesNoPage(index), "trustee.individual.idCardDetailsYesNo", controllers.trustee.individual.routes.IdCardDetailsYesNoController.onPageLoad(index).url),
-        bound.idCardDetailsQuestion(IdCardDetailsPage(index), "trustee.individual.idCardDetails", controllers.trustee.individual.routes.IdCardDetailsController.onPageLoad(index).url),
-        bound.dateQuestion(WhenAddedPage(index), "trustee.whenAdded", controllers.trustee.routes.WhenAddedController.onPageLoad(index).url)
+        bound.nameQuestion(NamePage, "trustee.individual.name", controllers.trustee.individual.routes.NameController.onPageLoad().url),
+        bound.yesNoQuestion(DateOfBirthYesNoPage, "trustee.individual.dateOfBirthYesNo", controllers.trustee.individual.routes.DateOfBirthYesNoController.onPageLoad().url),
+        bound.dateQuestion(DateOfBirthPage, "trustee.individual.dateOfBirth", controllers.trustee.individual.routes.DateOfBirthController.onPageLoad().url),
+        bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "trustee.individual.nationalInsuranceNumberYesNo", controllers.trustee.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad().url),
+        bound.ninoQuestion(NationalInsuranceNumberPage, "trustee.individual.nationalInsuranceNumber", controllers.trustee.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad().url),
+        bound.yesNoQuestion(AddressYesNoPage, "trustee.individual.addressYesNo", controllers.trustee.individual.routes.AddressYesNoController.onPageLoad().url),
+        bound.yesNoQuestion(LiveInTheUkYesNoPage, "trustee.individual.liveInTheUkYesNo", controllers.trustee.individual.routes.LiveInTheUkYesNoController.onPageLoad().url),
+        bound.addressQuestion(UkAddressPage, "trustee.individual.ukAddress", controllers.trustee.individual.routes.UkAddressController.onPageLoad().url),
+        bound.addressQuestion(NonUkAddressPage, "trustee.individual.nonUkAddress", controllers.trustee.individual.routes.NonUkAddressController.onPageLoad().url),
+        bound.yesNoQuestion(PassportDetailsYesNoPage, "trustee.individual.passportDetailsYesNo", controllers.trustee.individual.routes.PassportDetailsYesNoController.onPageLoad().url),
+        bound.passportDetailsQuestion(PassportDetailsPage, "trustee.individual.passportDetails", controllers.trustee.individual.routes.PassportDetailsController.onPageLoad().url),
+        bound.yesNoQuestion(IdCardDetailsYesNoPage, "trustee.individual.idCardDetailsYesNo", controllers.trustee.individual.routes.IdCardDetailsYesNoController.onPageLoad().url),
+        bound.idCardDetailsQuestion(IdCardDetailsPage, "trustee.individual.idCardDetails", controllers.trustee.individual.routes.IdCardDetailsController.onPageLoad().url),
+        bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", controllers.trustee.routes.WhenAddedController.onPageLoad().url)
       ).flatten
     )
   }

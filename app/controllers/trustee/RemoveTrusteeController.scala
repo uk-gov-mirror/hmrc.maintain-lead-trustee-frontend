@@ -16,16 +16,13 @@
 
 package controllers.trustee
 
-import java.time.LocalDate
-
 import controllers.actions.StandardActionSets
-import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
 import forms.RemoveIndexFormProvider
 import javax.inject.Inject
 import models.{RemoveTrustee, TrusteeIndividual, TrusteeOrganisation}
 import navigation.Navigator
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrustService
@@ -40,7 +37,6 @@ class RemoveTrusteeController @Inject()(
                                          navigator: Navigator,
                                          standardActionSets: StandardActionSets,
                                          trust: TrustService,
-                                         nameAction: TrusteeNameRequiredProvider,
                                          formProvider: RemoveIndexFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: RemoveIndexView

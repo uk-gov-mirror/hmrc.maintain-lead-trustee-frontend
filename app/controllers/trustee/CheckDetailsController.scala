@@ -16,19 +16,16 @@
 
 package controllers.trustee
 
-import java.time.LocalDateTime
-
 import config.FrontendAppConfig
 import connectors.TrustConnector
 import controllers.actions._
-import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
+import controllers.trustee.actions.NameRequiredAction
 import javax.inject.Inject
 import models.IndividualOrBusiness._
-import models.{TrusteeIndividual, UserAnswers}
+import models.TrusteeIndividual
 import navigation.Navigator
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrusteeBuilder
@@ -46,7 +43,7 @@ class CheckDetailsController @Inject()(
                                         standardActionSets: StandardActionSets,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
-                                        nameAction: TrusteeNameRequiredProvider,
+                                        nameAction: NameRequiredAction,
                                         helper: TrusteeIndividualPrintHelper,
                                         trusteeBuilder: TrusteeBuilder,
                                         trustConnector: TrustConnector,
@@ -54,25 +51,25 @@ class CheckDetailsController @Inject()(
                                         playbackRepository: PlaybackRepository
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
 
-      val section: AnswerSection = request.userAnswers.get(IndividualOrBusinessPage(index)) match {
+      val section: AnswerSection = request.userAnswers.get(IndividualOrBusinessPage) match {
         case Some(Individual) =>
-          helper(request.userAnswers, request.trusteeName, index)
+          helper(request.userAnswers, request.trusteeName)
         case _ => AnswerSection(None, Seq())
       }
-      Ok(view(section, index))
+      Ok(view(section))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
-      request.userAnswers.get(WhenAddedPage(index)).fold {
-        Future.successful(Redirect(routes.WhenAddedController.onPageLoad(index)))
+      request.userAnswers.get(WhenAddedPage).fold {
+        Future.successful(Redirect(routes.WhenAddedController.onPageLoad()))
       } {
         date =>
-          val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date, index)
+          val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date)
           for {
             updatedUserAnswers <- Future.fromTry(request.userAnswers.deleteAtPath(pages.trustee.basePath))
             _ <- sessionRepository.set(updatedUserAnswers)

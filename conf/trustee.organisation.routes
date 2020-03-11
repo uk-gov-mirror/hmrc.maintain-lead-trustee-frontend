@@ -1,0 +1,8 @@
+GET         /name                                   controllers.trustee.organisation.NameController.onPageLoad()
+POST        /name                                   controllers.trustee.organisation.NameController.onSubmit()
+
+GET         /utr-yes-no                             controllers.trustee.organisation.UtrYesNoController.onPageLoad()
+POST        /utr-yes-no                             controllers.trustee.organisation.UtrYesNoController.onSubmit()
+
+GET         /utr                                    controllers.trustee.organisation.UtrController.onPageLoad()
+POST        /utr                                    controllers.trustee.organisation.UtrController.onSubmit()
