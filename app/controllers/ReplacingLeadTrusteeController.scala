@@ -113,7 +113,6 @@ class ReplacingLeadTrusteeController @Inject()(
           .flatMap(_.set(ltind.NamePage, trustee.name))
           .flatMap(answers => extractDateOfBirth(trustee.dateOfBirth, answers))
           .flatMap(answers => extractIndIdentification(trustee.identification, answers))
-          .flatMap(_.set(ltind.EmailAddressYesNoPage, false))
           .flatMap(answers => extractIndTelephoneNumber(trustee.phoneNumber, answers))
       )
       _ <- playbackRepository.set(updatedAnswers)
