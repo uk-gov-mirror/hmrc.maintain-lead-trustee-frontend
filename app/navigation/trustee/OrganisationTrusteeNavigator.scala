@@ -35,8 +35,8 @@ object OrganisationTrusteeNavigator {
       yesNoNav(ua, UtrYesNoPage, rts.UtrController.onPageLoad(), rts.AddressYesNoController.onPageLoad())
     case AddressYesNoPage => ua =>
       yesNoNav(ua, AddressYesNoPage, rts.AddressInTheUkYesNoController.onPageLoad(), controllers.trustee.routes.WhenAddedController.onPageLoad())
-    case AddressUkYesNoPage => ua =>
-      yesNoNav(ua, AddressUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
+    case AddressInTheUkYesNoPage => ua =>
+      yesNoNav(ua, AddressInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
   }
 
   val routes: PartialFunction[Page, UserAnswers => Call] =

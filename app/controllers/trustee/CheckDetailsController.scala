@@ -22,13 +22,14 @@ import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import javax.inject.Inject
 import models.IndividualOrBusiness._
-import models.{TrusteeIndividual, TrusteeOrganisation}
+import models.{Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
 import navigation.Navigator
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrusteeBuilder
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.print.checkYourAnswers.{TrusteeIndividualPrintHelper, TrusteeOrganisationPrintHelper}
 import viewmodels.AnswerSection
@@ -76,22 +77,22 @@ class CheckDetailsController @Inject()(
               
             case Some(Individual) =>
               val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date)
-              for {
-                updatedUserAnswers <- Future.fromTry(request.userAnswers.deleteAtPath(pages.trustee.basePath))
-                _ <- sessionRepository.set(updatedUserAnswers)
-                _ <- trustConnector.addTrustee(request.userAnswers.utr, trusteeInd)
-              } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+              addTrustee(request.userAnswers, trusteeInd)
 
             case Some(Business) =>
               val trusteeOrg: TrusteeOrganisation = trusteeBuilder.createTrusteeOrganisation(request.userAnswers, date)
-              for {
-                updatedUserAnswers <- Future.fromTry(request.userAnswers.deleteAtPath(pages.trustee.basePath))
-                _ <- sessionRepository.set(updatedUserAnswers)
-                _ <- trustConnector.addTrustee(request.userAnswers.utr, trusteeOrg)
-              } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+              addTrustee(request.userAnswers, trusteeOrg)
 
             case None => Future.successful(InternalServerError)
           }
       }
+  }
+
+  private def addTrustee(userAnswers: UserAnswers, t: Trustee)(implicit hc: HeaderCarrier) = {
+    for {
+      _ <- trustConnector.addTrustee(userAnswers.utr, t)
+      updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.trustee.basePath))
+      _ <- sessionRepository.set(updatedUserAnswers)
+    } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
   }
 }

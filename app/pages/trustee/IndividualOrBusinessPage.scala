@@ -51,7 +51,7 @@ case object IndividualOrBusinessPage extends QuestionPage[IndividualOrBusiness] 
       .flatMap(_.remove(org.UtrYesNoPage))
       .flatMap(_.remove(org.UtrPage))
       .flatMap(_.remove(org.AddressYesNoPage))
-      .flatMap(_.remove(org.AddressUkYesNoPage))
+      .flatMap(_.remove(org.AddressInTheUkYesNoPage))
       .flatMap(_.remove(org.UkAddressPage))
       .flatMap(_.remove(org.NonUkAddressPage))
       .flatMap(_.remove(WhenAddedPage))

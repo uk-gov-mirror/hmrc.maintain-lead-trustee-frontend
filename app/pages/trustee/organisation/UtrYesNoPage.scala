@@ -33,7 +33,7 @@ case object UtrYesNoPage extends QuestionPage[Boolean] {
     value match {
       case Some(true) =>
         userAnswers.remove(AddressYesNoPage)
-          .flatMap(_.remove(AddressUkYesNoPage))
+          .flatMap(_.remove(AddressInTheUkYesNoPage))
           .flatMap(_.remove(UkAddressPage))
           .flatMap(_.remove(NonUkAddressPage))
       case Some(false) =>

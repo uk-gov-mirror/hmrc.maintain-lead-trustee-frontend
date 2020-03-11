@@ -14,81 +14,66 @@
  * limitations under the License.
  */
 
-package controllers.trustee.individual
-
-import java.time.LocalDate
+package controllers.trustee.organisation
 
 import base.SpecBase
-import forms.NonUkAddressFormProvider
-import models.{Name, NonUkAddress, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import forms.BusinessNameFormProvider
+import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.trustee.individual.{NamePage, NonUkAddressPage}
+import pages.trustee.organisation.NamePage
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import utils.InputOption
-import utils.countryOptions.CountryOptionsNonUK
-import views.html.trustee.individual.NonUkAddressView
+import views.html.trustee.organisation.NameView
 
 import scala.concurrent.Future
 
-class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
+class NameControllerSpec extends SpecBase with MockitoSugar {
 
-  val form = new NonUkAddressFormProvider().apply()
+  val form = new BusinessNameFormProvider().withPrefix("trustee")
 
-  def onwardRoute = Call("GET", "/foo")
-  val name: Name = Name("FirstName", None, "LastName")
+  lazy val nameRoute = routes.NameController.onPageLoad().url
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage, name).success.value
-
-  val nonUkAddressRoute: String = routes.NonUkAddressController.onPageLoad().url
-
-  val getRequest = FakeRequest(GET, nonUkAddressRoute)
-
-  val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
-
-  val validData: NonUkAddress = NonUkAddress("line1", "line2", None, "country")
-
-  "NonUkAddress Controller" must {
+  "Name Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val result = route(application, getRequest).value
+      val request = FakeRequest(GET, nameRoute)
 
-      val view = application.injector.instanceOf[NonUkAddressView]
+      val view = application.injector.instanceOf[NameView]
+
+      val result = route(application, request).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, name.displayName)(fakeRequest, messages).toString
+        view(form)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers
-        .set(NonUkAddressPage, validData).success.value
-        .set(NamePage, name).success.value
+      val answers = emptyUserAnswers
+        .set(NamePage, "My Trust").success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
 
-      val view = application.injector.instanceOf[NonUkAddressView]
+      val request = FakeRequest(GET, nameRoute)
 
-      val result = route(application, getRequest).value
+      val view = application.injector.instanceOf[NameView]
+
+      val result = route(application, request).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validData), countryOptions, name.displayName)(fakeRequest, messages).toString
+        view(form.fill("My Trust"))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -102,19 +87,19 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
+            bind[Navigator].toInstance(fakeNavigator)
           )
           .build()
 
       val request =
-        FakeRequest(POST, nonUkAddressRoute)
-          .withFormUrlEncodedBody(("line1", "value 1"), ("line2", "value 2"), ("country", "IN"))
+        FakeRequest(POST, nameRoute)
+          .withFormUrlEncodedBody(("value", "My Trust"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       application.stop()
     }
@@ -123,29 +108,29 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request =
-        FakeRequest(POST, nonUkAddressRoute)
-          .withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, nameRoute)
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[NonUkAddressView]
+      val view = application.injector.instanceOf[NameView]
 
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, name.displayName)(fakeRequest, messages).toString
+        view(boundForm)(fakeRequest, messages).toString
 
-      application.stop()
+       application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val result = route(application, getRequest).value
+      val request = FakeRequest(GET, nameRoute)
+
+      val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
@@ -158,8 +143,8 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, nonUkAddressRoute)
-          .withFormUrlEncodedBody(("line1", "value 1"), ("line2", "value 2"), ("country", "IN"))
+        FakeRequest(POST, nameRoute)
+          .withFormUrlEncodedBody(("firstName", "value 1"), ("lastName", "value 2"))
 
       val result = route(application, request).value
 

@@ -40,7 +40,7 @@ class TrusteeOrganisationPrintHelper @Inject()(answerRowConverter: AnswerRowConv
         bound.yesNoQuestion(UtrYesNoPage, "trustee.organisation.utrYesNo", controllers.trustee.organisation.routes.UtrYesNoController.onPageLoad().url),
         bound.stringQuestion(UtrPage, "trustee.organisation.utr", controllers.trustee.organisation.routes.UtrController.onPageLoad().url),
         bound.yesNoQuestion(AddressYesNoPage, "trustee.organisation.addressYesNo", controllers.trustee.organisation.routes.AddressYesNoController.onPageLoad().url),
-        bound.yesNoQuestion(AddressUkYesNoPage, "trustee.organisation.addressInTheUkYesNo", controllers.trustee.organisation.routes.AddressInTheUkYesNoController.onPageLoad().url),
+        bound.yesNoQuestion(AddressInTheUkYesNoPage, "trustee.organisation.addressInTheUkYesNo", controllers.trustee.organisation.routes.AddressInTheUkYesNoController.onPageLoad().url),
         bound.addressQuestion(UkAddressPage, "trustee.organisation.ukAddress", controllers.trustee.organisation.routes.UkAddressController.onPageLoad().url),
         bound.addressQuestion(NonUkAddressPage, "trustee.organisation.nonUkAddress", controllers.trustee.organisation.routes.NonUkAddressController.onPageLoad().url),
         bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", controllers.trustee.routes.WhenAddedController.onPageLoad().url)

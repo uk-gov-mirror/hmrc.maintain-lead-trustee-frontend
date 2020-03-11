@@ -71,17 +71,17 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
     "Is address in UK page -> Yes -> UK address page" in {
       val answers = emptyUserAnswers
-        .set(AddressUkYesNoPage, true).success.value
+        .set(AddressInTheUkYesNoPage, true).success.value
 
-      navigator.nextPage(AddressUkYesNoPage, answers)
+      navigator.nextPage(AddressInTheUkYesNoPage, answers)
         .mustBe(controllers.trustee.organisation.routes.UkAddressController.onPageLoad())
     }
 
     "Is address in UK page -> No -> Non-UK address page" in {
       val answers = emptyUserAnswers
-        .set(AddressUkYesNoPage, false).success.value
+        .set(AddressInTheUkYesNoPage, false).success.value
 
-      navigator.nextPage(AddressUkYesNoPage, answers)
+      navigator.nextPage(AddressInTheUkYesNoPage, answers)
         .mustBe(controllers.trustee.organisation.routes.NonUkAddressController.onPageLoad())
     }
 

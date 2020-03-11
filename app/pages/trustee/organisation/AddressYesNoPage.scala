@@ -32,7 +32,7 @@ case object AddressYesNoPage extends QuestionPage[Boolean] {
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
       case Some(false) =>
-        userAnswers.remove(AddressUkYesNoPage)
+        userAnswers.remove(AddressInTheUkYesNoPage)
           .flatMap(_.remove(UkAddressPage))
           .flatMap(_.remove(NonUkAddressPage))
       case _ =>

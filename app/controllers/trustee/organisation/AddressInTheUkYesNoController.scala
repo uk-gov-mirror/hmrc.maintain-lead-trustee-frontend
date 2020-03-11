@@ -21,7 +21,7 @@ import controllers.trustee.actions.NameRequiredAction
 import forms.YesNoFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.trustee.organisation.AddressUkYesNoPage
+import pages.trustee.organisation.AddressInTheUkYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -46,7 +46,7 @@ class AddressInTheUkYesNoController @Inject()(
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(AddressUkYesNoPage) match {
+      val preparedForm = request.userAnswers.get(AddressInTheUkYesNoPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -63,9 +63,9 @@ class AddressInTheUkYesNoController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddressUkYesNoPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddressInTheUkYesNoPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddressUkYesNoPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(AddressInTheUkYesNoPage, updatedAnswers))
       )
   }
 }
