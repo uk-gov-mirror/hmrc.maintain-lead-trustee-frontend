@@ -61,6 +61,11 @@ unableToRemove.subheading.2 = Remove the trustee
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
+#timeout dialog
+timeout.title=Your application will time out soon
+timeout.message=We will reset your application if you do not respond in
+timeout.keep-alive-button=Continue application
+
 agentNotAuthorised.title = Sorry, you cannot access this trust
 agentNotAuthorised.heading = Sorry, you cannot access this trust
 agentNotAuthorised.subheading = This trust’s UTR: {0}

@@ -16,6 +16,9 @@ GET        /unauthorised                                                    cont
 
 GET        /logout                                                          controllers.LogoutController.logout()
 
+GET        /keep-alive                                                      controllers.SessionTimeoutController.keepAlive
+GET        /timeout                                                         controllers.SessionTimeoutController.timeout
+
 GET        /create-agent-services-account                                   controllers.CreateAgentServicesAccountController.onPageLoad()
 
 GET        /trust-not-claimed                                               controllers.TrustNotClaimedController.onPageLoad()
