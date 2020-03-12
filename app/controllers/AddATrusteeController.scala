@@ -56,11 +56,6 @@ class AddATrusteeController @Inject()(
 
   val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addATrusteeYesNo")
 
-  private def returnToStart(userAffinityGroup : AffinityGroup): Result = {userAffinityGroup match {
-    case Agent => Redirect(appConfig.maintainATrustAgentDeclarationUrl)
-    case _ => Redirect(appConfig.maintainATrustIndividualDeclarationUrl)
-  }}
-
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
@@ -81,23 +76,19 @@ class AddATrusteeController @Inject()(
       }
   }
 
-  def submitOne(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
+  def submitOne(): Action[AnyContent] = standardActionSets.identifiedUserWithData {
     implicit request =>
 
       yesNoForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          Future.successful(BadRequest(yesNoView(formWithErrors)))
+          BadRequest(yesNoView(formWithErrors))
         },
         addNow => {
-          for {
-            trustees <- trust.getAllTrustees(request.userAnswers.utr)
-          } yield {
             if (addNow) {
               Redirect(controllers.routes.LeadTrusteeOrTrusteeController.onPageLoad())
             } else {
-              returnToStart(request.user.affinityGroup)
+              Redirect(appConfig.maintainATrustOverview)
             }
-          }
         }
       )
   }
@@ -125,9 +116,9 @@ class AddATrusteeController @Inject()(
             case AddATrustee.YesNow =>
               Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad())
             case AddATrustee.YesLater =>
-              returnToStart(request.user.affinityGroup)
+              Redirect(appConfig.maintainATrustOverview)
             case AddATrustee.NoComplete =>
-              returnToStart(request.user.affinityGroup)
+              Redirect(appConfig.maintainATrustOverview)
           }
         )
       }
