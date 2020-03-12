@@ -34,11 +34,11 @@
         @components.error_summary(form.errors)
 
         @components.input_text(
-          field = form("value"),
-          label = messages("trustee.organisation.utr.heading", name),
-          headingIsLabel = true,
-          hint = Some(messages("trustee.organisation.utr.hint")),
-          labelClass = Some("heading-large")
+            field = form("value"),
+            label = messages("trustee.organisation.utr.heading", name),
+            headingIsLabel = true,
+            hint = Some(messages("trustee.organisation.utr.hint")),
+            labelClass = Some("heading-large")
         )
 
         <p>@messages("trustee.organisation.utr.p1") <a target="_blank" href="https://www.gov.uk/find-lost-utr-number">@messages("trustee.organisation.utr.link")</a>.</p>
