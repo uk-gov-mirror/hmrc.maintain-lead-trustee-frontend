@@ -107,8 +107,9 @@ class ReplacingLeadTrusteeController @Inject()(
 
   private def populateUserAnswersAndRedirect(userAnswers: UserAnswers, trustee: TrusteeIndividual, index: Int) = {
     for {
+      clearedAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.leadtrustee.basePath))
       updatedAnswers <- Future.fromTry(
-        userAnswers.set(IndividualOrBusinessPage, Individual)
+        clearedAnswers.set(IndividualOrBusinessPage, Individual)
           .flatMap(_.set(ltind.IndexPage, index))
           .flatMap(_.set(ltind.NamePage, trustee.name))
           .flatMap(answers => extractDateOfBirth(trustee.dateOfBirth, answers))
@@ -121,8 +122,9 @@ class ReplacingLeadTrusteeController @Inject()(
 
   private def populateUserAnswersAndRedirect(userAnswers: UserAnswers, trustee: TrusteeOrganisation, index: Int) = {
     for {
+      clearedAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.leadtrustee.basePath))
       updatedAnswers <- Future.fromTry(
-        userAnswers.set(IndividualOrBusinessPage, Business)
+        clearedAnswers.set(IndividualOrBusinessPage, Business)
           .flatMap(_.set(ltorg.IndexPage, index))
           .flatMap(answers => extractOrgIdentification(trustee.identification, answers))
           .flatMap(_.set(ltorg.NamePage, trustee.name))
