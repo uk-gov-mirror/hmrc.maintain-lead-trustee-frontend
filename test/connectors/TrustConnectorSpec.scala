@@ -23,8 +23,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
-import models.{IndividualIdentification, LeadTrusteeIndividual, LeadTrusteeOrganisation, Name, NationalInsuranceNumber, RemoveTrustee, TrustIdentificationOrgType, TrustStartDate, TrusteeIndividual, TrusteeOrganisation, Trustees, UkAddress}
-import org.joda.time.DateTime
+import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, Name, NationalInsuranceNumber, RemoveTrustee, TrustIdentificationOrgType, TrustStartDate, TrusteeIndividual, TrusteeOrganisation, Trustees, UkAddress}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.Json
@@ -85,9 +84,6 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       result.futureValue.status mustBe (OK)
 
       application.stop()
-    }
-
-    "Deal with failures" ignore {
     }
   }
 
