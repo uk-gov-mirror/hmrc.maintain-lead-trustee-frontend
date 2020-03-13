@@ -269,7 +269,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/individual-declaration"
+        redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
 
         application.stop()
       }
