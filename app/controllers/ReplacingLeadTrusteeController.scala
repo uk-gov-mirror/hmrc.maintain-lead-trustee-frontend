@@ -24,7 +24,7 @@ import javax.inject.Inject
 import mapping.PlaybackImplicits._
 import models.IndividualOrBusiness._
 import models.requests.DataRequest
-import models.{Address, AllTrustees, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, NonUkAddress, TrustIdentification, TrustIdentificationOrgType, TrusteeIndividual, TrusteeOrganisation, UkAddress, UserAnswers}
+import models.{Address, AllTrustees, CombinedPassportOrIdCard, IdCard, IndividualIdentification, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, NationalInsuranceNumber, NonUkAddress, Passport, TrustIdentificationOrgType, TrusteeIndividual, TrusteeOrganisation, UkAddress, UserAnswers}
 import pages.leadtrustee.organisation.UtrPage
 import pages.leadtrustee.{IndividualOrBusinessPage, individual => ltind, organisation => ltorg}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -107,13 +107,14 @@ class ReplacingLeadTrusteeController @Inject()(
 
   private def populateUserAnswersAndRedirect(userAnswers: UserAnswers, trustee: TrusteeIndividual, index: Int) = {
     for {
-      clearedAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.leadtrustee.basePath))
       updatedAnswers <- Future.fromTry(
-        clearedAnswers.set(IndividualOrBusinessPage, Individual)
+        userAnswers.deleteAtPath(pages.leadtrustee.basePath)
+          .flatMap(_.set(IndividualOrBusinessPage, Individual))
           .flatMap(_.set(ltind.IndexPage, index))
           .flatMap(_.set(ltind.NamePage, trustee.name))
           .flatMap(answers => extractDateOfBirth(trustee.dateOfBirth, answers))
           .flatMap(answers => extractIndIdentification(trustee.identification, answers))
+          .flatMap(answers => extractIndAddress(trustee.address, answers))
           .flatMap(answers => extractIndTelephoneNumber(trustee.phoneNumber, answers))
       )
       _ <- playbackRepository.set(updatedAnswers)
@@ -122,9 +123,9 @@ class ReplacingLeadTrusteeController @Inject()(
 
   private def populateUserAnswersAndRedirect(userAnswers: UserAnswers, trustee: TrusteeOrganisation, index: Int) = {
     for {
-      clearedAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.leadtrustee.basePath))
       updatedAnswers <- Future.fromTry(
-        clearedAnswers.set(IndividualOrBusinessPage, Business)
+        userAnswers.deleteAtPath(pages.leadtrustee.basePath)
+          .flatMap(_.set(IndividualOrBusinessPage, Business))
           .flatMap(_.set(ltorg.IndexPage, index))
           .flatMap(answers => extractOrgIdentification(trustee.identification, answers))
           .flatMap(_.set(ltorg.NamePage, trustee.name))
@@ -144,37 +145,39 @@ class ReplacingLeadTrusteeController @Inject()(
     }
   }
 
-  private def extractIndIdentification(identification: Option[TrustIdentification], answers: UserAnswers) = {
+  private def extractIndIdentification(identification: Option[IndividualIdentification], answers: UserAnswers) = {
     identification map {
 
-      case TrustIdentification(_, Some(nino), None, None) =>
+      case NationalInsuranceNumber(nino) =>
         answers.set(ltind.UkCitizenPage, true)
           .flatMap(_.set(ltind.NationalInsuranceNumberPage, nino))
 
-      case TrustIdentification(_, None, Some(passport), Some(address)) =>
+      case p:Passport =>
         answers.set(ltind.UkCitizenPage, false)
-          .flatMap(answers => extractIndAddress(address.convert, answers))
-          .flatMap(_.set(ltind.PassportOrIdCardDetailsPage, passport.asCombined))
+          .flatMap(_.set(ltind.PassportOrIdCardDetailsPage, p.asCombined))
 
-      case TrustIdentification(_, None, None, Some(address)) =>
-        extractIndAddress(address.convert, answers)
+      case id:IdCard =>
+        answers.set(ltind.UkCitizenPage, false)
+          .flatMap(_.set(ltind.PassportOrIdCardDetailsPage, id.asCombined))
 
-      case _ => Success(answers)
+      case c:CombinedPassportOrIdCard =>
+        answers.set(ltind.UkCitizenPage, false)
+          .flatMap(_.set(ltind.PassportOrIdCardDetailsPage, c))
 
     } getOrElse {
       Success(answers)
     }
   }
 
-  private def extractIndAddress(address: Address, answers: UserAnswers) = {
-    address match {
+  private def extractIndAddress(address: Option[Address], answers: UserAnswers) = {
+    address.map {
       case uk: UkAddress =>
         answers.set(ltind.LiveInTheUkYesNoPage, true)
           .flatMap(_.set(ltind.UkAddressPage, uk))
       case nonUk: NonUkAddress =>
         answers.set(ltind.LiveInTheUkYesNoPage, false)
           .flatMap(_.set(ltind.NonUkAddressPage, nonUk))
-    }
+    }.getOrElse(Success(answers))
   }
 
   private def extractIndTelephoneNumber(phoneNumber: Option[String], answers: UserAnswers) = {
@@ -193,7 +196,7 @@ class ReplacingLeadTrusteeController @Inject()(
           .flatMap(_.set(UtrPage, utr))
       case TrustIdentificationOrgType(_, None, Some(address)) =>
         answers.set(ltorg.RegisteredInUkYesNoPage, false)
-          .flatMap(answers => extractOrgAddress(address.convert, answers))
+          .flatMap(answers => extractOrgAddress(address, answers))
       case _ => Success(answers)
     } getOrElse {
       Success(answers)

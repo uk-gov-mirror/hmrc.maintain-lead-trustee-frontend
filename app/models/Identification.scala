@@ -21,16 +21,17 @@ import java.time.LocalDate
 import play.api.libs.json.{Format, Json, Reads, Writes, __}
 
 sealed trait IndividualIdentification
+
 object IndividualIdentification {
   implicit val reads: Reads[IndividualIdentification] =
     (__ \ 'passport).read[CombinedPassportOrIdCard].widen[IndividualIdentification] orElse
     __.read[NationalInsuranceNumber].widen[IndividualIdentification]
 
   implicit val writes: Writes[IndividualIdentification] = Writes {
-    case ni:NationalInsuranceNumber =>Json.toJson(ni)(NationalInsuranceNumber.format)
-    case p:Passport => Json.obj("passport" -> Json.toJson(p)(Passport.format))
-    case i:IdCard=> Json.obj("passport" -> Json.toJson(i)(IdCard.format))
-    case c:CombinedPassportOrIdCard=> Json.obj("passport" -> Json.toJson(c)(CombinedPassportOrIdCard.format))
+    case ni:NationalInsuranceNumber => Json.toJson(ni)(NationalInsuranceNumber.format)
+    case p:Passport                 => Json.obj("passport" -> Json.toJson(p)(Passport.format))
+    case i:IdCard                   => Json.obj("passport" -> Json.toJson(i)(IdCard.format))
+    case c:CombinedPassportOrIdCard => Json.obj("passport" -> Json.toJson(c)(CombinedPassportOrIdCard.format))
   }
 }
 

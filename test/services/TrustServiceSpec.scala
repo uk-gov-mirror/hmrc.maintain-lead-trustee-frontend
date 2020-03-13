@@ -19,7 +19,7 @@ package services
 import java.time.LocalDate
 
 import connectors.TrustConnector
-import models.{AllTrustees, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, TrustIdentification, TrusteeIndividual, Trustees}
+import models.{AllTrustees, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, TrusteeIndividual, Trustees}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -43,7 +43,8 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
         name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
         dateOfBirth = Some(LocalDate.parse("1983-09-24")),
         phoneNumber = None,
-        identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+        identification = Some(NationalInsuranceNumber("JS123456A")),
+        address = None,
         entityStart = LocalDate.parse("2019-02-28"),
         provisional = true
       )
@@ -90,7 +91,8 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
         name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
         dateOfBirth = Some(LocalDate.parse("1983-09-24")),
         phoneNumber = None,
-        identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+        identification = Some(NationalInsuranceNumber("JS123456A")),
+        address = None,
         entityStart = LocalDate.parse("2019-02-28"),
         provisional = true
       )
@@ -139,7 +141,8 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
         name = Name(firstName = s"First $id", middleName = None, lastName = s"Last $id"),
         dateOfBirth = Some(LocalDate.parse("1983-09-24")),
         phoneNumber = None,
-        identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+        identification = Some(NationalInsuranceNumber("JS123456A")),
+        address = None,
         entityStart = LocalDate.parse("2019-02-28"),
         provisional = true
       )

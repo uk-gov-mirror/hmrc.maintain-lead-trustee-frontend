@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
-import models.{AddATrustee, AllTrustees, LeadTrustee, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, TrustIdentification, Trustee, TrusteeIndividual, Trustees}
+import models.{AddATrustee, AllTrustees, LeadTrustee, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, Trustee, TrusteeIndividual, Trustees}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -69,7 +69,8 @@ class AddATrusteeControllerSpec extends SpecBase {
     name = Name(firstName = "First", middleName = None, lastName = "Last"),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     phoneNumber = None,
-    identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+    identification = Some(NationalInsuranceNumber("JS123456A")),
+    address = None,
     entityStart = LocalDate.parse("2019-02-28"),
     provisional = true
   )

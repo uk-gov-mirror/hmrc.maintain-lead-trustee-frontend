@@ -21,7 +21,7 @@ import java.time.{LocalDate, ZoneOffset}
 import base.SpecBase
 import connectors.TrustConnector
 import forms.DateRemovedFromTrustFormProvider
-import models.{Name, TrustIdentification, TrusteeIndividual, Trustees}
+import models.{Name, NationalInsuranceNumber, TrusteeIndividual, Trustees}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -69,7 +69,8 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
     name = Name(firstName = s"First $id", middleName = None, lastName = s"Last $id"),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     phoneNumber = None,
-    identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+    identification = Some(NationalInsuranceNumber("JS123456A")),
+    address = None,
     entityStart = LocalDate.parse("2019-02-28"),
     provisional = true
   )

@@ -18,7 +18,9 @@ package models
 
 import java.time.LocalDate
 
-import play.api.libs.json.{Format, JsError, JsPath, JsSuccess, JsValue, Json, JsonValidationError, Reads, Writes}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{Format, JsError, JsPath, JsResult, JsSuccess, JsValue, Json, JsonValidationError, Reads, Writes, __}
+
 
 sealed trait Trustee {
   val provisional : Boolean
@@ -29,7 +31,7 @@ sealed trait Trustee {
 object Trustee {
 
   implicit val writes: Writes[Trustee] = Writes[Trustee] {
-    case lti:TrusteeIndividual => Json.toJson(lti)(TrusteeIndividual.formats)
+    case lti:TrusteeIndividual => Json.toJson(lti)(TrusteeIndividual.writes)
     case lto:TrusteeOrganisation => Json.toJson(lto)(TrusteeOrganisation.formats)
   }
 
@@ -50,15 +52,43 @@ object Trustee {
 case class TrusteeIndividual(name: Name,
                              dateOfBirth: Option[LocalDate],
                              phoneNumber: Option[String],
-                             identification: Option[TrustIdentification],
+                             identification: Option[IndividualIdentification],
+                             address: Option[Address],
                              entityStart: LocalDate,
                              provisional: Boolean) extends Trustee
 
 object TrusteeIndividual {
+  def attemptedRead[T:Reads] : Reads[Option[T]] = Reads[Option[T]] (_.validate[T].fold(
+    _ => JsSuccess(None),
+    t => JsSuccess(Some(t))
+  ))
+
+  def readNullableAtSubPath[T:Reads](subPath : JsPath) : Reads[Option[T]] = Reads (
+    _.transform(subPath.json.pick)
+        .flatMap(_.validate[T])
+        .map(Some(_))
+        .recoverWith(_ => JsSuccess(None))
+  )
 
   implicit val dateFormat: Format[LocalDate] = Format[LocalDate](Reads.DefaultLocalDateReads, Writes.DefaultLocalDateWrites)
 
-  implicit val formats: Format[TrusteeIndividual] = Json.format[TrusteeIndividual]
+  implicit val reads: Reads[TrusteeIndividual] =
+    ((__ \ 'name).read[Name] and
+      (__ \ 'dateOfBirth).readNullable[LocalDate] and
+      (__ \ 'phoneNumber).readNullable[String] and
+      __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ 'identification)) and
+      __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)) and
+      (__ \ "entityStart").read[LocalDate] and
+      (__ \ "provisional").read[Boolean]).apply(TrusteeIndividual.apply _)
+
+  implicit val writes: Writes[TrusteeIndividual] =
+    ((__ \ 'name).write[Name] and
+      (__ \ 'dateOfBirth).writeNullable[LocalDate] and
+      (__ \ 'phoneNumber).writeNullable[String] and
+      (__ \ 'identification).writeNullable[IndividualIdentification] and
+      (__ \ 'identification \ 'address).writeNullable[Address] and
+      (__ \ "entityStart").write[LocalDate] and
+      (__ \ "provisional").write[Boolean]).apply(unlift(TrusteeIndividual.unapply))
 }
 
 case class TrusteeOrganisation(name: String,
@@ -74,30 +104,10 @@ object TrusteeOrganisation {
   implicit val formats: Format[TrusteeOrganisation] = Json.format[TrusteeOrganisation]
 }
 
-case class TrustIdentification(safeId: Option[String],
-                               nino: Option[String],
-                               passport: Option[Passport],
-                               address: Option[AddressType])
-
-object TrustIdentification {
-  implicit val formats: Format[TrustIdentification] = Json.format[TrustIdentification]
-}
-
-case class AddressType(line1: String,
-                       line2: String,
-                       line3: Option[String],
-                       line4: Option[String],
-                       postCode: Option[String],
-                       country: String)
-
-object AddressType {
-  implicit val formats: Format[AddressType] = Json.format[AddressType]
-}
-
 
 case class TrustIdentificationOrgType(safeId: Option[String],
                                       utr: Option[String],
-                                      address: Option[AddressType])
+                                      address: Option[Address])
 
 object TrustIdentificationOrgType {
   implicit val formats: Format[TrustIdentificationOrgType] = Json.format[TrustIdentificationOrgType]

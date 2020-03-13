@@ -19,7 +19,7 @@ package controllers.trustee
 import base.SpecBase
 import connectors.TrustConnector
 import forms.RemoveIndexFormProvider
-import models.{Name, TrustIdentification, TrusteeIndividual, Trustees}
+import models.{Name, NationalInsuranceNumber, TrusteeIndividual, Trustees}
 import java.time.LocalDate
 
 import org.mockito.Matchers.any
@@ -52,7 +52,8 @@ class RemoveTrusteeControllerSpec extends SpecBase with PropertyChecks with Scal
     name = Name(firstName = s"First $id", middleName = None, lastName = s"Last $id"),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     phoneNumber = None,
-    identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+    identification = Some(NationalInsuranceNumber("JS123456A")),
+    address = None,
     entityStart = LocalDate.parse("2019-02-28"),
     provisional = provisional
   )
