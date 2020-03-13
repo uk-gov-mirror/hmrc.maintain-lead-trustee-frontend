@@ -44,12 +44,11 @@ class WhenAddedControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val validAnswer = LocalDate.now(ZoneOffset.UTC)
-  val index = 0
   val name: Name = Name("FirstName", None, "LastName")
 
-  lazy val dateAddedToTrustRoute = routes.WhenAddedController.onPageLoad(index).url
+  lazy val dateAddedToTrustRoute = routes.WhenAddedController.onPageLoad().url
 
-  val userAnswersWithName = emptyUserAnswers.set(NamePage(index), name).success.value
+  val userAnswersWithName = emptyUserAnswers.set(NamePage, name).success.value
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, dateAddedToTrustRoute)
@@ -75,7 +74,7 @@ class WhenAddedControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, name.displayName)(fakeRequest, messages).toString
+        view(form, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -83,8 +82,8 @@ class WhenAddedControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage(index), name).success.value
-        .set(WhenAddedPage(index), validAnswer).success.value
+        .set(NamePage, name).success.value
+        .set(WhenAddedPage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -95,7 +94,7 @@ class WhenAddedControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), index, name.displayName)(getRequest(), messages).toString
+        view(form.fill(validAnswer), name.displayName)(getRequest(), messages).toString
 
       application.stop()
     }
@@ -139,7 +138,7 @@ class WhenAddedControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }

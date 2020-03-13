@@ -27,17 +27,14 @@ class IndividualOrBusinessViewSpec extends OptionsViewBehaviours {
 
   val messageKeyPrefix = "trustee.individualOrBusiness"
 
-  val index = 0
-
   val form = new IndividualOrBusinessFormProvider().withPrefix(messageKeyPrefix)
-
 
   "IndividualOrBusinessView" must {
 
     val view = viewFor[IndividualOrBusinessView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index)(fakeRequest, messages)
+      view.apply(form)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

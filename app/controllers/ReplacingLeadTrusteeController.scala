@@ -108,13 +108,13 @@ class ReplacingLeadTrusteeController @Inject()(
   private def populateUserAnswersAndRedirect(userAnswers: UserAnswers, trustee: TrusteeIndividual, index: Int) = {
     for {
       updatedAnswers <- Future.fromTry(
-        userAnswers.set(IndividualOrBusinessPage, Individual)
+        userAnswers.deleteAtPath(pages.leadtrustee.basePath)
+          .flatMap(_.set(IndividualOrBusinessPage, Individual))
           .flatMap(_.set(ltind.IndexPage, index))
           .flatMap(_.set(ltind.NamePage, trustee.name))
           .flatMap(answers => extractDateOfBirth(trustee.dateOfBirth, answers))
           .flatMap(answers => extractIndIdentification(trustee.identification, answers))
           .flatMap(answers => extractIndAddress(trustee.address, answers))
-          .flatMap(_.set(ltind.EmailAddressYesNoPage, false))
           .flatMap(answers => extractIndTelephoneNumber(trustee.phoneNumber, answers))
       )
       _ <- playbackRepository.set(updatedAnswers)
@@ -124,9 +124,9 @@ class ReplacingLeadTrusteeController @Inject()(
   private def populateUserAnswersAndRedirect(userAnswers: UserAnswers, trustee: TrusteeOrganisation, index: Int) = {
     for {
       updatedAnswers <- Future.fromTry(
-        userAnswers.set(IndividualOrBusinessPage, Business)
+        userAnswers.deleteAtPath(pages.leadtrustee.basePath)
+          .flatMap(_.set(IndividualOrBusinessPage, Business))
           .flatMap(_.set(ltorg.IndexPage, index))
-          .flatMap(answers => extractOrgIdentification(trustee.identification, answers))
           .flatMap(answers => extractOrgIdentification(trustee.identification, answers))
           .flatMap(_.set(ltorg.NamePage, trustee.name))
           .flatMap(answers => extractOrgEmail(trustee.email, answers))
@@ -221,7 +221,7 @@ class ReplacingLeadTrusteeController @Inject()(
         answers.set(ltorg.EmailAddressYesNoPage, true)
           .flatMap(_.set(ltorg.EmailAddressPage, email))
       case _ =>
-        answers.set(ltorg.EmailAddressYesNoPage, false)
+        Success(answers)
     }
   }
 

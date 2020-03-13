@@ -41,29 +41,29 @@ class NameController @Inject()(
 
   val form = formProvider.withPrefix("trustee.individual.name")
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(NamePage(index)) match {
+      val preparedForm = request.userAnswers.get(NamePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index))
+      Ok(view(preparedForm))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, index))),
+          Future.successful(BadRequest(view(formWithErrors))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NamePage(index), updatedAnswers))
+          } yield Redirect(navigator.nextPage(NamePage, updatedAnswers))
       )
   }
 }

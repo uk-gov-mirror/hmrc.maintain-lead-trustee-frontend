@@ -17,7 +17,7 @@
 package controllers.trustee.individual
 
 import controllers.actions._
-import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
+import controllers.trustee.actions.NameRequiredAction
 import forms.PassportDetailsFormProvider
 import javax.inject.Inject
 import navigation.Navigator
@@ -36,7 +36,7 @@ class PassportDetailsController @Inject()(
                                            sessionRepository: PlaybackRepository,
                                            navigator: Navigator,
                                            standardActionSets: StandardActionSets,
-                                           nameAction: TrusteeNameRequiredProvider,
+                                           nameAction: NameRequiredAction,
                                            formProvider: PassportDetailsFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: PassportDetailsView,
@@ -45,29 +45,29 @@ class PassportDetailsController @Inject()(
 
   val form = formProvider.withPrefix("trustee")
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(PassportDetailsPage(index)) match {
+      val preparedForm = request.userAnswers.get(PassportDetailsPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options, index, request.trusteeName))
+      Ok(view(preparedForm, countryOptions.options, request.trusteeName))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, index, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, request.trusteeName))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportDetailsPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportDetailsPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PassportDetailsPage(index), updatedAnswers))
+          } yield Redirect(navigator.nextPage(PassportDetailsPage, updatedAnswers))
       )
   }
 }

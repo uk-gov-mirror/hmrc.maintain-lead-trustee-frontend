@@ -41,15 +41,13 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new YesNoFormProvider()
   val form = formProvider.withPrefix("trustee.individual.dateOfBirthYesNo")
-  val index = 0
   val trusteeName = "FirstName LastName"
   val name = Name("FirstName", None, "LastName")
 
-
   override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage(index), name).success.value
+    .set(NamePage, name).success.value
 
-  lazy val dateOfBirthYesNoRoute = routes.DateOfBirthYesNoController.onPageLoad(index).url
+  lazy val dateOfBirthYesNoRoute = routes.DateOfBirthYesNoController.onPageLoad().url
 
   "DateOfBirthYesNo Controller" must {
 
@@ -66,14 +64,14 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, trusteeName)(fakeRequest, messages).toString
+        view(form, trusteeName)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(DateOfBirthYesNoPage(index), true).success.value
+      val userAnswers = emptyUserAnswers.set(DateOfBirthYesNoPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -86,7 +84,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), index, trusteeName)(fakeRequest, messages).toString
+        view(form.fill(true), trusteeName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -134,7 +132,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, trusteeName)(fakeRequest, messages).toString
+        view(boundForm, trusteeName)(fakeRequest, messages).toString
 
       application.stop()
     }

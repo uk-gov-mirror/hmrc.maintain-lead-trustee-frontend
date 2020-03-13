@@ -29,7 +29,6 @@ import views.html.trustee.individual.PassportDetailsView
 class PassportDetailsViewSpec extends QuestionViewBehaviours[Passport] {
 
   val messageKeyPrefix = "trustee.individual.passportDetails"
-  val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
   override val form: Form[Passport] = new PassportDetailsFormProvider().withPrefix(messageKeyPrefix)
@@ -41,7 +40,7 @@ class PassportDetailsViewSpec extends QuestionViewBehaviours[Passport] {
     val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, countryOptions, index, name.displayName)(fakeRequest, messages)
+      view.apply(form, countryOptions, name.displayName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
@@ -53,7 +52,7 @@ class PassportDetailsViewSpec extends QuestionViewBehaviours[Passport] {
         form,
         applyView,
         messageKeyPrefix,
-        routes.PassportDetailsController.onSubmit(index).url,
+        routes.PassportDetailsController.onSubmit().url,
         Seq(("country", None), ("number", None)),
         "expiryDate",
         name.displayName

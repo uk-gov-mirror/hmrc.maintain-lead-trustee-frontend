@@ -29,10 +29,10 @@ class WhenRemovedPageSpec extends PageBehaviours {
       datesBetween(LocalDate.of(1900, 1, 1), LocalDate.now())
     }
 
-    beRetrievable[LocalDate](WhenRemovedPage(0))
+    beRetrievable[LocalDate](WhenRemovedPage)
 
-    beSettable[LocalDate](WhenRemovedPage(0))
+    beSettable[LocalDate](WhenRemovedPage)
 
-    beRemovable[LocalDate](WhenRemovedPage(0))
+    beRemovable[LocalDate](WhenRemovedPage)
   }
 }

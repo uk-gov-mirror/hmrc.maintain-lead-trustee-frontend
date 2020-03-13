@@ -42,29 +42,29 @@ class IndividualOrBusinessController @Inject()(
 
   val form = formProvider.withPrefix("trustee.individualOrBusiness")
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(IndividualOrBusinessPage(index)) match {
+      val preparedForm = request.userAnswers.get(IndividualOrBusinessPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index))
+      Ok(view(preparedForm))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, index))),
+          Future.successful(BadRequest(view(formWithErrors))),
 
         (value: IndividualOrBusiness) =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(IndividualOrBusinessPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(IndividualOrBusinessPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IndividualOrBusinessPage(index), updatedAnswers))
+          } yield Redirect(navigator.nextPage(IndividualOrBusinessPage, updatedAnswers))
       )
   }
 }

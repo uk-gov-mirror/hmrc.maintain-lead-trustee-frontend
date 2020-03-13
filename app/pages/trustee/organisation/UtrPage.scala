@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.trustee.individual.actions
+package pages.trustee.organisation
 
-import models.UserAnswers
-import models.requests.DataRequest
-import play.api.mvc.WrappedRequest
+import pages.QuestionPage
+import pages.trustee.basePath
+import play.api.libs.json.JsPath
 
-case class TrusteeNameRequest[T](request: DataRequest[T], trusteeName: String) extends WrappedRequest[T](request) {
-  val userAnswers:UserAnswers = request.userAnswers
-  val user = request.user
+case object UtrPage extends QuestionPage[String] {
+
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "utr"
 }

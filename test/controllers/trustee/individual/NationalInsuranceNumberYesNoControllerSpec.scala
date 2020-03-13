@@ -21,13 +21,12 @@ import java.time.LocalDate
 import base.SpecBase
 import forms.YesNoFormProvider
 import models.{Name, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.individual.{NamePage, NationalInsuranceNumberYesNoPage}
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
@@ -39,15 +38,13 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
 
   val formProvider = new YesNoFormProvider()
   val form = formProvider.withPrefix("trustee.individual.nationalInsuranceNumberYesNo")
-  val index = 0
   val trusteeName = "FirstName LastName"
   val name = Name("FirstName", None, "LastName")
 
-
   override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage(index), name).success.value
+    .set(NamePage, name).success.value
   
-  lazy val nationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad(index).url
+  lazy val nationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad().url
 
   "NationalInsuranceNumberYesNo Controller" must {
 
@@ -64,14 +61,14 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, trusteeName)(fakeRequest, messages).toString
+        view(form, trusteeName)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(NationalInsuranceNumberYesNoPage(index), true).success.value
+      val userAnswers = emptyUserAnswers.set(NationalInsuranceNumberYesNoPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -84,7 +81,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), index, trusteeName)(fakeRequest, messages).toString
+        view(form.fill(true), trusteeName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -129,7 +126,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, trusteeName)(fakeRequest, messages).toString
+        view(boundForm, trusteeName)(fakeRequest, messages).toString
 
       application.stop()
     }

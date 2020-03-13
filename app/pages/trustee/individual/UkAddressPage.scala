@@ -21,9 +21,9 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import pages.trustee.basePath
 
-case class UkAddressPage(index:Int) extends QuestionPage[UkAddress] {
+case object UkAddressPage extends QuestionPage[UkAddress] {
 
-  override def path: JsPath = basePath \ index \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "ukAddress"
 }

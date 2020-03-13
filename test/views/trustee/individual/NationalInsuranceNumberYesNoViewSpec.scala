@@ -27,7 +27,6 @@ import views.html.trustee.individual.NationalInsuranceNumberYesNoView
 class NationalInsuranceNumberYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "trustee.individual.nationalInsuranceNumberYesNo"
-  val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
@@ -37,13 +36,13 @@ class NationalInsuranceNumberYesNoViewSpec extends YesNoViewBehaviours {
     val view = viewFor[NationalInsuranceNumberYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, name.displayName)(fakeRequest, messages)
+      view.apply(form, name.displayName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.NationalInsuranceNumberYesNoController.onSubmit(index).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.NationalInsuranceNumberYesNoController.onSubmit().url)
 
     behave like pageWithASubmitButton(applyView(form))
   }

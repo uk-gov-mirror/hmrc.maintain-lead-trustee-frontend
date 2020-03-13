@@ -29,7 +29,7 @@ class AddressInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
   val form = (new YesNoFormProvider).withPrefix("prefix")
 
-  "BasedInTheUkYesNoPage view" must {
+  "AddressInTheUkYesNoPage view" must {
 
     val view = viewFor[AddressInTheUkYesNoView](Some(emptyUserAnswers))
 

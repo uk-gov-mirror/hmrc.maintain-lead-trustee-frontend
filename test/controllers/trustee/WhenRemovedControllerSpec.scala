@@ -101,7 +101,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(WhenRemovedPage(index), validAnswer).success.value
+        .set(WhenRemovedPage, validAnswer).success.value
 
       when(mockConnector.getTrustees(any())(any(), any()))
         .thenReturn(Future.successful(Trustees(trustees)))

@@ -1,0 +1,20 @@
+GET         /name                                   controllers.trustee.organisation.NameController.onPageLoad()
+POST        /name                                   controllers.trustee.organisation.NameController.onSubmit()
+
+GET         /utr-yes-no                             controllers.trustee.organisation.UtrYesNoController.onPageLoad()
+POST        /utr-yes-no                             controllers.trustee.organisation.UtrYesNoController.onSubmit()
+
+GET         /utr                                    controllers.trustee.organisation.UtrController.onPageLoad()
+POST        /utr                                    controllers.trustee.organisation.UtrController.onSubmit()
+
+GET         /has-address                            controllers.trustee.organisation.AddressYesNoController.onPageLoad()
+POST        /has-address                            controllers.trustee.organisation.AddressYesNoController.onSubmit()
+
+GET         /has-uk-address                         controllers.trustee.organisation.AddressInTheUkYesNoController.onPageLoad()
+POST        /has-uk-address                         controllers.trustee.organisation.AddressInTheUkYesNoController.onSubmit()
+
+GET         /uk-address                             controllers.trustee.organisation.UkAddressController.onPageLoad()
+POST        /uk-address                             controllers.trustee.organisation.UkAddressController.onSubmit()
+
+GET         /non-uk-address                         controllers.trustee.organisation.NonUkAddressController.onPageLoad()
+POST        /non-uk-address                         controllers.trustee.organisation.NonUkAddressController.onSubmit()

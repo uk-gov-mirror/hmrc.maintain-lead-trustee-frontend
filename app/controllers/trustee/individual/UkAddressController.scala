@@ -17,7 +17,7 @@
 package controllers.trustee.individual
 
 import controllers.actions._
-import controllers.trustee.individual.actions.TrusteeNameRequiredProvider
+import controllers.trustee.actions.NameRequiredAction
 import forms.UkAddressFormProvider
 import javax.inject.Inject
 import navigation.Navigator
@@ -35,7 +35,7 @@ class UkAddressController @Inject()(
                                                    sessionRepository: PlaybackRepository,
                                                    navigator: Navigator,
                                                    standardActionSets: StandardActionSets,
-                                                   nameAction: TrusteeNameRequiredProvider,
+                                                   nameAction: NameRequiredAction,
                                                    formProvider: UkAddressFormProvider,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: UkAddressView
@@ -43,29 +43,29 @@ class UkAddressController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(UkAddressPage(index)) match {
+      val preparedForm = request.userAnswers.get(UkAddressPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index, request.trusteeName))
+      Ok(view(preparedForm, request.trusteeName))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction(index)).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, index, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UkAddressPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(UkAddressPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(UkAddressPage(index), updatedAnswers))
+          } yield Redirect(navigator.nextPage(UkAddressPage, updatedAnswers))
       )
   }
 }

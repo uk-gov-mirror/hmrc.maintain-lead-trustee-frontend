@@ -61,7 +61,7 @@ class NavigatorSpec extends SpecBase with PropertyChecks with Generators {
         .set(TrusteeTypePage, Trustee).success.value
 
       navigator.nextPage(TrusteeTypePage, answers)
-        .mustBe(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(0))
+        .mustBe(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad())
     }
     
   }

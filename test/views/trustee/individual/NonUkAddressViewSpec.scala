@@ -22,14 +22,13 @@ import models.{Name, NonUkAddress}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.InputOption
-import utils.countryOptions.CountryOptions
+import utils.countryOptions.CountryOptionsNonUK
 import views.behaviours.NonUkAddressViewBehaviours
 import views.html.trustee.individual.NonUkAddressView
 
 class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
 
   val messageKeyPrefix = "trustee.individual.nonUkAddress"
-  val index = 0
   val name: Name = Name("First", Some("Middle"), "Last")
 
   override val form: Form[NonUkAddress] = new NonUkAddressFormProvider().apply()
@@ -38,19 +37,19 @@ class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
 
     val view = viewFor[NonUkAddressView](Some(emptyUserAnswers))
 
-    val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
+    val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, countryOptions, index, name.displayName)(fakeRequest, messages)
+      view.apply(form, countryOptions, name.displayName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like nonUkAddress(
+    behave like nonUkAddressPage(
       applyView,
       Some(messageKeyPrefix),
-      routes.NonUkAddressController.onSubmit(index).url,
+      routes.NonUkAddressController.onSubmit().url,
       name.displayName
     )
 

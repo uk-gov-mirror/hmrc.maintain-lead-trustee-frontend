@@ -24,11 +24,11 @@ class BusinessNameFormProvider @Inject() extends Mappings {
 
   def withPrefix(prefix: String): Form[String] =
     Form(
-      "value" -> text(s"$prefix.organisation.name.error.required")
+      "value" -> text(s"$prefix.error.required")
         .verifying(
           firstError(
-            nonEmptyString("value", s"$prefix.organisation.name.error.required"),
-            maxLength(56, s"$prefix.organisation.name.error.length"),
-            regexp(Validation.nameRegex, s"$prefix.organisation.name.error.invalidFormat"))
+            nonEmptyString("value", s"$prefix.error.required"),
+            maxLength(56, s"$prefix.error.length"),
+            regexp(Validation.nameRegex, s"$prefix.error.invalidFormat"))
     ))
 }

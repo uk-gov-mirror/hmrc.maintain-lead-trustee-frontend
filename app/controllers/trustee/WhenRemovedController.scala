@@ -48,7 +48,7 @@ class WhenRemovedController @Inject()(
 
       val form = formProvider.withPrefixAndTrustStartDate("trustee.whenRemoved", request.userAnswers.whenTrustSetup)
 
-      val preparedForm = request.userAnswers.get(WhenRemovedPage(index)) match {
+      val preparedForm = request.userAnswers.get(WhenRemovedPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }

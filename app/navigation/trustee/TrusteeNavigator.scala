@@ -25,22 +25,23 @@ import play.api.mvc.Call
 object TrusteeNavigator {
 
   private val simpleNavigation: PartialFunction[Page, Call] = {
-    case WhenAddedPage(index) => controllers.trustee.routes.CheckDetailsController.onPageLoad(index)
+    case WhenAddedPage => controllers.trustee.routes.CheckDetailsController.onPageLoad()
   }
 
   private val parameterisedNavigation : PartialFunction[Page, UserAnswers => Call] = {
-    case IndividualOrBusinessPage(index) => individualOrBusinessNavigation(index)
+    case IndividualOrBusinessPage => individualOrBusinessNavigation()
   }
 
   val routes: PartialFunction[Page, UserAnswers => Call] =
     simpleNavigation andThen (c => (_:UserAnswers) => c) orElse
     parameterisedNavigation orElse
-    IndividualTrusteeNavigator.routes
+    IndividualTrusteeNavigator.routes orElse
+    OrganisationTrusteeNavigator.routes
 
-  private def individualOrBusinessNavigation(index: Int)(userAnswers: UserAnswers): Call = {
-    userAnswers.get(IndividualOrBusinessPage(index)).map {
-      case Individual => controllers.trustee.individual.routes.NameController.onPageLoad(index)
-      case Business => controllers.trustee.routes.IndividualOrBusinessController.onPageLoad(index)
+  private def individualOrBusinessNavigation()(userAnswers: UserAnswers): Call = {
+    userAnswers.get(IndividualOrBusinessPage).map {
+      case Individual => controllers.trustee.individual.routes.NameController.onPageLoad()
+      case Business => controllers.trustee.organisation.routes.NameController.onPageLoad()
     }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
 }

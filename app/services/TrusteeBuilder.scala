@@ -17,34 +17,61 @@
 package services
 
 import java.time.LocalDate
-
-import models.{Address, IndividualIdentification, NationalInsuranceNumber, NonUkAddress, TrusteeIndividual, UkAddress, UserAnswers}
-import pages.trustee.individual._
-
+import models.{Address, IndividualIdentification, NationalInsuranceNumber, NonUkAddress, TrustIdentificationOrgType, TrusteeIndividual, TrusteeOrganisation, UkAddress, UserAnswers}
+import pages.trustee.{individual => ind, organisation => org}
 
 class TrusteeBuilder {
-  def createTrusteeIndividual(userAnswers: UserAnswers, date: LocalDate, index: Int) = {
+
+  def createTrusteeIndividual(userAnswers: UserAnswers, date: LocalDate) = {
     TrusteeIndividual(
-      userAnswers.get(NamePage(index)).get,
-      userAnswers.get(DateOfBirthPage(index)),
+      userAnswers.get(ind.NamePage).get,
+      userAnswers.get(ind.DateOfBirthPage),
       None,
-      buildIdentfication(userAnswers, index),
-      buildAddress(userAnswers, index),
+      buildIdentfication(userAnswers),
+      buildIndAddress(userAnswers),
       date,
       provisional = true
     )
   }
 
-  private def buildIdentfication(userAnswers: UserAnswers, index: Int) : Option[IndividualIdentification] = {
-    userAnswers.get(NationalInsuranceNumberPage(index)).map (n => new NationalInsuranceNumber(n))
-      .orElse(userAnswers.get(PassportDetailsPage(index)))
-      .orElse(userAnswers.get(IdCardDetailsPage(index)))
+  private def buildIdentfication(userAnswers: UserAnswers) : Option[IndividualIdentification] = {
+    userAnswers.get(ind.NationalInsuranceNumberPage).map (n => new NationalInsuranceNumber(n))
+      .orElse(userAnswers.get(ind.PassportDetailsPage))
+      .orElse(userAnswers.get(ind.IdCardDetailsPage))
   }
 
-  private def buildAddress(userAnswers: UserAnswers, index: Int): Option[Address] = {
+  private def buildIndAddress(userAnswers: UserAnswers): Option[Address] = {
 
-    val uk: Option[UkAddress] = userAnswers.get(UkAddressPage(index))
-    val nonUk: Option[NonUkAddress] = userAnswers.get(NonUkAddressPage(index))
+    val uk: Option[UkAddress] = userAnswers.get(ind.UkAddressPage)
+    val nonUk: Option[NonUkAddress] = userAnswers.get(ind.NonUkAddressPage)
+    (uk, nonUk) match {
+      case (Some(ukAddress), None) => Some(ukAddress)
+      case (None, Some(nonUkAddress)) => Some(nonUkAddress)
+      case _ => None
+    }
+  }
+
+  def createTrusteeOrganisation(userAnswers: UserAnswers, date: LocalDate) = {
+    TrusteeOrganisation(
+      userAnswers.get(org.NamePage).get,
+      None,
+      None,
+      Some(
+        TrustIdentificationOrgType(
+          None,
+          userAnswers.get(org.UtrPage),
+          buildOrgAddress(userAnswers)
+        )
+      ),
+      date,
+      provisional = true
+    )
+  }
+
+  private def buildOrgAddress(userAnswers: UserAnswers): Option[Address] = {
+
+    val uk: Option[UkAddress] = userAnswers.get(org.UkAddressPage)
+    val nonUk: Option[NonUkAddress] = userAnswers.get(org.NonUkAddressPage)
     (uk, nonUk) match {
       case (Some(ukAddress), None) => Some(ukAddress)
       case (None, Some(nonUkAddress)) => Some(nonUkAddress)

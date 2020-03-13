@@ -14,30 +14,34 @@
  * limitations under the License.
  */
 
-package controllers.trustee.individual.actions
+package controllers.trustee.actions
 
+import controllers.trustee
 import javax.inject.Inject
 import models.requests.DataRequest
-import pages.trustee.individual.NamePage
+import pages.trustee.{individual, organisation}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.ActionTransformer
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NameRequiredAction (index: Int)(val executionContext: ExecutionContext, val messagesApi: MessagesApi)
+class NameRequiredAction @Inject()(val executionContext: ExecutionContext, val messagesApi: MessagesApi)
   extends ActionTransformer[DataRequest, TrusteeNameRequest] with I18nSupport {
 
   override protected def transform[A](request: DataRequest[A]): Future[TrusteeNameRequest[A]] = {
-    Future.successful(TrusteeNameRequest[A](request,
-      request.userAnswers.get(NamePage(index))
-        .map(_.displayName)
-        .getOrElse(request.messages(messagesApi)("trusteeName.defaultText"))
+    Future.successful(trustee.actions.TrusteeNameRequest[A](request,
+      getName(request)
     ))
   }
-}
 
-class TrusteeNameRequiredProvider @Inject()(implicit ec: ExecutionContext, messagesApi: MessagesApi) {
+  private def getName[A](request: DataRequest[A]): String = {
+    val indName = request.userAnswers.get(individual.NamePage)
+    val orgName = request.userAnswers.get(organisation.NamePage)
 
-  def apply[T](index : Int) =
-    new NameRequiredAction(index)(ec, messagesApi)
+    (indName, orgName) match {
+      case (Some(name), _) => name.displayName
+      case (_, Some(name)) => name
+      case _ => request.messages(messagesApi)("trusteeName.defaultText")
+    }
+  }
 }

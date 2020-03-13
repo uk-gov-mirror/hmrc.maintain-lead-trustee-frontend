@@ -32,7 +32,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
 import utils.InputOption
-import utils.countryOptions.CountryOptions
+import utils.countryOptions.CountryOptionsNonUK
 import views.html.trustee.individual.NonUkAddressView
 
 import scala.concurrent.Future
@@ -42,17 +42,16 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
   val form = new NonUkAddressFormProvider().apply()
 
   def onwardRoute = Call("GET", "/foo")
-  val index = 0
   val name: Name = Name("FirstName", None, "LastName")
 
   override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage(index), name).success.value
+    .set(NamePage, name).success.value
 
-  val nonUkAddressRoute: String = routes.NonUkAddressController.onPageLoad(index).url
+  val nonUkAddressRoute: String = routes.NonUkAddressController.onPageLoad().url
 
   val getRequest = FakeRequest(GET, nonUkAddressRoute)
 
-  val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
+  val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
 
   val validData: NonUkAddress = NonUkAddress("line1", "line2", None, "country")
 
@@ -69,7 +68,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, index, name.displayName)(fakeRequest, messages).toString
+        view(form, countryOptions, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -77,8 +76,8 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NonUkAddressPage(index), validData).success.value
-        .set(NamePage(index), name).success.value
+        .set(NonUkAddressPage, validData).success.value
+        .set(NamePage, name).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -89,7 +88,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validData), countryOptions, index, name.displayName)(fakeRequest, messages).toString
+        view(form.fill(validData), countryOptions, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -137,7 +136,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, index, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, countryOptions, name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }

@@ -24,28 +24,28 @@ import controllers.trustee.individual.{routes => rts}
 
 object IndividualTrusteeNavigator {
   private val simpleNavigation: PartialFunction[Page, Call] = {
-    case NamePage(index) => rts.DateOfBirthYesNoController.onPageLoad(index)
-    case DateOfBirthPage(index) => rts.NationalInsuranceNumberYesNoController.onPageLoad(index)
-    case NationalInsuranceNumberPage(index) => controllers.trustee.routes.WhenAddedController.onPageLoad(index)
-    case UkAddressPage(index) => rts.PassportDetailsYesNoController.onPageLoad(index)
-    case NonUkAddressPage(index) => rts.PassportDetailsYesNoController.onPageLoad(index)
-    case PassportDetailsPage(index) => controllers.trustee.routes.WhenAddedController.onPageLoad(index)
-    case IdCardDetailsPage(index) => controllers.trustee.routes.WhenAddedController.onPageLoad(index)
+    case NamePage => rts.DateOfBirthYesNoController.onPageLoad()
+    case DateOfBirthPage => rts.NationalInsuranceNumberYesNoController.onPageLoad()
+    case NationalInsuranceNumberPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
+    case UkAddressPage => rts.PassportDetailsYesNoController.onPageLoad()
+    case NonUkAddressPage => rts.PassportDetailsYesNoController.onPageLoad()
+    case PassportDetailsPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
+    case IdCardDetailsPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
   }
 
   private val yesNoNavigation : PartialFunction[Page, UserAnswers => Call] = {
-    case DateOfBirthYesNoPage(index) => ua =>
-      yesNoNav(ua, DateOfBirthYesNoPage(index), rts.DateOfBirthController.onPageLoad(index), rts.NationalInsuranceNumberYesNoController.onPageLoad(index))
-    case NationalInsuranceNumberYesNoPage(index) => ua =>
-      yesNoNav(ua, NationalInsuranceNumberYesNoPage(index), rts.NationalInsuranceNumberController.onPageLoad(index), rts.AddressYesNoController.onPageLoad(index))
-    case AddressYesNoPage(index) => ua =>
-      yesNoNav(ua, AddressYesNoPage(index), rts.LiveInTheUkYesNoController.onPageLoad(index), controllers.trustee.routes.WhenAddedController.onPageLoad(index))
-    case LiveInTheUkYesNoPage(index) => ua =>
-      yesNoNav(ua, LiveInTheUkYesNoPage(index), rts.UkAddressController.onPageLoad(index), rts.NonUkAddressController.onPageLoad(index))
-    case PassportDetailsYesNoPage(index) => ua =>
-      yesNoNav(ua, PassportDetailsYesNoPage(index), rts.PassportDetailsController.onPageLoad(index), rts.IdCardDetailsYesNoController.onPageLoad(index))
-    case IdCardDetailsYesNoPage(index) => ua =>
-      yesNoNav(ua, IdCardDetailsYesNoPage(index), rts.IdCardDetailsController.onPageLoad(index), controllers.trustee.routes.WhenAddedController.onPageLoad(index))
+    case DateOfBirthYesNoPage => ua =>
+      yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(), rts.NationalInsuranceNumberYesNoController.onPageLoad())
+    case NationalInsuranceNumberYesNoPage => ua =>
+      yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.AddressYesNoController.onPageLoad())
+    case AddressYesNoPage => ua =>
+      yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(), controllers.trustee.routes.WhenAddedController.onPageLoad())
+    case LiveInTheUkYesNoPage => ua =>
+      yesNoNav(ua, LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
+    case PassportDetailsYesNoPage => ua =>
+      yesNoNav(ua, PassportDetailsYesNoPage, rts.PassportDetailsController.onPageLoad(), rts.IdCardDetailsYesNoController.onPageLoad())
+    case IdCardDetailsYesNoPage => ua =>
+      yesNoNav(ua, IdCardDetailsYesNoPage, rts.IdCardDetailsController.onPageLoad(), controllers.trustee.routes.WhenAddedController.onPageLoad())
   }
 
   val routes: PartialFunction[Page, UserAnswers => Call] =

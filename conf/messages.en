@@ -61,6 +61,11 @@ unableToRemove.subheading.2 = Remove the trustee
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
+#timeout dialog
+timeout.title=Your application will time out soon
+timeout.message=We will reset your application if you do not respond in
+timeout.keep-alive-button=Continue application
+
 agentNotAuthorised.title = Sorry, you cannot access this trust
 agentNotAuthorised.heading = Sorry, you cannot access this trust
 agentNotAuthorised.subheading = This trust’s UTR: {0}
@@ -295,6 +300,7 @@ leadtrustee.individual.telephoneNumber.heading = What is {0}’s telephone numbe
 leadtrustee.individual.telephoneNumber.checkYourAnswersLabel = What is {0}’s telephone number?
 leadtrustee.individual.telephoneNumber.error.required = Enter the lead trustee’s telephone number
 leadtrustee.individual.telephoneNumber.error.length = A telephone number must be 100 characters or less
+leadtrustee.individual.telephoneNumber.error.invalidCharacters = Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192
 
 leadtrustee.organisation.registeredInUkYesNo.checkYourAnswersLabel = Is this trustee a UK registered company?
 leadtrustee.organisation.registeredInUkYesNo.title = Is this trustee a UK registered company?
@@ -315,7 +321,7 @@ leadtrustee.organisation.utr.heading = What is {0}’s Unique Taxpayer Reference
 leadtrustee.organisation.utr.error.required = Enter the trustee’s Unique Taxpayer Reference
 leadtrustee.organisation.utr.error.length = Unique Taxpayer Reference must be a 10 digit number
 leadtrustee.organisation.utr.error.invalidCharacters = Enter the trust’s Unique Taxpayer Reference in the correct format
-leadtrustee.organisation.utr.hint = This is 10 numbers, for example one two three four five six seven eight nine zero. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
+leadtrustee.organisation.utr.hint = This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
 leadtrustee.organisation.utr.p1 = You can
 leadtrustee.organisation.utr.link = find a lost UTR number (opens in a new window or tab)
 leadtrustee.organisation.utr.checkYourAnswersLabel = What is {0}’s Unique Taxpayer Reference (UTR) number?
@@ -350,6 +356,7 @@ leadtrustee.organisation.telephoneNumber.heading = What is {0}’s telephone num
 leadtrustee.organisation.telephoneNumber.checkYourAnswersLabel = What is {0}’s telephone number?
 leadtrustee.organisation.telephoneNumber.error.required = Enter the lead trustee’s telephone number
 leadtrustee.organisation.telephoneNumber.error.length = A telephone number must be 100 characters or less
+leadtrustee.organisation.telephoneNumber.error.invalidCharacters = Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192
 
 trustee.individual.ukCitizen.title = Does {0} have a National Insurance number?
 trustee.individual.ukCitizen.heading = Does {0} have a National Insurance number?
@@ -479,6 +486,46 @@ trustee.individual.idCardDetails.expiryDate.error.required = ID card expiry date
 trustee.individual.idCardDetails.expiryDate.error.invalid = Enter a real date when the trustee’s ID card expires
 trustee.individual.idCardDetails.expiryDate.error.future = ID card expiry date must be after 31 December 1499 and before 01 January 2100
 trustee.individual.idCardDetails.expiryDate.error.past = ID card expiry date must be after 31 December 1499 and before 01 January 2100
+
+trustee.organisation.name.heading = What is the business’s name?
+trustee.organisation.name.title = What is the business’s name?
+trustee.organisation.name.error.required = Enter the business’s name
+trustee.organisation.name.error.length = Business name must be 56 characters or less
+trustee.organisation.name.error.invalidFormat = Business name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+trustee.organisation.name.checkYourAnswersLabel = What is the business’s name?
+
+trustee.organisation.utrYesNo.heading = Do you know {0}’s Unique Taxpayer Reference (UTR)?
+trustee.organisation.utrYesNo.title = Do you know the trustee’s Unique Taxpayer Reference (UTR)?
+trustee.organisation.utrYesNo.error.required = Select yes if you know you know the trustee’s Unique Taxpayer Reference (UTR)
+trustee.organisation.utrYesNo.checkYourAnswersLabel = Do you know {0}’s Unique Taxpayer Reference (UTR)?
+
+trustee.organisation.utr.heading = What is {0}’s Unique Taxpayer Reference (UTR)?
+trustee.organisation.utr.title = What is the trustee’s Unique Taxpayer Reference (UTR)?
+trustee.organisation.utr.error.required = Enter the trustee’s Unique Taxpayer Reference
+trustee.organisation.utr.error.length = Unique Taxpayer Reference must be a 10 digit number
+trustee.organisation.utr.error.invalidCharacters = Enter the trust’s Unique Taxpayer Reference in the correct format
+trustee.organisation.utr.hint = This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
+trustee.organisation.utr.p1 = You can
+trustee.organisation.utr.link = find a lost UTR number (opens in a new window or tab)
+trustee.organisation.utr.checkYourAnswersLabel = What is {0}’s Unique Taxpayer Reference (UTR) number?
+
+trustee.organisation.addressYesNo.checkYourAnswersLabel = Do you know {0}’s address?
+trustee.organisation.addressYesNo.title = Do you know the trustee’s address?
+trustee.organisation.addressYesNo.heading = Do you know {0}’s address?
+trustee.organisation.addressYesNo.error.required = Select yes if you know the trustee’s address
+
+trustee.organisation.addressInTheUkYesNo.title = Is the trustee’s address in the UK?
+trustee.organisation.addressInTheUkYesNo.heading = Is {0}’s address in the UK?
+trustee.organisation.addressInTheUkYesNo.checkYourAnswersLabel = Is {0}’s address in the UK?
+trustee.organisation.addressInTheUkYesNo.error.required = Select yes if the trustee’s address is in the UK
+
+trustee.organisation.ukAddress.title = What is the trustee’s address?
+trustee.organisation.ukAddress.heading = What is {0}’s address?
+trustee.organisation.ukAddress.checkYourAnswersLabel = What is {0}’s address?
+
+trustee.organisation.nonUkAddress.title = What is the trustee’s address?
+trustee.organisation.nonUkAddress.heading = What is {0}’s address?
+trustee.organisation.nonUkAddress.checkYourAnswersLabel = What is {0}’s address?
 
 trustee.whenAdded.checkYourAnswersLabel = When was {0} added as a trustee?
 trustee.whenAdded.title = When was the trustee added as a trustee?

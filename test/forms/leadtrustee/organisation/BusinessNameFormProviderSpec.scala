@@ -23,12 +23,14 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class BusinessNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "leadtrustee.organisation.name.error.required"
-  val lengthKey = "leadtrustee.organisation.name.error.length"
-  val invalidFormatKey = "leadtrustee.organisation.name.error.invalidFormat"
+  val prefix = "leadtrustee.organisation.name"
+
+  val requiredKey = s"$prefix.error.required"
+  val lengthKey = s"$prefix.error.length"
+  val invalidFormatKey = s"$prefix.error.invalidFormat"
   val maxLength = 56
 
-  val form = new BusinessNameFormProvider().withPrefix("leadtrustee")
+  val form = new BusinessNameFormProvider().withPrefix(prefix)
 
   ".value" must {
 

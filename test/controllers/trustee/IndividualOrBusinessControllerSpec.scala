@@ -19,13 +19,12 @@ package controllers.trustee
 import base.SpecBase
 import forms.IndividualOrBusinessFormProvider
 import models.IndividualOrBusiness.Individual
-import navigation.{FakeNavigator, Navigator}
+import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.IndividualOrBusinessPage
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
@@ -37,10 +36,8 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new IndividualOrBusinessFormProvider()
   val form = formProvider.withPrefix("trustee.individualOrBusiness")
-  val index = 0
-
   
-  lazy val IndividualOrBusinessRoute = routes.IndividualOrBusinessController.onPageLoad(index).url
+  lazy val IndividualOrBusinessRoute = routes.IndividualOrBusinessController.onPageLoad().url
 
   "IndividualOrBusiness Controller" must {
 
@@ -57,14 +54,14 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index)(fakeRequest, messages).toString
+        view(form)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(IndividualOrBusinessPage(index), Individual).success.value
+      val userAnswers = emptyUserAnswers.set(IndividualOrBusinessPage, Individual).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -77,7 +74,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Individual), index)(fakeRequest, messages).toString
+        view(form.fill(Individual))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -122,7 +119,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index)(fakeRequest, messages).toString
+        view(boundForm)(fakeRequest, messages).toString
 
       application.stop()
     }

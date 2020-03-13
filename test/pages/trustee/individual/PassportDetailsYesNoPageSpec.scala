@@ -18,7 +18,7 @@ package pages.trustee.individual
 
 import java.time.LocalDate
 
-import models.{IdCard, Passport}
+import models.Passport
 import pages.behaviours.PageBehaviours
 
 class PassportDetailsYesNoPageSpec extends PageBehaviours {
@@ -29,28 +29,28 @@ class PassportDetailsYesNoPageSpec extends PageBehaviours {
 
   "PassportDetailsYesNo page" must {
 
-    beRetrievable[Boolean](PassportDetailsYesNoPage(0))
+    beRetrievable[Boolean](PassportDetailsYesNoPage)
 
-    beSettable[Boolean](PassportDetailsYesNoPage(0))
+    beSettable[Boolean](PassportDetailsYesNoPage)
 
-    beRemovable[Boolean](PassportDetailsYesNoPage(0))
+    beRemovable[Boolean](PassportDetailsYesNoPage)
 
     "implement cleanup logic when YES selected" in {
       val userAnswers = emptyUserAnswers
-        .set(IdCardDetailsYesNoPage(index), true)
-        .flatMap(_.set(PassportDetailsPage(index), data))
-        .flatMap(_.set(PassportDetailsYesNoPage(index), true))
+        .set(IdCardDetailsYesNoPage, true)
+        .flatMap(_.set(PassportDetailsPage, data))
+        .flatMap(_.set(PassportDetailsYesNoPage, true))
 
-      userAnswers.get.get(IdCardDetailsYesNoPage(index)) mustNot be(defined)
-      userAnswers.get.get(IdCardDetailsPage(index)) mustNot be(defined)
+      userAnswers.get.get(IdCardDetailsYesNoPage) mustNot be(defined)
+      userAnswers.get.get(IdCardDetailsPage) mustNot be(defined)
     }
 
     "implement cleanup logic when NO selected" in {
       val userAnswers = emptyUserAnswers
-        .set(PassportDetailsPage(index), data)
-        .flatMap(_.set(PassportDetailsYesNoPage(index), false))
+        .set(PassportDetailsPage, data)
+        .flatMap(_.set(PassportDetailsYesNoPage, false))
 
-      userAnswers.get.get(PassportDetailsPage(index)) mustNot be(defined)
+      userAnswers.get.get(PassportDetailsPage) mustNot be(defined)
     }
   }
 }
