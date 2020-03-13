@@ -18,38 +18,36 @@ package services
 
 import java.time.LocalDate
 
-import models.{AddressType, TrusteeIndividual, NonUkAddress, TrustIdentification, UkAddress, UserAnswers}
+import models.{Address, IndividualIdentification, NationalInsuranceNumber, NonUkAddress, TrusteeIndividual, UkAddress, UserAnswers}
 import pages.trustee.individual._
 
 
 class TrusteeBuilder {
-
-  import mapping.PlaybackImplicits._
-
   def createTrusteeIndividual(userAnswers: UserAnswers, date: LocalDate, index: Int) = {
     TrusteeIndividual(
       userAnswers.get(NamePage(index)).get,
       userAnswers.get(DateOfBirthPage(index)),
       None,
-      Some(
-        TrustIdentification(
-          None,
-          userAnswers.get(NationalInsuranceNumberPage(index)),
-          userAnswers.get(PassportDetailsPage(index)),
-          buildAddress(userAnswers, index)
-        )
-      ), date,
+      buildIdentfication(userAnswers, index),
+      buildAddress(userAnswers, index),
+      date,
       provisional = true
     )
   }
 
-  private def buildAddress(userAnswers: UserAnswers, index: Int): Option[AddressType] = {
+  private def buildIdentfication(userAnswers: UserAnswers, index: Int) : Option[IndividualIdentification] = {
+    userAnswers.get(NationalInsuranceNumberPage(index)).map (n => new NationalInsuranceNumber(n))
+      .orElse(userAnswers.get(PassportDetailsPage(index)))
+      .orElse(userAnswers.get(IdCardDetailsPage(index)))
+  }
+
+  private def buildAddress(userAnswers: UserAnswers, index: Int): Option[Address] = {
 
     val uk: Option[UkAddress] = userAnswers.get(UkAddressPage(index))
     val nonUk: Option[NonUkAddress] = userAnswers.get(NonUkAddressPage(index))
     (uk, nonUk) match {
-      case (Some(ukAddress), None) => Some(ukAddress.convert)
-      case (None, Some(nonUkAddress)) => Some(nonUkAddress.convert)
+      case (Some(ukAddress), None) => Some(ukAddress)
+      case (None, Some(nonUkAddress)) => Some(nonUkAddress)
       case _ => None
     }
   }
