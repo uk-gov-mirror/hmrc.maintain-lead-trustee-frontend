@@ -23,7 +23,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
-import models.{IndividualIdentification, LeadTrusteeIndividual, LeadTrusteeOrganisation, Name, NationalInsuranceNumber, RemoveTrustee, TrustIdentification, TrustIdentificationOrgType, TrustStartDate, TrusteeIndividual, TrusteeOrganisation, Trustees, UkAddress}
+import models.{IndividualIdentification, LeadTrusteeIndividual, LeadTrusteeOrganisation, Name, NationalInsuranceNumber, RemoveTrustee, TrustIdentificationOrgType, TrustStartDate, TrusteeIndividual, TrusteeOrganisation, Trustees, UkAddress}
 import org.joda.time.DateTime
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
@@ -352,7 +352,8 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
               name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
               dateOfBirth = Some(LocalDate.parse("1983-09-24")),
               phoneNumber = None,
-              identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+              identification = Some(NationalInsuranceNumber("JS123456A")),
+              None,
               entityStart = LocalDate.parse("2019-02-28"),
               provisional = true
             ),

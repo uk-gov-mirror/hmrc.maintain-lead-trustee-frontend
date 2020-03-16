@@ -25,7 +25,7 @@ case class RemoveTrusteeIndividual(lineNo: Option[String],
                                    name: Name,
                                    dateOfBirth: Option[DateTime],
                                    phoneNumber: Option[String],
-                                   identification: Option[TrustIdentification],
+                                   identification: Option[IndividualIdentification],
                                    entityStart: DateTime)
 
 object RemoveTrusteeIndividual {
@@ -40,7 +40,7 @@ object RemoveTrusteeIndividual {
       (__ \ 'name).read[Name] and
       (__ \ 'dateOfBirth).readNullable[DateTime] and
       (__ \ 'phoneNumber).readNullable[String] and
-      (__ \ 'identification).readNullable[TrustIdentification] and
+      (__ \ 'identification).readNullable[IndividualIdentification] and
       (__ \ 'entityStart).read[DateTime]).apply(RemoveTrusteeIndividual.apply _)
 
 }

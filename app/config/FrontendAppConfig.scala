@@ -31,9 +31,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   def claimATrustUrl(utr: String) =
     configuration.get[Service]("microservice.services.claim-a-trust-frontend").baseUrl + s"/claim-a-trust/save/$utr"
 
-  val maintainATrustAgentDeclarationUrl = configuration.get[String]("urls.agentDeclaration")
-
-  val maintainATrustIndividualDeclarationUrl = configuration.get[String]("urls.individualDeclaration")
+  val maintainATrustOverview = configuration.get[String]("urls.maintainATrustOverview")
 
   def verifyIdentityForATrustUrl(utr: String) =
     configuration.get[Service]("microservice.services.verify-your-identity-for-a-trust-frontend").baseUrl + s"/verify-your-identity-for-a-trust/save/$utr"
@@ -65,9 +63,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val loginUrl: String = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   lazy val logoutUrl: String = configuration.get[String]("urls.logout")
-  lazy val trustsUrl: String = configuration.get[Service]("microservice.services.trusts").baseUrl
 
-  lazy val declarationUrl: String = configuration.get[String]("urls.declaration")
+  lazy val trustsUrl: String = configuration.get[Service]("microservice.services.trusts").baseUrl
 
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")

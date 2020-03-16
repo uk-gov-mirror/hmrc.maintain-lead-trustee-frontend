@@ -19,7 +19,7 @@ package utils
 import java.time.LocalDate
 
 import base.SpecBase
-import models.{AllTrustees, Name, TrustIdentification, TrusteeIndividual}
+import models.{AllTrustees, Name, NationalInsuranceNumber, TrusteeIndividual}
 import viewmodels.addAnother.AddRow
 
 class AddATrusteeViewHelperSpec extends SpecBase {
@@ -29,7 +29,8 @@ class AddATrusteeViewHelperSpec extends SpecBase {
       name = Name(firstName = "First", middleName = None, lastName = "Last"),
       dateOfBirth = Some(LocalDate.parse("1983-09-24")),
       phoneNumber = None,
-      identification = Some(TrustIdentification(None, Some("JS123456A"), None, None)),
+      identification = Some(NationalInsuranceNumber("JS123456A")),
+      address = None,
       entityStart = LocalDate.parse("2019-02-28"),
       provisional = true
     )
