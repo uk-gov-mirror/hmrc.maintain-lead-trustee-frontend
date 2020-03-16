@@ -17,34 +17,18 @@
 package connectors
 
 import base.SpecBase
-import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock.{get, okJson, urlEqualTo, _}
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
+import com.github.tomakehurst.wiremock.client.WireMock.{okJson, urlEqualTo, _}
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse}
+import utils.WireMockHelper
 
-class TrustsStoreConnectorSpec extends SpecBase with BeforeAndAfterAll with BeforeAndAfterEach with ScalaFutures {
+class TrustsStoreConnectorSpec extends SpecBase
+  with ScalaFutures
+  with IntegrationPatience
+  with WireMockHelper {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
-
-  protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
-
-  override def beforeAll(): Unit = {
-    server.start()
-    super.beforeAll()
-  }
-
-  override def beforeEach(): Unit = {
-    server.resetAll()
-    super.beforeEach()
-  }
-
-  override def afterAll(): Unit = {
-    super.afterAll()
-    server.stop()
-  }
 
   "trusts store connector" must {
 
@@ -75,9 +59,12 @@ class TrustsStoreConnectorSpec extends SpecBase with BeforeAndAfterAll with Befo
           .willReturn(okJson(json.toString))
       )
 
-      val result = connector.setTaskComplete("123456789")
+      val futureResult = connector.setTaskComplete("123456789")
 
-      result.futureValue.status mustBe 200
+      whenReady(futureResult) {
+        r =>
+          r.status mustBe 200
+      }
 
       application.stop()
     }
@@ -98,9 +85,12 @@ class TrustsStoreConnectorSpec extends SpecBase with BeforeAndAfterAll with Befo
           .willReturn(serverError())
       )
 
-      val result = connector.setTaskComplete("123456789")
+      val futureResult = connector.setTaskComplete("123456789")
 
-      result.futureValue.status mustBe 500
+      whenReady(futureResult.failed) {
+        case Upstream5xxResponse(_, upstream, _ ) =>
+          upstream mustBe 500
+      }
 
       application.stop()
     }
