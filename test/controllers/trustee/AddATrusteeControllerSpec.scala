@@ -19,6 +19,9 @@ package controllers.trustee
 import java.time.LocalDate
 
 import base.SpecBase
+import connectors.TrustStoreConnector
+import org.mockito.Matchers.any
+import org.mockito.Mockito._
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
 import models.{AddATrustee, AllTrustees, LeadTrustee, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, Trustee, TrusteeIndividual, Trustees}
@@ -37,6 +40,8 @@ class AddATrusteeControllerSpec extends SpecBase {
   lazy val getRoute : String = controllers.routes.AddATrusteeController.onPageLoad().url
   lazy val submitAnotherRoute : String = controllers.routes.AddATrusteeController.submitAnother().url
   lazy val submitYesNoRoute : String = controllers.routes.AddATrusteeController.submitOne().url
+
+  val mockStoreConnector : TrustStoreConnector = mock[TrustStoreConnector]
 
   val addTrusteeForm = new AddATrusteeFormProvider()()
   val yesNoForm = new YesNoFormProvider().withPrefix("addATrusteeYesNo")
@@ -253,17 +258,20 @@ class AddATrusteeControllerSpec extends SpecBase {
         application.stop()
       }
 
-      "redirect to the declaration when the user says they are done" in {
+      "redirect to the maintain task list when the user says they are done" in {
 
         val fakeService = new FakeService(trustees)
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
+          bind(classOf[TrustService]).toInstance(fakeService),
+          bind(classOf[TrustStoreConnector]).toInstance(mockStoreConnector)
         )).build()
 
         val request =
           FakeRequest(POST, submitAnotherRoute)
             .withFormUrlEncodedBody(("value", AddATrustee.NoComplete.toString))
+
+        when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200)))
 
         val result = route(application, request).value
 
@@ -274,7 +282,7 @@ class AddATrusteeControllerSpec extends SpecBase {
         application.stop()
       }
 
-      "redirect to the declaration when the user says they want to add later" ignore {
+      "redirect to the maintain task list when the user says they want to add later" ignore {
 
         val fakeService = new FakeService(trustees)
 
