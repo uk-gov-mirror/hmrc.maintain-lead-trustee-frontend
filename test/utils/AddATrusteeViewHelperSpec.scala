@@ -59,7 +59,7 @@ class AddATrusteeViewHelperSpec extends SpecBase {
       "generate rows complete trustees" in {
         val rows = new AddATrusteeViewHelper(AllTrustees(None, trustees)).rows
         rows.complete mustBe List(
-          AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "#", "Remove", "/maintain-a-trust/trustees/trustee/0/remove")
+          AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "/maintain-a-trust/trustees/trustee/0/check-details", "Remove", "/maintain-a-trust/trustees/trustee/0/remove")
         )
         rows.inProgress mustBe Nil
       }

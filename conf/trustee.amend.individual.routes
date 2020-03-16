@@ -1,0 +1,32 @@
+GET        /name                                  controllers.trustee.amend.individual.NameController.onPageLoad()
+POST       /name                                  controllers.trustee.amend.individual.NameController.onSubmit()
+
+GET        /know-date-of-birth                    controllers.trustee.amend.individual.DateOfBirthYesNoController.onPageLoad()
+POST       /know-date-of-birth                    controllers.trustee.amend.individual.DateOfBirthYesNoController.onSubmit()
+
+GET        /date-of-birth                         controllers.trustee.amend.individual.DateOfBirthController.onPageLoad()
+POST       /date-of-birth                         controllers.trustee.amend.individual.DateOfBirthController.onSubmit()
+
+GET        /has-national-insurance-number         controllers.trustee.amend.individual.NationalInsuranceNumberYesNoController.onPageLoad()
+POST       /has-national-insurance-number         controllers.trustee.amend.individual.NationalInsuranceNumberYesNoController.onSubmit()
+
+GET        /national-insurance-number             controllers.trustee.amend.individual.NationalInsuranceNumberController.onPageLoad()
+POST       /national-insurance-number             controllers.trustee.amend.individual.NationalInsuranceNumberController.onSubmit()
+
+GET        /has-address                           controllers.trustee.amend.individual.AddressYesNoController.onPageLoad()
+POST       /has-address                           controllers.trustee.amend.individual.AddressYesNoController.onSubmit()
+
+GET        /has-uk-address                        controllers.trustee.amend.individual.LiveInTheUkYesNoController.onPageLoad()
+POST       /has-uk-address                        controllers.trustee.amend.individual.LiveInTheUkYesNoController.onSubmit()
+
+GET        /uk-address                            controllers.trustee.amend.individual.UkAddressController.onPageLoad()
+POST       /uk-address                            controllers.trustee.amend.individual.UkAddressController.onSubmit()
+
+GET        /non-uk-address                        controllers.trustee.amend.individual.NonUkAddressController.onPageLoad()
+POST       /non-uk-address                        controllers.trustee.amend.individual.NonUkAddressController.onSubmit()
+
+GET        /has-passport-or-id-card               controllers.trustee.amend.individual.PassportOrIdCardDetailsYesNoController.onPageLoad()
+POST       /has-passport-or-id-card               controllers.trustee.amend.individual.PassportOrIdCardDetailsYesNoController.onSubmit()
+
+GET        /passport-or-id-card                   controllers.trustee.amend.individual.PassportOrIdCardDetailsController.onPageLoad()
+POST       /passport-or-id-card                   controllers.trustee.amend.individual.PassportOrIdCardDetailsController.onSubmit()

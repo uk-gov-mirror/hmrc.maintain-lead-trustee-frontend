@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package controllers.leadtrustee.individual
+package controllers.trustee.amend.individual
 
 import controllers.actions._
-import controllers.leadtrustee.actions.NameRequiredAction
+import controllers.trustee.actions.NameRequiredAction
 import forms.CombinedPassportOrIdCardDetailsFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.leadtrustee.individual.PassportOrIdCardDetailsPage
+import pages.trustee.amend.individual.PassportOrIdCardDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
-import views.html.leadtrustee.individual.PassportOrIdCardDetailsView
+import views.html.trustee.amend.individual.PassportOrIdCardDetailsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PassportOrIdCardController @Inject()(
+class PassportOrIdCardDetailsController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             playbackRepository: PlaybackRepository,
                                             navigator: Navigator,
@@ -43,7 +43,7 @@ class PassportOrIdCardController @Inject()(
                                             view: PassportOrIdCardDetailsView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("leadtrustee.individual.passportOrIdCardDetails")
+  val form = formProvider.withPrefix("trustee.individual.passportOrIdCardDetails")
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
@@ -53,7 +53,7 @@ class PassportOrIdCardController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.leadTrusteeName, countryOptions.options))
+      Ok(view(preparedForm, request.trusteeName, countryOptions.options))
   }
 
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
@@ -61,7 +61,7 @@ class PassportOrIdCardController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, countryOptions.options))),
+          Future.successful(BadRequest(view(formWithErrors, request.trusteeName, countryOptions.options))),
 
         value =>
           for {

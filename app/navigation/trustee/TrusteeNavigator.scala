@@ -36,7 +36,8 @@ object TrusteeNavigator {
     simpleNavigation andThen (c => (_:UserAnswers) => c) orElse
     parameterisedNavigation orElse
     IndividualTrusteeNavigator.routes orElse
-    OrganisationTrusteeNavigator.routes
+    OrganisationTrusteeNavigator.routes orElse
+    AmendIndividualTrusteeNavigator.routes
 
   private def individualOrBusinessNavigation()(userAnswers: UserAnswers): Call = {
     userAnswers.get(IndividualOrBusinessPage).map {
