@@ -54,7 +54,6 @@ class EnrolmentStoreConnectorSpec extends AsyncFreeSpec with MustMatchers with W
     ): _*).build()
 
   private lazy val connector = app.injector.instanceOf[EnrolmentStoreConnector]
-  private lazy val config = app.injector.instanceOf[FrontendAppConfig]
 
   private lazy val serviceName = "HMRC-TERS-ORG"
 
@@ -62,7 +61,6 @@ class EnrolmentStoreConnectorSpec extends AsyncFreeSpec with MustMatchers with W
   private val identifier = "0987654321"
 
   private val principalId = Seq("ABCEDEFGI1234567")
-  private val delegatedId = Seq("ABCEDEFGI1234568", "ABCEDEFGI1234569")
 
   private lazy val enrolmentsUrl: String = s"/enrolment-store-proxy/enrolment-store/enrolments/$serviceName~$identifierKey~$identifier/users"
 

@@ -17,6 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
+import connectors.TrustStoreConnector
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
@@ -25,11 +26,9 @@ import models.{AddATrustee, AllTrustees, Enumerable}
 import navigation.Navigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrustService
-import uk.gov.hmrc.auth.core.AffinityGroup
-import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.AddATrusteeViewHelper
 import views.html.trustee.{AddATrusteeView, AddATrusteeYesNoView}
@@ -47,7 +46,8 @@ class AddATrusteeController @Inject()(
                                        val controllerComponents: MessagesControllerComponents,
                                        addAnotherView: AddATrusteeView,
                                        yesNoView: AddATrusteeYesNoView,
-                                       val appConfig: FrontendAppConfig
+                                       val appConfig: FrontendAppConfig,
+                                       trustStoreConnector: TrustStoreConnector
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController
   with I18nSupport
   with Enumerable.Implicits {
@@ -96,13 +96,13 @@ class AddATrusteeController @Inject()(
   def submitAnother(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      trust.getAllTrustees(request.userAnswers.utr).map { trustees =>
+      trust.getAllTrustees(request.userAnswers.utr).flatMap { trustees =>
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
             val rows = new AddATrusteeViewHelper(trustees).rows
 
-            BadRequest(
+            Future.successful(BadRequest(
               addAnotherView(
                 formWithErrors,
                 rows.inProgress,
@@ -110,15 +110,19 @@ class AddATrusteeController @Inject()(
                 isLeadTrusteeDefined = trustees.lead.isDefined,
                 trustees.addToHeading
               )
-            )
+            ))
           },
           {
             case AddATrustee.YesNow =>
-              Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad())
+              Future.successful(Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad()))
             case AddATrustee.YesLater =>
-              Redirect(appConfig.maintainATrustOverview)
+              Future.successful(Redirect(appConfig.maintainATrustOverview))
             case AddATrustee.NoComplete =>
-              Redirect(appConfig.maintainATrustOverview)
+              for {
+                _ <- trustStoreConnector.setTaskComplete(request.userAnswers.utr)
+              } yield {
+                Redirect(appConfig.maintainATrustOverview)
+              }
           }
         )
       }
