@@ -16,17 +16,15 @@
 
 package controllers.trustee.amend
 
-import java.time.LocalDate
-
 import config.FrontendAppConfig
 import connectors.TrustConnector
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import javax.inject.Inject
+import mapping.{TrusteeIndividualExtractor, TrusteeOrganisationExtractor}
 import models.IndividualOrBusiness._
-import models.{Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, IndividualOrBusiness, NationalInsuranceNumber, NonUkAddress, Passport, TrustIdentificationOrgType, Trustee, TrusteeIndividual, TrusteeOrganisation, UkAddress, UserAnswers}
+import models.{IndividualOrBusiness, Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
 import navigation.Navigator
-import pages.trustee.amend.{individual => ind, organisation => org}
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,19 +36,20 @@ import utils.print.checkYourAnswers.{AmendTrusteeIndividualPrintHelper, AmendTru
 import views.html.trustee.amend.CheckDetailsView
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class CheckDetailsController @Inject()(
                                         override val messagesApi: MessagesApi,
                                         sessionRepository: PlaybackRepository,
                                         navigator: Navigator,
-                                        trust: TrustService,
+                                        trustService: TrustService,
                                         standardActionSets: StandardActionSets,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
                                         indHelper: AmendTrusteeIndividualPrintHelper,
                                         orgHelper: AmendTrusteeOrganisationPrintHelper,
                                         trusteeBuilder: AmendedTrusteeBuilder,
+                                        indExtractor: TrusteeIndividualExtractor,
+                                        orgExtractor: TrusteeOrganisationExtractor,
                                         trustConnector: TrustConnector,
                                         nameAction: NameRequiredAction,
                                         val appConfig: FrontendAppConfig
@@ -59,9 +58,9 @@ class CheckDetailsController @Inject()(
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      trust.getTrustee(request.userAnswers.utr, index).flatMap {
+      trustService.getTrustee(request.userAnswers.utr, index).flatMap {
         case ind: TrusteeIndividual =>
-          val answers = populateUserAnswers(request.userAnswers, ind, index)
+          val answers = indExtractor(request.userAnswers, ind, index)
           for {
             updatedAnswers <- Future.fromTry(answers)
             _ <- sessionRepository.set(updatedAnswers)
@@ -71,7 +70,7 @@ class CheckDetailsController @Inject()(
           }
 
         case org: TrusteeOrganisation =>
-          val answers = populateUserAnswers(request.userAnswers, org, index)
+          val answers = orgExtractor(request.userAnswers, org, index)
           for {
             updatedAnswers <- Future.fromTry(answers)
             _ <- sessionRepository.set(updatedAnswers)
@@ -120,108 +119,4 @@ class CheckDetailsController @Inject()(
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
   }
 
-  private def populateUserAnswers(userAnswers: UserAnswers, trustee: TrusteeIndividual, index: Int) = {
-    userAnswers.deleteAtPath(pages.trustee.basePath)
-      .flatMap(_.set(IndividualOrBusinessPage, Individual))
-      .flatMap(_.set(ind.IndexPage, index))
-      .flatMap(_.set(ind.NamePage, trustee.name))
-      .flatMap(answers => extractDateOfBirth(trustee.dateOfBirth, answers))
-      .flatMap(answers => extractIndAddress(trustee.address, answers))
-      .flatMap(answers => extractIndIdentification(trustee.identification, answers))
-      .flatMap(_.set(WhenAddedPage, trustee.entityStart))
-  }
-
-  private def populateUserAnswers(userAnswers: UserAnswers, trustee: TrusteeOrganisation, index: Int) = {
-    userAnswers.deleteAtPath(pages.trustee.basePath)
-      .flatMap(_.set(IndividualOrBusinessPage, Business))
-      .flatMap(_.set(org.IndexPage, index))
-      .flatMap(_.set(org.NamePage, trustee.name))
-      .flatMap(answers => extractOrgIdentification(trustee.identification, answers))
-      .flatMap(_.set(WhenAddedPage, trustee.entityStart))
-  }
-
-  private def extractDateOfBirth(dateOfBirth: Option[LocalDate], answers: UserAnswers): Try[UserAnswers] = {
-    dateOfBirth match {
-      case Some(dob) =>
-        answers.set(ind.DateOfBirthYesNoPage, true)
-          .flatMap(_.set(ind.DateOfBirthPage, dob))
-      case _ =>
-        answers.set(ind.DateOfBirthYesNoPage, false)
-    }
-  }
-
-  private def extractIndIdentification(identification: Option[IndividualIdentification], answers: UserAnswers) = {
-    identification match {
-
-      case Some(NationalInsuranceNumber(nino)) =>
-        answers.set(ind.NationalInsuranceNumberYesNoPage, true)
-          .flatMap(_.set(ind.NationalInsuranceNumberPage, nino))
-
-      case Some(p:Passport) =>
-        answers.set(ind.NationalInsuranceNumberYesNoPage, false)
-          .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, true))
-          .flatMap(_.set(ind.PassportOrIdCardDetailsPage, p.asCombined))
-
-      case Some(id:IdCard) =>
-        answers.set(ind.NationalInsuranceNumberYesNoPage, false)
-          .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, true))
-          .flatMap(_.set(ind.PassportOrIdCardDetailsPage, id.asCombined))
-
-      case Some(c:CombinedPassportOrIdCard) =>
-        answers.set(ind.NationalInsuranceNumberYesNoPage, false)
-          .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, true))
-          .flatMap(_.set(ind.PassportOrIdCardDetailsPage, c))
-
-      case _ =>
-        answers.set(ind.NationalInsuranceNumberYesNoPage, false)
-          .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, false))
-
-    }
-  }
-
-  private def extractOrgIdentification(identification: Option[TrustIdentificationOrgType], answers: UserAnswers) = {
-    identification match {
-
-      case Some(TrustIdentificationOrgType(_, Some(utr), None)) =>
-        answers.set(org.UtrYesNoPage, true)
-          .flatMap(_.set(org.UtrPage, utr))
-
-      case Some(TrustIdentificationOrgType(_, None, Some(address))) =>
-        answers.set(org.UtrYesNoPage, false)
-          .flatMap(answers => extractOrgAddress(address, answers))
-
-      case _ =>
-        answers.set(org.UtrYesNoPage, false)
-          .flatMap(_.set(ind.AddressYesNoPage, false))
-
-    }
-  }
-
-  private def extractIndAddress(address: Option[Address], answers: UserAnswers) = {
-    address match {
-      case Some(uk: UkAddress) =>
-        answers.set(ind.AddressYesNoPage, true)
-          .flatMap(_.set(ind.LiveInTheUkYesNoPage, true))
-          .flatMap(_.set(ind.UkAddressPage, uk))
-      case Some(nonUk: NonUkAddress) =>
-        answers.set(ind.AddressYesNoPage, true)
-          .flatMap(_.set(ind.LiveInTheUkYesNoPage, false))
-          .flatMap(_.set(ind.NonUkAddressPage, nonUk))
-      case _ =>
-        answers.set(ind.AddressYesNoPage, false)
-    }
-  }
-
-  private def extractOrgAddress(address: Address, answers: UserAnswers) = {
-    address match {
-      case uk: UkAddress =>
-        answers.set(org.AddressYesNoPage, true)
-          .flatMap(_.set(org.AddressInTheUkYesNoPage, true))
-          .flatMap(_.set(org.UkAddressPage, uk))
-      case nonUk: NonUkAddress =>
-        answers.set(org.AddressYesNoPage, true)
-          .flatMap(_.set(org.AddressInTheUkYesNoPage, false))
-          .flatMap(_.set(org.NonUkAddressPage, nonUk))
-    }
-  }
 }
