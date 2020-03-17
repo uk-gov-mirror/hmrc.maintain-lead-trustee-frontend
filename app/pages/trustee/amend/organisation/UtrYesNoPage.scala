@@ -14,15 +14,32 @@
  * limitations under the License.
  */
 
-package pages.trustee.amend
+package pages.trustee.amend.organisation
 
+import models.UserAnswers
 import pages.QuestionPage
 import pages.trustee.basePath
 import play.api.libs.json.JsPath
 
-case object ProvisionalYesNoPage extends QuestionPage[Boolean] {
+import scala.util.Try
+
+case object UtrYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = basePath \ toString
 
-  override def toString: String = "provisionalYesNo"
+  override def toString: String = "utrYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(true) =>
+        userAnswers.remove(AddressYesNoPage)
+          .flatMap(_.remove(AddressInTheUkYesNoPage))
+          .flatMap(_.remove(UkAddressPage))
+          .flatMap(_.remove(NonUkAddressPage))
+      case Some(false) =>
+        userAnswers.remove(UtrPage)
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
+  }
 }

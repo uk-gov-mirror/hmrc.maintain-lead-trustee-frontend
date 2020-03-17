@@ -39,7 +39,7 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
           name = trusteeOrg.name,
           typeLabel = messages(s"entities.trustee.organisation"),
           changeLabel = messages("site.change.details"),
-          changeUrl = "#",
+          changeUrl = controllers.trustee.amend.routes.CheckDetailsController.onPageLoad(index).url,
           removeLabel =  messages("site.delete"),
           removeUrl = controllers.trustee.routes.RemoveTrusteeController.onPageLoad(index).url
         )

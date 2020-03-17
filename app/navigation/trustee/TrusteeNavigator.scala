@@ -37,7 +37,8 @@ object TrusteeNavigator {
     parameterisedNavigation orElse
     IndividualTrusteeNavigator.routes orElse
     OrganisationTrusteeNavigator.routes orElse
-    AmendIndividualTrusteeNavigator.routes
+    AmendIndividualTrusteeNavigator.routes orElse
+    AmendOrganisationTrusteeNavigator.routes
 
   private def individualOrBusinessNavigation()(userAnswers: UserAnswers): Call = {
     userAnswers.get(IndividualOrBusinessPage).map {

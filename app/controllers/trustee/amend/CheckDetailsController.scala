@@ -24,9 +24,9 @@ import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import javax.inject.Inject
 import models.IndividualOrBusiness._
-import models.{Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, IndividualOrBusiness, NationalInsuranceNumber, NonUkAddress, Passport, Trustee, TrusteeIndividual, TrusteeOrganisation, UkAddress, UserAnswers}
+import models.{Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, IndividualOrBusiness, NationalInsuranceNumber, NonUkAddress, Passport, TrustIdentificationOrgType, Trustee, TrusteeIndividual, TrusteeOrganisation, UkAddress, UserAnswers}
 import navigation.Navigator
-import pages.trustee.amend.{ProvisionalYesNoPage, individual => ind}
+import pages.trustee.amend.{individual => ind, organisation => org}
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import repositories.PlaybackRepository
 import services.{AmendedTrusteeBuilder, TrustService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.print.checkYourAnswers.AmendTrusteeIndividualPrintHelper
+import utils.print.checkYourAnswers.{AmendTrusteeIndividualPrintHelper, AmendTrusteeOrganisationPrintHelper}
 import views.html.trustee.amend.CheckDetailsView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -49,6 +49,7 @@ class CheckDetailsController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
                                         indHelper: AmendTrusteeIndividualPrintHelper,
+                                        orgHelper: AmendTrusteeOrganisationPrintHelper,
                                         trusteeBuilder: AmendedTrusteeBuilder,
                                         trustConnector: TrustConnector,
                                         nameAction: NameRequiredAction,
@@ -69,7 +70,15 @@ class CheckDetailsController @Inject()(
             Ok(view(section, index))
           }
 
-        case org: TrusteeOrganisation => ???
+        case org: TrusteeOrganisation =>
+          val answers = populateUserAnswers(request.userAnswers, org, index)
+          for {
+            updatedAnswers <- Future.fromTry(answers)
+            _ <- sessionRepository.set(updatedAnswers)
+          } yield {
+            val section = orgHelper(updatedAnswers, org.name)
+            Ok(view(section, index))
+          }
       }
   }
 
@@ -80,7 +89,9 @@ class CheckDetailsController @Inject()(
         case Individual =>
           val section = indHelper(request.userAnswers, request.trusteeName)
           Ok(view(section, index))
-        case Business => ???
+        case Business =>
+          val section = orgHelper(request.userAnswers, request.trusteeName)
+          Ok(view(section, index))
       } getOrElse Redirect(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
@@ -90,17 +101,13 @@ class CheckDetailsController @Inject()(
         Future.successful(Redirect(controllers.trustee.routes.WhenAddedController.onPageLoad()))
       } {
         date =>
-          (for {
-            indOrBus <- request.userAnswers.get(IndividualOrBusinessPage)
-            provisional <- request.userAnswers.get(ProvisionalYesNoPage)
-          }
-          yield {
-            indOrBus match {
-              case IndividualOrBusiness.Individual =>
-                val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date, provisional)
-                amendTrustee(request.userAnswers, trusteeInd, index)
-              case IndividualOrBusiness.Business => ???
-            }
+          (request.userAnswers.get(IndividualOrBusinessPage) map {
+            case IndividualOrBusiness.Individual =>
+              val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date)
+              amendTrustee(request.userAnswers, trusteeInd, index)
+            case IndividualOrBusiness.Business =>
+              val trusteeOrg: TrusteeOrganisation = trusteeBuilder.createTrusteeOrganisation(request.userAnswers, date)
+              amendTrustee(request.userAnswers, trusteeOrg, index)
           }).getOrElse(Future.successful(InternalServerError))
       }
   }
@@ -122,7 +129,15 @@ class CheckDetailsController @Inject()(
       .flatMap(answers => extractIndAddress(trustee.address, answers))
       .flatMap(answers => extractIndIdentification(trustee.identification, answers))
       .flatMap(_.set(WhenAddedPage, trustee.entityStart))
-      .flatMap(_.set(ProvisionalYesNoPage, trustee.provisional))
+  }
+
+  private def populateUserAnswers(userAnswers: UserAnswers, trustee: TrusteeOrganisation, index: Int) = {
+    userAnswers.deleteAtPath(pages.trustee.basePath)
+      .flatMap(_.set(IndividualOrBusinessPage, Business))
+      .flatMap(_.set(org.IndexPage, index))
+      .flatMap(_.set(org.NamePage, trustee.name))
+      .flatMap(answers => extractOrgIdentification(trustee.identification, answers))
+      .flatMap(_.set(WhenAddedPage, trustee.entityStart))
   }
 
   private def extractDateOfBirth(dateOfBirth: Option[LocalDate], answers: UserAnswers): Try[UserAnswers] = {
@@ -164,6 +179,24 @@ class CheckDetailsController @Inject()(
     }
   }
 
+  private def extractOrgIdentification(identification: Option[TrustIdentificationOrgType], answers: UserAnswers) = {
+    identification match {
+
+      case Some(TrustIdentificationOrgType(_, Some(utr), None)) =>
+        answers.set(org.UtrYesNoPage, true)
+          .flatMap(_.set(org.UtrPage, utr))
+
+      case Some(TrustIdentificationOrgType(_, None, Some(address))) =>
+        answers.set(org.UtrYesNoPage, false)
+          .flatMap(answers => extractOrgAddress(address, answers))
+
+      case _ =>
+        answers.set(org.UtrYesNoPage, false)
+          .flatMap(_.set(ind.AddressYesNoPage, false))
+
+    }
+  }
+
   private def extractIndAddress(address: Option[Address], answers: UserAnswers) = {
     address match {
       case Some(uk: UkAddress) =>
@@ -176,6 +209,19 @@ class CheckDetailsController @Inject()(
           .flatMap(_.set(ind.NonUkAddressPage, nonUk))
       case _ =>
         answers.set(ind.AddressYesNoPage, false)
+    }
+  }
+
+  private def extractOrgAddress(address: Address, answers: UserAnswers) = {
+    address match {
+      case uk: UkAddress =>
+        answers.set(org.AddressYesNoPage, true)
+          .flatMap(_.set(org.AddressInTheUkYesNoPage, true))
+          .flatMap(_.set(org.UkAddressPage, uk))
+      case nonUk: NonUkAddress =>
+        answers.set(org.AddressYesNoPage, true)
+          .flatMap(_.set(org.AddressInTheUkYesNoPage, false))
+          .flatMap(_.set(org.NonUkAddressPage, nonUk))
     }
   }
 }

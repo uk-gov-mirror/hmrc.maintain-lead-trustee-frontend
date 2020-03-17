@@ -19,7 +19,7 @@ package utils
 import java.time.LocalDate
 
 import base.SpecBase
-import models.{AllTrustees, Name, NationalInsuranceNumber, TrusteeIndividual}
+import models.{AllTrustees, Name, NationalInsuranceNumber, TrustIdentificationOrgType, TrusteeIndividual, TrusteeOrganisation}
 import viewmodels.addAnother.AddRow
 
 class AddATrusteeViewHelperSpec extends SpecBase {
@@ -31,6 +31,14 @@ class AddATrusteeViewHelperSpec extends SpecBase {
       phoneNumber = None,
       identification = Some(NationalInsuranceNumber("JS123456A")),
       address = None,
+      entityStart = LocalDate.parse("2019-02-28"),
+      provisional = true
+    ),
+    TrusteeOrganisation(
+      name = "Trustee Org",
+      phoneNumber = None,
+      email = None,
+      identification = Some(TrustIdentificationOrgType(None, Some("1234567890"), None)),
       entityStart = LocalDate.parse("2019-02-28"),
       provisional = true
     )
@@ -46,17 +54,16 @@ class AddATrusteeViewHelperSpec extends SpecBase {
         rows.complete mustBe Nil
       }
 
-      "generate rows from user answers for trustees" ignore {
-        val rows = new AddATrusteeViewHelper(AllTrustees(None, Nil)).rows
-        rows.inProgress mustBe List(
-          AddRow("First 0 Last 0", typeLabel = "Trustee", "Change details", "#", "Remove", "/maintain-a-trust/trustees/trustee/0/remove"),
-          AddRow("First 1 Last 1", typeLabel = "Trustee", "Change details" ,"#",  "Remove", "/maintain-a-trust/trustees/trustee/1/remove"),
-          AddRow("No name added", typeLabel = "Trustee", "Change details", "#", "Remove","/maintain-a-trust/trustees/trustee/2/remove")
+      "generate rows from user answers for trustees" in {
+        val rows = new AddATrusteeViewHelper(AllTrustees(None, trustees)).rows
+        rows.complete mustBe List(
+          AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "/maintain-a-trust/trustees/trustee/0/check-details", "Remove", "/maintain-a-trust/trustees/trustee/0/remove"),
+          AddRow("Trustee Org", typeLabel = "Trustee Company", "Change details" , "/maintain-a-trust/trustees/trustee/1/check-details", "Remove", "/maintain-a-trust/trustees/trustee/1/remove")
         )
-        rows.complete mustBe Nil
+        rows.inProgress mustBe Nil
       }
 
-      "generate rows complete trustees" in {
+      "generate rows complete trustees" ignore {
         val rows = new AddATrusteeViewHelper(AllTrustees(None, trustees)).rows
         rows.complete mustBe List(
           AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "/maintain-a-trust/trustees/trustee/0/check-details", "Remove", "/maintain-a-trust/trustees/trustee/0/remove")
@@ -65,7 +72,7 @@ class AddATrusteeViewHelperSpec extends SpecBase {
       }
       
       "generate rows from user answers for complete and in progress trustees" ignore {
-        val rows = new AddATrusteeViewHelper(AllTrustees(None, Nil)).rows
+        val rows = new AddATrusteeViewHelper(AllTrustees(None, trustees)).rows
         rows.complete mustBe List(
           AddRow("First Last", typeLabel = "Lead Trustee Individual", "Change details", "#", "Remove","/maintain-a-trust/trustees/trustee/0/remove")
         )
