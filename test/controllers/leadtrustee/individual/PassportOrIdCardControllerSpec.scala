@@ -41,7 +41,7 @@ class PassportOrIdCardControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new CombinedPassportOrIdCardDetailsFormProvider()
-  val form = formProvider.withPrefix("leadtrustee")
+  val form = formProvider.withPrefix("leadtrustee.individual.passportOrIdCardDetails")
 
   lazy val passportDetailsRoute = routes.PassportOrIdCardController.onPageLoad().url
 

@@ -46,6 +46,8 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
   private def promoteTrusteeUrl(utr: String, index: Int) = s"/trusts/promote-trustee/$utr/$index"
 
+  private def amendTrusteeUrl(utr: String, index: Int) = s"/trusts/amend-trustee/$utr/$index"
+
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
 
   override def beforeAll(): Unit = {
@@ -453,6 +455,59 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       application.stop()
     }
 
+  }
+
+  "TrustConnector amendTrustee" must {
+
+    val index = 0
+    val utr = "UTRUTRUTR"
+
+    "Return Ok when the request is successful" in {
+
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        post(urlEqualTo(s"/trusts/amend-trustee/$utr/$index"))
+          .willReturn(ok)
+      )
+
+      val result = connector.amendTrustee(utr, index, arbitraryTrusteeIndividual.arbitrary.sample.get)
+      result.futureValue.status mustBe (OK)
+
+      application.stop()
+    }
+
+    "return Bad Request when the request is unsuccessful" in {
+
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        post(urlEqualTo(s"/trusts/amend-trustee/$utr/$index"))
+          .willReturn(badRequest)
+      )
+
+      val result = connector.amendTrustee(utr, index, arbitraryTrusteeIndividual.arbitrary.sample.get)
+
+      result.map(response => response.status mustBe BAD_REQUEST)
+
+      application.stop()
+    }
   }
 
 }

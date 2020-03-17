@@ -6,6 +6,9 @@
 ->         /trustee/individual              trustee.individual.Routes
 ->         /trustee/organisation            trustee.organisation.Routes
 
+->         /trustee/amend/individual        trustee.amend.individual.Routes
+->         /trustee/amend/organisation      trustee.amend.organisation.Routes
+
 GET        /assets/*file                                                    controllers.Assets.versioned(path="/public", file: Asset)
 
 GET        /language/:lang                                                  controllers.LanguageSwitchController.switchToLanguage(lang: String)
@@ -52,6 +55,11 @@ POST       /trustee/when-was-trustee-added                                  cont
 
 GET        /trustee/check-details                                           controllers.trustee.CheckDetailsController.onPageLoad()
 POST       /trustee/check-details                                           controllers.trustee.CheckDetailsController.onSubmit()
+
+GET        /trustee/:index/check-details                                    controllers.trustee.amend.CheckDetailsController.onPageLoad(index: Int)
+
+GET        /trustee/:index/check-updated-details                            controllers.trustee.amend.CheckDetailsController.onPageLoadUpdated(index: Int)
+POST       /trustee/:index/check-updated-details                            controllers.trustee.amend.CheckDetailsController.onSubmit(index: Int)
 
 GET        /trustee/:index/when-was-trustee-removed                         controllers.trustee.WhenRemovedController.onPageLoad(index: Int)
 POST       /trustee/:index/when-was-trustee-removed                         controllers.trustee.WhenRemovedController.onSubmit(index: Int)

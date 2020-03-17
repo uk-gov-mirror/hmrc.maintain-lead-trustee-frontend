@@ -21,12 +21,14 @@ import play.api.data.FormError
 
 class CombinedPassportOrIdCardFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "leadtrustee.individual.passportOrIdCardDetails.country.error.required"
-  val lengthKey = "leadtrustee.individual.passportOrIdCardDetails.country.error.length"
+  val prefix = "leadtrustee.individual.passportOrIdCardDetails"
+
+  val requiredKey = s"$prefix.country.error.required"
+  val lengthKey = s"$prefix.country.error.length"
   val maxLengthCountryField = 100
   val maxLengthNumberField = 30
 
-  val form = new CombinedPassportOrIdCardDetailsFormProvider().withPrefix("leadtrustee")
+  val form = new CombinedPassportOrIdCardDetailsFormProvider().withPrefix(prefix)
 
   ".country" must {
 

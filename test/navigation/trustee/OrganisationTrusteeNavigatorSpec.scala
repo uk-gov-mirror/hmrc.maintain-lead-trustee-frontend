@@ -25,7 +25,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
   val navigator = new Navigator
 
-  "Individual trustee navigator" when {
+  "Organisation trustee navigator" when {
 
     "Name page -> Do you know UTR page" in {
       navigator.nextPage(NamePage, emptyUserAnswers)
