@@ -33,6 +33,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val maintainATrustOverview = configuration.get[String]("urls.maintainATrustOverview")
 
+  val maintainAlreadyClaimed = configuration.get[String]("urls.maintain.alreadyClaimed")
+
   def verifyIdentityForATrustUrl(utr: String) =
     configuration.get[Service]("microservice.services.verify-your-identity-for-a-trust-frontend").baseUrl + s"/verify-your-identity-for-a-trust/save/$utr"
 
