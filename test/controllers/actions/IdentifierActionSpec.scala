@@ -38,6 +38,10 @@ class IdentifierActionSpec extends SpecBase {
     def onPageLoad() = authAction { _ => Results.Ok }
   }
 
+  class ThrowingHarness(authAction: IdentifierAction) {
+    def onPageLoad() = authAction { _ => throw new IllegalStateException("Thrown by test") }
+  }
+
   lazy val trustsAuth = new TrustsAuthorisedFunctions(mockAuthConnector, appConfig)
 
   private val noEnrollment = Enrolments(Set())
@@ -247,6 +251,23 @@ class IdentifierActionSpec extends SpecBase {
         redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad().url)
         application.stop()
       }
+    }
+  }
+
+  "the invoked block throws an exception" must {
+    "propagate the exception" in {
+
+      val application = applicationBuilder(userAnswers = None).build()
+
+      when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+        .thenReturn(authRetrievals(AffinityGroup.Organisation, agentEnrolment))
+
+      val action = new AuthenticatedIdentifierAction(appConfig, trustsAuth, bodyParsers)
+      val controller = new ThrowingHarness(action)
+      val result = controller.onPageLoad()(fakeRequest)
+
+      assertThrows[IllegalStateException](status(result))
+      application.stop()
     }
   }
 }
