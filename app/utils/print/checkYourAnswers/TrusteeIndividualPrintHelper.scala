@@ -40,7 +40,7 @@ class TrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowConver
         bound.yesNoQuestion(DateOfBirthYesNoPage, "trustee.individual.dateOfBirthYesNo", controllers.trustee.individual.routes.DateOfBirthYesNoController.onPageLoad().url),
         bound.dateQuestion(DateOfBirthPage, "trustee.individual.dateOfBirth", controllers.trustee.individual.routes.DateOfBirthController.onPageLoad().url),
         bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "trustee.individual.nationalInsuranceNumberYesNo", controllers.trustee.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad().url),
-        bound.ninoQuestion(NationalInsuranceNumberPage, "trustee.individual.nationalInsuranceNumber", controllers.trustee.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad().url),
+        bound.ninoQuestion(NationalInsuranceNumberPage, "trustee.individual.nationalInsuranceNumber", controllers.trustee.individual.routes.NationalInsuranceNumberController.onPageLoad().url),
         bound.yesNoQuestion(AddressYesNoPage, "trustee.individual.addressYesNo", controllers.trustee.individual.routes.AddressYesNoController.onPageLoad().url),
         bound.yesNoQuestion(LiveInTheUkYesNoPage, "trustee.individual.liveInTheUkYesNo", controllers.trustee.individual.routes.LiveInTheUkYesNoController.onPageLoad().url),
         bound.addressQuestion(UkAddressPage, "trustee.individual.ukAddress", controllers.trustee.individual.routes.UkAddressController.onPageLoad().url),
