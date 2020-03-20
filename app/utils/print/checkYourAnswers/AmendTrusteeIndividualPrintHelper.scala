@@ -39,7 +39,7 @@ class AmendTrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowC
         bound.yesNoQuestion(DateOfBirthYesNoPage, "trustee.individual.dateOfBirthYesNo", controllers.trustee.amend.individual.routes.DateOfBirthYesNoController.onPageLoad().url),
         bound.dateQuestion(DateOfBirthPage, "trustee.individual.dateOfBirth", controllers.trustee.amend.individual.routes.DateOfBirthController.onPageLoad().url),
         bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "trustee.individual.nationalInsuranceNumberYesNo", controllers.trustee.amend.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad().url),
-        bound.ninoQuestion(NationalInsuranceNumberPage, "trustee.individual.nationalInsuranceNumber", controllers.trustee.amend.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad().url),
+        bound.ninoQuestion(NationalInsuranceNumberPage, "trustee.individual.nationalInsuranceNumber", controllers.trustee.amend.individual.routes.NationalInsuranceNumberController.onPageLoad().url),
         bound.yesNoQuestion(AddressYesNoPage, "trustee.individual.addressYesNo", controllers.trustee.amend.individual.routes.AddressYesNoController.onPageLoad().url),
         bound.yesNoQuestion(LiveInTheUkYesNoPage, "trustee.individual.liveInTheUkYesNo", controllers.trustee.amend.individual.routes.LiveInTheUkYesNoController.onPageLoad().url),
         bound.addressQuestion(UkAddressPage, "trustee.individual.ukAddress", controllers.trustee.amend.individual.routes.UkAddressController.onPageLoad().url),
