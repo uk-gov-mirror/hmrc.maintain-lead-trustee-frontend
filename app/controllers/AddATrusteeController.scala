@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddATrusteeController @Inject()(
                                        override val messagesApi: MessagesApi,
-                                       registrationsRepository: PlaybackRepository,
+                                       repository: PlaybackRepository,
                                        navigator: Navigator,
                                        trust: TrustService,
                                        standardActionSets: StandardActionSets,
@@ -114,7 +114,10 @@ class AddATrusteeController @Inject()(
           },
           {
             case AddATrustee.YesNow =>
-              Future.successful(Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad()))
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.deleteAtPath(pages.trustee.basePath))
+                _ <- repository.set(updatedAnswers)
+              } yield Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad())
             case AddATrustee.YesLater =>
               Future.successful(Redirect(appConfig.maintainATrustOverview))
             case AddATrustee.NoComplete =>

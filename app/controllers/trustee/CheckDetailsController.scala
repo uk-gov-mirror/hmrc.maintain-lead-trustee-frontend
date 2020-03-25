@@ -89,10 +89,8 @@ class CheckDetailsController @Inject()(
   }
 
   private def addTrustee(userAnswers: UserAnswers, t: Trustee)(implicit hc: HeaderCarrier) = {
-    for {
-      _ <- trustConnector.addTrustee(userAnswers.utr, t)
-      updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.trustee.basePath))
-      _ <- sessionRepository.set(updatedUserAnswers)
-    } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+    trustConnector.addTrustee(userAnswers.utr, t).map(_ =>
+      Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+    )
   }
 }
