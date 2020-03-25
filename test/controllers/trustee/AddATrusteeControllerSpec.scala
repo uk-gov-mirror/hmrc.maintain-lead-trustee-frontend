@@ -20,15 +20,21 @@ import java.time.LocalDate
 
 import base.SpecBase
 import connectors.TrustStoreConnector
-import org.mockito.Matchers.any
-import org.mockito.Mockito._
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
-import models.{AddATrustee, AllTrustees, LeadTrustee, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, Trustee, TrusteeIndividual, Trustees}
+import models.IndividualOrBusiness.Individual
+import models.{AddATrustee, AllTrustees, LeadTrustee, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, Trustee, TrusteeIndividual, Trustees, UserAnswers}
+import org.mockito.ArgumentCaptor
+import org.mockito.Matchers.any
+import org.mockito.Mockito._
+import pages.trustee.IndividualOrBusinessPage
+import pages.trustee.individual.NamePage
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TrustService
+import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import viewmodels.addAnother.AddRow
 import views.html.trustee.{AddATrusteeView, AddATrusteeYesNoView}
@@ -396,6 +402,38 @@ class AddATrusteeControllerSpec extends SpecBase {
 
     }
 
+    "Clear out the user answers when starting the add trustee journey and redirect to individual or business page" in {
+
+      val mockTrustService = mock[TrustService]
+
+      val userAnswers = emptyUserAnswers
+        .set(IndividualOrBusinessPage, Individual).success.value
+        .set(NamePage, Name("First", None, "Last")).success.value
+
+      reset(playbackRepository)
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers),
+          affinityGroup = Agent
+        ).overrides(
+          bind[TrustService].toInstance(mockTrustService)
+        ).build()
+
+      when(mockTrustService.getAllTrustees(any())(any(), any())).thenReturn(Future.successful(AllTrustees(None, Nil)))
+      when(playbackRepository.set(any())).thenReturn(Future.successful(true))
+
+      val request = FakeRequest(POST, submitAnotherRoute)
+        .withFormUrlEncodedBody(("value", AddATrustee.YesNow.toString))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.trustee.routes.IndividualOrBusinessController.onPageLoad().url
+
+      val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(playbackRepository).set(uaCaptor.capture)
+      uaCaptor.getValue.data mustBe Json.obj()
+    }
 
   }
 }
