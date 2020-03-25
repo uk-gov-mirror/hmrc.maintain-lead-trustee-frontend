@@ -19,7 +19,7 @@ package controllers.trustee
 import java.time.LocalDate
 
 import base.SpecBase
-import connectors.{TrustConnector, TrustStoreConnector}
+import connectors.TrustStoreConnector
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
 import models.IndividualOrBusiness.Individual
