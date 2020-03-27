@@ -35,8 +35,7 @@
 
         @components.input_yes_no(
             field = form("value"),
-            legend = messages("trustee.individual.addressYesNo.heading", trusteeName),
-            headingIsLegend = true
+            label = messages("trustee.individual.addressYesNo.heading", trusteeName)
         )
 
         @components.submit_button()
