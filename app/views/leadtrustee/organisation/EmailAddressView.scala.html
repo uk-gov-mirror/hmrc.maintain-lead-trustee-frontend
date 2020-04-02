@@ -23,7 +23,7 @@
 
 @(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = s"${errorPrefix(form)} ${messages("leadtrustee.organisation.emailAddress.title", name)}") {
+@main_template(title = s"${errorPrefix(form)} ${messages("leadtrustee.organisation.emailAddress.title")}") {
 
     @formHelper(action = EmailAddressController.onSubmit(), 'autoComplete -> "off") {
 
