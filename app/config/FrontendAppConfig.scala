@@ -26,7 +26,7 @@ import play.api.mvc.Call
 class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
-  private val contactFormServiceIdentifier = "maintain-lead-trustee-frontend"
+  private val contactFormServiceIdentifier = "trusts"
 
   def claimATrustUrl(utr: String) =
     configuration.get[Service]("microservice.services.claim-a-trust-frontend").baseUrl + s"/claim-a-trust/save/$utr"
