@@ -27,7 +27,7 @@ class DateRemovedFromTrustFormProviderSpec extends DateBehaviours {
   private val max = LocalDate.now(ZoneOffset.UTC)
   private val trustStartDate = LocalDate.of(2020, 1, 1)
 
-  val form = new DateRemovedFromTrustFormProvider().withPrefixAndTrustStartDate("trustee.whenRemoved", trustStartDate)
+  val form = new DateRemovedFromTrustFormProvider().withPrefixAndEntityStartDate("trustee.whenRemoved", trustStartDate)
 
   ".value" should {
 

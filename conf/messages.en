@@ -574,4 +574,4 @@ trustee.whenRemoved.error.required.two = The date the trustee was removed from t
 trustee.whenRemoved.error.required = The date the trustee was removed from the trust must include {0}
 trustee.whenRemoved.error.invalid = Enter a real date when the trustee was removed from the trust
 trustee.whenRemoved.error.future = The date the trustee was removed from the trust must be today or in the past
-trustee.whenRemoved.error.past = The date the trustee was was removed from trust cannot be before the start date of the trust
+trustee.whenRemoved.error.past = The date the trustee was removed must be on or after the date they were added
