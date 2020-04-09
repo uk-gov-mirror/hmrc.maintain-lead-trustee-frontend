@@ -38,7 +38,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
   private def getLeadTrusteeUrl(utr: String): String = s"/trusts/$utr/transformed/lead-trustee"
 
-  private def getTrustStartDateUrl(utr: String): String = s"/trusts/$utr/trust-start-date"
+  private def getTrustStartDateUrl(utr: String): String = s"/trusts/$utr/trust-details"
 
   private def getTrusteesUrl(utr: String) = s"/trusts/$utr/transformed/trustees"
 
@@ -190,9 +190,24 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
     "must return trust start date" in {
       val utr = "1000000007"
-      val json = Json.obj(
-        "startDate" -> "2019-06-01"
-      )
+
+      val json = Json.parse(
+        """
+          |{
+          | "startDate": "1920-03-28",
+          | "lawCountry": "AD",
+          | "administrationCountry": "GB",
+          | "residentialStatus": {
+          |   "uk": {
+          |     "scottishLaw": false,
+          |     "preOffShore": "AD"
+          |   }
+          | },
+          | "typeOfTrust": "Will Trust or Intestacy Trust",
+          | "deedOfVariation": "Previously there was only an absolute interest under the will",
+          | "interVivos": false
+          |}
+          |""".stripMargin)
 
       val application = applicationBuilder()
         .configure(
@@ -213,7 +228,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       whenReady(processed) { startDate =>
         startDate mustBe TrustStartDate(
-          "2019-06-01"
+          "1920-03-28"
         )
       }
       application.stop()
