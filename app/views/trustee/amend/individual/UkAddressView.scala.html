@@ -49,9 +49,15 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("trustee.individual.ukAddress.heading", Some(trusteeName))
+        <fieldset>
 
-        @components.uk_address(form)
+            <legend>
+                @components.heading("trustee.individual.ukAddress.heading", Some(trusteeName))
+            </legend>
+
+            @components.uk_address(form)
+
+        </fieldset>
 
         @components.submit_button()
     }

@@ -33,22 +33,28 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("leadtrustee.individual.name.heading")
+        <fieldset>
 
-        @components.input_text(
-            field = form("firstName"),
-            label = messages("leadtrustee.individual.name.firstName")
-        )
+            <legend>
+                @components.heading("leadtrustee.individual.name.heading")
+            </legend>
 
-        @components.input_text(
-            field = form("middleName"),
-            label = messages("leadtrustee.individual.name.middleName")
-        )
+            @components.input_text(
+                field = form("firstName"),
+                label = messages("leadtrustee.individual.name.firstName")
+            )
 
-        @components.input_text(
-            field = form("lastName"),
-            label = messages("leadtrustee.individual.name.lastName")
-        )
+            @components.input_text(
+                field = form("middleName"),
+                label = messages("leadtrustee.individual.name.middleName")
+            )
+
+            @components.input_text(
+                field = form("lastName"),
+                label = messages("leadtrustee.individual.name.lastName")
+            )
+
+        </fieldset>
 
         @components.submit_button()
     }
