@@ -34,9 +34,15 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("trustee.individual.nonUkAddress.heading", Some(name))
+        <fieldset>
 
-        @components.non_uk_address(form, countryOptions)
+            <legend>
+                @components.heading("trustee.individual.nonUkAddress.heading", Some(name))
+            </legend>
+
+            @components.non_uk_address(form, countryOptions)
+
+        </fieldset>
 
         @components.submit_button()
     }
