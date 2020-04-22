@@ -28,15 +28,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "trusts"
 
-  def claimATrustUrl(utr: String) =
-    configuration.get[Service]("microservice.services.claim-a-trust-frontend").baseUrl + s"/claim-a-trust/save/$utr"
-
   val maintainATrustOverview = configuration.get[String]("urls.maintainATrustOverview")
-
-  val maintainAlreadyClaimed = configuration.get[String]("urls.maintain.alreadyClaimed")
-
-  def verifyIdentityForATrustUrl(utr: String) =
-    configuration.get[Service]("microservice.services.verify-your-identity-for-a-trust-frontend").baseUrl + s"/verify-your-identity-for-a-trust/save/$utr"
 
   private def loadConfig(key: String) = configuration.get[String](key)
 
@@ -47,26 +39,18 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val betaFeedbackUrl = s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier"
   val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
 
-  lazy val agentsSubscriptionsUrl: String = configuration.get[String]("urls.agentSubscriptions")
+  private lazy val agentsSubscriptionsUrl: String = configuration.get[String]("urls.agentSubscriptions")
   lazy val agentServiceRegistrationUrl = s"$agentsSubscriptionsUrl?continue=$loginContinueUrl"
-  lazy val agentInvitationsUrl: String = configuration.get[String]("urls.agentInvitations")
 
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
   lazy val locationCanonicalListNonUK: String = loadConfig("location.canonical.list.nonUK")
 
-  lazy val enrolmentStoreProxyUrl: String = configuration.get[Service]("microservice.services.enrolment-store-proxy").baseUrl
-
-  lazy val relationshipName: String =
-    configuration.get[String]("microservice.services.self.relationship-establishment.name")
-  lazy val relationshipIdentifier: String =
-    configuration.get[String]("microservice.services.self.relationship-establishment.identifier")
-
-  lazy val authUrl: String = configuration.get[Service]("auth").baseUrl
   lazy val loginUrl: String = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   lazy val logoutUrl: String = configuration.get[String]("urls.logout")
 
   lazy val trustsUrl: String = configuration.get[Service]("microservice.services.trusts").baseUrl
+  lazy val trustAuthUrl: String = configuration.get[Service]("microservice.services.trusts-auth").baseUrl
 
   lazy val trustsStoreUrl: String = configuration.get[Service]("microservice.services.trusts-store").baseUrl
 
