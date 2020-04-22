@@ -34,41 +34,70 @@ class AmendTrusteeIndividualPrintHelperSpec extends SpecBase {
 
   "TrusteeIndividualPrintHelper" must {
 
-    "generate individual trustee section for all possible data" in {
+    "generate individual trustee section" when {
+      "all possible data" in {
 
-      val helper = injector.instanceOf[AmendTrusteeIndividualPrintHelper]
+        val helper = injector.instanceOf[AmendTrusteeIndividualPrintHelper]
 
-      val userAnswers = emptyUserAnswers
-        .set(IndividualOrBusinessPage, Individual).success.value
-        .set(NamePage, name).success.value
-        .set(DateOfBirthYesNoPage, true).success.value
-        .set(DateOfBirthPage, LocalDate.of(2010, 10, 10)).success.value
-        .set(NationalInsuranceNumberYesNoPage, true).success.value
-        .set(NationalInsuranceNumberPage, "AA000000A").success.value
-        .set(AddressYesNoPage, true).success.value
-        .set(LiveInTheUkYesNoPage, true).success.value
-        .set(UkAddressPage, trusteeUkAddress).success.value
-        .set(NonUkAddressPage, trusteeNonUkAddress).success.value
-        .set(PassportOrIdCardDetailsYesNoPage, true).success.value
-        .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("GB", "1", LocalDate.of(2030, 10, 10))).success.value
+        val userAnswers = emptyUserAnswers
+          .set(IndividualOrBusinessPage, Individual).success.value
+          .set(NamePage, name).success.value
+          .set(DateOfBirthYesNoPage, true).success.value
+          .set(DateOfBirthPage, LocalDate.of(2010, 10, 10)).success.value
+          .set(NationalInsuranceNumberYesNoPage, true).success.value
+          .set(NationalInsuranceNumberPage, "AA000000A").success.value
+          .set(AddressYesNoPage, true).success.value
+          .set(LiveInTheUkYesNoPage, true).success.value
+          .set(UkAddressPage, trusteeUkAddress).success.value
+          .set(NonUkAddressPage, trusteeNonUkAddress).success.value
+          .set(PassportOrIdCardDetailsYesNoPage, true).success.value
+          .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("GB", "1", LocalDate.of(2030, 10, 10))).success.value
 
-      val result = helper(userAnswers, name.displayName)
-      result mustBe AnswerSection(
-        headingKey = None,
-        rows = Seq(
-          AnswerRow(label = Html(messages("trustee.individual.name.checkYourAnswersLabel")), answer = Html("First Middle Last"), changeUrl = controllers.trustee.amend.individual.routes.NameController.onPageLoad().url),
-          AnswerRow(label = Html(messages("trustee.individual.dateOfBirthYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.amend.individual.routes.DateOfBirthYesNoController.onPageLoad().url),
-          AnswerRow(label = Html(messages("trustee.individual.dateOfBirth.checkYourAnswersLabel", name.displayName)), answer = Html("10 October 2010"), changeUrl = controllers.trustee.amend.individual.routes.DateOfBirthController.onPageLoad().url),
-          AnswerRow(label = Html(messages("trustee.individual.nationalInsuranceNumberYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.amend.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad().url),
-          AnswerRow(label = Html(messages("trustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName)), answer = Html("AA 00 00 00 A"), changeUrl = controllers.trustee.amend.individual.routes.NationalInsuranceNumberController.onPageLoad().url),
-          AnswerRow(label = Html(messages("trustee.individual.addressYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.amend.individual.routes.AddressYesNoController.onPageLoad().url),
-          AnswerRow(label = Html(messages("trustee.individual.liveInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.amend.individual.routes.LiveInTheUkYesNoController.onPageLoad().url),
-          AnswerRow(label = Html(messages("trustee.individual.ukAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = controllers.trustee.amend.individual.routes.UkAddressController.onPageLoad().url),
-          AnswerRow(label = Html(messages("trustee.individual.nonUkAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = controllers.trustee.amend.individual.routes.NonUkAddressController.onPageLoad().url),
-          AnswerRow(label = Html(messages("trustee.individual.passportOrIdCardDetailsYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.amend.individual.routes.PassportOrIdCardDetailsYesNoController.onPageLoad().url),
-          AnswerRow(label = Html(messages("trustee.individual.passportOrIdCardDetails.checkYourAnswersLabel", name.displayName)), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = controllers.trustee.amend.individual.routes.PassportOrIdCardDetailsController.onPageLoad().url)
+        val result = helper(userAnswers, name.displayName)
+        result mustBe AnswerSection(
+          headingKey = None,
+          rows = Seq(
+            AnswerRow(label = Html(messages("trustee.individual.name.checkYourAnswersLabel")), answer = Html("First Middle Last"), changeUrl = controllers.trustee.amend.individual.routes.NameController.onPageLoad().url),
+            AnswerRow(label = Html(messages("trustee.individual.dateOfBirthYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.amend.individual.routes.DateOfBirthYesNoController.onPageLoad().url),
+            AnswerRow(label = Html(messages("trustee.individual.dateOfBirth.checkYourAnswersLabel", name.displayName)), answer = Html("10 October 2010"), changeUrl = controllers.trustee.amend.individual.routes.DateOfBirthController.onPageLoad().url),
+            AnswerRow(label = Html(messages("trustee.individual.nationalInsuranceNumberYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.amend.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad().url),
+            AnswerRow(label = Html(messages("trustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName)), answer = Html("AA 00 00 00 A"), changeUrl = controllers.trustee.amend.individual.routes.NationalInsuranceNumberController.onPageLoad().url),
+            AnswerRow(label = Html(messages("trustee.individual.addressYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.amend.individual.routes.AddressYesNoController.onPageLoad().url),
+            AnswerRow(label = Html(messages("trustee.individual.liveInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.amend.individual.routes.LiveInTheUkYesNoController.onPageLoad().url),
+            AnswerRow(label = Html(messages("trustee.individual.ukAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = controllers.trustee.amend.individual.routes.UkAddressController.onPageLoad().url),
+            AnswerRow(label = Html(messages("trustee.individual.nonUkAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = controllers.trustee.amend.individual.routes.NonUkAddressController.onPageLoad().url),
+            AnswerRow(label = Html(messages("trustee.individual.passportOrIdCardDetailsYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.amend.individual.routes.PassportOrIdCardDetailsYesNoController.onPageLoad().url),
+            AnswerRow(label = Html(messages("trustee.individual.passportOrIdCardDetails.checkYourAnswersLabel", name.displayName)), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = controllers.trustee.amend.individual.routes.PassportOrIdCardDetailsController.onPageLoad().url)
+          )
         )
-      )
+      }
+
+      "partial data" in {
+
+        val helper = injector.instanceOf[AmendTrusteeIndividualPrintHelper]
+
+        val userAnswers = emptyUserAnswers
+          .set(IndividualOrBusinessPage, Individual).success.value
+          .set(NamePage, name).success.value
+          .set(DateOfBirthYesNoPage, true).success.value
+          .set(DateOfBirthPage, LocalDate.of(2010, 10, 10)).success.value
+          .set(NationalInsuranceNumberYesNoPage, false).success.value
+          .set(AddressYesNoPage, false).success.value
+          .set(PassportOrIdCardDetailsYesNoPage, false).success.value
+
+        val result = helper(userAnswers, name.displayName)
+        result mustBe AnswerSection(
+          headingKey = None,
+          rows = Seq(
+            AnswerRow(label = Html(messages("trustee.individual.name.checkYourAnswersLabel")), answer = Html("First Middle Last"), changeUrl = controllers.trustee.amend.individual.routes.NameController.onPageLoad().url),
+            AnswerRow(label = Html(messages("trustee.individual.dateOfBirthYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.amend.individual.routes.DateOfBirthYesNoController.onPageLoad().url),
+            AnswerRow(label = Html(messages("trustee.individual.dateOfBirth.checkYourAnswersLabel", name.displayName)), answer = Html("10 October 2010"), changeUrl = controllers.trustee.amend.individual.routes.DateOfBirthController.onPageLoad().url),
+            AnswerRow(label = Html(messages("trustee.individual.nationalInsuranceNumberYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("No"), changeUrl = controllers.trustee.amend.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad().url),
+            AnswerRow(label = Html(messages("trustee.individual.addressYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("No"), changeUrl = controllers.trustee.amend.individual.routes.AddressYesNoController.onPageLoad().url)
+          )
+        )
+      }
+
     }
   }
 }
