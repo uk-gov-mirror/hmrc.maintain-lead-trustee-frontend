@@ -73,7 +73,6 @@ class TrusteeIndividualExtractor @Inject()() {
 
       case _ =>
         answers.set(ind.NationalInsuranceNumberYesNoPage, false)
-          .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, false))
 
     }
   }

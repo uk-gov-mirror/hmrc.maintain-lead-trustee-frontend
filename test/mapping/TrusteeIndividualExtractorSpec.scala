@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import generators.ModelGenerators
 import models.IndividualOrBusiness.Individual
-import models.{CombinedPassportOrIdCard, Name, NationalInsuranceNumber, TrusteeIndividual, UkAddress, UserAnswers}
+import models._
 import org.scalatest.{FreeSpec, MustMatchers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.trustee.IndividualOrBusinessPage
@@ -124,7 +124,7 @@ class TrusteeIndividualExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
     result.get(LiveInTheUkYesNoPage).get mustBe true
     result.get(UkAddressPage).get mustBe address
     result.get(NonUkAddressPage) mustNot be(defined)
-    result.get(PassportOrIdCardDetailsYesNoPage).get mustBe false
+    result.get(PassportOrIdCardDetailsYesNoPage) must not be defined
     result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
 
   }
