@@ -19,6 +19,7 @@ package services
 import com.google.inject.Inject
 import connectors.{TrustAuthAllowed, TrustAuthConnector, TrustAuthDenied, TrustAuthInternalServerError}
 import models.requests.DataRequest
+import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -33,7 +34,9 @@ class AuthenticationServiceImpl @Inject()(trustAuthConnector: TrustAuthConnector
     trustAuthConnector.authorisedForUtr(utr).flatMap {
       case TrustAuthAllowed => Future.successful(Right(request))
       case TrustAuthDenied(redirectUrl) => Future.successful(Left(Redirect(redirectUrl)))
-      case TrustAuthInternalServerError => Future.successful(Left(InternalServerError))
+      case TrustAuthInternalServerError =>
+        Logger.warn(s"Unable to authenticate with trusts-auth")
+        Future.successful(Left(InternalServerError))
     }
   }
 }
