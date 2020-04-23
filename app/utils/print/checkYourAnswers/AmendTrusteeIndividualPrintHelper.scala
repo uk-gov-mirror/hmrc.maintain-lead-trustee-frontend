@@ -18,7 +18,6 @@ package utils.print.checkYourAnswers
 
 import com.google.inject.Inject
 import models.UserAnswers
-import pages.trustee.amend.individual
 import pages.trustee.amend.individual._
 import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
@@ -35,28 +34,19 @@ class AmendTrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowC
 
     AnswerSection(
       None,
-      {
-        val rows = Seq(
-          bound.nameQuestion(NamePage, "trustee.individual.name", controllers.trustee.amend.individual.routes.NameController.onPageLoad().url),
-          bound.yesNoQuestion(DateOfBirthYesNoPage, "trustee.individual.dateOfBirthYesNo", controllers.trustee.amend.individual.routes.DateOfBirthYesNoController.onPageLoad().url),
-          bound.dateQuestion(DateOfBirthPage, "trustee.individual.dateOfBirth", controllers.trustee.amend.individual.routes.DateOfBirthController.onPageLoad().url),
-          bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "trustee.individual.nationalInsuranceNumberYesNo", controllers.trustee.amend.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad().url),
-          bound.ninoQuestion(NationalInsuranceNumberPage, "trustee.individual.nationalInsuranceNumber", controllers.trustee.amend.individual.routes.NationalInsuranceNumberController.onPageLoad().url),
-          bound.yesNoQuestion(AddressYesNoPage, "trustee.individual.addressYesNo", controllers.trustee.amend.individual.routes.AddressYesNoController.onPageLoad().url),
-          bound.yesNoQuestion(LiveInTheUkYesNoPage, "trustee.individual.liveInTheUkYesNo", controllers.trustee.amend.individual.routes.LiveInTheUkYesNoController.onPageLoad().url),
-          bound.addressQuestion(UkAddressPage, "trustee.individual.ukAddress", controllers.trustee.amend.individual.routes.UkAddressController.onPageLoad().url),
-          bound.addressQuestion(NonUkAddressPage, "trustee.individual.nonUkAddress", controllers.trustee.amend.individual.routes.NonUkAddressController.onPageLoad().url)
-        ).flatten
-
-        userAnswers.get(AddressYesNoPage) match {
-          case Some(true) => rows ++ Seq(
-            bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "trustee.individual.passportOrIdCardDetailsYesNo", controllers.trustee.amend.individual.routes.PassportOrIdCardDetailsYesNoController.onPageLoad().url),
-            bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "trustee.individual.passportOrIdCardDetails", controllers.trustee.amend.individual.routes.PassportOrIdCardDetailsController.onPageLoad().url)
-          ).flatten
-          case _ => rows
-        }
-
-      }
+      Seq(
+        bound.nameQuestion(NamePage, "trustee.individual.name", controllers.trustee.amend.individual.routes.NameController.onPageLoad().url),
+        bound.yesNoQuestion(DateOfBirthYesNoPage, "trustee.individual.dateOfBirthYesNo", controllers.trustee.amend.individual.routes.DateOfBirthYesNoController.onPageLoad().url),
+        bound.dateQuestion(DateOfBirthPage, "trustee.individual.dateOfBirth", controllers.trustee.amend.individual.routes.DateOfBirthController.onPageLoad().url),
+        bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "trustee.individual.nationalInsuranceNumberYesNo", controllers.trustee.amend.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad().url),
+        bound.ninoQuestion(NationalInsuranceNumberPage, "trustee.individual.nationalInsuranceNumber", controllers.trustee.amend.individual.routes.NationalInsuranceNumberController.onPageLoad().url),
+        bound.yesNoQuestion(AddressYesNoPage, "trustee.individual.addressYesNo", controllers.trustee.amend.individual.routes.AddressYesNoController.onPageLoad().url),
+        bound.yesNoQuestion(LiveInTheUkYesNoPage, "trustee.individual.liveInTheUkYesNo", controllers.trustee.amend.individual.routes.LiveInTheUkYesNoController.onPageLoad().url),
+        bound.addressQuestion(UkAddressPage, "trustee.individual.ukAddress", controllers.trustee.amend.individual.routes.UkAddressController.onPageLoad().url),
+        bound.addressQuestion(NonUkAddressPage, "trustee.individual.nonUkAddress", controllers.trustee.amend.individual.routes.NonUkAddressController.onPageLoad().url),
+        bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "trustee.individual.passportOrIdCardDetailsYesNo", controllers.trustee.amend.individual.routes.PassportOrIdCardDetailsYesNoController.onPageLoad().url),
+        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "trustee.individual.passportOrIdCardDetails", controllers.trustee.amend.individual.routes.PassportOrIdCardDetailsController.onPageLoad().url)
+      ).flatten
     )
   }
 }

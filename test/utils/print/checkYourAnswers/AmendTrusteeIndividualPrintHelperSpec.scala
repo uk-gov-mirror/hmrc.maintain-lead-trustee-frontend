@@ -83,7 +83,6 @@ class AmendTrusteeIndividualPrintHelperSpec extends SpecBase {
           .set(DateOfBirthPage, LocalDate.of(2010, 10, 10)).success.value
           .set(NationalInsuranceNumberYesNoPage, false).success.value
           .set(AddressYesNoPage, false).success.value
-          .set(PassportOrIdCardDetailsYesNoPage, false).success.value
 
         val result = helper(userAnswers, name.displayName)
         result mustBe AnswerSection(
