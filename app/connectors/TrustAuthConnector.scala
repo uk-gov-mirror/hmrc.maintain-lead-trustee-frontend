@@ -39,21 +39,32 @@ object TrustAuthInternalServerError extends TrustAuthResponse
 
 @ImplementedBy(classOf[TrustAuthConnectorImpl])
 trait TrustAuthConnector {
+  def authorised()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse]
   def authorisedForUtr(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse]
 }
 
 class TrustAuthConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
   extends TrustAuthConnector {
 
-  val baseUrl: String = config.trustAuthUrl + "/trusts-auth/authorised/"
+  val baseUrl: String = config.trustAuthUrl + "/trusts-auth/authorised"
 
-  override def authorisedForUtr(utr: String)
+  override def authorised()
                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse] = {
-    http.GET[TrustAuthResponseBody](baseUrl + utr).map {
+    http.GET[TrustAuthResponseBody](baseUrl).map {
       case TrustAuthResponseBody(Some(redirectUrl)) => TrustAuthDenied(redirectUrl)
       case _ => TrustAuthAllowed
     }.recoverWith {
       case _ => Future.successful(TrustAuthInternalServerError)
     }
   }
+  override def authorisedForUtr(utr: String)
+                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse] = {
+    http.GET[TrustAuthResponseBody](s"$baseUrl/$utr").map {
+      case TrustAuthResponseBody(Some(redirectUrl)) => TrustAuthDenied(redirectUrl)
+      case _ => TrustAuthAllowed
+    }.recoverWith {
+      case _ => Future.successful(TrustAuthInternalServerError)
+    }
+  }
+
 }
