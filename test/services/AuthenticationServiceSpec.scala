@@ -18,18 +18,19 @@ package services
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.{TrustAuthAllowed, TrustAuthConnector, TrustAuthDenied, TrustAuthInternalServerError}
+import connectors.TrustAuthConnector
 import models.requests.{AgentUser, DataRequest}
+import models.{TrustAuthAllowed, TrustAuthDenied, TrustAuthInternalServerError}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{EitherValues, RecoverMethods}
 import play.api.inject.bind
-import play.api.mvc.{AnyContent, Result}
+import play.api.mvc.AnyContent
+import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
-import play.api.test.Helpers._
 
 import scala.concurrent.Future
 

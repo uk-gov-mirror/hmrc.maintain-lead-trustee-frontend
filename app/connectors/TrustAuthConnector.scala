@@ -19,23 +19,11 @@ package connectors
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
 import javax.inject.Inject
-import play.api.libs.json.{Format, Json}
+import models.{TrustAuthAgentAllowed, TrustAuthAllowed, TrustAuthDenied, TrustAuthInternalServerError, TrustAuthResponse, TrustAuthResponseBody}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
-
-case class TrustAuthResponseBody(redirectUrl: Option[String] = None)
-
-object TrustAuthResponseBody {
-  implicit val format: Format[TrustAuthResponseBody] = Json.format[TrustAuthResponseBody]
-}
-
-sealed trait TrustAuthResponse
-
-object TrustAuthAllowed extends TrustAuthResponse
-case class TrustAuthDenied(redirectUrl: String) extends TrustAuthResponse
-object TrustAuthInternalServerError extends TrustAuthResponse
 
 @ImplementedBy(classOf[TrustAuthConnectorImpl])
 trait TrustAuthConnector {
@@ -50,21 +38,19 @@ class TrustAuthConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConf
 
   override def agentIsAuthorised()
                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse] = {
-    http.GET[TrustAuthResponseBody](s"$baseUrl/agent-authorised").map {
-      case TrustAuthResponseBody(Some(redirectUrl)) => TrustAuthDenied(redirectUrl)
-      case _ => TrustAuthAllowed
-    }.recoverWith {
-      case _ => Future.successful(TrustAuthInternalServerError)
-    }
-  }
-  override def authorisedForUtr(utr: String)
-                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse] = {
-    http.GET[TrustAuthResponseBody](s"$baseUrl/authorised/$utr").map {
-      case TrustAuthResponseBody(Some(redirectUrl)) => TrustAuthDenied(redirectUrl)
-      case _ => TrustAuthAllowed
-    }.recoverWith {
-      case _ => Future.successful(TrustAuthInternalServerError)
-    }
+    mapResponse(http.GET[TrustAuthResponseBody](s"$baseUrl/agent-authorised"))
   }
 
+  override def authorisedForUtr(utr: String)
+                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse] = {
+    mapResponse(http.GET[TrustAuthResponseBody](s"$baseUrl/authorised/$utr"))
+  }
+
+  private def mapResponse(response: Future[TrustAuthResponseBody])(implicit ec: ExecutionContext) = response.map {
+    case TrustAuthResponseBody(Some(redirectUrl), None) => TrustAuthDenied(redirectUrl)
+    case TrustAuthResponseBody(None, Some(arn)) => TrustAuthAgentAllowed(arn)
+    case _ => TrustAuthAllowed
+  }.recoverWith {
+    case _ => Future.successful(TrustAuthInternalServerError)
+  }
 }

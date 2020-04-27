@@ -17,8 +17,9 @@
 package services
 
 import com.google.inject.Inject
-import connectors.{TrustAuthAllowed, TrustAuthConnector, TrustAuthDenied, TrustAuthInternalServerError}
+import connectors.TrustAuthConnector
 import models.requests.DataRequest
+import models.{TrustAuthAllowed, TrustAuthDenied, TrustAuthInternalServerError}
 import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc._
