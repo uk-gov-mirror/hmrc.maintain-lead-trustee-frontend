@@ -33,7 +33,7 @@ class TrustAuthConnectorSpec extends AsyncFreeSpec with MustMatchers with WireMo
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  private val authorisedUrl: String = s"/trusts-auth/authorised"
+  private val authorisedUrl: String = s"/trusts-auth/agent-authorised"
   private def authorisedUrlFor(utr: String): String = s"/trusts-auth/authorised/$utr"
 
   private def responseFromJson(json: JsValue) = {

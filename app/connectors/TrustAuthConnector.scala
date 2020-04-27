@@ -46,11 +46,11 @@ trait TrustAuthConnector {
 class TrustAuthConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
   extends TrustAuthConnector {
 
-  val baseUrl: String = config.trustAuthUrl + "/trusts-auth/authorised"
+  val baseUrl: String = config.trustAuthUrl + "/trusts-auth"
 
   override def agentIsAuthorised()
                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse] = {
-    http.GET[TrustAuthResponseBody](baseUrl).map {
+    http.GET[TrustAuthResponseBody](s"$baseUrl/agent-authorised").map {
       case TrustAuthResponseBody(Some(redirectUrl)) => TrustAuthDenied(redirectUrl)
       case _ => TrustAuthAllowed
     }.recoverWith {
@@ -59,7 +59,7 @@ class TrustAuthConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConf
   }
   override def authorisedForUtr(utr: String)
                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse] = {
-    http.GET[TrustAuthResponseBody](s"$baseUrl/$utr").map {
+    http.GET[TrustAuthResponseBody](s"$baseUrl/authorised/$utr").map {
       case TrustAuthResponseBody(Some(redirectUrl)) => TrustAuthDenied(redirectUrl)
       case _ => TrustAuthAllowed
     }.recoverWith {
