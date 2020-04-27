@@ -17,14 +17,19 @@
 package services
 
 import models.requests.DataRequest
-import play.api.mvc.{Result, Results}
+import play.api.mvc.{Request, Result, Results}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
 class FakeAuthenticationService extends AuthenticationService {
 
-  override def authenticate[A](utr: String)
+  override def authenticateAgent[A]()
+                          (implicit request: Request[A],
+                           hc: HeaderCarrier): Future[Either[Result, Request[A]]]
+  = Future.successful(Right(request))
+
+  override def authenticateForUtr[A](utr: String)
                               (implicit request: DataRequest[A], hc: HeaderCarrier): Future[Either[Result, DataRequest[A]]]
   = Future.successful(Right(request))
 
@@ -32,7 +37,12 @@ class FakeAuthenticationService extends AuthenticationService {
 
 class FakeFailingAuthenticationService extends AuthenticationService {
 
-  override def authenticate[A](utr: String)
+  override def authenticateAgent[A]()
+                                   (implicit request: Request[A],
+                                    hc: HeaderCarrier): Future[Either[Result, Request[A]]]
+  = Future.successful(Left(Results.Unauthorized))
+
+  override def authenticateForUtr[A](utr: String)
                               (implicit request: DataRequest[A], hc: HeaderCarrier): Future[Either[Result, DataRequest[A]]]
   = Future.successful(Left(Results.Unauthorized))
 

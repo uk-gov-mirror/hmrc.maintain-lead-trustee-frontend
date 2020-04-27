@@ -48,7 +48,7 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
   ))
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private implicit val dataRequest = DataRequest[AnyContent](fakeRequest, emptyUserAnswers, AgentUser("internalId", enrolments, "arn"))
+  private implicit val dataRequest = DataRequest[AnyContent](fakeRequest, emptyUserAnswers, AgentUser("internalId", enrolments))
 
   type RetrievalType = Option[String] ~ Option[AffinityGroup] ~ Enrolments
 
@@ -63,7 +63,7 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
         val service = app.injector.instanceOf[AuthenticationService]
 
-        whenReady(service.authenticate[AnyContent](utr)) {
+        whenReady(service.authenticateForUtr[AnyContent](utr)) {
           result =>
             result.right.value mustBe dataRequest
         }
@@ -77,7 +77,7 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
         val service = app.injector.instanceOf[AuthenticationService]
 
-        whenReady(service.authenticate[AnyContent](utr)) {
+        whenReady(service.authenticateForUtr[AnyContent](utr)) {
           result =>
             val r = Future.successful(result.left.value)
             status(r) mustBe SEE_OTHER
@@ -93,7 +93,7 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
         val service = app.injector.instanceOf[AuthenticationService]
 
-        whenReady(service.authenticate[AnyContent](utr)) {
+        whenReady(service.authenticateForUtr[AnyContent](utr)) {
           result =>
             result.left.value.header.status mustBe INTERNAL_SERVER_ERROR
         }

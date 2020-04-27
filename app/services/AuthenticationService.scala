@@ -28,8 +28,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AuthenticationServiceImpl @Inject()(trustAuthConnector: TrustAuthConnector) extends AuthenticationService {
+  override def authenticateAgent[A]()
+                             (implicit request: Request[A],
+                              hc: HeaderCarrier): Future[Either[Result, Request[A]]] = {
+    Future.successful(Left(InternalServerError))
+  }
 
-  override def authenticate[A](utr: String)
+  override def authenticateForUtr[A](utr: String)
                               (implicit request: DataRequest[A], hc: HeaderCarrier): Future[Either[Result, DataRequest[A]]] = {
     trustAuthConnector.authorisedForUtr(utr).flatMap {
       case TrustAuthAllowed => Future.successful(Right(request))
@@ -42,7 +47,10 @@ class AuthenticationServiceImpl @Inject()(trustAuthConnector: TrustAuthConnector
 }
 
 trait AuthenticationService {
-  def authenticate[A](utr: String)
+  def authenticateAgent[A]()
+                     (implicit request: Request[A],
+                      hc: HeaderCarrier): Future[Either[Result, Request[A]]]
+  def authenticateForUtr[A](utr: String)
                      (implicit request: DataRequest[A],
                       hc: HeaderCarrier): Future[Either[Result, DataRequest[A]]]
 }
