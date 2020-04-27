@@ -31,8 +31,13 @@ class AuthenticationServiceImpl @Inject()(trustAuthConnector: TrustAuthConnector
   override def authenticateAgent[A]()
                              (implicit request: Request[A],
                               hc: HeaderCarrier): Future[Either[Result, Request[A]]] = {
-    Future.successful(Left(InternalServerError))
-  }
+    trustAuthConnector.agentIsAuthorised().flatMap {
+      case TrustAuthAllowed => Future.successful(Right(request))
+      case TrustAuthDenied(redirectUrl) => Future.successful(Left(Redirect(redirectUrl)))
+      case TrustAuthInternalServerError =>
+        Logger.warn(s"Unable to authenticate agent with trusts-auth")
+        Future.successful(Left(InternalServerError))
+    }  }
 
   override def authenticateForUtr[A](utr: String)
                               (implicit request: DataRequest[A], hc: HeaderCarrier): Future[Either[Result, DataRequest[A]]] = {
@@ -40,10 +45,11 @@ class AuthenticationServiceImpl @Inject()(trustAuthConnector: TrustAuthConnector
       case TrustAuthAllowed => Future.successful(Right(request))
       case TrustAuthDenied(redirectUrl) => Future.successful(Left(Redirect(redirectUrl)))
       case TrustAuthInternalServerError =>
-        Logger.warn(s"Unable to authenticate with trusts-auth")
+        Logger.warn(s"Unable to authenticate for utr with trusts-auth")
         Future.successful(Left(InternalServerError))
     }
   }
+
 }
 
 trait AuthenticationService {
