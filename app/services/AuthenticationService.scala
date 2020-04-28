@@ -34,7 +34,7 @@ class AuthenticationServiceImpl @Inject()(trustAuthConnector: TrustAuthConnector
     trustAuthConnector.agentIsAuthorised().flatMap {
       case TrustAuthAgentAllowed(arn) => Future.successful(Right(arn))
       case TrustAuthDenied(redirectUrl) => Future.successful(Left(Redirect(redirectUrl)))
-      case TrustAuthInternalServerError =>
+      case _ =>
         Logger.warn(s"Unable to authenticate agent with trusts-auth")
         Future.successful(Left(InternalServerError))
     }  }
@@ -44,7 +44,7 @@ class AuthenticationServiceImpl @Inject()(trustAuthConnector: TrustAuthConnector
     trustAuthConnector.authorisedForUtr(utr).flatMap {
       case TrustAuthAllowed => Future.successful(Right(request))
       case TrustAuthDenied(redirectUrl) => Future.successful(Left(Redirect(redirectUrl)))
-      case TrustAuthInternalServerError =>
+      case _ =>
         Logger.warn(s"Unable to authenticate for utr with trusts-auth")
         Future.successful(Left(InternalServerError))
     }

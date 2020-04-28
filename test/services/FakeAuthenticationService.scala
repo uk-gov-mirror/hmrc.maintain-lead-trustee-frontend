@@ -17,7 +17,7 @@
 package services
 
 import models.requests.DataRequest
-import play.api.mvc.{Request, Result, Results}
+import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future

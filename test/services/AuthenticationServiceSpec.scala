@@ -17,7 +17,6 @@
 package services
 
 import base.SpecBase
-import config.FrontendAppConfig
 import connectors.TrustAuthConnector
 import models.requests.{AgentUser, DataRequest}
 import models.{TrustAuthAgentAllowed, TrustAuthAllowed, TrustAuthDenied, TrustAuthInternalServerError}
