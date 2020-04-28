@@ -67,15 +67,6 @@ timeout.title=Your application will time out soon
 timeout.message=We will reset your application if you do not respond in
 timeout.keep-alive-button=Continue application
 
-createAgentServicesAccount.title = Create an agent services account
-createAgentServicesAccount.heading = Create an agent services account
-createAgentServicesAccount.paragraph1 = Before you can register a trust you will need to create an agent services account. You can do this now.
-createAgentServicesAccount.insetText = You need to be the person responsible for your firm’s tax or administrative matters. The account gives you administrative control over your firm’s access to new HMRC online services.
-createAgentServicesAccount.link = Check the guidance
-createAgentServicesAccount.paragraph2 = to find out what you will need to create an agent services account.
-createAgentServicesAccount.paragraph3 = Once you have created your agent services account, you can carry on with your trust registration.
-createAgentServicesAccount.cta = Create an agent services account
-
 site.address.uk.title = What is the address?
 site.address.uk.heading = What is {0}’s address?
 site.address.uk.line1 = Address line 1

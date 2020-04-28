@@ -28,7 +28,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "trusts"
 
-  val maintainATrustOverview = configuration.get[String]("urls.maintainATrustOverview")
+  val maintainATrustOverview: String = configuration.get[String]("urls.maintainATrustOverview")
 
   private def loadConfig(key: String) = configuration.get[String](key)
 
@@ -38,9 +38,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
   val betaFeedbackUrl = s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier"
   val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
-
-  private lazy val agentsSubscriptionsUrl: String = configuration.get[String]("urls.agentSubscriptions")
-  lazy val agentServiceRegistrationUrl = s"$agentsSubscriptionsUrl?continue=$loginContinueUrl"
 
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
   lazy val locationCanonicalListNonUK: String = loadConfig("location.canonical.list.nonUK")
