@@ -26,7 +26,7 @@ sealed trait User {
   val enrolments: Enrolments
 }
 
-case class AgentUser(internalId: String, enrolments: Enrolments) extends User {
+case class AgentUser(internalId: String, enrolments: Enrolments, agentReferenceNumber: String) extends User {
   override val affinityGroup: AffinityGroup = AffinityGroup.Agent
 }
 

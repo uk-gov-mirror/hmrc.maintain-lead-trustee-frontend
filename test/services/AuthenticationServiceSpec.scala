@@ -20,7 +20,7 @@ import base.SpecBase
 import config.FrontendAppConfig
 import connectors.TrustAuthConnector
 import models.requests.{AgentUser, DataRequest}
-import models.{TrustAuthAllowed, TrustAuthDenied, TrustAuthInternalServerError}
+import models.{TrustAuthAgentAllowed, TrustAuthAllowed, TrustAuthDenied, TrustAuthInternalServerError}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -38,8 +38,6 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
   private val utr = "0987654321"
 
-  private val appConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
-
   private val agentEnrolment = Enrolment("HMRC-AS-AGENT", List(EnrolmentIdentifier("AgentReferenceNumber", "SomeVal")), "Activated", None)
   private val trustsEnrolment = Enrolment("HMRC-TERS-ORG", List(EnrolmentIdentifier("SAUTR", utr)), "Activated", None)
 
@@ -49,7 +47,8 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
   ))
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private implicit val dataRequest: DataRequest[AnyContent] = DataRequest[AnyContent](fakeRequest, emptyUserAnswers, AgentUser("internalId", enrolments))
+  private implicit val dataRequest: DataRequest[AnyContent]
+    = DataRequest[AnyContent](fakeRequest, emptyUserAnswers, AgentUser("internalId", enrolments, "SomeVal"))
 
   type RetrievalType = Option[String] ~ Option[AffinityGroup] ~ Enrolments
 
@@ -106,15 +105,15 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
   "invoking authenticateAgent" when {
     "user is authenticated" must {
       "return the data request" in {
-        when(trustAuthConnector.agentIsAuthorised()(any(), any())).thenReturn(Future.successful(TrustAuthAllowed))
+        when(trustAuthConnector.agentIsAuthorised()(any(), any())).thenReturn(Future.successful(TrustAuthAgentAllowed("SomeARN")))
 
         val app = buildApp
 
         val service = app.injector.instanceOf[AuthenticationService]
 
-        whenReady(service.authenticateAgent[AnyContent]()) {
+        whenReady(service.authenticateAgent()) {
           result =>
-            result.right.value mustBe dataRequest
+            result.right.value mustBe "SomeARN"
         }
       }
     }
@@ -126,7 +125,7 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
         val service = app.injector.instanceOf[AuthenticationService]
 
-        whenReady(service.authenticateAgent[AnyContent]()) {
+        whenReady(service.authenticateAgent()) {
           result =>
             val r = Future.successful(result.left.value)
             status(r) mustBe SEE_OTHER
@@ -142,7 +141,7 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
         val service = app.injector.instanceOf[AuthenticationService]
 
-        whenReady(service.authenticateAgent[AnyContent]()) {
+        whenReady(service.authenticateAgent()) {
           result =>
             result.left.value.header.status mustBe INTERNAL_SERVER_ERROR
         }

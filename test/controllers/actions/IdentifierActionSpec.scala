@@ -24,7 +24,7 @@ import play.api.Application
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, Results}
 import play.api.test.Helpers._
-import services.{AuthenticationService, FakeAuthenticationService, FakeFailingAuthenticationService}
+import services.{AuthenticationService, FakeAuthenticationService}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 
@@ -71,7 +71,7 @@ class IdentifierActionSpec extends SpecBase {
           .thenReturn(authRetrievals(AffinityGroup.Agent, noEnrollment))
 
         val mockAuthService = mock[AuthenticationService]
-        when (mockAuthService.authenticateAgent()(any(), any())).thenReturn(Future.successful(Left(Redirect("test-redirect-url"))))
+        when (mockAuthService.authenticateAgent()(any())).thenReturn(Future.successful(Left(Redirect("test-redirect-url"))))
 
         val action = actionToTest(application, mockAuthService)
 

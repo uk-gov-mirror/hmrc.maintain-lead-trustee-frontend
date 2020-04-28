@@ -48,7 +48,7 @@ class AuthenticatedIdentifierAction @Inject()(
                                (implicit request: Request[A], hc: HeaderCarrier) = {
 
     playbackAuthenticationService.authenticateAgent() flatMap {
-      case Right(request) => block(IdentifierRequest(request, AgentUser(internalId, enrolments)))
+      case Right(arn) => block(IdentifierRequest(request, AgentUser(internalId, enrolments, arn)))
       case Left(result: Result) => Future.successful(result)
     }
   }
