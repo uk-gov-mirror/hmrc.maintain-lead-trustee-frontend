@@ -22,8 +22,6 @@ GET        /logout                                                          cont
 GET        /keep-alive                                                      controllers.SessionTimeoutController.keepAlive
 GET        /timeout                                                         controllers.SessionTimeoutController.timeout
 
-GET        /create-agent-services-account                                   controllers.CreateAgentServicesAccountController.onPageLoad()
-
 GET        /add                                                             controllers.AddATrusteeController.onPageLoad()
 POST       /add                                                             controllers.AddATrusteeController.submitOne()
 POST       /add-another                                                     controllers.AddATrusteeController.submitAnother()
