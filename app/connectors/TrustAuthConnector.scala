@@ -19,7 +19,7 @@ package connectors
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.{TrustAuthAgentAllowed, TrustAuthAllowed, TrustAuthDenied, TrustAuthInternalServerError, TrustAuthResponse, TrustAuthResponseBody}
+import models.{TrustAuthInternalServerError, TrustAuthResponse}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 

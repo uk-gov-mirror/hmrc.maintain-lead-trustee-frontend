@@ -18,12 +18,6 @@ package models
 
 import play.api.libs.json.{Format, Json, Reads, __}
 
-case class TrustAuthResponseBody(redirectUrl: Option[String] = None, arn: Option[String] = None)
-
-object TrustAuthResponseBody {
-  implicit val format: Format[TrustAuthResponseBody] = Json.format[TrustAuthResponseBody]
-}
-
 sealed trait TrustAuthResponse
 object TrustAuthResponse {
   implicit val reads: Reads[TrustAuthResponse] =
