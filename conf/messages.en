@@ -319,6 +319,7 @@ leadtrustee.organisation.emailAddress.error.invalid = Enter a valid email addres
 leadtrustee.organisation.telephoneNumber.title = What is the lead trustee’s telephone number?
 leadtrustee.organisation.telephoneNumber.heading = What is {0}’s telephone number?
 leadtrustee.organisation.telephoneNumber.checkYourAnswersLabel = What is {0}’s telephone number?
+leadtrustee.organisation.telephoneNumber.hint = For international numbers include the country code
 leadtrustee.organisation.telephoneNumber.error.required = Enter the lead trustee’s telephone number
 leadtrustee.organisation.telephoneNumber.error.length = A telephone number must be 100 characters or less
 leadtrustee.organisation.telephoneNumber.error.invalidCharacters = Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192
