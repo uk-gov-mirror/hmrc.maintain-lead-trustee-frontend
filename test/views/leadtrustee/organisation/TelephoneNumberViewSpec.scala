@@ -27,7 +27,7 @@ class TelephoneNumberViewSpec extends StringViewBehaviours {
 
   val messageKeyPrefix = "leadtrustee.organisation.telephoneNumber"
 
-  val form = new TelephoneNumberFormProvider().withPrefix(messageKeyPrefix)
+  val form: Form[String] = new TelephoneNumberFormProvider().withPrefix(messageKeyPrefix)
 
   val name = "Lead Trustee"
 
@@ -43,5 +43,10 @@ class TelephoneNumberViewSpec extends StringViewBehaviours {
     behave like pageWithBackLink(applyView(form))
 
     behave like stringPage(form, applyView, messageKeyPrefix, Some(name), routes.TelephoneNumberController.onSubmit().url)
+
+    "display hint text" in {
+      val doc = asDocument(applyView(form))
+      assertContainsText(doc, messages(s"site.telephone_number.hint"))
+    }
   }
 }
