@@ -46,7 +46,7 @@ class TelephoneNumberViewSpec extends StringViewBehaviours {
 
     "display hint text" in {
       val doc = asDocument(applyView(form))
-      assertContainsText(doc, messages(s"$messageKeyPrefix.hint"))
+      assertContainsText(doc, messages(s"site.telephone_number.hint"))
     }
   }
 }
