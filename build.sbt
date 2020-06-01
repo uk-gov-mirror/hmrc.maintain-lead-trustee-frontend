@@ -1,13 +1,10 @@
-import play.sbt.routes.RoutesKeys
-import sbt.Def
-import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings
-import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
+
 
 lazy val appName: String = "maintain-lead-trustee-frontend"
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin, SbtArtifactory)
+  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
     DefaultBuildSettings.scalaSettings,
     DefaultBuildSettings.defaultSettings(),
