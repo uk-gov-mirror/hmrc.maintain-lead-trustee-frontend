@@ -25,7 +25,7 @@ import java.time.LocalDate
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -34,7 +34,7 @@ import views.html.RemoveIndexView
 
 import scala.concurrent.Future
 
-class RemoveTrusteeControllerSpec extends SpecBase with PropertyChecks with ScalaFutures {
+class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
 
   val messagesPrefix = "removeATrustee"
 

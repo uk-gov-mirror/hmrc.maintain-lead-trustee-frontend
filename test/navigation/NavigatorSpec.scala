@@ -23,10 +23,10 @@ import controllers.routes.IndexController
 import generators.Generators
 import models.TrusteeType._
 import models.UserAnswers
-import org.scalatest.prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 
-class NavigatorSpec extends SpecBase with PropertyChecks with Generators {
+class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   implicit val navigator = new Navigator
 
