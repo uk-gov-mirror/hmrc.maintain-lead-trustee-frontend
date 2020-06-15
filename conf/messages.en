@@ -16,6 +16,7 @@ site.date.hint = For example, 31 3 1980
 site.telephone_number.hint = For international numbers include the country code
 site.inprogress = In Progress
 site.complete = Completed
+site.error = Error:
 
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
