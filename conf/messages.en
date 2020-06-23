@@ -42,10 +42,6 @@ error.required = Please enter a value
 error.summary.title = There is a problem
 error.postcodeInvalid = Enter a real postcode
 
-index.title = maintain-lead-trustee-frontend
-index.heading = maintain-lead-trustee-frontend
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
-
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.
@@ -54,7 +50,7 @@ unableToRemove.heading = How to remove a lead trustee: step by step
 unableToRemove.title = How to remove a lead trustee: step by step
 unableToRemove.paragraph.1 = You cannot remove a lead trustee directly. You must follow these steps:
 unableToRemove.paragraph.2 = You must first
-unableToRemove.paragraph.3 =You will also be asked to provide some additional details.
+unableToRemove.paragraph.3 = You will also be asked to provide some additional details.
 unableToRemove.paragraph.4 = Once you have selected a new lead trustee, {0} will remain on the trust as trustee.
 unableToRemove.paragraph.5 = If {0} is no longer a trustee for the trust, you will now be able to remove this trustee.
 unableToRemove.link = select a trustee to become the new lead trustee
@@ -65,9 +61,9 @@ unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
 #timeout dialog
-timeout.title=Your application will time out soon
-timeout.message=We will reset your application if you do not respond in
-timeout.keep-alive-button=Continue application
+timeout.title = Your application will time out soon
+timeout.message = We will reset your application if you do not respond in
+timeout.keep-alive-button = Continue application
 
 site.address.uk.title = What is the address?
 site.address.uk.heading = What is {0}’s address?
@@ -222,7 +218,7 @@ leadtrustee.individual.passportOrIdCardDetails.heading = What are {0}’s passpo
 leadtrustee.individual.passportOrIdCardDetails.checkYourAnswersLabel = What are {0}’s passport or ID card details?
 leadtrustee.individual.passportOrIdCardDetails.country = Country of issue
 leadtrustee.individual.passportOrIdCardDetails.country.error.required = Enter the lead trustee’s passport or ID card country of issue
-leadtrustee.individual.passportOrIdCardDetails.country.error.length = The the lead trustee’s passport or ID card country of issue must be 100 characters or less
+leadtrustee.individual.passportOrIdCardDetails.country.error.length = The lead trustee’s passport or ID card country of issue must be 100 characters or less
 leadtrustee.individual.passportOrIdCardDetails.number = Passport or ID card number
 leadtrustee.individual.passportOrIdCardDetails.number.error.required = Enter the lead trustee’s passport or ID card number
 leadtrustee.individual.passportOrIdCardDetails.number.error.length = Passport or ID card number must be 30 characters or less
@@ -282,8 +278,8 @@ leadtrustee.organisation.name.error.length = Business name must be 56 characters
 leadtrustee.organisation.name.error.invalidFormat = Business name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 leadtrustee.organisation.name.checkYourAnswersLabel = What is the business’s name?
 
-leadtrustee.organisation.utr.title = What is the lead trustee’s Unique Taxpayer Reference (UTR) number?
-leadtrustee.organisation.utr.heading = What is {0}’s Unique Taxpayer Reference (UTR) number?
+leadtrustee.organisation.utr.title = What is the lead trustee’s Unique Taxpayer Reference (UTR)?
+leadtrustee.organisation.utr.heading = What is {0}’s Unique Taxpayer Reference (UTR)?
 leadtrustee.organisation.utr.error.required = Enter the trustee’s Unique Taxpayer Reference
 leadtrustee.organisation.utr.error.length = Unique Taxpayer Reference must be a 10 digit number
 leadtrustee.organisation.utr.error.invalidCharacters = Enter the trust’s Unique Taxpayer Reference in the correct format
@@ -291,7 +287,7 @@ leadtrustee.organisation.utr.hint = This is 10 numbers, for example 1234567890. 
 leadtrustee.organisation.utr.hint.reader = This is 10 numbers, for example 1 2 3 4 5 6 7 8 9 0. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
 leadtrustee.organisation.utr.p1 = You can
 leadtrustee.organisation.utr.link = find a lost UTR number (opens in a new window or tab)
-leadtrustee.organisation.utr.checkYourAnswersLabel = What is {0}’s Unique Taxpayer Reference (UTR) number?
+leadtrustee.organisation.utr.checkYourAnswersLabel = What is {0}’s Unique Taxpayer Reference (UTR)?
 
 leadtrustee.organisation.addressInTheUkYesNo.title = Is the lead trustee’s address in the UK?
 leadtrustee.organisation.addressInTheUkYesNo.heading = Is {0}’s address in the UK?
@@ -499,7 +495,7 @@ trustee.organisation.utr.hint = This is 10 numbers, for example 1234567890. It w
 trustee.organisation.utr.hint.reader = This is 10 numbers, for example 1 2 3 4 5 6 7 8 9 0. It will be on tax returns and other letters about Corporation Tax. It may be called ‘reference’, ‘UTR’ or ‘official use’.
 trustee.organisation.utr.p1 = You can
 trustee.organisation.utr.link = find a lost UTR number (opens in a new window or tab)
-trustee.organisation.utr.checkYourAnswersLabel = What is {0}’s Unique Taxpayer Reference (UTR) number?
+trustee.organisation.utr.checkYourAnswersLabel = What is {0}’s Unique Taxpayer Reference (UTR)?
 
 trustee.organisation.addressYesNo.checkYourAnswersLabel = Do you know {0}’s address?
 trustee.organisation.addressYesNo.title = Do you know the trustee’s address?
