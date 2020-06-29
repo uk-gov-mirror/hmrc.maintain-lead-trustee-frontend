@@ -34,10 +34,11 @@
         @components.error_summary(form.errors)
 
         @components.input_text(
-          field = form("value"),
-          label = messages("leadtrustee.organisation.telephoneNumber.heading", name),
-          hint = Some(messages("site.telephone_number.hint")),
-          headingIsLabel = true
+            field = form("value"),
+            label = messages("leadtrustee.organisation.telephoneNumber.heading", name),
+            hint = Some(messages("site.telephone_number.hint")),
+            headingIsLabel = true,
+            inputMode = Some("numeric")
         )
 
         @components.submit_button()
