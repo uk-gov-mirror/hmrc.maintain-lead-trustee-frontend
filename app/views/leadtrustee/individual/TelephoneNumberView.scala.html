@@ -33,12 +33,12 @@
 
         @components.error_summary(form.errors)
 
-        @components.input_text(
+        @components.input_tele(
             field = form("value"),
             label = messages("leadtrustee.individual.telephoneNumber.heading", name),
             hint = Some(messages("site.telephone_number.hint")),
-            headingIsLabel = true,
-            inputMode = Some("numeric")
+            labelAsHeading = true,
+            labelClass = Some("heading-large")
         )
 
         @components.submit_button()
