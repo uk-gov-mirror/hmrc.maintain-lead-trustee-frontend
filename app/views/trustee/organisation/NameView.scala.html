@@ -27,7 +27,7 @@
     title = s"${errorPrefix(form)} ${messages("trustee.organisation.name.title")}"
     ) {
 
-    @formHelper(action = NameController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = NameController.onSubmit(), 'autoComplete -> "on") {
 
         @components.back_link()
 
@@ -37,7 +37,8 @@
           field = form("value"),
           label = messages("trustee.organisation.name.heading"),
           headingIsLabel = true,
-          labelClass=Some("heading-large")
+          labelClass=Some("heading-large"),
+          autocomplete = Some("name")
         )
 
         @components.submit_button()
