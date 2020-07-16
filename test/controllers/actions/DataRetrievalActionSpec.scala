@@ -16,23 +16,19 @@
 
 package controllers.actions
 
-import java.time.LocalDate
-
 import base.SpecBase
-import models.{UserAnswers, UtrSession}
+import models.UtrSession
 import models.requests.{IdentifierRequest, OptionalDataRequest, OrganisationUser}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import repositories.{ActiveSessionRepository, PlaybackRepository}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.auth.core.Enrolments
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures {
-
-  private val mockSessionRepository = mock[ActiveSessionRepository]
 
   class Harness(playbackRepository: PlaybackRepository) extends DataRetrievalActionImpl(mockSessionRepository, playbackRepository) {
     def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)

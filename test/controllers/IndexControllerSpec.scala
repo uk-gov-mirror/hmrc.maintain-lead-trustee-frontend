@@ -37,7 +37,9 @@ class IndexControllerSpec extends SpecBase {
 
       when(mockTrustConnector.getTrustStartDate(any())(any(), any())).thenReturn(Future.successful(TrustStartDate("2019-06-01")))
 
-      val application = applicationBuilder(userAnswers = None).overrides(bind[TrustConnector].toInstance(mockTrustConnector)).build()
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[TrustConnector].toInstance(mockTrustConnector))
+        .build()
 
       val request = FakeRequest(GET, routes.IndexController.onPageLoad("UTRUTRUTR").url)
 

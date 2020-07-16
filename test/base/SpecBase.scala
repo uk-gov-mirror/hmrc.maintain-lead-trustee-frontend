@@ -26,7 +26,7 @@ import org.scalatestplus.play.guice._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.BodyParsers
-import repositories.PlaybackRepository
+import repositories.{ActiveSessionRepository, PlaybackRepository}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
 import utils.TestUserAnswers
 
@@ -49,7 +49,8 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
         bind[PlaybackIdentifierAction].toInstance(new FakePlaybackIdentifierAction()),
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
         bind[DataRequiredAction].to[DataRequiredActionImpl],
-        bind[PlaybackRepository].toInstance(playbackRepository)
+        bind[PlaybackRepository].toInstance(playbackRepository),
+        bind[ActiveSessionRepository].toInstance(mockSessionRepository)
       )
 }
 
