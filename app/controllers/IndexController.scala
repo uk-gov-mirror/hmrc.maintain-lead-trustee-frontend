@@ -16,8 +16,6 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import connectors.TrustConnector
 import controllers.actions.IdentifierAction
 import javax.inject.Inject
