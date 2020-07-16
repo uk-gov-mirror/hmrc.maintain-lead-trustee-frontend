@@ -25,12 +25,13 @@ import queries.{Gettable, Settable}
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
-                              internalAuthId: String,
+                              internalId: String,
                               utr: String,
                               whenTrustSetup: LocalDate,
                               data: JsObject = Json.obj(),
                               updatedAt: LocalDateTime = LocalDateTime.now
                             ) {
+
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
     Reads.at(page.path).reads(data) match {
       case JsSuccess(value, _) => Some(value)
@@ -92,6 +93,8 @@ final case class UserAnswers(
 }
 
 object UserAnswers {
+
+  def newSession(id: String, utr: String, date: String) = UserAnswers(id, utr, LocalDate.parse(date))
 
   implicit lazy val reads: Reads[UserAnswers] = {
 

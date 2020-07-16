@@ -16,15 +16,13 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import connectors.TrustConnector
 import controllers.actions.IdentifierAction
 import javax.inject.Inject
-import models.UserAnswers
+import models.{UserAnswers, UtrSession}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.PlaybackRepository
+import repositories.{ActiveSessionRepository, PlaybackRepository}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
@@ -32,22 +30,20 @@ import scala.concurrent.ExecutionContext
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  identifierAction: IdentifierAction,
-                                 repo : PlaybackRepository,
+                                 activeSessionRepository: ActiveSessionRepository,
+                                 cacheRepository : PlaybackRepository,
                                  connector: TrustConnector)
                                (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(utr: String): Action[AnyContent] =
-
-    identifierAction.async {
+  def onPageLoad(utr: String): Action[AnyContent] = identifierAction.async {
       implicit request =>
-        connector.getTrustStartDate(utr) flatMap { date =>
-          repo.set(UserAnswers(
-            request.user.internalId,
-            utr,
-            LocalDate.parse(date.startDate)
-          )).map(_ =>
-            Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-          )
-        }
+
+        val session = UtrSession(request.user.internalId, utr)
+
+        for {
+          date <- connector.getTrustStartDate(utr)
+          _ <- activeSessionRepository.set(session)
+          _ <- cacheRepository.set(UserAnswers.newSession(request.user.internalId, utr, date.startDate))
+        } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
     }
 }

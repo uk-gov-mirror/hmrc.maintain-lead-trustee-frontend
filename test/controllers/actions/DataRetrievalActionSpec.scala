@@ -16,10 +16,8 @@
 
 package controllers.actions
 
-import java.time.LocalDate
-
 import base.SpecBase
-import models.UserAnswers
+import models.UtrSession
 import models.requests.{IdentifierRequest, OptionalDataRequest, OrganisationUser}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
@@ -32,18 +30,40 @@ import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  class Harness(playbackRepository: PlaybackRepository) extends DataRetrievalActionImpl(playbackRepository) {
+  class Harness(playbackRepository: PlaybackRepository) extends DataRetrievalActionImpl(mockSessionRepository, playbackRepository) {
     def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 
   "Data Retrieval Action" when {
+
+    "there is no active session" must {
+
+      "set userAnswers to 'None' in the request" in {
+
+        val playbackRepository = mock[PlaybackRepository]
+
+        when(mockSessionRepository.get("id")).thenReturn(Future.successful(None))
+
+        val action = new Harness(playbackRepository)
+
+        val futureResult = action.callTransform(IdentifierRequest(fakeRequest, OrganisationUser("id", Enrolments(Set()))))
+
+        whenReady(futureResult) { result =>
+          result.userAnswers.isEmpty mustBe true
+        }
+      }
+
+    }
 
     "there is no data in the cache" must {
 
       "set userAnswers to 'None' in the request" in {
 
         val playbackRepository = mock[PlaybackRepository]
-        when(playbackRepository.get("id")) thenReturn Future(None)
+
+        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(UtrSession("id", "utr"))))
+        when(playbackRepository.get("id", "utr")) thenReturn Future(None)
+
         val action = new Harness(playbackRepository)
 
         val futureResult = action.callTransform(new IdentifierRequest(fakeRequest, OrganisationUser("id", Enrolments(Set()))))
@@ -59,7 +79,10 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
       "build a userAnswers object and add it to the request" in {
 
         val playbackRepository = mock[PlaybackRepository]
-        when(playbackRepository.get("id")) thenReturn Future(Some(new UserAnswers("id", "UTRUTRUTR", LocalDate.now())))
+
+        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(UtrSession("id", "utr"))))
+        when(playbackRepository.get("id", "utr")) thenReturn Future(Some(emptyUserAnswers))
+
         val action = new Harness(playbackRepository)
 
         val futureResult = action.callTransform(new IdentifierRequest(fakeRequest, OrganisationUser("id", Enrolments(Set()))))
