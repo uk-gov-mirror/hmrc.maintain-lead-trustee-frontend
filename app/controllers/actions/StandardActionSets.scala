@@ -17,16 +17,20 @@
 package controllers.actions
 
 import javax.inject.Inject
-import models.requests.DataRequest
+import models.requests.{DataRequest, IdentifierRequest}
 import play.api.mvc.{ActionBuilder, AnyContent}
 
 class StandardActionSets @Inject()(identify: IdentifierAction,
-                                   getData: DataRetrievalAction,
+                                   val saveSession: SaveActiveSessionProvider,
+                                   val getData: DataRetrievalAction,
                                    requireData: DataRequiredAction,
                                    playbackIdentifier: PlaybackIdentifierAction
                                   ){
-  val identifiedUserWithData: ActionBuilder[DataRequest, AnyContent] = identify andThen getData andThen requireData
 
-  val verifiedForUtr: ActionBuilder[DataRequest, AnyContent] = identifiedUserWithData andThen playbackIdentifier
+  def auth: ActionBuilder[IdentifierRequest, AnyContent] = identify
+
+  def identifiedUserWithData: ActionBuilder[DataRequest, AnyContent] = identify andThen getData andThen requireData
+
+  def verifiedForUtr: ActionBuilder[DataRequest, AnyContent] = identifiedUserWithData andThen playbackIdentifier
 
 }

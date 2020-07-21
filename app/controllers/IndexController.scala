@@ -17,32 +17,27 @@
 package controllers
 
 import connectors.TrustConnector
-import controllers.actions.IdentifierAction
+import controllers.actions.StandardActionSets
 import javax.inject.Inject
-import models.{UserAnswers, UtrSession}
+import models.UserAnswers
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.{ActiveSessionRepository, PlaybackRepository}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
-                                 identifierAction: IdentifierAction,
-                                 activeSessionRepository: ActiveSessionRepository,
+                                 actions: StandardActionSets,
                                  cacheRepository : PlaybackRepository,
                                  connector: TrustConnector)
                                (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(utr: String): Action[AnyContent] = identifierAction.async {
+  def onPageLoad(utr: String): Action[AnyContent] = (actions.auth andThen actions.saveSession(utr)).async {
       implicit request =>
-
-        val session = UtrSession(request.user.internalId, utr)
-
         for {
           date <- connector.getTrustStartDate(utr)
-          _ <- activeSessionRepository.set(session)
           _ <- cacheRepository.set(UserAnswers.newSession(request.user.internalId, utr, date.startDate))
         } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
     }
