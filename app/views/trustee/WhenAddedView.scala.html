@@ -24,7 +24,7 @@
 @(form: Form[_], trusteeName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("trustee.whenAdded.title")}"
+    title = s"${errorPrefix(form)}${messages("trustee.whenAdded.title")}"
 ) {
 
     @formHelper(action = WhenAddedController.onSubmit(), 'autoComplete -> "off") {
