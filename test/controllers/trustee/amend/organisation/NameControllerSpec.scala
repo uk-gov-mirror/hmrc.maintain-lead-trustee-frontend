@@ -73,7 +73,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("My Trust"))(fakeRequest, messages).toString
+        view(form.fill("My Trust"))(request, messages).toString
 
       application.stop()
     }
@@ -119,7 +119,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm)(request, messages).toString
 
        application.stop()
     }

@@ -71,7 +71,7 @@ class UnableToRemoveControllerSpec extends SpecBase   {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(name)(fakeRequest, messages).toString
+        view(name)(request, messages).toString
 
       application.stop()
     }

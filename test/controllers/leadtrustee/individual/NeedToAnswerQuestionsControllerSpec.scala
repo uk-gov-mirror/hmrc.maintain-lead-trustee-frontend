@@ -43,7 +43,7 @@ class NeedToAnswerQuestionsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(leadTrustee.displayName)(fakeRequest, messages).toString
+        view(leadTrustee.displayName)(request, messages).toString
 
       application.stop()
     }

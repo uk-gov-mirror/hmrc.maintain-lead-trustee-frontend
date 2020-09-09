@@ -62,7 +62,7 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, trusteeName)(fakeRequest, messages).toString
+        view(form, trusteeName)(request, messages).toString
 
       application.stop()
     }
@@ -82,7 +82,7 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), trusteeName)(fakeRequest, messages).toString
+        view(form.fill(true), trusteeName)(request, messages).toString
 
       application.stop()
     }
@@ -127,7 +127,7 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, trusteeName)(fakeRequest, messages).toString
+        view(boundForm, trusteeName)(request, messages).toString
 
       application.stop()
     }
