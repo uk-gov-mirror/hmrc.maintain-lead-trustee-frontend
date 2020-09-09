@@ -56,7 +56,7 @@ class NonUkAddressControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, name)(fakeRequest, messages).toString
+        view(form, countryOptions, name)(request, messages).toString
 
       application.stop()
     }
@@ -78,7 +78,7 @@ class NonUkAddressControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(fakeAddress), countryOptions, name)(fakeRequest, messages).toString
+        view(form.fill(fakeAddress), countryOptions, name)(request, messages).toString
 
       application.stop()
     }
@@ -125,7 +125,7 @@ class NonUkAddressControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, name)(fakeRequest, messages).toString
+        view(boundForm, countryOptions, name)(request, messages).toString
 
       application.stop()
     }

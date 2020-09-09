@@ -56,7 +56,7 @@ class LeadTrusteeOrTrusteeControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(fakeRequest, messages).toString
+        view(form)(request, messages).toString
 
       application.stop()
     }
@@ -76,7 +76,7 @@ class LeadTrusteeOrTrusteeControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(LeadTrustee))(fakeRequest, messages).toString
+        view(form.fill(LeadTrustee))(request, messages).toString
 
       application.stop()
     }
@@ -121,7 +121,7 @@ class LeadTrusteeOrTrusteeControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm)(request, messages).toString
 
       application.stop()
     }

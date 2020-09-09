@@ -89,7 +89,7 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(messagesPrefix, form, index, content, formRoute)(fakeRequest, messages).toString
+      contentAsString(result) mustEqual view(messagesPrefix, form, index, content, formRoute)(request, messages).toString
 
       application.stop()
     }
@@ -194,7 +194,7 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(messagesPrefix, boundForm, index, content, formRoute)(fakeRequest, messages).toString
+        view(messagesPrefix, boundForm, index, content, formRoute)(request, messages).toString
 
       application.stop()
     }

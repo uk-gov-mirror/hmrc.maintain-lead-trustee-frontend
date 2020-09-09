@@ -65,7 +65,7 @@ class PassportOrIdCardControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, "Lead Trustee", countryOptions.options)(fakeRequest, messages).toString
+        view(form, "Lead Trustee", countryOptions.options)(request, messages).toString
 
       application.stop()
     }
@@ -85,7 +85,7 @@ class PassportOrIdCardControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(CombinedPassportOrIdCard("GB", "NUMBER", LocalDate.of(2040, 12, 31))), "Lead Trustee", countryOptions.options)(fakeRequest, messages).toString
+        view(form.fill(CombinedPassportOrIdCard("GB", "NUMBER", LocalDate.of(2040, 12, 31))), "Lead Trustee", countryOptions.options)(request, messages).toString
 
       application.stop()
     }
@@ -138,7 +138,7 @@ class PassportOrIdCardControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, "Lead Trustee", countryOptions.options)(fakeRequest, messages).toString
+        view(boundForm, "Lead Trustee", countryOptions.options)(request, messages).toString
 
       application.stop()
     }
