@@ -102,7 +102,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(answerSection, sendDetailsRoute)(fakeRequest, messages).toString
+          view(answerSection, sendDetailsRoute)(request, messages).toString
       }
 
       "redirect to the the next page" in {
@@ -157,7 +157,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(answerSection, sendDetailsOrgRoute)(fakeRequest, messages).toString
+          view(answerSection, sendDetailsOrgRoute)(request, messages).toString
       }
 
       "redirect to the the next page" in {

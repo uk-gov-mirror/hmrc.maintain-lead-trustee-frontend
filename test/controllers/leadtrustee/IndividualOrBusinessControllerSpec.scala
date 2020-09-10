@@ -55,7 +55,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(fakeRequest, messages).toString
+        view(form)(request, messages).toString
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -73,7 +73,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Individual))(fakeRequest, messages).toString
+        view(form.fill(Individual))(request, messages).toString
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -114,7 +114,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm)(request, messages).toString
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {

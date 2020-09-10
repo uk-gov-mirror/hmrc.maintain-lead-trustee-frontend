@@ -168,7 +168,7 @@ class AddATrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(yesNoForm)(fakeRequest, messages).toString
+          view(yesNoForm)(request, messages).toString
 
         application.stop()
       }
@@ -215,7 +215,7 @@ class AddATrusteeControllerSpec extends SpecBase {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm)(fakeRequest, messages).toString
+          view(boundForm)(request, messages).toString
 
         application.stop()
       }
@@ -240,7 +240,7 @@ class AddATrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addTrusteeForm ,Nil, trusteeRows, isLeadTrusteeDefined = false, heading = "The trust has 2 trustees")(fakeRequest, messages).toString
+          view(addTrusteeForm ,Nil, trusteeRows, isLeadTrusteeDefined = false, heading = "The trust has 2 trustees")(request, messages).toString
 
         application.stop()
       }
@@ -338,7 +338,7 @@ class AddATrusteeControllerSpec extends SpecBase {
             trusteeRows,
             isLeadTrusteeDefined = false,
             heading = "The trust has 2 trustees"
-          )(fakeRequest, messages).toString
+          )(request, messages).toString
 
         application.stop()
       }
@@ -364,7 +364,7 @@ class AddATrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addTrusteeForm ,Nil, leadAndTrusteeRows, isLeadTrusteeDefined = true, heading = "The trust has 3 trustees")(fakeRequest, messages).toString
+          view(addTrusteeForm ,Nil, leadAndTrusteeRows, isLeadTrusteeDefined = true, heading = "The trust has 3 trustees")(request, messages).toString
 
         application.stop()
       }
@@ -397,7 +397,7 @@ class AddATrusteeControllerSpec extends SpecBase {
             leadAndTrusteeRows,
             isLeadTrusteeDefined = true,
             heading = "The trust has 3 trustees"
-          )(fakeRequest, messages).toString
+          )(request, messages).toString
 
         application.stop()
       }
@@ -466,7 +466,7 @@ class AddATrusteeControllerSpec extends SpecBase {
       val content = contentAsString(result)
 
       content mustEqual
-        view(trusteeRows.inProgress, trusteeRows.complete, isLeadTrusteeDefined = true, "The trust has 26 trustees")(fakeRequest, messages).toString
+        view(trusteeRows.inProgress, trusteeRows.complete, isLeadTrusteeDefined = true, "The trust has 26 trustees")(request, messages).toString
       content must include("You cannot add another trustee as you have entered a maximum of 26.")
       content must include("You can add another trustee by removing an existing one, or write to HMRC with details of any additional trustees.")
 

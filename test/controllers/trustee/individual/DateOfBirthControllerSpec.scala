@@ -75,7 +75,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, messages("trusteeName.defaultText"))(fakeRequest, messages).toString
+        view(form, messages("trusteeName.defaultText"))(getRequest, messages).toString
 
       application.stop()
     }
@@ -139,7 +139,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(request, messages).toString
 
       application.stop()
     }
