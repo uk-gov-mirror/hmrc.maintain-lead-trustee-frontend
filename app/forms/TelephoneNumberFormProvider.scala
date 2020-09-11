@@ -28,6 +28,7 @@ class TelephoneNumberFormProvider @Inject() extends Mappings {
         .verifying(
           firstError(
             nonEmptyString("value", s"$prefix.error.required"),
+            minLength(6, s"$prefix.error.invalidCharacters"),
             regexp(Validation.telephoneRegex, s"$prefix.error.invalidCharacters")
           )
         )
