@@ -23,6 +23,8 @@ GET        /keep-alive                                                      cont
 GET        /timeout                                                         controllers.SessionTimeoutController.timeout
 
 GET        /add                                                             controllers.AddATrusteeController.onPageLoad()
+GET        /add-another                                                     controllers.AddATrusteeController.onPageLoad()
+GET        /complete                                                        controllers.AddATrusteeController.onPageLoad()
 POST       /add                                                             controllers.AddATrusteeController.submitOne()
 POST       /add-another                                                     controllers.AddATrusteeController.submitAnother()
 POST       /complete                                                        controllers.AddATrusteeController.submitComplete()
