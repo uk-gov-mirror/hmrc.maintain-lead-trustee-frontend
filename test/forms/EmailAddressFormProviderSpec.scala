@@ -17,16 +17,16 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
 class EmailAddressFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "leadtrustee.individual.emailAddress.error.required"
-  val lengthKey = "leadtrustee.individual.emailAddress.error.length"
-  val maxLength = 35
+  val prefix = "leadtrustee.individual.emailAddress"
+  val requiredKey = s"$prefix.error.required"
+  val lengthKey = s"$prefix.error.length"
 
-  val form = new EmailAddressFormProvider().withPrefix("leadtrustee.individual.emailAddress")
+  val form: Form[String] = new EmailAddressFormProvider().withPrefix(prefix)
 
   ".value" must {
 
@@ -36,13 +36,6 @@ class EmailAddressFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       RegexpGen.from(Validation.emailRegex)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
