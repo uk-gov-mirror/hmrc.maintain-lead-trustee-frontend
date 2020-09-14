@@ -25,7 +25,6 @@ class TelephoneNumberFormProviderSpec extends StringFieldBehaviours {
   val prefix = "leadtrustee.individual.telephoneNumber"
   val requiredKey = s"$prefix.error.required"
   val invalidKey = s"$prefix.error.invalidCharacters"
-  val minLength = 6
 
   val form: Form[String] = new TelephoneNumberFormProvider().withPrefix(prefix)
 
@@ -36,7 +35,7 @@ class TelephoneNumberFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(Validation.telephoneRegex)
+      validDataGenerator = RegexpGen.from(Validation.telephoneRegex)
     )
 
     behave like mandatoryField(
@@ -51,19 +50,10 @@ class TelephoneNumberFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey, Seq(fieldName))
     )
 
-    behave like fieldWithRegexpWithGenerator(
+    behave like telephoneNumberField(
       form,
       fieldName,
-      regexp = Validation.telephoneRegex,
-      generator = stringsLongerThan(minLength),
-      error = FormError(fieldName, invalidKey, Seq(Validation.telephoneRegex))
-    )
-
-    behave like fieldWithMinLength(
-      form = form,
-      fieldName = fieldName,
-      minLength = minLength,
-      lengthError = FormError(fieldName, invalidKey, Seq(minLength))
+      requiredError = FormError(fieldName, invalidKey, Seq(fieldName))
     )
   }
 }
