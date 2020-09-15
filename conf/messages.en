@@ -25,7 +25,6 @@ checkYourAnswers.heading = Check Your Answers
 date.day = Day
 date.month = Month
 date.year = Year
-date.hidden =  in numbers
 
 error.browser.title.prefix = Error:
 error.boolean = Please give an answer
