@@ -24,7 +24,6 @@ checkYourAnswers.heading=Gwiriwch eich atebion
 date.day=Diwrnod
 date.month=Mis
 date.year=Blwyddyn
-date.hidden=mewn rhifau
 
 error.browser.title.prefix=Gwall:
 error.boolean=Rhowch ateb
