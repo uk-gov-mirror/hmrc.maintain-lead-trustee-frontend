@@ -53,7 +53,7 @@ class TelephoneNumberFormProviderSpec extends StringFieldBehaviours {
     behave like telephoneNumberField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, invalidKey, Seq(fieldName))
+      invalidError = FormError(fieldName, invalidKey, Seq(fieldName))
     )
   }
 }
