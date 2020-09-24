@@ -22,6 +22,8 @@ import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.domain.Nino
 import wolfendale.scalacheck.regexp.RegexpGen
+import uk.gov.hmrc.emailaddress.EmailAddress
+import org.scalacheck.Arbitrary.arbitrary
 
 trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours {
 
@@ -105,7 +107,7 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
 
   def telephoneNumberField(form: Form[_],
                            fieldName: String,
-                           requiredError: FormError): Unit = {
+                           invalidError: FormError): Unit = {
 
     "not bind strings which do not match valid telephone number format" in {
       val generator = RegexpGen.from(Validation.telephoneRegex)
@@ -113,9 +115,25 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
         string =>
           whenever(!TelephoneNumber.isValid(string)) {
             val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-            result.errors shouldEqual Seq(requiredError)
+            result.errors shouldEqual Seq(invalidError)
           }
       }
     }
   }
+
+  def emailAddressField(form: Form[_],
+                        fieldName: String,
+                        invalidError: FormError): Unit = {
+
+    s"not bind strings which do not match valid email address format " in {
+      forAll(nonEmptyString) {
+        string =>
+          whenever(!EmailAddress.isValid(string)) {
+            val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+            result.errors shouldEqual Seq(invalidError)
+          }
+      }
+    }
+  }
+
 }
