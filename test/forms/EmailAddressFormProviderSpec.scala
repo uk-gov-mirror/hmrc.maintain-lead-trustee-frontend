@@ -25,6 +25,8 @@ class EmailAddressFormProviderSpec extends StringFieldBehaviours {
   val prefix = "leadtrustee.individual.emailAddress"
   val requiredKey = s"$prefix.error.required"
   val lengthKey = s"$prefix.error.length"
+  val invalidKey = s"$prefix.error.invalid"
+  val maxLength = 256
 
   val form: Form[String] = new EmailAddressFormProvider().withPrefix(prefix)
 
@@ -35,13 +37,26 @@ class EmailAddressFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(Validation.emailRegex)
+      stringsWithMaxLength(maxLength)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like emailAddressField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey, Seq(fieldName))
     )
   }
 }

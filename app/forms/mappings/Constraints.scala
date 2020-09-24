@@ -20,6 +20,7 @@ import java.time.LocalDate
 
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.emailaddress.EmailAddress
 
 trait Constraints {
 
@@ -138,6 +139,14 @@ trait Constraints {
   protected def isTelephoneNumberValid(value: String, errorKey: String): Constraint[String] =
     Constraint {
       case str if TelephoneNumber.isValid(str)=>
+        Valid
+      case _ =>
+        Invalid(errorKey, value)
+    }
+
+  protected def isEmailValid(value: String, errorKey: String): Constraint[String] =
+    Constraint {
+      case str if EmailAddress.isValid(str)=>
         Valid
       case _ =>
         Invalid(errorKey, value)
