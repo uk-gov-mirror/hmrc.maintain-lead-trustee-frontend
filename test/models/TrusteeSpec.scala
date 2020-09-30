@@ -19,7 +19,7 @@ package models
 import java.time.LocalDate
 
 import org.scalatest.{FreeSpec, MustMatchers}
-import play.api.libs.json.{JsError, JsResult, JsSuccess, Json, __}
+import play.api.libs.json.{JsSuccess, Json, __}
 
 class TrusteeSpec extends FreeSpec with MustMatchers {
   "Can read individual with no id from json" in {

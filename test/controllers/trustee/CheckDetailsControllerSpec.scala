@@ -21,16 +21,14 @@ import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustConnector
 import models.IndividualOrBusiness.Individual
-import models.{Name, UkAddress, UserAnswers}
-import org.mockito.ArgumentCaptor
+import models.{Name, UkAddress}
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.individual.{NamePage, UkAddressPage}
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
@@ -96,8 +94,6 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           .build()
 
       when(mockTrustConnector.addTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
-
-      val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass[UserAnswers](classOf[UserAnswers])
 
       val request = FakeRequest(POST, submitDetailsRoute)
 

@@ -16,7 +16,6 @@
 
 package views.leadtrustee.individual
 
-import controllers.leadtrustee.individual.routes
 import forms.UkAddressFormProvider
 import models.{Name, UkAddress}
 import play.api.data.Form

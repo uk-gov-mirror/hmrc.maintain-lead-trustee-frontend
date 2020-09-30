@@ -18,7 +18,7 @@ package views.leadtrustee.individual
 
 import controllers.leadtrustee.individual.routes
 import forms.NonUkAddressFormProvider
-import models.{NonUkAddress, NormalMode}
+import models.NonUkAddress
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours

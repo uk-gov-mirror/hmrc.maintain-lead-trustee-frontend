@@ -19,9 +19,7 @@ package utils.print.checkYourAnswers
 import java.time.LocalDate
 
 import base.SpecBase
-import models.IndividualOrBusiness.Individual
-import models.{CombinedPassportOrIdCard, IdCard, IdentificationDetailOptions, Name, NonUkAddress, Passport, UkAddress}
-import pages.leadtrustee.IndividualOrBusinessPage
+import models.{CombinedPassportOrIdCard, Name, NonUkAddress, UkAddress}
 import pages.leadtrustee.individual._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}

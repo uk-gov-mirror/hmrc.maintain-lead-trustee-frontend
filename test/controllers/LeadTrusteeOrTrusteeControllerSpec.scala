@@ -18,7 +18,6 @@ package controllers
 
 import base.SpecBase
 import forms.TrusteeTypeFormProvider
-import models.IndividualOrBusiness.Individual
 import models.TrusteeType._
 import navigation.Navigator
 import org.mockito.Matchers.any
@@ -30,7 +29,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
 import views.html.LeadTrusteeOrTrusteeView
-import views.html.trustee.IndividualOrBusinessView
 
 import scala.concurrent.Future
 

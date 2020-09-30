@@ -30,8 +30,6 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   with Inside with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
@@ -45,8 +43,6 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   private def removeTrusteeUrl(utr: String) = s"/trusts/$utr/trustees/remove"
 
   private def promoteTrusteeUrl(utr: String, index: Int) = s"/trusts/promote-trustee/$utr/$index"
-
-  private def amendTrusteeUrl(utr: String, index: Int) = s"/trusts/amend-trustee/$utr/$index"
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
 

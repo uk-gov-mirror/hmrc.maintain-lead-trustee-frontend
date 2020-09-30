@@ -19,13 +19,12 @@ package controllers.leadtrustee.individual
 import base.SpecBase
 import forms.YesNoFormProvider
 import models.Name
-import navigation.{FakeNavigator, Navigator}
+import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.leadtrustee.individual.{LiveInTheUkYesNoPage, NamePage}
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository

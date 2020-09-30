@@ -19,7 +19,7 @@ package models
 import java.time.LocalDate
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, JsError, JsPath, JsResult, JsSuccess, JsValue, Json, JsonValidationError, Reads, Writes, __}
+import play.api.libs.json._
 
 
 sealed trait Trustee {

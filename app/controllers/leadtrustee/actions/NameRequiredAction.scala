@@ -16,7 +16,7 @@
 
 package controllers.leadtrustee.actions
 
-import controllers.{actions, leadtrustee}
+import controllers.leadtrustee
 import javax.inject.Inject
 import models.requests.DataRequest
 import pages.leadtrustee._
