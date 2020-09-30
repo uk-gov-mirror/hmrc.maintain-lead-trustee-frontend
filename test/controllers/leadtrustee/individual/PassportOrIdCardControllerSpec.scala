@@ -19,8 +19,8 @@ package controllers.leadtrustee.individual
 import java.time.LocalDate
 
 import base.SpecBase
-import forms.{CombinedPassportOrIdCardDetailsFormProvider, PassportDetailsFormProvider}
-import models.{CombinedPassportOrIdCard, Name, Passport}
+import forms.CombinedPassportOrIdCardDetailsFormProvider
+import models.{CombinedPassportOrIdCard, Name}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when

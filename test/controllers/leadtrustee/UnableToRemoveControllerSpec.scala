@@ -17,24 +17,17 @@
 package controllers.leadtrustee
 
 
-import java.time.LocalDateTime
-
-import base.SpecBase
-import models.IdentificationDetailOptions.Passport
-import models.{CombinedPassportOrIdCard, IndividualIdentification, LeadTrusteeIndividual, Name, UkAddress}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import pages.trustee.individual.DateOfBirthPage
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import repositories.PlaybackRepository
-import services.TrustService
-import views.html.leadtrustee.UnableToRemoveView
 import java.time.LocalDate
 
-import connectors.TrustConnector
-import navigation.Navigator
+import base.SpecBase
+import models.{CombinedPassportOrIdCard, LeadTrusteeIndividual, Name, UkAddress}
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import play.api.inject.bind
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import services.TrustService
+import views.html.leadtrustee.UnableToRemoveView
 
 import scala.concurrent.Future
 

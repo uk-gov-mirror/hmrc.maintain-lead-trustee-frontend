@@ -16,12 +16,12 @@
 
 package controllers.trustee
 
+import java.time.LocalDate
+
 import base.SpecBase
 import connectors.TrustConnector
 import forms.RemoveIndexFormProvider
 import models.{Name, NationalInsuranceNumber, TrusteeIndividual, Trustees}
-import java.time.LocalDate
-
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -29,7 +29,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HttpResponse
 import views.html.RemoveIndexView
 
 import scala.concurrent.Future
@@ -71,8 +71,6 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
     "return OK and the correct view for a GET" in {
 
       val index = 0
-
-      implicit val hc : HeaderCarrier = HeaderCarrier()
 
       when(mockConnector.getTrustees(any())(any(), any()))
         .thenReturn(Future.successful(Trustees(trustees)))

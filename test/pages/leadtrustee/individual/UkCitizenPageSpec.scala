@@ -18,7 +18,7 @@ package pages.leadtrustee.individual
 
 import java.time.LocalDate
 
-import models.{CombinedPassportOrIdCard, IdCard, IdentificationDetailOptions, Passport}
+import models.CombinedPassportOrIdCard
 import pages.behaviours.PageBehaviours
 
 class UkCitizenPageSpec extends PageBehaviours {

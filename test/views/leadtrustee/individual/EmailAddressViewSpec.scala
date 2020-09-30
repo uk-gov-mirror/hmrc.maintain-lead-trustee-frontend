@@ -18,7 +18,6 @@ package views.leadtrustee.individual
 
 import controllers.leadtrustee.individual.routes
 import forms.EmailAddressFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours

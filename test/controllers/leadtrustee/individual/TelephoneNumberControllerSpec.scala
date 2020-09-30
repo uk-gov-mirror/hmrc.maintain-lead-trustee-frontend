@@ -18,7 +18,7 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import forms.TelephoneNumberFormProvider
-import models.{Name, NormalMode, UserAnswers}
+import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when

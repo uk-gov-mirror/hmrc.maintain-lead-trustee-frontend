@@ -17,8 +17,8 @@
 package models
 
 import org.joda.time.DateTime
-import play.api.libs.json.{Format, Json, Reads, Writes, __}
 import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
 case class RemoveTrusteeIndividual(lineNo: Option[String],
                                    bpMatchStatus: Option[String],
@@ -30,7 +30,7 @@ case class RemoveTrusteeIndividual(lineNo: Option[String],
 
 object RemoveTrusteeIndividual {
 
-  implicit val dateFormat: Format[DateTime] = Format[DateTime](Reads.jodaDateReads(dateTimePattern), Writes.jodaDateWrites(dateTimePattern))
+  implicit val dateFormat: Format[DateTime] = Format[DateTime](JodaReads.jodaDateReads(dateTimePattern), JodaWrites.jodaDateWrites(dateTimePattern))
 
   implicit val trusteeIndividualTypeFormat: Format[RemoveTrusteeIndividual] = Json.format[RemoveTrusteeIndividual]
 

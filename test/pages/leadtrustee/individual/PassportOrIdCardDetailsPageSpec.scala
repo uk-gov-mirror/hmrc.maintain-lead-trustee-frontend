@@ -16,7 +16,7 @@
 
 package pages.leadtrustee.individual
 
-import models.{CombinedPassportOrIdCard, Passport}
+import models.CombinedPassportOrIdCard
 import pages.behaviours.PageBehaviours
 
 

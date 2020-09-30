@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import generators.ModelGenerators
 import models.IndividualOrBusiness.Business
-import models.{Name, TrustIdentificationOrgType, TrusteeOrganisation, UkAddress, UserAnswers}
+import models.{TrustIdentificationOrgType, TrusteeOrganisation, UkAddress, UserAnswers}
 import org.scalatest.{FreeSpec, MustMatchers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.trustee.IndividualOrBusinessPage

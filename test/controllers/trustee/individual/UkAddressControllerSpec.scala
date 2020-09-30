@@ -18,7 +18,7 @@ package controllers.trustee.individual
 
 import base.SpecBase
 import forms.UkAddressFormProvider
-import models.{Name, NormalMode, UkAddress}
+import models.{Name, UkAddress}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when

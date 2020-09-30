@@ -18,7 +18,6 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.{Form, FormError}
-import wolfendale.scalacheck.regexp.RegexpGen
 
 class EmailAddressFormProviderSpec extends StringFieldBehaviours {
 
