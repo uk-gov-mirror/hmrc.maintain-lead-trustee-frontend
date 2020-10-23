@@ -31,8 +31,8 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
           typeLabel = messages(s"entities.trustee.individual"),
           changeLabel = messages("site.change.details"),
           changeUrl = controllers.trustee.amend.routes.CheckDetailsController.onPageLoad(index).url,
-          removeLabel =  messages("site.delete"),
-          removeUrl = controllers.trustee.routes.RemoveTrusteeController.onPageLoad(index).url
+          removeLabel =  Some(messages("site.delete")),
+          removeUrl = Some(controllers.trustee.routes.RemoveTrusteeController.onPageLoad(index).url)
         )
       case (trusteeOrg : TrusteeOrganisation, index) =>
         AddRow(
@@ -40,8 +40,8 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
           typeLabel = messages(s"entities.trustee.organisation"),
           changeLabel = messages("site.change.details"),
           changeUrl = controllers.trustee.amend.routes.CheckDetailsController.onPageLoad(index).url,
-          removeLabel =  messages("site.delete"),
-          removeUrl = controllers.trustee.routes.RemoveTrusteeController.onPageLoad(index).url
+          removeLabel =  Some(messages("site.delete")),
+          removeUrl = Some(controllers.trustee.routes.RemoveTrusteeController.onPageLoad(index).url)
         )
     }
   }
@@ -55,8 +55,8 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
           typeLabel = messages(s"entities.leadtrustee.individual"),
           changeLabel = messages("site.change.details"),
           changeUrl = controllers.leadtrustee.routes.CheckDetailsController.onPageLoad().url,
-          removeLabel =  messages("site.delete"),
-          removeUrl = controllers.leadtrustee.routes.UnableToRemoveController.onPageLoad().url
+          removeLabel =  None,
+          removeUrl = None
         ))
       case Some(leadIOrg: LeadTrusteeOrganisation) =>
         List(AddRow(
@@ -64,8 +64,8 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
           typeLabel = messages(s"entities.leadtrustee.organisation"),
           changeLabel = messages("site.change.details"),
           changeUrl = controllers.leadtrustee.routes.CheckDetailsController.onPageLoad().url,
-          removeLabel =  messages("site.delete"),
-          removeUrl = controllers.leadtrustee.routes.UnableToRemoveController.onPageLoad().url
+          removeLabel =  None,
+          removeUrl = None
         ))
       case _ => Nil
     }

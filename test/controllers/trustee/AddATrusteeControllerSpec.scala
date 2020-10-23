@@ -55,14 +55,14 @@ class AddATrusteeControllerSpec extends SpecBase {
   val yesNoForm = new YesNoFormProvider().withPrefix("addATrusteeYesNo")
 
   val trusteeRows = List(
-    AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "/maintain-a-trust/trustees/trustee/0/check-details", "Remove", "/maintain-a-trust/trustees/trustee/0/remove"),
-    AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "/maintain-a-trust/trustees/trustee/1/check-details", "Remove", "/maintain-a-trust/trustees/trustee/1/remove")
+    AddRow(name = "First Last", typeLabel = "Trustee Individual", changeLabel = "Change details", changeUrl = "/maintain-a-trust/trustees/trustee/0/check-details", removeLabel = Some("Remove"), removeUrl = Some("/maintain-a-trust/trustees/trustee/0/remove")),
+    AddRow(name = "First Last", typeLabel = "Trustee Individual", changeLabel = "Change details", changeUrl = "/maintain-a-trust/trustees/trustee/1/check-details", removeLabel = Some("Remove"), removeUrl = Some("/maintain-a-trust/trustees/trustee/1/remove"))
   )
 
   val leadAndTrusteeRows = List(
-    AddRow("Lead First Last", typeLabel = "Lead Trustee Individual", "Change details", "/maintain-a-trust/trustees/lead-trustee/details","Remove", "/maintain-a-trust/trustees/lead-trustee/unable-to-remove"),
-    AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "/maintain-a-trust/trustees/trustee/0/check-details", "Remove", "/maintain-a-trust/trustees/trustee/0/remove"),
-    AddRow("First Last", typeLabel = "Trustee Individual", "Change details", "/maintain-a-trust/trustees/trustee/1/check-details", "Remove", "/maintain-a-trust/trustees/trustee/1/remove")
+    AddRow(name = "Lead First Last", typeLabel = "Lead Trustee Individual", changeLabel = "Change details", changeUrl = "/maintain-a-trust/trustees/lead-trustee/details",removeLabel =  None, removeUrl = None),
+    AddRow(name = "First Last", typeLabel = "Trustee Individual", changeLabel = "Change details", changeUrl = "/maintain-a-trust/trustees/trustee/0/check-details", removeLabel = Some("Remove"), removeUrl = Some("/maintain-a-trust/trustees/trustee/0/remove")),
+    AddRow(name = "First Last", typeLabel = "Trustee Individual", changeLabel = "Change details", changeUrl = "/maintain-a-trust/trustees/trustee/1/check-details", removeLabel = Some("Remove"), removeUrl = Some("/maintain-a-trust/trustees/trustee/1/remove"))
   )
 
   private val leadTrusteeIndividual = Some(LeadTrusteeIndividual(
