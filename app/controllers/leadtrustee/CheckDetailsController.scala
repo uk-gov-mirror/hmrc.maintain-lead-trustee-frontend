@@ -30,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.print.checkYourAnswers.{LeadTrusteeIndividualPrintHelper, LeadTrusteeOrganisationPrintHelper}
 import views.html.leadtrustee.CheckDetailsView
 import pages.leadtrustee.{individual => lind, organisation => lorg}
+import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -49,6 +50,8 @@ class CheckDetailsController @Inject()(
                                         )(implicit val executionContext: ExecutionContext)
 
   extends FrontendBaseController with I18nSupport {
+
+  private val logger = Logger(getClass)
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
@@ -70,6 +73,9 @@ class CheckDetailsController @Inject()(
           } yield {
             renderOrganisationLeadTrustee(updatedAnswers)
           }
+        case _ =>
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] Unable to retrieve Lead Trustee from trusts")
+          throw new RuntimeException("unable to retrieve lead trustee from trusts service")
       }
   }
 
@@ -104,12 +110,18 @@ class CheckDetailsController @Inject()(
   def onSubmitIndividual(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
         leadTrusteeIndMapper.getFromUserAnswers(request.userAnswers) match {
-          case None => Future.successful(InternalServerError)
+          case None =>
+            logger.error(s"[Session ID: ${utils.Session.id(hc)}]" +
+              s"[UTR: ${request.userAnswers.utr}] unable to build lead trustee individual from user answers," +
+              s" cannot continue with submitting transform")
+            Future.successful(InternalServerError)
           case Some(lt) =>
             request.userAnswers.get(lind.IndexPage) match {
               case None =>
+                logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] amending lead trustee")
                 amendLeadTrustee(request.userAnswers, lt)
               case Some(index) =>
+                logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] promoting lead trustee")
                 promoteTrustee(request.userAnswers, lt, index)
             }
         }
@@ -118,12 +130,18 @@ class CheckDetailsController @Inject()(
   def onSubmitOrganisation(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
         leadTrusteeOrgExtractor.mapLeadTrusteeOrganisation(request.userAnswers) match {
-          case None => Future.successful(InternalServerError)
+          case None =>
+            logger.error(s"[Session ID: ${utils.Session.id(hc)}]" +
+              s"[UTR: ${request.userAnswers.utr}] unable to build lead trustee organisation from user answers," +
+              s" cannot continue with submitting transform")
+            Future.successful(InternalServerError)
           case Some(lt) =>
             request.userAnswers.get(lorg.IndexPage) match {
               case None =>
+                logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] amending lead trustee")
                 amendLeadTrustee(request.userAnswers, lt)
               case Some(index) =>
+                logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] promoting lead trustee")
                 promoteTrustee(request.userAnswers, lt, index)
             }
         }

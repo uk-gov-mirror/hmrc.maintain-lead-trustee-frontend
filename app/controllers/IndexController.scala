@@ -20,6 +20,7 @@ import connectors.TrustConnector
 import controllers.actions.StandardActionSets
 import javax.inject.Inject
 import models.UserAnswers
+import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -34,8 +35,12 @@ class IndexController @Inject()(
                                  connector: TrustConnector)
                                (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(getClass)
+
   def onPageLoad(utr: String): Action[AnyContent] = (actions.auth andThen actions.saveSession(utr)).async {
       implicit request =>
+        logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: $utr]" +
+          s" user has started to maintain trustees")
         for {
           date <- connector.getTrustStartDate(utr)
           _ <- cacheRepository.set(UserAnswers.newSession(request.user.internalId, utr, date.startDate))

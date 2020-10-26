@@ -19,9 +19,9 @@ package mapping
 import com.google.inject.Inject
 import models.IndividualOrBusiness.Business
 import models.{Address, LeadTrusteeOrganisation, NonUkAddress, UkAddress, UserAnswers}
-import org.slf4j.LoggerFactory
 import pages.leadtrustee.organisation.UtrPage
 import pages.leadtrustee.{IndividualOrBusinessPage, organisation => ltorg}
+import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsError, JsSuccess, Reads}
 
@@ -29,7 +29,7 @@ import scala.util.{Success, Try}
 
 class LeadTrusteeOrganisationExtractor @Inject()() {
 
-  private val logger = LoggerFactory.getLogger("application." + this.getClass.getCanonicalName)
+  private val logger = Logger(getClass)
 
   def mapLeadTrusteeOrganisation(answers: UserAnswers): Option[LeadTrusteeOrganisation] = {
     val readFromUserAnswers: Reads[LeadTrusteeOrganisation] =
@@ -46,7 +46,7 @@ class LeadTrusteeOrganisationExtractor @Inject()() {
 
     answers.data.validate[LeadTrusteeOrganisation](readFromUserAnswers) match {
       case JsError(errors) =>
-        logger.error("Failed to rehydrate LeadTrusteeOrganisation from UserAnswers", errors)
+        logger.error(s"[Mapper][UTR: ${answers.utr}] Failed to rehydrate LeadTrusteeOrganisation from UserAnswers due to $errors")
         None
       case JsSuccess(value, _) => Some(value)
     }
