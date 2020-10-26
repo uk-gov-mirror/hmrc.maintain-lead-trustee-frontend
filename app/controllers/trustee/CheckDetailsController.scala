@@ -20,27 +20,24 @@ import config.FrontendAppConfig
 import connectors.TrustConnector
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
+import handlers.ErrorHandler
 import javax.inject.Inject
 import models.IndividualOrBusiness._
 import models.{Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
-import navigation.Navigator
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.PlaybackRepository
 import services.TrusteeBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.print.checkYourAnswers.{TrusteeIndividualPrintHelper, TrusteeOrganisationPrintHelper}
-import viewmodels.AnswerSection
 import views.html.trustee.CheckDetailsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckDetailsController @Inject()(
                                         override val messagesApi: MessagesApi,
-                                        sessionRepository: PlaybackRepository,
-                                        navigator: Navigator,
                                         standardActionSets: StandardActionSets,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
@@ -50,21 +47,22 @@ class CheckDetailsController @Inject()(
                                         trusteeBuilder: TrusteeBuilder,
                                         trustConnector: TrustConnector,
                                         val appConfig: FrontendAppConfig,
-                                        playbackRepository: PlaybackRepository
+                                        errorHandler: ErrorHandler
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+
+  private val logger = Logger(getClass)
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
-
-
-      val section: AnswerSection = request.userAnswers.get(IndividualOrBusinessPage) match {
+      request.userAnswers.get(IndividualOrBusinessPage) match {
         case Some(Individual) =>
-          indHelper(request.userAnswers, request.trusteeName)
+          Ok(view(indHelper(request.userAnswers, request.trusteeName)))
         case Some(Business) =>
-          orgHelper(request.userAnswers, request.trusteeName)
-        case _ => AnswerSection(None, Seq())
+          Ok(view(orgHelper(request.userAnswers, request.trusteeName)))
+        case _ =>
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] unable to display trustee on check your answers")
+          InternalServerError(errorHandler.internalServerErrorTemplate)
       }
-      Ok(view(section))
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
@@ -74,7 +72,6 @@ class CheckDetailsController @Inject()(
       } {
         date =>
           request.userAnswers.get(IndividualOrBusinessPage) match {
-              
             case Some(Individual) =>
               val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date)
               addTrustee(request.userAnswers, trusteeInd)
@@ -83,7 +80,9 @@ class CheckDetailsController @Inject()(
               val trusteeOrg: TrusteeOrganisation = trusteeBuilder.createTrusteeOrganisation(request.userAnswers, date)
               addTrustee(request.userAnswers, trusteeOrg)
 
-            case None => Future.successful(InternalServerError)
+            case None =>
+              logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] unable to submit trustee on check your answers")
+              Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
           }
       }
   }

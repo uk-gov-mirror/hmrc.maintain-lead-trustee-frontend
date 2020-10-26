@@ -19,6 +19,7 @@ package controllers.leadtrustee
 import controllers.actions.StandardActionSets
 import javax.inject.Inject
 import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation}
+import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TrustService
@@ -34,6 +35,7 @@ class UnableToRemoveController @Inject()(
                                                 standardActionSets: StandardActionSets
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(getClass)
 
   def onPageLoad: Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
@@ -47,6 +49,7 @@ class UnableToRemoveController @Inject()(
               Ok(view(name))
           }
         case None =>
+        logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] no lead trustee in user answers to remove")
         Redirect(controllers.routes.AddATrusteeController.onPageLoad())
       }
   }

@@ -21,9 +21,11 @@ import connectors.TrustStoreConnector
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
+import handlers.ErrorHandler
 import javax.inject.Inject
 import models.{AddATrustee, AllTrustees, Enumerable}
 import navigation.Navigator
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,7 +40,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddATrusteeController @Inject()(
                                      override val messagesApi: MessagesApi,
                                      repository: PlaybackRepository,
-                                     navigator: Navigator,
                                      trust: TrustService,
                                      standardActionSets: StandardActionSets,
                                      addAnotherFormProvider: AddATrusteeFormProvider,
@@ -48,7 +49,8 @@ class AddATrusteeController @Inject()(
                                      yesNoView: AddATrusteeYesNoView,
                                      completeView: MaxedOutTrusteesView,
                                      val appConfig: FrontendAppConfig,
-                                     trustStoreConnector: TrustStoreConnector
+                                     trustStoreConnector: TrustStoreConnector,
+                                     errorHandler: ErrorHandler
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController
   with I18nSupport
   with Enumerable.Implicits {
@@ -56,6 +58,8 @@ class AddATrusteeController @Inject()(
   val addAnotherForm : Form[AddATrustee] = addAnotherFormProvider()
 
   val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addATrusteeYesNo")
+
+  private val logger = Logger(getClass)
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
@@ -83,6 +87,12 @@ class AddATrusteeController @Inject()(
               heading = all.addToHeading
             ))
           }
+      } recoverWith {
+        case _ =>
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+            s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
+
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
   }
 
@@ -138,6 +148,12 @@ class AddATrusteeController @Inject()(
               }
           }
         )
+      } recoverWith {
+        case _ =>
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+            s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
+
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
   }
 
