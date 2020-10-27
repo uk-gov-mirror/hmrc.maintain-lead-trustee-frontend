@@ -20,12 +20,13 @@ import config.FrontendAppConfig
 import connectors.TrustConnector
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
+import handlers.ErrorHandler
 import javax.inject.Inject
 import mapping.{TrusteeIndividualExtractor, TrusteeOrganisationExtractor}
 import models.IndividualOrBusiness._
 import models.{IndividualOrBusiness, Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
-import navigation.Navigator
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -40,7 +41,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckDetailsController @Inject()(
                                         override val messagesApi: MessagesApi,
                                         sessionRepository: PlaybackRepository,
-                                        navigator: Navigator,
                                         trustService: TrustService,
                                         standardActionSets: StandardActionSets,
                                         val controllerComponents: MessagesControllerComponents,
@@ -52,8 +52,11 @@ class CheckDetailsController @Inject()(
                                         orgExtractor: TrusteeOrganisationExtractor,
                                         trustConnector: TrustConnector,
                                         nameAction: NameRequiredAction,
-                                        val appConfig: FrontendAppConfig
+                                        val appConfig: FrontendAppConfig,
+                                        errorHandler: ErrorHandler
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+
+  private val logger = Logger(getClass)
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
@@ -78,6 +81,9 @@ class CheckDetailsController @Inject()(
             val section = orgHelper(updatedAnswers, org.name)
             Ok(view(section, index))
           }
+        case _ =>
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] Unable to retrieve trustee from trusts")
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
   }
 
@@ -91,7 +97,11 @@ class CheckDetailsController @Inject()(
         case Business =>
           val section = orgHelper(request.userAnswers, request.trusteeName)
           Ok(view(section, index))
-      } getOrElse Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+      } getOrElse {
+        logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] " +
+          s"unable to display updated trustee on check your answers due to not having user answer for individual or business")
+        InternalServerError(errorHandler.internalServerErrorTemplate)
+      }
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
@@ -103,11 +113,17 @@ class CheckDetailsController @Inject()(
           (request.userAnswers.get(IndividualOrBusinessPage) map {
             case IndividualOrBusiness.Individual =>
               val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date)
+              logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] amending trustee individual")
               amendTrustee(request.userAnswers, trusteeInd, index)
             case IndividualOrBusiness.Business =>
               val trusteeOrg: TrusteeOrganisation = trusteeBuilder.createTrusteeOrganisation(request.userAnswers, date)
+              logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] amending trustee organisation")
               amendTrustee(request.userAnswers, trusteeOrg, index)
-          }).getOrElse(Future.successful(InternalServerError))
+          }).getOrElse {
+            logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] " +
+              s"unable to amend trustee due to no user answer for individual or business")
+            Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          }
       }
   }
 

@@ -29,13 +29,16 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AuthenticationServiceImpl @Inject()(trustAuthConnector: TrustAuthConnector) extends AuthenticationService {
+
+  private val logger = Logger(getClass)
+
   override def authenticateAgent()
                              (implicit hc: HeaderCarrier): Future[Either[Result, String]] = {
     trustAuthConnector.agentIsAuthorised().flatMap {
       case TrustAuthAgentAllowed(arn) => Future.successful(Right(arn))
       case TrustAuthDenied(redirectUrl) => Future.successful(Left(Redirect(redirectUrl)))
       case _ =>
-        Logger.warn(s"Unable to authenticate agent with trusts-auth")
+        logger.warn(s"[Authentication][Session ID: ${utils.Session.id(hc)}] Unable to authenticate agent with trusts-auth")
         Future.successful(Left(InternalServerError))
     }  }
 
@@ -45,7 +48,7 @@ class AuthenticationServiceImpl @Inject()(trustAuthConnector: TrustAuthConnector
       case _: TrustAuthAllowed => Future.successful(Right(request))
       case TrustAuthDenied(redirectUrl) => Future.successful(Left(Redirect(redirectUrl)))
       case _ =>
-        Logger.warn(s"Unable to authenticate for utr with trusts-auth")
+        logger.warn(s"[Authentication][UTR: $utr][Session ID: ${utils.Session.id(hc)}] Unable to authenticate with trusts-auth")
         Future.successful(Left(InternalServerError))
     }
   }

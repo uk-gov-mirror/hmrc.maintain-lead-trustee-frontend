@@ -19,6 +19,7 @@ package controllers.actions
 import com.google.inject.Inject
 import models.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
+import play.api.Logger
 import play.api.mvc.ActionTransformer
 import repositories.{ActiveSessionRepository, PlaybackRepository}
 
@@ -28,6 +29,8 @@ class DataRetrievalActionImpl @Inject()(
                                          activeSessionRepository: ActiveSessionRepository,
                                          val playbackRepository: PlaybackRepository
                                        )(implicit val executionContext: ExecutionContext) extends DataRetrievalAction {
+
+  private val logger = Logger(getClass)
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
 
@@ -48,6 +51,7 @@ class DataRetrievalActionImpl @Inject()(
             createdOptionalDataRequest(request, Some(userAnswers))
         }
       case None =>
+        logger.warn(s"[Authentication] No active session in mongo")
         Future.successful(createdOptionalDataRequest(request, None))
     }
   }

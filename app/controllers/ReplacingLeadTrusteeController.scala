@@ -20,12 +20,14 @@ import java.time.LocalDate
 
 import controllers.actions.StandardActionSets
 import forms.ReplaceLeadTrusteeFormProvider
+import handlers.ErrorHandler
 import javax.inject.Inject
 import models.IndividualOrBusiness._
 import models.requests.DataRequest
 import models.{Address, AllTrustees, CombinedPassportOrIdCard, IdCard, IndividualIdentification, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, NationalInsuranceNumber, NonUkAddress, Passport, TrustIdentificationOrgType, TrusteeIndividual, TrusteeOrganisation, UkAddress, UserAnswers}
 import pages.leadtrustee.organisation.UtrPage
 import pages.leadtrustee.{IndividualOrBusinessPage, individual => ltind, organisation => ltorg}
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -44,7 +46,8 @@ class ReplacingLeadTrusteeController @Inject()(
                                                 standardActionSets: StandardActionSets,
                                                 formProvider: ReplaceLeadTrusteeFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                view: ReplacingLeadTrusteeView
+                                                view: ReplacingLeadTrusteeView,
+                                                errorHandler: ErrorHandler
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val messageKeyPrefix: String = "replacingLeadTrustee"
@@ -52,19 +55,29 @@ class ReplacingLeadTrusteeController @Inject()(
   val form = formProvider.withPrefix(messageKeyPrefix)
   val defaultRadioOption: RadioOption = RadioOption(s"$messageKeyPrefix.-1", "-1", s"$messageKeyPrefix.add-new")
 
+  private val logger = Logger(getClass)
+
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       trust.getAllTrustees(request.userAnswers.utr) map {
         case AllTrustees(leadTrustee, trustees) =>
-          val trusteeNames = trustees.map {
-            case ind: TrusteeIndividual => ind.name.displayName
-            case org: TrusteeOrganisation => org.name
-          }.zipWithIndex.map(
-            x => RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", x._1)
-          )
+          val trusteeNames = trustees
+            .map {
+              case ind: TrusteeIndividual => ind.name.displayName
+              case org: TrusteeOrganisation => org.name
+            }
+            .zipWithIndex.map {
+              x => RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", x._1)
+            }
 
           Ok(view(form, getLeadTrusteeName(leadTrustee), trusteeNames))
+      } recoverWith {
+        case _ =>
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+            s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
+
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
   }
 
@@ -93,6 +106,12 @@ class ReplacingLeadTrusteeController @Inject()(
               }
             }
           )
+      } recoverWith {
+        case _ =>
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+            s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
+
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
   }
 

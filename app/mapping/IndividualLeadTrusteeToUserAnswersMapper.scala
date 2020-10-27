@@ -20,8 +20,8 @@ import java.time.LocalDate
 
 import com.google.inject.Inject
 import models.{Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, LeadTrusteeIndividual, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
-import org.slf4j.LoggerFactory
 import pages.leadtrustee.{individual => ltind}
+import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsError, JsSuccess, Reads}
 
@@ -29,7 +29,7 @@ import scala.util.{Success, Try}
 
 class IndividualLeadTrusteeToUserAnswersMapper @Inject()() {
 
-  private val logger = LoggerFactory.getLogger("application." + this.getClass.getCanonicalName)
+  private val logger = Logger(getClass)
 
   def getFromUserAnswers(answers: UserAnswers) : Option[LeadTrusteeIndividual] = {
     val readFromUserAnswers: Reads[LeadTrusteeIndividual] =
@@ -54,7 +54,7 @@ class IndividualLeadTrusteeToUserAnswersMapper @Inject()() {
 
     answers.data.validate[LeadTrusteeIndividual](readFromUserAnswers) match {
       case JsError(errors) =>
-        logger.error("Failed to rehydrate LeadTrusteeIndividual from UserAnswers", errors)
+        logger.error(s"[Mapper][UTR: ${answers.utr}] Failed to rehydrate LeadTrusteeIndividual from UserAnswers due to $errors")
         None
       case JsSuccess(value, _) => Some(value)
     }
@@ -71,7 +71,6 @@ class IndividualLeadTrusteeToUserAnswersMapper @Inject()() {
 
   private def extractLeadIndividualIdentification(leadIndividual: LeadTrusteeIndividual, answers: UserAnswers) = {
     leadIndividual.identification match {
-
       case NationalInsuranceNumber(nino) =>
         answers.set(ltind.UkCitizenPage, true)
           .flatMap(_.set(ltind.NationalInsuranceNumberPage, nino))

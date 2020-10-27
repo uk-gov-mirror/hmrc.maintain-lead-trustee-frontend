@@ -18,9 +18,11 @@ package controllers.trustee
 
 import controllers.actions.StandardActionSets
 import forms.RemoveIndexFormProvider
+import handlers.ErrorHandler
 import javax.inject.Inject
 import models.{RemoveTrustee, TrusteeIndividual, TrusteeOrganisation}
 import navigation.Navigator
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -33,13 +35,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveTrusteeController @Inject()(
                                          override val messagesApi: MessagesApi,
-                                         sessionRepository: PlaybackRepository,
-                                         navigator: Navigator,
                                          standardActionSets: StandardActionSets,
                                          trust: TrustService,
                                          formProvider: RemoveIndexFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
-                                         view: RemoveIndexView
+                                         view: RemoveIndexView,
+                                         errorHandler: ErrorHandler
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private def formRoute(index: Int): Call =
@@ -48,6 +49,8 @@ class RemoveTrusteeController @Inject()(
   private val messagesPrefix: String = "removeATrustee"
 
   private val form = formProvider.apply(messagesPrefix)
+
+  private val logger = Logger(getClass)
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
@@ -59,8 +62,11 @@ class RemoveTrusteeController @Inject()(
             case lto:TrusteeOrganisation => lto.name
           }
         Ok(view(messagesPrefix, form, index, trusteeName, formRoute(index)))
+      } recoverWith {
+        case _ =>
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] user cannot remove trustee as trustee was not found")
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
-
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
@@ -89,6 +95,10 @@ class RemoveTrusteeController @Inject()(
                 } else {
                   Future.successful(Redirect(controllers.trustee.routes.WhenRemovedController.onPageLoad(index).url))
                 }
+            } recoverWith {
+              case _ =>
+                logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] user cannot remove trustee as trustee was not found")
+                Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
             }
           } else {
             Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad().url))
