@@ -18,6 +18,7 @@ site.telephone_number.hint = For international numbers include the country code
 site.inprogress = In Progress
 site.complete = Completed
 site.error = Error:
+site.cannotRemove = Cannot remove
 
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
