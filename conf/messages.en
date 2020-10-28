@@ -19,6 +19,7 @@ site.inprogress = In Progress
 site.complete = Completed
 site.error = Error:
 site.cannotRemove = Cannot remove
+site.cannotRemove-hidden = Cannot remove {0}
 
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
