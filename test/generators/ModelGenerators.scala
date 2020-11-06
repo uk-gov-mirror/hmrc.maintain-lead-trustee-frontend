@@ -135,6 +135,18 @@ trait ModelGenerators {
     }
   }
 
+  implicit lazy val arbitraryLeadTrusteeOrganisation: Arbitrary[LeadTrusteeOrganisation] = {
+    Arbitrary {
+      for {
+        name <- arbitrary[String]
+        phone <- arbitrary[String]
+        email <- arbitrary[Option[String]]
+        utr <- arbitrary[Option[String]]
+        address <- arbitrary[Address]
+      } yield LeadTrusteeOrganisation(name, phone, email, utr, address)
+    }
+  }
+
   implicit lazy val arbitraryTrusteeIndividual: Arbitrary[TrusteeIndividual] = {
     Arbitrary {
       for {
