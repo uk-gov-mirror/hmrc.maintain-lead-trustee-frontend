@@ -21,8 +21,8 @@ import java.time.LocalDateTime
 import com.google.inject.ImplementedBy
 import javax.inject.{Inject, Singleton}
 import models.{MongoDateTimeFormats, UtrSession}
+import play.api.Configuration
 import play.api.libs.json._
-import play.api.{Configuration, Logger}
 import reactivemongo.api.WriteConcern
 import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.BSONDocument

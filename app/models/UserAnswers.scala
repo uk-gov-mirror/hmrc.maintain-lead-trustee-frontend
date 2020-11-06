@@ -55,7 +55,6 @@ final case class UserAnswers(
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
       case JsError(errors) =>
-        val errorPaths = errors.collectFirst { case (path, e) => s"$path $e" }
         Failure(JsResultException(errors))
     }
 
