@@ -24,7 +24,6 @@ import forms.trustee.AddATrusteeFormProvider
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.{AddATrustee, AllTrustees, Enumerable}
-import navigation.Navigator
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

@@ -63,24 +63,6 @@ class AddATrusteeViewHelperSpec extends SpecBase {
         rows.inProgress mustBe Nil
       }
 
-      "generate rows complete trustees" ignore {
-        val rows = new AddATrusteeViewHelper(AllTrustees(None, trustees)).rows
-        rows.complete mustBe List(
-          AddRow(name = "First Last", typeLabel = "Trustee Individual", changeLabel = "Change details", changeUrl = "/maintain-a-trust/trustees/trustee/0/check-details", removeLabel = Some("Remove"), removeUrl = Some("/maintain-a-trust/trustees/trustee/0/remove"))
-        )
-        rows.inProgress mustBe Nil
-      }
-      
-      "generate rows from user answers for complete and in progress trustees" ignore {
-        val rows = new AddATrusteeViewHelper(AllTrustees(None, trustees)).rows
-        rows.complete mustBe List(
-          AddRow(name = "First Last", typeLabel = "Lead Trustee Individual",  changeLabel = "Change details", changeUrl = "#", removeLabel = Some("Cannot remove"), removeUrl = None)
-        )
-        rows.inProgress mustBe List(
-          AddRow("First 0 Last 0", typeLabel = "Trustee", changeLabel = "Change details", changeUrl = "#", removeLabel = Some("Remove"), removeUrl = Some("/maintain-a-trust/trustees/trustee/0/remove"))
-        )
-      }
-
     }
   }
 }

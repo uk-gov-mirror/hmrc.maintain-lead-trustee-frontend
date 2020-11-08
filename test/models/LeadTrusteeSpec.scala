@@ -34,7 +34,10 @@ class LeadTrusteeSpec extends FreeSpec with ModelGenerators with MustMatchers wi
     }
   }
 
-  "JSON roundtrips with organisation" ignore {
-    ???
+  "JSON roundtrips with organisation" in {
+    forAll(arbitraryLeadTrusteeOrganisation.arbitrary) { lto =>
+
+      Json.toJson(lto.asInstanceOf[LeadTrustee])(LeadTrustee.writes).as[LeadTrustee](LeadTrustee.reads) mustBe lto
+    }
   }
 }
