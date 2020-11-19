@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustConnector
 import models.IndividualOrBusiness.{Business, Individual}
-import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, Name, UkAddress}
+import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, Name, UkAddress, UserAnswers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -34,24 +34,23 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.countryOptions.CountryOptions
-import utils.print.AnswerRowConverter
+import utils.print.{AnswerRowConverter, CheckAnswersFormatters}
 import viewmodels.AnswerSection
 import views.html.leadtrustee.CheckDetailsView
 
 import scala.concurrent.Future
 
 class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
-  def onwardRoute = Call("GET", "/foo")
 
-  val trusteeName = Name("FirstName", None, "LastName")
-  val trusteeAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
+  private val trusteeName: Name = Name("FirstName", None, "LastName")
+  private val trusteeAddress: UkAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
 
-  lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoadIndividualUpdated()
-  lazy val checkDetailsOrgRoute = routes.CheckDetailsController.onPageLoadOrganisationUpdated()
-  lazy val sendDetailsRoute = routes.CheckDetailsController.onSubmitIndividual()
-  lazy val sendDetailsOrgRoute = routes.CheckDetailsController.onSubmitOrganisation()
+  private lazy val checkDetailsRoute: Call = routes.CheckDetailsController.onPageLoadIndividualUpdated()
+  private lazy val checkDetailsOrgRoute: Call = routes.CheckDetailsController.onPageLoadOrganisationUpdated()
+  private lazy val sendDetailsRoute: Call = routes.CheckDetailsController.onSubmitIndividual()
+  private lazy val sendDetailsOrgRoute: Call = routes.CheckDetailsController.onSubmitOrganisation()
 
-  val submittableUserAnswers = emptyUserAnswers
+  private val submittableUserAnswers: UserAnswers = emptyUserAnswers
     .set(IndividualOrBusinessPage, Individual).success.value
     .set(NamePage, trusteeName).success.value
     .set(DateOfBirthPage, LocalDate.of(1996, 2, 3)).success.value
@@ -62,8 +61,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
     .set(EmailAddressYesNoPage, false).success.value
     .set(TelephoneNumberPage, "tel").success.value
 
-
-  val submittableUserAnswersOrg = emptyUserAnswers
+  private val submittableUserAnswersOrg: UserAnswers = emptyUserAnswers
     .set(IndividualOrBusinessPage, Business).success.value
     .set(pages.leadtrustee.organisation.NamePage, "Lead Org").success.value
     .set(pages.leadtrustee.organisation.AddressInTheUkYesNoPage, true).success.value
@@ -71,6 +69,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
     .set(pages.leadtrustee.organisation.UkAddressPage, UkAddress("line1", "line2", None, None, "postcode")).success.value
     .set(pages.leadtrustee.organisation.EmailAddressYesNoPage, false).success.value
     .set(pages.leadtrustee.organisation.TelephoneNumberPage, "0191222222").success.value
+
+  private val checkAnswersFormatters: CheckAnswersFormatters = injector.instanceOf[CheckAnswersFormatters]
 
   "CheckDetails Controller" when {
 
@@ -83,7 +83,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
           .set(NamePage, trusteeName).success.value
           .set(UkAddressPage, trusteeAddress).success.value
 
-        val bound = new AnswerRowConverter().bind(userAnswers, trusteeName.displayName, mock[CountryOptions])
+        val bound = new AnswerRowConverter(checkAnswersFormatters).bind(userAnswers, trusteeName.displayName, mock[CountryOptions])
 
         val answerSection = AnswerSection(None, Seq(
           bound.nameQuestion(NamePage, "leadtrustee.individual.name", controllers.leadtrustee.individual.routes.NameController.onPageLoad().url),
@@ -138,7 +138,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
           .set(pages.leadtrustee.organisation.NamePage, "Lead Org").success.value
           .set(pages.leadtrustee.organisation.UkAddressPage, trusteeAddress).success.value
 
-        val bound = new AnswerRowConverter().bind(userAnswers, "Lead Org", mock[CountryOptions])
+        val bound = new AnswerRowConverter(checkAnswersFormatters).bind(userAnswers, "Lead Org", mock[CountryOptions])
 
         val answerSection = AnswerSection(None, Seq(
           bound.stringQuestion(pages.leadtrustee.organisation.NamePage, "leadtrustee.organisation.name", controllers.leadtrustee.organisation.routes.NameController.onPageLoad().url),
