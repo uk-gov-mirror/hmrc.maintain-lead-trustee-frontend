@@ -13,11 +13,11 @@ object AppDependencies {
     "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.2.0-play-26",
     "uk.gov.hmrc"       %% "bootstrap-play-26"              % "1.8.0",
     "uk.gov.hmrc"       %% "domain"                         % "5.9.0-play-26",
-    "uk.gov.hmrc"       %% "emailaddress"                 % "3.5.0",
+    "uk.gov.hmrc"       %% "emailaddress"                   % "3.5.0",
     "com.typesafe.play" %% "play-json-joda"                 % "2.7.4",
     "uk.gov.hmrc"       %% "play-whitelist-filter"          % "3.4.0-play-26",
     "org.typelevel"     %% "cats-core"                      % "2.0.0",
-    "javax.inject"      %  "javax.inject"                   % "1"
+    "uk.gov.hmrc"       %% "play-language"                  % "4.5.0-play-26"
   )
 
   val test: Seq[ModuleID] = Seq(

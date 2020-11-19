@@ -36,7 +36,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.countryOptions.CountryOptions
-import utils.print.AnswerRowConverter
+import utils.print.{AnswerRowConverter, CheckAnswersFormatters}
 import viewmodels.AnswerSection
 import views.html.trustee.amend.CheckDetailsView
 
@@ -44,13 +44,15 @@ import scala.concurrent.Future
 
 class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  val trusteeName = Name("FirstName", None, "LastName")
-  val trusteeAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
-  val index = 0
+  private val trusteeName: Name = Name("FirstName", None, "LastName")
+  private val trusteeAddress: UkAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
+  private val index = 0
 
   private lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoadUpdated(index).url
   private lazy val submitDetailsRoute = routes.CheckDetailsController.onSubmit(index).url
   private lazy val onwardRoute = controllers.routes.AddATrusteeController.onPageLoad().url
+
+  private val checkAnswersFormatters: CheckAnswersFormatters = injector.instanceOf[CheckAnswersFormatters]
 
   "CheckDetails Controller" must {
 
@@ -61,7 +63,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
         .set(NamePage, trusteeName).success.value
         .set(UkAddressPage, trusteeAddress).success.value
 
-      val bound = new AnswerRowConverter().bind(userAnswers, trusteeName.displayName, mock[CountryOptions])
+      val bound = new AnswerRowConverter(checkAnswersFormatters).bind(userAnswers, trusteeName.displayName, mock[CountryOptions])
 
       val answerSection = AnswerSection(None, Seq(
         bound.nameQuestion(NamePage, "trustee.individual.name", controllers.trustee.amend.individual.routes.NameController.onPageLoad().url),
