@@ -248,7 +248,7 @@ leadtrustee.individual.emailAddress.title=Beth yw cyfeiriad e-bost y prif ymddir
 leadtrustee.individual.emailAddress.heading=Beth yw cyfeiriad e-bost {0}?
 leadtrustee.individual.emailAddress.checkYourAnswersLabel=Beth yw cyfeiriad e-bost {0}?
 leadtrustee.individual.emailAddress.error.required=Nodwch gyfeiriad e-bost y prif ymddiriedolwr
-leadtrustee.individual.emailAddress.error.length=Mae’n rhaid i gyfeiriad e-bost fod yn 35 o gymeriadau neu lai
+leadtrustee.individual.emailAddress.error.length=Mae’n rhaid i gyfeiriad e-bost fod yn 256 o gymeriadau neu lai
 leadtrustee.individual.emailAddress.error.invalid=Nodwch gyfeiriad e-bost dilys heb fylchau, megis enw@enghraifft.com
 
 leadtrustee.individual.emailAddressYesNo.title=A ydych yn gwybod cyfeiriad e-bost y prif ymddiriedolwr?
@@ -309,7 +309,7 @@ leadtrustee.organisation.emailAddress.title=Beth yw cyfeiriad e-bost y prif ymdd
 leadtrustee.organisation.emailAddress.heading=Beth yw cyfeiriad e-bost {0}?
 leadtrustee.organisation.emailAddress.checkYourAnswersLabel=Beth yw cyfeiriad e-bost {0}?
 leadtrustee.organisation.emailAddress.error.required=Nodwch gyfeiriad e-bost y prif ymddiriedolwr
-leadtrustee.organisation.emailAddress.error.length=Mae’n rhaid i gyfeiriad e-bost fod yn 35 o gymeriadau neu lai
+leadtrustee.organisation.emailAddress.error.length=Mae’n rhaid i gyfeiriad e-bost fod yn 256 o gymeriadau neu lai
 leadtrustee.organisation.emailAddress.error.invalid=Nodwch gyfeiriad e-bost dilys heb fylchau, megis enw@enghraifft.com
 
 leadtrustee.organisation.telephoneNumber.title=Beth yw rhif ffôn y prif ymddiriedolwr?
