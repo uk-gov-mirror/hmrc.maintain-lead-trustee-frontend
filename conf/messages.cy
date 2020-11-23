@@ -17,6 +17,8 @@ site.telephone_number.hint=Ar gyfer rhifau rhyngwladol, cofiwch gynnwys cod y wl
 site.inprogress=Ar y gweill
 site.complete=Wedi cwblhau
 site.error=Gwall:
+site.cannotRemove=Peidiwch â thynnu
+site.cannotRemove-hidden=Peidiwch â thynnu {0}
 
 checkYourAnswers.title=Gwiriwch eich atebion
 checkYourAnswers.heading=Gwiriwch eich atebion
