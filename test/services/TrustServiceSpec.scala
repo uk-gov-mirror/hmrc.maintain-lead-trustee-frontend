@@ -115,7 +115,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
     "remove a trustee" in {
 
       when(mockConnector.removeTrustee(any(),any())(any(), any()))
-        .thenReturn(Future.successful(HttpResponse(OK, None)))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val service = new TrustServiceImpl(mockConnector)
 

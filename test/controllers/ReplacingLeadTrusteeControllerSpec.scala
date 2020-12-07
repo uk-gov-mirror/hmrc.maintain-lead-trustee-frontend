@@ -89,7 +89,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
       Future.successful(trustee)
 
     override def removeTrustee(utr: String, trustee: RemoveTrustee)
-                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(200))
+                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(200, ""))
 
   }
 

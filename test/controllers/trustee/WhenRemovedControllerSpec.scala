@@ -99,7 +99,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      when(mockConnector.removeTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(200)))
+      when(mockConnector.removeTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(200, "")))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))

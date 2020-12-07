@@ -116,7 +116,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
               bind[TrustConnector].toInstance(mockTrustConnector)
             ).build()
 
-        when(mockTrustConnector.amendLeadTrustee(any(), any[LeadTrusteeIndividual]())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
+        when(mockTrustConnector.amendLeadTrustee(any(), any[LeadTrusteeIndividual]())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
         val request = FakeRequest(POST, sendDetailsRoute.url)
 
@@ -171,7 +171,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
               bind[TrustConnector].toInstance(mockTrustConnector)
             ).build()
 
-        when(mockTrustConnector.amendLeadTrustee(any(), any[LeadTrusteeOrganisation]())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
+        when(mockTrustConnector.amendLeadTrustee(any(), any[LeadTrusteeOrganisation]())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
         val request = FakeRequest(POST, sendDetailsOrgRoute.url)
 

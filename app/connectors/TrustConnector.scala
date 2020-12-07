@@ -20,8 +20,9 @@ import config.FrontendAppConfig
 import javax.inject.Inject
 import models.{LeadTrustee, RemoveTrustee, TrustStartDate, Trustee, Trustees}
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.HttpReads.Implicits.{readRaw, readFromJson}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,19 +43,19 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
   private def addTrusteeUrl(utr: String) = s"${config.trustsUrl}/trusts/add-trustee/$utr"
 
   def addTrustee(utr: String, trustee: Trustee)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
-    http.POST[Trustee, HttpResponse](addTrusteeUrl(utr), trustee)(Trustee.writes, HttpReads.readRaw, hc, ec)
+    http.POST[Trustee, HttpResponse](addTrusteeUrl(utr), trustee)(Trustee.writes, readRaw, hc, ec)
   }
 
   private def amendLeadTrusteeUrl(utr: String) = s"${config.trustsUrl}/trusts/amend-lead-trustee/$utr"
 
   def amendLeadTrustee(utr: String, leadTrustee: LeadTrustee)(implicit hc: HeaderCarrier, ec : ExecutionContext) : Future[HttpResponse] = {
-    http.POST[LeadTrustee, HttpResponse](amendLeadTrusteeUrl(utr), leadTrustee)(LeadTrustee.writes, HttpReads.readRaw, hc, ec)
+    http.POST[LeadTrustee, HttpResponse](amendLeadTrusteeUrl(utr), leadTrustee)(LeadTrustee.writes, readRaw, hc, ec)
   }
 
   private def amendTrusteeUrl(utr: String, index: Int) = s"${config.trustsUrl}/trusts/amend-trustee/$utr/$index"
 
   def amendTrustee(utr: String, index: Int, trustee: Trustee)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    http.POST[Trustee, HttpResponse](amendTrusteeUrl(utr, index), trustee)(Trustee.writes, HttpReads.readRaw, hc, ec)
+    http.POST[Trustee, HttpResponse](amendTrusteeUrl(utr, index), trustee)(Trustee.writes, readRaw, hc, ec)
   }
 
   private def getTrusteesUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/trustees"
@@ -72,7 +73,7 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
   private def promoteTrusteeUrl(utr: String, index: Int) = s"${config.trustsUrl}/trusts/promote-trustee/$utr/$index"
 
   def promoteTrustee(utr: String, index: Int, newLeadTrustee: LeadTrustee)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
-    http.POST[LeadTrustee, HttpResponse](promoteTrusteeUrl(utr, index), newLeadTrustee)(LeadTrustee.writes, HttpReads.readRaw, hc, ec)
+    http.POST[LeadTrustee, HttpResponse](promoteTrusteeUrl(utr, index), newLeadTrustee)(LeadTrustee.writes, readRaw, hc, ec)
   }
 
 }
