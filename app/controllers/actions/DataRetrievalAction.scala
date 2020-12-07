@@ -19,7 +19,7 @@ package controllers.actions
 import com.google.inject.Inject
 import models.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
-import play.api.Logger
+import play.api.Logging
 import play.api.mvc.ActionTransformer
 import repositories.{ActiveSessionRepository, PlaybackRepository}
 
@@ -28,9 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DataRetrievalActionImpl @Inject()(
                                          activeSessionRepository: ActiveSessionRepository,
                                          val playbackRepository: PlaybackRepository
-                                       )(implicit val executionContext: ExecutionContext) extends DataRetrievalAction {
-
-  private val logger = Logger(getClass)
+                                       )(implicit val executionContext: ExecutionContext) extends DataRetrievalAction with Logging {
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
 

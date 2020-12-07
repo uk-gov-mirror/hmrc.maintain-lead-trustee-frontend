@@ -27,7 +27,7 @@ import models.requests.DataRequest
 import models.{Address, AllTrustees, CombinedPassportOrIdCard, IdCard, IndividualIdentification, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, NationalInsuranceNumber, NonUkAddress, Passport, TrustIdentificationOrgType, TrusteeIndividual, TrusteeOrganisation, UkAddress, UserAnswers}
 import pages.leadtrustee.organisation.UtrPage
 import pages.leadtrustee.{IndividualOrBusinessPage, individual => ltind, organisation => ltorg}
-import play.api.Logger
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -48,14 +48,12 @@ class ReplacingLeadTrusteeController @Inject()(
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: ReplacingLeadTrusteeView,
                                                 errorHandler: ErrorHandler
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   val messageKeyPrefix: String = "replacingLeadTrustee"
 
   val form = formProvider.withPrefix(messageKeyPrefix)
   val defaultRadioOption: RadioOption = RadioOption(s"$messageKeyPrefix.-1", "-1", s"$messageKeyPrefix.add-new")
-
-  private val logger = Logger(getClass)
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>

@@ -21,15 +21,13 @@ import models.IndividualOrBusiness.Business
 import models.{Address, LeadTrusteeOrganisation, NonUkAddress, UkAddress, UserAnswers}
 import pages.leadtrustee.organisation.UtrPage
 import pages.leadtrustee.{IndividualOrBusinessPage, organisation => ltorg}
-import play.api.Logger
+import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsError, JsSuccess, Reads}
 
 import scala.util.{Success, Try}
 
-class LeadTrusteeOrganisationExtractor @Inject()() {
-
-  private val logger = Logger(getClass)
+class LeadTrusteeOrganisationExtractor @Inject()() extends Logging {
 
   def mapLeadTrusteeOrganisation(answers: UserAnswers): Option[LeadTrusteeOrganisation] = {
     val readFromUserAnswers: Reads[LeadTrusteeOrganisation] =

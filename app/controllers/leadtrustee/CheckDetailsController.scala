@@ -30,7 +30,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.checkYourAnswers.{LeadTrusteeIndividualPrintHelper, LeadTrusteeOrganisationPrintHelper}
 import views.html.leadtrustee.CheckDetailsView
 import pages.leadtrustee.{individual => lind, organisation => lorg}
-import play.api.Logger
+import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -49,9 +49,7 @@ class CheckDetailsController @Inject()(
                                         repository: PlaybackRepository
                                         )(implicit val executionContext: ExecutionContext)
 
-  extends FrontendBaseController with I18nSupport {
-
-  private val logger = Logger(getClass)
+  extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>

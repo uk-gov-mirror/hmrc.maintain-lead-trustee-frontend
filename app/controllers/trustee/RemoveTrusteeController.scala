@@ -21,7 +21,7 @@ import forms.RemoveIndexFormProvider
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.{RemoveTrustee, TrusteeIndividual, TrusteeOrganisation}
-import play.api.Logger
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -39,7 +39,7 @@ class RemoveTrusteeController @Inject()(
                                          val controllerComponents: MessagesControllerComponents,
                                          view: RemoveIndexView,
                                          errorHandler: ErrorHandler
-                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private def formRoute(index: Int): Call =
     controllers.trustee.routes.RemoveTrusteeController.onSubmit(index)
@@ -47,8 +47,6 @@ class RemoveTrusteeController @Inject()(
   private val messagesPrefix: String = "removeATrustee"
 
   private val form = formProvider.apply(messagesPrefix)
-
-  private val logger = Logger(getClass)
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>

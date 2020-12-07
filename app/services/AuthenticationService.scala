@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import connectors.TrustAuthConnector
 import models.requests.DataRequest
 import models.{TrustAuthAgentAllowed, TrustAuthAllowed, TrustAuthDenied}
-import play.api.Logger
+import play.api.Logging
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -28,9 +28,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthenticationServiceImpl @Inject()(trustAuthConnector: TrustAuthConnector) extends AuthenticationService {
-
-  private val logger = Logger(getClass)
+class AuthenticationServiceImpl @Inject()(trustAuthConnector: TrustAuthConnector) extends AuthenticationService with Logging {
 
   override def authenticateAgent()
                              (implicit hc: HeaderCarrier): Future[Either[Result, String]] = {
