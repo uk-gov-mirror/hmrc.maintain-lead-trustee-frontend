@@ -157,7 +157,7 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
           .thenReturn(Future.successful(Trustees(trustees)))
 
         when(mockConnector.removeTrustee(any(), any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse(200)))
+          .thenReturn(Future.successful(HttpResponse(200, "")))
 
         val request =
           FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)

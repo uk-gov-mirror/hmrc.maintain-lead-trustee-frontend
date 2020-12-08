@@ -21,15 +21,13 @@ import java.time.LocalDate
 import com.google.inject.Inject
 import models.{Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, LeadTrusteeIndividual, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
 import pages.leadtrustee.{individual => ltind}
-import play.api.Logger
+import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsError, JsSuccess, Reads}
 
 import scala.util.{Success, Try}
 
-class IndividualLeadTrusteeToUserAnswersMapper @Inject()() {
-
-  private val logger = Logger(getClass)
+class IndividualLeadTrusteeToUserAnswersMapper @Inject()() extends Logging {
 
   def getFromUserAnswers(answers: UserAnswers) : Option[LeadTrusteeIndividual] = {
     val readFromUserAnswers: Reads[LeadTrusteeIndividual] =

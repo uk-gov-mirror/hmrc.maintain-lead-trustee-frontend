@@ -26,13 +26,13 @@ import mapping.{TrusteeIndividualExtractor, TrusteeOrganisationExtractor}
 import models.IndividualOrBusiness._
 import models.{IndividualOrBusiness, Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
-import play.api.Logger
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.{AmendedTrusteeBuilder, TrustService}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.checkYourAnswers.{AmendTrusteeIndividualPrintHelper, AmendTrusteeOrganisationPrintHelper}
 import views.html.trustee.amend.CheckDetailsView
 
@@ -54,9 +54,7 @@ class CheckDetailsController @Inject()(
                                         nameAction: NameRequiredAction,
                                         val appConfig: FrontendAppConfig,
                                         errorHandler: ErrorHandler
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
-  private val logger = Logger(getClass)
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>

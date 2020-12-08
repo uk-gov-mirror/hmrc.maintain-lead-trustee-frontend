@@ -24,13 +24,13 @@ import forms.trustee.AddATrusteeFormProvider
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.{AddATrustee, AllTrustees, Enumerable}
-import play.api.Logger
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrustService
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AddATrusteeViewHelper
 import views.html.trustee.{AddATrusteeView, AddATrusteeYesNoView, MaxedOutTrusteesView}
 
@@ -50,15 +50,13 @@ class AddATrusteeController @Inject()(
                                      val appConfig: FrontendAppConfig,
                                      trustStoreConnector: TrustStoreConnector,
                                      errorHandler: ErrorHandler
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with Logging
   with I18nSupport
   with Enumerable.Implicits {
 
   val addAnotherForm : Form[AddATrustee] = addAnotherFormProvider()
 
   val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addATrusteeYesNo")
-
-  private val logger = Logger(getClass)
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>

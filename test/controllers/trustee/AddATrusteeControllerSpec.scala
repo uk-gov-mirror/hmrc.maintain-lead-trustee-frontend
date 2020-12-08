@@ -105,7 +105,7 @@ class AddATrusteeControllerSpec extends SpecBase {
       Future.successful(trustee)
 
     override def removeTrustee(utr: String, trustee: RemoveTrustee)
-                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(200))
+                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(200, ""))
 
   }
 
@@ -279,7 +279,7 @@ class AddATrusteeControllerSpec extends SpecBase {
           FakeRequest(POST, submitAnotherRoute)
             .withFormUrlEncodedBody(("value", AddATrustee.NoComplete.toString))
 
-        when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200)))
+        when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200, "")))
 
         val result = route(application, request).value
 
@@ -485,7 +485,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
       val request = FakeRequest(POST, submitCompleteRoute)
 
-      when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200)))
+      when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200, "")))
 
       val result = route(application, request).value
 
