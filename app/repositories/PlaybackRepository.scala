@@ -23,9 +23,9 @@ import models.{MongoDateTimeFormats, UserAnswers}
 import play.api.Configuration
 import play.api.libs.json._
 import reactivemongo.api.WriteConcern
+import reactivemongo.api.bson.BSONDocument
 import reactivemongo.api.indexes.{Index, IndexType}
-import reactivemongo.bson.BSONDocument
-import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
+import reactivemongo.play.json.compat.jsObjectWrites
 import reactivemongo.play.json.collection.JSONCollection
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -48,12 +48,49 @@ class PlaybackRepositoryImpl @Inject()(mongo: MongoDriver,
   private val lastUpdatedIndex = Index(
     key = Seq("updatedAt" -> IndexType.Ascending),
     name = Some("user-answers-updated-at-index"),
+    unique = false,
+    background = false,
+    sparse = false,
+    expireAfterSeconds = None,
+    storageEngine = None,
+    weights = None,
+    defaultLanguage = None,
+    languageOverride = None,
+    textIndexVersion = None,
+    sphereIndexVersion = None,
+    bits = None,
+    min = None,
+    max = None,
+    bucketSize = None,
+    collation = None,
+    wildcardProjection = None,
+    version = None,
+    partialFilter = None,
     options = BSONDocument("expireAfterSeconds" -> cacheTtl)
   )
 
   private val internalIdAndUtrIndex = Index(
     key = Seq("internalId" -> IndexType.Ascending, "utr" -> IndexType.Ascending),
-    name = Some("internal-id-and-utr-compound-index")
+    name = Some("internal-id-and-utr-compound-index"),
+    unique = false,
+    background = false,
+    sparse = false,
+    expireAfterSeconds = None,
+    storageEngine = None,
+    weights = None,
+    defaultLanguage = None,
+    languageOverride = None,
+    textIndexVersion = None,
+    sphereIndexVersion = None,
+    bits = None,
+    min = None,
+    max = None,
+    bucketSize = None,
+    collation = None,
+    wildcardProjection = None,
+    version = None,
+    partialFilter = None,
+    options = BSONDocument.empty
   )
 
   private lazy val ensureIndexes = for {
