@@ -23,8 +23,7 @@ import models.{MongoDateTimeFormats, UserAnswers}
 import play.api.Configuration
 import play.api.libs.json._
 import reactivemongo.api.WriteConcern
-import reactivemongo.api.bson.BSONDocument
-import reactivemongo.api.indexes.{Index, IndexType}
+import reactivemongo.api.indexes.IndexType
 import reactivemongo.play.json.compat.jsObjectWrites
 import reactivemongo.play.json.collection.JSONCollection
 
@@ -45,52 +44,16 @@ class PlaybackRepositoryImpl @Inject()(mongo: MongoDriver,
       res <- mongo.api.database.map(_.collection[JSONCollection](collectionName))
     } yield res
 
-  private val lastUpdatedIndex = Index(
+  private val lastUpdatedIndex = MongoIndex(
     key = Seq("updatedAt" -> IndexType.Ascending),
-    name = Some("user-answers-updated-at-index"),
-    unique = false,
-    background = false,
-    sparse = false,
-    expireAfterSeconds = None,
-    storageEngine = None,
-    weights = None,
-    defaultLanguage = None,
-    languageOverride = None,
-    textIndexVersion = None,
-    sphereIndexVersion = None,
-    bits = None,
-    min = None,
-    max = None,
-    bucketSize = None,
-    collation = None,
-    wildcardProjection = None,
-    version = None,
-    partialFilter = None,
-    options = BSONDocument("expireAfterSeconds" -> cacheTtl)
+    name = "ser-answers-updated-at-index",
+    expireAfterSeconds = Some(cacheTtl)
   )
 
-  private val internalIdAndUtrIndex = Index(
+  private val internalIdAndUtrIndex = MongoIndex(
     key = Seq("internalId" -> IndexType.Ascending, "utr" -> IndexType.Ascending),
-    name = Some("internal-id-and-utr-compound-index"),
-    unique = false,
-    background = false,
-    sparse = false,
-    expireAfterSeconds = None,
-    storageEngine = None,
-    weights = None,
-    defaultLanguage = None,
-    languageOverride = None,
-    textIndexVersion = None,
-    sphereIndexVersion = None,
-    bits = None,
-    min = None,
-    max = None,
-    bucketSize = None,
-    collation = None,
-    wildcardProjection = None,
-    version = None,
-    partialFilter = None,
-    options = BSONDocument.empty
+    name = "internal-id-and-utr-compound-index",
+    expireAfterSeconds = None
   )
 
   private lazy val ensureIndexes = for {

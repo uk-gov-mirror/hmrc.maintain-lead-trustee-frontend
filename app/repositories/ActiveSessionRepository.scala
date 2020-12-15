@@ -24,8 +24,7 @@ import models.{MongoDateTimeFormats, UtrSession}
 import play.api.Configuration
 import play.api.libs.json._
 import reactivemongo.api.WriteConcern
-import reactivemongo.api.bson.BSONDocument
-import reactivemongo.api.indexes.{Index, IndexType}
+import reactivemongo.api.indexes.IndexType
 import reactivemongo.play.json.compat.jsObjectWrites
 import reactivemongo.play.json.collection.JSONCollection
 
@@ -46,52 +45,16 @@ class ActiveSessionRepositoryImpl @Inject()(mongo: MongoDriver,
       res <- mongo.api.database.map(_.collection[JSONCollection](collectionName))
     } yield res
 
-  private val lastUpdatedIndex = Index(
+  private val lastUpdatedIndex = MongoIndex(
     key = Seq("updatedAt" -> IndexType.Ascending),
-    name = Some("session-updated-at-index"),
-    unique = false,
-    background = false,
-    sparse = false,
-    expireAfterSeconds = None,
-    storageEngine = None,
-    weights = None,
-    defaultLanguage = None,
-    languageOverride = None,
-    textIndexVersion = None,
-    sphereIndexVersion = None,
-    bits = None,
-    min = None,
-    max = None,
-    bucketSize = None,
-    collation = None,
-    wildcardProjection = None,
-    version = None,
-    partialFilter = None,
-    options = BSONDocument("expireAfterSeconds" -> cacheTtl)
+    name = "session-updated-at-index",
+    expireAfterSeconds = Some(cacheTtl)
   )
 
-  private val utrIndex = Index(
+  private val utrIndex = MongoIndex(
     key = Seq("utr" -> IndexType.Ascending),
-    name = Some("utr-index"),
-    unique = false,
-    background = false,
-    sparse = false,
-    expireAfterSeconds = None,
-    storageEngine = None,
-    weights = None,
-    defaultLanguage = None,
-    languageOverride = None,
-    textIndexVersion = None,
-    sphereIndexVersion = None,
-    bits = None,
-    min = None,
-    max = None,
-    bucketSize = None,
-    collation = None,
-    wildcardProjection = None,
-    version = None,
-    partialFilter = None,
-    options = BSONDocument.empty
+    name = "utr-index",
+    expireAfterSeconds = None
   )
 
   private lazy val ensureIndexes = for {
