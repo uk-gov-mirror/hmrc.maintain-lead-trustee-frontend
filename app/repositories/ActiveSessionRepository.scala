@@ -53,8 +53,7 @@ class ActiveSessionRepositoryImpl @Inject()(mongo: MongoDriver,
 
   private val utrIndex = MongoIndex(
     key = Seq("utr" -> IndexType.Ascending),
-    name = "utr-index",
-    expireAfterSeconds = None
+    name = "utr-index"
   )
 
   private lazy val ensureIndexes = for {

@@ -22,10 +22,13 @@ import reactivemongo.api.indexes.{Index, IndexType}
 
 object MongoIndex {
 
-  def apply(key: Seq[(String, IndexType)], name: String, expireAfterSeconds: Option[Int]): Index.Aux[BSONSerializationPack.type] = Index(BSONSerializationPack)(
+  def apply(key: Seq[(String, IndexType)],
+            name: String,
+            unique: Boolean = false,
+            expireAfterSeconds: Option[Int] = None): Index.Aux[BSONSerializationPack.type] = Index(BSONSerializationPack)(
     key = key,
     name = Some(name),
-    unique = false,
+    unique = unique,
     background = false,
     sparse = false,
     expireAfterSeconds = expireAfterSeconds,
