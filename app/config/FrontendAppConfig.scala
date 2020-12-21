@@ -27,6 +27,10 @@ import play.api.mvc.{Call, Request}
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
 
+  final val ENGLISH = "en"
+  final val WELSH = "cy"
+  final val UK_COUNTRY_CODE = "GB"
+
   private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "trusts"
 
@@ -42,7 +46,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
 
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
-  lazy val locationCanonicalListNonUK: String = loadConfig("location.canonical.list.nonUK")
+  lazy val locationCanonicalListCY: String = loadConfig("location.canonical.list.allCY")
 
   lazy val loginUrl: String = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
@@ -60,8 +64,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val timeoutLength: String = configuration.get[String]("timeout.length")
 
   def languageMap: Map[String, Lang] = Map(
-    "english" -> Lang("en"),
-    "cymraeg" -> Lang("cy")
+    "english" -> Lang(ENGLISH),
+    "cymraeg" -> Lang(WELSH)
   )
 
   def routeToSwitchLanguage: String => Call =
