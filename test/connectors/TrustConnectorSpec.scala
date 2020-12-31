@@ -34,15 +34,15 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   with Inside with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  private def getLeadTrusteeUrl(utr: String): String = s"/trusts/$utr/transformed/lead-trustee"
+  private def getLeadTrusteeUrl(utr: String): String = s"/trusts/trustees/$utr/transformed/lead-trustee"
 
   private def getTrustStartDateUrl(utr: String): String = s"/trusts/$utr/trust-details"
 
-  private def getTrusteesUrl(utr: String) = s"/trusts/$utr/transformed/trustees"
+  private def getTrusteesUrl(utr: String) = s"/trusts/trustees/$utr/transformed/trustee"
 
-  private def removeTrusteeUrl(utr: String) = s"/trusts/$utr/trustees/remove"
+  private def removeTrusteeUrl(utr: String) = s"/trusts/trustees/$utr/remove"
 
-  private def promoteTrusteeUrl(utr: String, index: Int) = s"/trusts/promote-trustee/$utr/$index"
+  private def promoteTrusteeUrl(utr: String, index: Int) = s"/trusts/trustees/promote/$utr/$index"
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
 
@@ -74,7 +74,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo("/trusts/amend-lead-trustee/UTRUTRUTR"))
+        post(urlEqualTo("/trusts/trustees/amend-lead/UTRUTRUTR"))
           .willReturn(ok)
       )
 
@@ -98,7 +98,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo("/trusts/add-trustee/UTRUTRUTR"))
+        post(urlEqualTo("/trusts/trustees/add/UTRUTRUTR"))
           .willReturn(ok)
       )
 
@@ -120,7 +120,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo("/trusts/add-trustee/UTRUTRUTR"))
+        post(urlEqualTo("/trusts/trustees/add/UTRUTRUTR"))
           .willReturn(badRequest)
       )
 
@@ -486,7 +486,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo(s"/trusts/amend-trustee/$utr/$index"))
+        post(urlEqualTo(s"/trusts/trustees/amend/$utr/$index"))
           .willReturn(ok)
       )
 
@@ -509,7 +509,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo(s"/trusts/amend-trustee/$utr/$index"))
+        post(urlEqualTo(s"/trusts/trustees/amend/$utr/$index"))
           .willReturn(badRequest)
       )
 
