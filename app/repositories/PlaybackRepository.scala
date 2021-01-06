@@ -47,7 +47,7 @@ class PlaybackRepositoryImpl @Inject()(mongo: MongoDriver,
 
   private val lastUpdatedIndex = Index(
     key = Seq("updatedAt" -> IndexType.Ascending),
-    name = Some("ser-answers-updated-at-index"),
+    name = Some("user-answers-updated-at-index"),
     options = BSONDocument("expireAfterSeconds" -> cacheTtl)
   )
 
