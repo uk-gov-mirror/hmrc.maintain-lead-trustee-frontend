@@ -114,6 +114,28 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
 
         application.stop()
       }
+
+      "redirect to the add page if we get an Index Not Found Exception" in {
+
+        val index = 0
+
+        when(mockConnector.getTrustees(any())(any(), any()))
+          .thenReturn(Future.failed(new IndexOutOfBoundsException("")))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[TrustConnector].toInstance(mockConnector))
+          .build()
+
+        val request = FakeRequest(GET, routes.RemoveTrusteeController.onPageLoad(index).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+
+        application.stop()
+      }
     }
 
     "removing an existing trustee" must {
