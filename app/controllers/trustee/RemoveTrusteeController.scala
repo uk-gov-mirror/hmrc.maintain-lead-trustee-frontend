@@ -59,6 +59,11 @@ class RemoveTrusteeController @Inject()(
           }
         Ok(view(messagesPrefix, form, index, trusteeName, formRoute(index)))
       } recoverWith {
+        case iobe: IndexOutOfBoundsException =>
+          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+            s" user cannot remove trustee as trustee was not found ${iobe.getMessage}: IndexOutOfBoundsException")
+
+          Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad()))
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] user cannot remove trustee as trustee was not found")
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
