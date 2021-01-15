@@ -32,11 +32,16 @@ import reactivemongo.play.json.collection.JSONCollection
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ActiveSessionRepositoryImpl @Inject()(mongo: MongoDriver,
+class ActiveSessionRepositoryImpl @Inject()(override val mongo: MongoDriver,
                                             config: Configuration
-                                           )(implicit ec: ExecutionContext) extends ActiveSessionRepository {
+                                           )(override implicit val ec: ExecutionContext)
+  extends ActiveSessionRepository
+  with IndexManager {
 
-  private val collectionName: String = "session"
+  override val collectionName: String = "session"
+
+  override val dropIndexes: Boolean =
+    config.get[Boolean]("microservice.services.features.mongo.dropIndexes")
 
   private val cacheTtl = config.get[Int]("mongodb.session.ttlSeconds")
 
