@@ -30,11 +30,16 @@ import reactivemongo.play.json.collection.JSONCollection
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PlaybackRepositoryImpl @Inject()(mongo: MongoDriver,
+class PlaybackRepositoryImpl @Inject()(override val mongo: MongoDriver,
                                        config: Configuration
-                                      )(implicit ec: ExecutionContext) extends PlaybackRepository {
+                                      )(override implicit val ec: ExecutionContext)
+  extends PlaybackRepository
+  with IndexManager {
 
-  private val collectionName: String = "user-answers"
+  override val collectionName: String = "user-answers"
+
+  override val dropIndexes: Boolean =
+    config.get[Boolean]("microservice.services.features.mongo.dropIndexes")
 
   private val cacheTtl = config.get[Int]("mongodb.playback.ttlSeconds")
 
@@ -55,7 +60,7 @@ class PlaybackRepositoryImpl @Inject()(mongo: MongoDriver,
     name = "internal-id-and-utr-compound-index"
   )
 
-  private lazy val ensureIndexes = for {
+  private def ensureIndexes = for {
       collection              <- mongo.api.database.map(_.collection[JSONCollection](collectionName))
       createdLastUpdatedIndex <- collection.indexesManager.ensure(lastUpdatedIndex)
       createdIdIndex          <- collection.indexesManager.ensure(internalIdAndUtrIndex)
