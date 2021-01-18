@@ -24,7 +24,6 @@ import play.api.Configuration
 import play.api.libs.json._
 import reactivemongo.api.WriteConcern
 import reactivemongo.api.indexes.IndexType
-import reactivemongo.play.json.compat.jsObjectWrites
 import reactivemongo.play.json.collection.JSONCollection
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,6 +34,8 @@ class PlaybackRepositoryImpl @Inject()(override val mongo: MongoDriver,
                                       )(override implicit val ec: ExecutionContext)
   extends PlaybackRepository
   with IndexManager {
+
+  implicit final val jsObjectWrites: OWrites[JsObject] = OWrites[JsObject](identity)
 
   override val collectionName: String = "user-answers"
 
@@ -105,7 +106,7 @@ class PlaybackRepositoryImpl @Inject()(override val mongo: MongoDriver,
     )
 
     val modifier = Json.obj(
-      "$set" -> (userAnswers.copy(updatedAt = LocalDateTime.now))
+      "$set" -> userAnswers.copy(updatedAt = LocalDateTime.now)
     )
 
     for {
