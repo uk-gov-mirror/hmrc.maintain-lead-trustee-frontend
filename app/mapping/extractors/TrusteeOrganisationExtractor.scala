@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package mapping
+package mapping.extractors
 
 import com.google.inject.Inject
 import models.IndividualOrBusiness.Business
@@ -35,7 +35,7 @@ class TrusteeOrganisationExtractor @Inject()() {
       .flatMap(_.set(WhenAddedPage, trustee.entityStart))
   }
 
-  private def extractIdentification(identification: Option[TrustIdentificationOrgType], answers: UserAnswers) = {
+  private def extractIdentification(identification: Option[TrustIdentificationOrgType], answers: UserAnswers): Try[UserAnswers] = {
     identification match {
 
       case Some(TrustIdentificationOrgType(_, Some(utr), None)) =>
@@ -53,7 +53,7 @@ class TrusteeOrganisationExtractor @Inject()() {
     }
   }
 
-  private def extractAddress(address: Address, answers: UserAnswers) = {
+  private def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
     address match {
       case uk: UkAddress =>
         answers.set(org.AddressYesNoPage, true)

@@ -21,8 +21,11 @@ import connectors.TrustConnector
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import handlers.ErrorHandler
+
 import javax.inject.Inject
-import mapping.{TrusteeIndividualExtractor, TrusteeOrganisationExtractor}
+import mapping.TrusteeOrganisationExtractor
+import mapping.extractors.{TrusteeIndividualExtractor, TrusteeOrganisationExtractor}
+import mapping.mappers.AmendedTrusteeMapper
 import models.IndividualOrBusiness._
 import models.{IndividualOrBusiness, Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
@@ -30,7 +33,7 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
-import services.{AmendedTrusteeBuilder, TrustService}
+import services.TrustService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.checkYourAnswers.{AmendTrusteeIndividualPrintHelper, AmendTrusteeOrganisationPrintHelper}
@@ -47,7 +50,7 @@ class CheckDetailsController @Inject()(
                                         view: CheckDetailsView,
                                         indHelper: AmendTrusteeIndividualPrintHelper,
                                         orgHelper: AmendTrusteeOrganisationPrintHelper,
-                                        trusteeBuilder: AmendedTrusteeBuilder,
+                                        trusteeBuilder: AmendedTrusteeMapper,
                                         indExtractor: TrusteeIndividualExtractor,
                                         orgExtractor: TrusteeOrganisationExtractor,
                                         trustConnector: TrustConnector,

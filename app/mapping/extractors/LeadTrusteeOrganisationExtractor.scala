@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package mapping
+package mapping.extractors
 
 import com.google.inject.Inject
 import models.IndividualOrBusiness.Business
@@ -29,7 +29,7 @@ import scala.util.{Success, Try}
 
 class LeadTrusteeOrganisationExtractor @Inject()() extends Logging {
 
-  def mapLeadTrusteeOrganisation(answers: UserAnswers): Option[LeadTrusteeOrganisation] = {
+  def getFromUserAnswers(answers: UserAnswers): Option[LeadTrusteeOrganisation] = {
     val readFromUserAnswers: Reads[LeadTrusteeOrganisation] =
       (
         ltorg.NamePage.path.read[String] and
@@ -50,7 +50,7 @@ class LeadTrusteeOrganisationExtractor @Inject()() extends Logging {
     }
   }
 
-  def extractLeadTrusteeOrganisation(answers: UserAnswers, leadOrganisation: LeadTrusteeOrganisation): Try[UserAnswers] = {
+  def populateUserAnswers(answers: UserAnswers, leadOrganisation: LeadTrusteeOrganisation): Try[UserAnswers] = {
     answers.set(IndividualOrBusinessPage, Business)
       .flatMap(answers => extractRegisteredInUK(leadOrganisation.utr, answers))
       .flatMap(_.set(ltorg.NamePage, leadOrganisation.name))
@@ -59,7 +59,7 @@ class LeadTrusteeOrganisationExtractor @Inject()() extends Logging {
       .flatMap(_.set(ltorg.TelephoneNumberPage, leadOrganisation.phoneNumber))
   }
 
-  private def extractEmail(email: Option[String], answers: UserAnswers) = {
+  private def extractEmail(email: Option[String], answers: UserAnswers): Try[UserAnswers] = {
     email match {
       case Some(x) =>
         answers.set(ltorg.EmailAddressYesNoPage, true)
@@ -68,7 +68,7 @@ class LeadTrusteeOrganisationExtractor @Inject()() extends Logging {
     }
   }
 
-  private def extractRegisteredInUK(utr: Option[String], answers: UserAnswers) = {
+  private def extractRegisteredInUK(utr: Option[String], answers: UserAnswers): Try[UserAnswers] = {
     utr match {
       case Some(x) =>
         answers.set(ltorg.RegisteredInUkYesNoPage, true)
@@ -77,7 +77,7 @@ class LeadTrusteeOrganisationExtractor @Inject()() extends Logging {
     }
   }
 
-  private def extractAddress(address: Address, answers: UserAnswers) = {
+  private def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
     address match {
       case uk: UkAddress =>
         answers.set(ltorg.UkAddressPage, uk)

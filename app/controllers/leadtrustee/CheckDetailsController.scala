@@ -20,18 +20,18 @@ import com.google.inject.Inject
 import connectors.TrustConnector
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.{routes => ltRoutes}
-import mapping.{IndividualLeadTrusteeToUserAnswersMapper, LeadTrusteeOrganisationExtractor}
+import mapping.extractors.{LeadTrusteeIndividualExtractor, LeadTrusteeOrganisationExtractor}
 import models.requests.DataRequest
 import models.{LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, UserAnswers}
+import pages.leadtrustee.{individual => lind, organisation => lorg}
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.checkYourAnswers.{LeadTrusteeIndividualPrintHelper, LeadTrusteeOrganisationPrintHelper}
 import views.html.leadtrustee.CheckDetailsView
-import pages.leadtrustee.{individual => lind, organisation => lorg}
-import play.api.Logging
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
@@ -42,7 +42,7 @@ class CheckDetailsController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
                                         connector: TrustConnector,
-                                        leadTrusteeIndMapper: IndividualLeadTrusteeToUserAnswersMapper,
+                                        leadTrusteeIndMapper: LeadTrusteeIndividualExtractor,
                                         leadTrusteeOrgExtractor: LeadTrusteeOrganisationExtractor,
                                         leadTrusteeIndPrintHelper: LeadTrusteeIndividualPrintHelper,
                                         leadTrusteeOrgPrintHelper: LeadTrusteeOrganisationPrintHelper,
@@ -64,7 +64,7 @@ class CheckDetailsController @Inject()(
             renderIndividualLeadTrustee(updatedAnswers)
           }
         case trusteeOrg: LeadTrusteeOrganisation =>
-          val answers: Try[UserAnswers] = leadTrusteeOrgExtractor.extractLeadTrusteeOrganisation(request.userAnswers, trusteeOrg)
+          val answers: Try[UserAnswers] = leadTrusteeOrgExtractor.populateUserAnswers(request.userAnswers, trusteeOrg)
           for {
             updatedAnswers <- Future.fromTry(answers)
             _ <- repository.set(updatedAnswers)
@@ -127,7 +127,7 @@ class CheckDetailsController @Inject()(
 
   def onSubmitOrganisation(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
-        leadTrusteeOrgExtractor.mapLeadTrusteeOrganisation(request.userAnswers) match {
+        leadTrusteeOrgExtractor.getFromUserAnswers(request.userAnswers) match {
           case None =>
             logger.error(s"[Session ID: ${utils.Session.id(hc)}]" +
               s"[UTR: ${request.userAnswers.utr}] unable to build lead trustee organisation from user answers," +

@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package mapping
-
-import java.time.LocalDate
+package mapping.extractors
 
 import com.google.inject.Inject
 import models.IndividualOrBusiness.Individual
-import models.{Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, NationalInsuranceNumber, NonUkAddress, Passport, TrusteeIndividual, UkAddress, UserAnswers}
+import models._
 import pages.trustee.amend.{individual => ind}
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 
+import java.time.LocalDate
 import scala.util.Try
 
 class TrusteeIndividualExtractor @Inject()() {
@@ -49,7 +48,7 @@ class TrusteeIndividualExtractor @Inject()() {
     }
   }
 
-  private def extractIdentification(identification: Option[IndividualIdentification], answers: UserAnswers) = {
+  private def extractIdentification(identification: Option[IndividualIdentification], answers: UserAnswers): Try[UserAnswers] = {
     identification match {
 
       case Some(NationalInsuranceNumber(nino)) =>
@@ -77,7 +76,7 @@ class TrusteeIndividualExtractor @Inject()() {
     }
   }
 
-  private def extractAddress(address: Option[Address], answers: UserAnswers) = {
+  private def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
     address match {
       case Some(uk: UkAddress) =>
         answers.set(ind.AddressYesNoPage, true)

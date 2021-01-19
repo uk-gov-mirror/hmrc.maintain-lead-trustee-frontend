@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package mapping
-
-import java.time.LocalDate
+package mapping.extractors
 
 import generators.ModelGenerators
 import models.{IdCard, Passport, UserAnswers}
@@ -24,12 +22,13 @@ import org.scalatest.{FreeSpec, MustMatchers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 
+import java.time.LocalDate
 import scala.util.{Failure, Success}
 
-class IndividualLeadTrusteeToUserAnswersMapperSpec extends FreeSpec with ScalaCheckPropertyChecks with ModelGenerators with MustMatchers {
+class LeadTrusteeIndividualExtractorSpec extends FreeSpec with ScalaCheckPropertyChecks with ModelGenerators with MustMatchers {
   "should round trip through user answers  except Passports & Id cards will be unified into CombinedPassportOrId" in {
     forAll(arbitraryLeadTrusteeIndividual.arbitrary) { lt =>
-      val mapper = new IndividualLeadTrusteeToUserAnswersMapper()
+      val mapper = new LeadTrusteeIndividualExtractor()
       val userAnswers = new UserAnswers("Id", "UTRUTRUTR", LocalDate.of(1987, 12, 31), Json.obj())
       val expectedId = lt.identification match {
         case p:Passport => p.asCombined

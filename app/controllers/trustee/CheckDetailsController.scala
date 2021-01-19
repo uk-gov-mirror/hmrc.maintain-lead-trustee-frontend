@@ -21,6 +21,8 @@ import connectors.TrustConnector
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import handlers.ErrorHandler
+import mapping.mappers.TrusteeMapper
+
 import javax.inject.Inject
 import models.IndividualOrBusiness._
 import models.{Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
@@ -28,7 +30,6 @@ import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.TrusteeBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.checkYourAnswers.{TrusteeIndividualPrintHelper, TrusteeOrganisationPrintHelper}
@@ -44,7 +45,7 @@ class CheckDetailsController @Inject()(
                                         nameAction: NameRequiredAction,
                                         indHelper: TrusteeIndividualPrintHelper,
                                         orgHelper: TrusteeOrganisationPrintHelper,
-                                        trusteeBuilder: TrusteeBuilder,
+                                        trusteeBuilder: TrusteeMapper,
                                         trustConnector: TrustConnector,
                                         val appConfig: FrontendAppConfig,
                                         errorHandler: ErrorHandler

@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package mapping
-
-import java.time.LocalDate
+package mapping.extractors
 
 import com.google.inject.Inject
-import models.{Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, LeadTrusteeIndividual, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
+import models._
 import pages.leadtrustee.{individual => ltind}
 import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsError, JsSuccess, Reads}
 
+import java.time.LocalDate
 import scala.util.{Success, Try}
 
-class IndividualLeadTrusteeToUserAnswersMapper @Inject()() extends Logging {
+class LeadTrusteeIndividualExtractor @Inject()() extends Logging {
 
-  def getFromUserAnswers(answers: UserAnswers) : Option[LeadTrusteeIndividual] = {
+  def getFromUserAnswers(answers: UserAnswers): Option[LeadTrusteeIndividual] = {
     val readFromUserAnswers: Reads[LeadTrusteeIndividual] =
       (
         ltind.NamePage.path.read[Name] and
@@ -67,7 +66,7 @@ class IndividualLeadTrusteeToUserAnswersMapper @Inject()() extends Logging {
       .flatMap(_.set(ltind.TelephoneNumberPage, leadIndividual.phoneNumber))
   }
 
-  private def extractLeadIndividualIdentification(leadIndividual: LeadTrusteeIndividual, answers: UserAnswers) = {
+  private def extractLeadIndividualIdentification(leadIndividual: LeadTrusteeIndividual, answers: UserAnswers): Try[UserAnswers] = {
     leadIndividual.identification match {
       case NationalInsuranceNumber(nino) =>
         answers.set(ltind.UkCitizenPage, true)
@@ -84,7 +83,7 @@ class IndividualLeadTrusteeToUserAnswersMapper @Inject()() extends Logging {
     }
   }
 
-  private def extractAddress(address: Option[Address], answers: UserAnswers) = {
+  private def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
     address match {
       case Some(uk: UkAddress) =>
         answers.set(ltind.UkAddressPage, uk)
@@ -96,7 +95,7 @@ class IndividualLeadTrusteeToUserAnswersMapper @Inject()() extends Logging {
     }
   }
 
-  private def extractEmail(email: Option[String], answers: UserAnswers) = {
+  private def extractEmail(email: Option[String], answers: UserAnswers): Try[UserAnswers] = {
     email match {
       case Some(x) =>
         answers.set(ltind.EmailAddressYesNoPage, true)

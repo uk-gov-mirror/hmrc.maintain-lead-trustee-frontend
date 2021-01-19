@@ -14,30 +14,31 @@
  * limitations under the License.
  */
 
-package services
+package mapping.mappers
+
+import models._
+import pages.trustee.{individual => ind, organisation => org}
 
 import java.time.LocalDate
 
-import models.{Address, IndividualIdentification, NationalInsuranceNumber, NonUkAddress, TrustIdentificationOrgType, TrusteeIndividual, TrusteeOrganisation, UkAddress, UserAnswers}
-import pages.trustee.amend.{individual => ind, organisation => org}
+class TrusteeMapper {
 
-class AmendedTrusteeBuilder {
-
-  def createTrusteeIndividual(userAnswers: UserAnswers, date: LocalDate) = {
+  def createTrusteeIndividual(userAnswers: UserAnswers, date: LocalDate): TrusteeIndividual = {
     TrusteeIndividual(
       userAnswers.get(ind.NamePage).get,
       userAnswers.get(ind.DateOfBirthPage),
       None,
-      buildIdentfication(userAnswers),
+      buildIdentification(userAnswers),
       buildIndAddress(userAnswers),
       date,
       provisional = true
     )
   }
 
-  private def buildIdentfication(userAnswers: UserAnswers) : Option[IndividualIdentification] = {
+  private def buildIdentification(userAnswers: UserAnswers) : Option[IndividualIdentification] = {
     userAnswers.get(ind.NationalInsuranceNumberPage).map (n => new NationalInsuranceNumber(n))
-      .orElse(userAnswers.get(ind.PassportOrIdCardDetailsPage))
+      .orElse(userAnswers.get(ind.PassportDetailsPage))
+      .orElse(userAnswers.get(ind.IdCardDetailsPage))
   }
 
   private def buildIndAddress(userAnswers: UserAnswers): Option[Address] = {
@@ -51,7 +52,7 @@ class AmendedTrusteeBuilder {
     }
   }
 
-  def createTrusteeOrganisation(userAnswers: UserAnswers, date: LocalDate) = {
+  def createTrusteeOrganisation(userAnswers: UserAnswers, date: LocalDate): TrusteeOrganisation = {
     TrusteeOrganisation(
       userAnswers.get(org.NamePage).get,
       None,

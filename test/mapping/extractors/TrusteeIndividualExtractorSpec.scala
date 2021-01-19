@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package mapping
-
-import java.time.LocalDate
+package mapping.extractors
 
 import generators.ModelGenerators
 import models.IndividualOrBusiness.Individual
@@ -26,6 +24,8 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.amend.individual._
 import play.api.libs.json.Json
+
+import java.time.LocalDate
 
 class TrusteeIndividualExtractorSpec extends FreeSpec with ScalaCheckPropertyChecks with ModelGenerators with MustMatchers {
 
