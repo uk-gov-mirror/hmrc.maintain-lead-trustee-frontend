@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package mapping
+package mapping.extractors
 
-import com.google.inject.Inject
 import models.IndividualOrBusiness.Business
 import models.{Address, NonUkAddress, TrustIdentificationOrgType, TrusteeOrganisation, UkAddress, UserAnswers}
 import pages.trustee.amend.{organisation => org}
@@ -24,9 +23,9 @@ import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 
 import scala.util.Try
 
-class TrusteeOrganisationExtractor @Inject()() {
+class TrusteeOrganisationExtractor {
 
-  def apply(answers: UserAnswers, trustee: TrusteeOrganisation, index: Int): Try[UserAnswers] = {
+  def extract(answers: UserAnswers, trustee: TrusteeOrganisation, index: Int): Try[UserAnswers] = {
     answers.deleteAtPath(pages.trustee.basePath)
       .flatMap(_.set(IndividualOrBusinessPage, Business))
       .flatMap(_.set(org.IndexPage, index))
@@ -35,25 +34,21 @@ class TrusteeOrganisationExtractor @Inject()() {
       .flatMap(_.set(WhenAddedPage, trustee.entityStart))
   }
 
-  private def extractIdentification(identification: Option[TrustIdentificationOrgType], answers: UserAnswers) = {
+  private def extractIdentification(identification: Option[TrustIdentificationOrgType], answers: UserAnswers): Try[UserAnswers] = {
     identification match {
-
       case Some(TrustIdentificationOrgType(_, Some(utr), None)) =>
         answers.set(org.UtrYesNoPage, true)
           .flatMap(_.set(org.UtrPage, utr))
-
       case Some(TrustIdentificationOrgType(_, None, Some(address))) =>
         answers.set(org.UtrYesNoPage, false)
           .flatMap(answers => extractAddress(address, answers))
-
       case _ =>
         answers.set(org.UtrYesNoPage, false)
           .flatMap(_.set(org.AddressYesNoPage, false))
-
     }
   }
 
-  private def extractAddress(address: Address, answers: UserAnswers) = {
+  private def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
     address match {
       case uk: UkAddress =>
         answers.set(org.AddressYesNoPage, true)

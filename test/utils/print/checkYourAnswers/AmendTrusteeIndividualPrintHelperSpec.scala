@@ -53,7 +53,7 @@ class AmendTrusteeIndividualPrintHelperSpec extends SpecBase {
           .set(PassportOrIdCardDetailsYesNoPage, true).success.value
           .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("GB", "1", LocalDate.of(2030, 10, 10))).success.value
 
-        val result = helper(userAnswers, name.displayName)
+        val result = helper.print(userAnswers, name.displayName)
         result mustBe AnswerSection(
           headingKey = None,
           rows = Seq(
@@ -84,7 +84,7 @@ class AmendTrusteeIndividualPrintHelperSpec extends SpecBase {
           .set(NationalInsuranceNumberYesNoPage, false).success.value
           .set(AddressYesNoPage, false).success.value
 
-        val result = helper(userAnswers, name.displayName)
+        val result = helper.print(userAnswers, name.displayName)
         result mustBe AnswerSection(
           headingKey = None,
           rows = Seq(

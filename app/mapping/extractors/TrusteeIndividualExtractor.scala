@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package mapping
-
-import java.time.LocalDate
+package mapping.extractors
 
 import com.google.inject.Inject
 import models.IndividualOrBusiness.Individual
-import models.{Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, NationalInsuranceNumber, NonUkAddress, Passport, TrusteeIndividual, UkAddress, UserAnswers}
+import models._
 import pages.trustee.amend.{individual => ind}
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 
+import java.time.LocalDate
 import scala.util.Try
 
 class TrusteeIndividualExtractor @Inject()() {
 
-  def apply(answers: UserAnswers, trustee: TrusteeIndividual, index: Int): Try[UserAnswers] = {
+  def extract(answers: UserAnswers, trustee: TrusteeIndividual, index: Int): Try[UserAnswers] = {
     answers.deleteAtPath(pages.trustee.basePath)
       .flatMap(_.set(IndividualOrBusinessPage, Individual))
       .flatMap(_.set(ind.IndexPage, index))
@@ -49,35 +48,29 @@ class TrusteeIndividualExtractor @Inject()() {
     }
   }
 
-  private def extractIdentification(identification: Option[IndividualIdentification], answers: UserAnswers) = {
+  private def extractIdentification(identification: Option[IndividualIdentification], answers: UserAnswers): Try[UserAnswers] = {
     identification match {
-
       case Some(NationalInsuranceNumber(nino)) =>
         answers.set(ind.NationalInsuranceNumberYesNoPage, true)
           .flatMap(_.set(ind.NationalInsuranceNumberPage, nino))
-
-      case Some(p:Passport) =>
+      case Some(p: Passport) =>
         answers.set(ind.NationalInsuranceNumberYesNoPage, false)
           .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, true))
           .flatMap(_.set(ind.PassportOrIdCardDetailsPage, p.asCombined))
-
-      case Some(id:IdCard) =>
+      case Some(id: IdCard) =>
         answers.set(ind.NationalInsuranceNumberYesNoPage, false)
           .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, true))
           .flatMap(_.set(ind.PassportOrIdCardDetailsPage, id.asCombined))
-
-      case Some(c:CombinedPassportOrIdCard) =>
+      case Some(c: CombinedPassportOrIdCard) =>
         answers.set(ind.NationalInsuranceNumberYesNoPage, false)
           .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, true))
           .flatMap(_.set(ind.PassportOrIdCardDetailsPage, c))
-
       case _ =>
         answers.set(ind.NationalInsuranceNumberYesNoPage, false)
-
     }
   }
 
-  private def extractAddress(address: Option[Address], answers: UserAnswers) = {
+  private def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
     address match {
       case Some(uk: UkAddress) =>
         answers.set(ind.AddressYesNoPage, true)

@@ -26,9 +26,9 @@ import viewmodels.AnswerSection
 
 class AmendTrusteeOrganisationPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
                                                     countryOptions: CountryOptions
-                                 ) {
+                                                   ) {
 
-  def apply(userAnswers: UserAnswers, trusteeName: String)(implicit messages: Messages) = {
+  def print(userAnswers: UserAnswers, trusteeName: String)(implicit messages: Messages): AnswerSection = {
 
     val bound = answerRowConverter.bind(userAnswers, trusteeName, countryOptions)
 

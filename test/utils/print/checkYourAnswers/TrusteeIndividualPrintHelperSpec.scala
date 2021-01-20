@@ -55,7 +55,7 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
         .set(IdCardDetailsPage, IdCard("GB", "1", LocalDate.of(2030, 10, 10))).success.value
         .set(WhenAddedPage, LocalDate.of(2020, 1, 1)).success.value
 
-      val result = helper(userAnswers, name.displayName)
+      val result = helper.print(userAnswers, name.displayName)
       result mustBe AnswerSection(
         headingKey = None,
         rows = Seq(

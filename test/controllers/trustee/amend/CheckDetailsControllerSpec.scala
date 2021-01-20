@@ -16,137 +16,365 @@
 
 package controllers.trustee.amend
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustConnector
-import models.IndividualOrBusiness.Individual
-import models.{Name, UkAddress, UserAnswers}
+import mapping.extractors._
+import mapping.mappers.{TrusteeIndividualMapper, TrusteeOrganisationMapper}
+import models.IndividualOrBusiness.{Business, Individual}
+import models.{Name, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import pages.trustee.amend.individual.{NamePage, UkAddressPage}
-import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
+import pages.trustee.IndividualOrBusinessPage
+import pages.trustee.amend.{individual => ind, organisation => org}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.TrustService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
-import utils.countryOptions.CountryOptions
-import utils.print.{AnswerRowConverter, CheckAnswersFormatters}
+import utils.print.checkYourAnswers.{AmendTrusteeIndividualPrintHelper, AmendTrusteeOrganisationPrintHelper}
 import viewmodels.AnswerSection
 import views.html.trustee.amend.CheckDetailsView
 
+import java.time.LocalDate
 import scala.concurrent.Future
+import scala.util.Success
 
 class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  private val trusteeName: Name = Name("FirstName", None, "LastName")
-  private val trusteeAddress: UkAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
+  private val indName: Name = Name("Joe", None, "Bloggs")
+  private val orgName: String = "Name"
+  private val date: LocalDate = LocalDate.parse("1996-02-03")
   private val index = 0
 
-  private lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoadUpdated(index).url
-  private lazy val submitDetailsRoute = routes.CheckDetailsController.onSubmit(index).url
+  private lazy val onPageLoadRoute = routes.CheckDetailsController.onPageLoad(index).url
+  private lazy val onPageLoadUpdatedRoute = routes.CheckDetailsController.onPageLoadUpdated(index).url
+  private lazy val onSubmitRoute = routes.CheckDetailsController.onSubmit(index).url
   private lazy val onwardRoute = controllers.routes.AddATrusteeController.onPageLoad().url
 
-  private val checkAnswersFormatters: CheckAnswersFormatters = injector.instanceOf[CheckAnswersFormatters]
+  private val answerSection: AnswerSection = AnswerSection(None, Nil)
 
-  "CheckDetails Controller" must {
+  "CheckDetails Controller" when {
 
-    "return OK and the correct view for a GET" in {
+    ".onPageLoad" must {
 
-      val userAnswers = emptyUserAnswers
-        .set(IndividualOrBusinessPage, Individual).success.value
-        .set(NamePage, trusteeName).success.value
-        .set(UkAddressPage, trusteeAddress).success.value
+      "return OK and the correct view for a GET" when {
 
-      val bound = new AnswerRowConverter(checkAnswersFormatters).bind(userAnswers, trusteeName.displayName, mock[CountryOptions])
+        "individual" in {
 
-      val answerSection = AnswerSection(None, Seq(
-        bound.nameQuestion(NamePage, "trustee.individual.name", controllers.trustee.amend.individual.routes.NameController.onPageLoad().url),
-        bound.addressQuestion(UkAddressPage, "trustee.individual.ukAddress", controllers.trustee.amend.individual.routes.UkAddressController.onPageLoad().url)
-      ).flatten)
+          val userAnswers = emptyUserAnswers
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val trustee: TrusteeIndividual = TrusteeIndividual(indName, None, None, None, None, date, provisional = false)
 
-      val request = FakeRequest(GET, checkDetailsRoute)
+          val trustService = mock[TrustService]
+          val extractor: TrusteeIndividualExtractor = mock[TrusteeIndividualExtractor]
+          val printHelper: AmendTrusteeIndividualPrintHelper = mock[AmendTrusteeIndividualPrintHelper]
 
-      val result = route(application, request).value
+          when(trustService.getTrustee(any(), any())(any(), any())).thenReturn(Future.successful(trustee))
+          when(extractor.extract(any(), any(), any())).thenReturn(Success(userAnswers))
+          when(printHelper.print(any(), any())(any())).thenReturn(answerSection)
 
-      val view = application.injector.instanceOf[CheckDetailsView]
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[TrustService].toInstance(trustService))
+            .overrides(bind[TrusteeIndividualExtractor].toInstance(extractor))
+            .overrides(bind[AmendTrusteeIndividualPrintHelper].toInstance(printHelper))
+            .build()
 
-      status(result) mustEqual OK
+          val request = FakeRequest(GET, onPageLoadRoute)
 
-      contentAsString(result) mustEqual
-        view(answerSection, index)(request, messages).toString
-    }
+          val result = route(application, request).value
 
-    "redirect to the 'add a trustee' page when submitted" in {
+          val view = application.injector.instanceOf[CheckDetailsView]
 
-      val mockTrustConnector = mock[TrustConnector]
+          status(result) mustEqual OK
 
-      val userAnswers = emptyUserAnswers
-        .set(IndividualOrBusinessPage, Individual).success.value
-        .set(NamePage, trusteeName).success.value
-        .set(WhenAddedPage, LocalDate.now).success.value
+          contentAsString(result) mustEqual
+            view(answerSection, index)(request, messages).toString
 
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
-          .overrides(bind[TrustConnector].toInstance(mockTrustConnector))
-          .build()
+          verify(trustService).getTrustee(eqTo(userAnswers.utr), eqTo(index))(any(), any())
+          verify(extractor).extract(eqTo(userAnswers), eqTo(trustee), eqTo(index))
+          verify(printHelper).print(eqTo(userAnswers), eqTo(indName.displayName))(any())
+        }
 
-      when(mockTrustConnector.amendTrustee(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+        "business" in {
 
-      when(playbackRepository.set(any())).thenReturn(Future.successful(true))
+          val userAnswers = emptyUserAnswers
 
-      val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass[UserAnswers](classOf[UserAnswers])
+          val trustee: TrusteeOrganisation = TrusteeOrganisation(orgName, None, None, None, date, provisional = false)
 
-      val request = FakeRequest(POST, submitDetailsRoute)
+          val trustService = mock[TrustService]
+          val extractor: TrusteeOrganisationExtractor = mock[TrusteeOrganisationExtractor]
+          val printHelper: AmendTrusteeOrganisationPrintHelper = mock[AmendTrusteeOrganisationPrintHelper]
 
-      val result = route(application, request).value
+          when(trustService.getTrustee(any(), any())(any(), any())).thenReturn(Future.successful(trustee))
+          when(extractor.extract(any(), any(), any())).thenReturn(Success(userAnswers))
+          when(printHelper.print(any(), any())(any())).thenReturn(answerSection)
 
-      status(result) mustEqual SEE_OTHER
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[TrustService].toInstance(trustService))
+            .overrides(bind[TrusteeOrganisationExtractor].toInstance(extractor))
+            .overrides(bind[AmendTrusteeOrganisationPrintHelper].toInstance(printHelper))
+            .build()
 
-      verify(playbackRepository).set(captor.capture)
+          val request = FakeRequest(GET, onPageLoadRoute)
 
-      captor.getValue.data mustBe Json.obj()
+          val result = route(application, request).value
 
-      redirectLocation(result).value mustEqual onwardRoute
+          val view = application.injector.instanceOf[CheckDetailsView]
 
-      application.stop()
-    }
+          status(result) mustEqual OK
 
-    "Clear out the user answers for the addTrustee journey on submission" in {
-      val mockTrustConnector = mock[TrustConnector]
+          contentAsString(result) mustEqual
+            view(answerSection, index)(request, messages).toString
 
-      reset(playbackRepository)
-
-      val userAnswers = emptyUserAnswers
-        .set(IndividualOrBusinessPage, Individual).success.value
-        .set(NamePage, trusteeName).success.value
-        .set(WhenAddedPage, LocalDate.now).success.value
-
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswers),
-          affinityGroup = Agent)
-          .overrides(
-            bind[TrustConnector].toInstance(mockTrustConnector)
-          ).build()
-
-      when(mockTrustConnector.amendTrustee(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(playbackRepository.set(any())).thenReturn(Future.successful(true))
-
-      val request = FakeRequest(POST, submitDetailsRoute)
-
-      whenReady(route(application, request).value) { _ =>
-        val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(playbackRepository).set(uaCaptor.capture())
-        uaCaptor.getValue.data mustBe Json.obj()
+          verify(trustService).getTrustee(eqTo(userAnswers.utr), eqTo(index))(any(), any())
+          verify(extractor).extract(eqTo(userAnswers), eqTo(trustee), eqTo(index))
+          verify(printHelper).print(eqTo(userAnswers), eqTo(orgName))(any())
+        }
       }
     }
 
+    ".onPageLoadUpdated" must {
+
+      "return OK and the correct view for a GET" when {
+
+        "individual" in {
+
+          val userAnswers = emptyUserAnswers
+            .set(IndividualOrBusinessPage, Individual).success.value
+            .set(ind.NamePage, indName).success.value
+
+          val printHelper: AmendTrusteeIndividualPrintHelper = mock[AmendTrusteeIndividualPrintHelper]
+
+          when(printHelper.print(any(), any())(any())).thenReturn(answerSection)
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[AmendTrusteeIndividualPrintHelper].toInstance(printHelper))
+            .build()
+
+          val request = FakeRequest(GET, onPageLoadUpdatedRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[CheckDetailsView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(answerSection, index)(request, messages).toString
+
+          verify(printHelper).print(eqTo(userAnswers), eqTo(indName.displayName))(any())
+        }
+
+        "business" in {
+
+          val userAnswers = emptyUserAnswers
+            .set(IndividualOrBusinessPage, Business).success.value
+            .set(org.NamePage, orgName).success.value
+
+          val printHelper: AmendTrusteeOrganisationPrintHelper = mock[AmendTrusteeOrganisationPrintHelper]
+
+          when(printHelper.print(any(), any())(any())).thenReturn(answerSection)
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[AmendTrusteeOrganisationPrintHelper].toInstance(printHelper))
+            .build()
+
+          val request = FakeRequest(GET, onPageLoadUpdatedRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[CheckDetailsView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(answerSection, index)(request, messages).toString
+
+          verify(printHelper).print(eqTo(userAnswers), eqTo(orgName))(any())
+        }
+      }
+
+      "return InternalServerError" when {
+
+        "individual or business unanswered" in {
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+          val request = FakeRequest(GET, onPageLoadUpdatedRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual INTERNAL_SERVER_ERROR
+        }
+      }
+    }
+
+    ".onSubmit" must {
+
+      "redirect to the 'add a trustee' page when submitted and clear out user answers" when {
+
+        "individual" in {
+
+          reset(playbackRepository)
+
+          val mapper: TrusteeIndividualMapper = mock[TrusteeIndividualMapper]
+
+          val mockTrustConnector = mock[TrustConnector]
+
+          val userAnswers = emptyUserAnswers
+            .set(IndividualOrBusinessPage, Individual).success.value
+            .set(ind.NamePage, indName).success.value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
+            .overrides(bind[TrusteeIndividualMapper].toInstance(mapper))
+            .overrides(bind[TrustConnector].toInstance(mockTrustConnector))
+            .build()
+
+          val trustee = TrusteeIndividual(indName, None, None, None, None, date, provisional = true)
+
+          when(mapper.map(any(), any())).thenReturn(Some(trustee))
+
+          when(mockTrustConnector.amendTrustee(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+
+          when(playbackRepository.set(any())).thenReturn(Future.successful(true))
+
+          val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass[UserAnswers](classOf[UserAnswers])
+
+          val request = FakeRequest(POST, onSubmitRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual onwardRoute
+
+          application.stop()
+
+          verify(playbackRepository).set(captor.capture)
+          captor.getValue.data mustBe Json.obj()
+
+          verify(mapper).map(userAnswers, adding = false)
+          verify(mockTrustConnector).amendTrustee(eqTo(userAnswers.utr), eqTo(index), eqTo(trustee))(any(), any())
+        }
+
+        "business" in {
+
+          reset(playbackRepository)
+
+          val mapper: TrusteeOrganisationMapper = mock[TrusteeOrganisationMapper]
+
+          val mockTrustConnector = mock[TrustConnector]
+
+          val userAnswers = emptyUserAnswers
+            .set(IndividualOrBusinessPage, Business).success.value
+            .set(org.NamePage, orgName).success.value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
+            .overrides(bind[TrusteeOrganisationMapper].toInstance(mapper))
+            .overrides(bind[TrustConnector].toInstance(mockTrustConnector))
+            .build()
+
+          val trustee = TrusteeOrganisation(orgName, None, None, None, date, provisional = true)
+
+          when(mapper.map(any())).thenReturn(Some(trustee))
+
+          when(mockTrustConnector.amendTrustee(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+
+          when(playbackRepository.set(any())).thenReturn(Future.successful(true))
+
+          val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass[UserAnswers](classOf[UserAnswers])
+
+          val request = FakeRequest(POST, onSubmitRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual onwardRoute
+
+          application.stop()
+
+          verify(playbackRepository).set(captor.capture)
+          captor.getValue.data mustBe Json.obj()
+
+          verify(mapper).map(userAnswers)
+          verify(mockTrustConnector).amendTrustee(eqTo(userAnswers.utr), eqTo(index), eqTo(trustee))(any(), any())
+        }
+      }
+
+      "return InternalServerError" when {
+
+        "individual or business unanswered" in {
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), affinityGroup = Agent).build()
+
+          val request = FakeRequest(POST, onSubmitRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual INTERNAL_SERVER_ERROR
+
+          application.stop()
+        }
+
+        "mapper fails" when {
+
+          "individual" in {
+
+            val mapper: TrusteeIndividualMapper = mock[TrusteeIndividualMapper]
+
+            val userAnswers = emptyUserAnswers
+              .set(IndividualOrBusinessPage, Individual).success.value
+              .set(ind.NamePage, indName).success.value
+
+            val application = applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
+              .overrides(bind[TrusteeIndividualMapper].toInstance(mapper))
+              .build()
+
+            when(mapper.map(any(), any())).thenReturn(None)
+
+            val request = FakeRequest(POST, onSubmitRoute)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual INTERNAL_SERVER_ERROR
+
+            application.stop()
+
+            verify(mapper).map(userAnswers, adding = false)
+          }
+
+          "business" in {
+
+            val mapper: TrusteeOrganisationMapper = mock[TrusteeOrganisationMapper]
+
+            val userAnswers = emptyUserAnswers
+              .set(IndividualOrBusinessPage, Business).success.value
+              .set(org.NamePage, orgName).success.value
+
+            val application = applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
+              .overrides(bind[TrusteeOrganisationMapper].toInstance(mapper))
+              .build()
+
+            when(mapper.map(any())).thenReturn(None)
+
+            val request = FakeRequest(POST, onSubmitRoute)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual INTERNAL_SERVER_ERROR
+
+            application.stop()
+
+            verify(mapper).map(userAnswers)
+          }
+        }
+      }
+    }
   }
 }

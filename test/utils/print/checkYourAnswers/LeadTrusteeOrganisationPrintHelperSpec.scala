@@ -45,7 +45,7 @@ class LeadTrusteeOrganisationPrintHelperSpec extends SpecBase {
         .set(EmailAddressPage, "email").success.value
         .set(TelephoneNumberPage, "tel").success.value
 
-      val result = helper(userAnswers, name)
+      val result = helper.print(userAnswers, name)
       result mustBe AnswerSection(
         headingKey = None,
         rows = Seq(

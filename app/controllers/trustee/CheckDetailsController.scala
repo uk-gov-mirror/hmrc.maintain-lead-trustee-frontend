@@ -21,19 +21,18 @@ import connectors.TrustConnector
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import handlers.ErrorHandler
-import javax.inject.Inject
+import mapping.mappers.TrusteeMapper
 import models.IndividualOrBusiness._
-import models.{Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
-import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
+import models.Trustee
+import pages.trustee.IndividualOrBusinessPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.TrusteeBuilder
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.print.checkYourAnswers.{TrusteeIndividualPrintHelper, TrusteeOrganisationPrintHelper}
+import utils.print.checkYourAnswers.TrusteePrintHelper
 import views.html.trustee.CheckDetailsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckDetailsController @Inject()(
@@ -42,9 +41,8 @@ class CheckDetailsController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
                                         nameAction: NameRequiredAction,
-                                        indHelper: TrusteeIndividualPrintHelper,
-                                        orgHelper: TrusteeOrganisationPrintHelper,
-                                        trusteeBuilder: TrusteeBuilder,
+                                        printHelper: TrusteePrintHelper,
+                                        mapper: TrusteeMapper,
                                         trustConnector: TrustConnector,
                                         val appConfig: FrontendAppConfig,
                                         errorHandler: ErrorHandler
@@ -54,9 +52,9 @@ class CheckDetailsController @Inject()(
     implicit request =>
       request.userAnswers.get(IndividualOrBusinessPage) match {
         case Some(Individual) =>
-          Ok(view(indHelper(request.userAnswers, request.trusteeName)))
+          Ok(view(printHelper.printIndividualTrustee(request.userAnswers, request.trusteeName)))
         case Some(Business) =>
-          Ok(view(orgHelper(request.userAnswers, request.trusteeName)))
+          Ok(view(printHelper.printOrganisationTrustee(request.userAnswers, request.trusteeName)))
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] unable to display trustee on check your answers")
           InternalServerError(errorHandler.internalServerErrorTemplate)
@@ -65,29 +63,24 @@ class CheckDetailsController @Inject()(
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
-      request.userAnswers.get(WhenAddedPage).fold {
-        Future.successful(Redirect(routes.WhenAddedController.onPageLoad()))
-      } {
-        date =>
-          request.userAnswers.get(IndividualOrBusinessPage) match {
-            case Some(Individual) =>
-              val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date)
-              addTrustee(request.userAnswers, trusteeInd)
 
-            case Some(Business) =>
-              val trusteeOrg: TrusteeOrganisation = trusteeBuilder.createTrusteeOrganisation(request.userAnswers, date)
-              addTrustee(request.userAnswers, trusteeOrg)
-
-            case None =>
-              logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] unable to submit trustee on check your answers")
-              Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-          }
+      val trustee: Option[Trustee] = request.userAnswers.get(IndividualOrBusinessPage) match {
+        case Some(Individual) =>
+          mapper.mapToTrusteeIndividual(request.userAnswers, adding = true)
+        case Some(Business) =>
+          mapper.mapToTrusteeOrganisation(request.userAnswers)
+        case _ =>
+          None
       }
-  }
 
-  private def addTrustee(userAnswers: UserAnswers, t: Trustee)(implicit hc: HeaderCarrier) = {
-    trustConnector.addTrustee(userAnswers.utr, t).map(_ =>
-      Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-    )
+      trustee match {
+        case Some(t) =>
+          trustConnector.addTrustee(request.userAnswers.utr, t).map(_ =>
+            Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+          )
+        case _ =>
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] unable to submit trustee on check your answers")
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+      }
   }
 }
