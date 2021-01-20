@@ -27,7 +27,7 @@ import scala.util.Try
 
 class TrusteeIndividualExtractor @Inject()() {
 
-  def apply(answers: UserAnswers, trustee: TrusteeIndividual, index: Int): Try[UserAnswers] = {
+  def extract(answers: UserAnswers, trustee: TrusteeIndividual, index: Int): Try[UserAnswers] = {
     answers.deleteAtPath(pages.trustee.basePath)
       .flatMap(_.set(IndividualOrBusinessPage, Individual))
       .flatMap(_.set(ind.IndexPage, index))
@@ -50,29 +50,23 @@ class TrusteeIndividualExtractor @Inject()() {
 
   private def extractIdentification(identification: Option[IndividualIdentification], answers: UserAnswers): Try[UserAnswers] = {
     identification match {
-
       case Some(NationalInsuranceNumber(nino)) =>
         answers.set(ind.NationalInsuranceNumberYesNoPage, true)
           .flatMap(_.set(ind.NationalInsuranceNumberPage, nino))
-
       case Some(p:Passport) =>
         answers.set(ind.NationalInsuranceNumberYesNoPage, false)
           .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, true))
           .flatMap(_.set(ind.PassportOrIdCardDetailsPage, p.asCombined))
-
       case Some(id:IdCard) =>
         answers.set(ind.NationalInsuranceNumberYesNoPage, false)
           .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, true))
           .flatMap(_.set(ind.PassportOrIdCardDetailsPage, id.asCombined))
-
       case Some(c:CombinedPassportOrIdCard) =>
         answers.set(ind.NationalInsuranceNumberYesNoPage, false)
           .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, true))
           .flatMap(_.set(ind.PassportOrIdCardDetailsPage, c))
-
       case _ =>
         answers.set(ind.NationalInsuranceNumberYesNoPage, false)
-
     }
   }
 

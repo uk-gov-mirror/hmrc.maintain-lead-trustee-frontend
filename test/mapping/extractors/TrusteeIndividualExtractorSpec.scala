@@ -16,50 +16,48 @@
 
 package mapping.extractors
 
-import generators.ModelGenerators
+import base.SpecBase
 import models.IndividualOrBusiness.Individual
 import models._
-import org.scalatest.{FreeSpec, MustMatchers}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.amend.individual._
-import play.api.libs.json.Json
 
 import java.time.LocalDate
 
-class TrusteeIndividualExtractorSpec extends FreeSpec with ScalaCheckPropertyChecks with ModelGenerators with MustMatchers {
+class TrusteeIndividualExtractorSpec extends SpecBase {
 
-  val answers = UserAnswers("Id", "UTRUTRUTR", LocalDate.of(1987, 12, 31), Json.obj())
-  val index = 0
+  private val index: Int = 0
 
-  val name = Name("First", None, "Last")
-  val date = LocalDate.parse("1996-02-03")
-  val address = UkAddress("Line 1", "Line 2", None, None, "postcode")
+  private val name: Name = Name("First", None, "Last")
+  private val date: LocalDate = LocalDate.parse("1996-02-03")
+  private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postcode")
+  private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "country")
+  private val nino: String = "nino"
 
-  val extractor = new TrusteeIndividualExtractor()
+  private val extractor: TrusteeIndividualExtractor = new TrusteeIndividualExtractor()
 
   "should populate user answers when trustee has a NINO" in {
 
-    val nino = NationalInsuranceNumber("nino")
+    val identification = NationalInsuranceNumber(nino)
 
     val trustee = TrusteeIndividual(
       name = name,
       dateOfBirth = Some(date),
       phoneNumber = None,
-      identification = Some(nino),
+      identification = Some(identification),
       address = None,
       entityStart = date,
       provisional = true
     )
 
-    val result = extractor(answers, trustee, index).get
+    val result = extractor.extract(emptyUserAnswers, trustee, index).get
 
     result.get(IndividualOrBusinessPage).get mustBe Individual
     result.get(NamePage).get mustBe name
     result.get(DateOfBirthYesNoPage).get mustBe true
     result.get(DateOfBirthPage).get mustBe date
     result.get(NationalInsuranceNumberYesNoPage).get mustBe true
-    result.get(NationalInsuranceNumberPage).get mustBe "nino"
+    result.get(NationalInsuranceNumberPage).get mustBe nino
     result.get(AddressYesNoPage) mustNot be(defined)
     result.get(LiveInTheUkYesNoPage) mustNot be(defined)
     result.get(UkAddressPage) mustNot be(defined)
@@ -69,7 +67,7 @@ class TrusteeIndividualExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
 
   }
 
-  "should populate user answers when trustee has a passport/ID card" in {
+  "should populate user answers when trustee has a UK address and passport/ID card" in {
 
     val combined = CombinedPassportOrIdCard("country", "number", date)
 
@@ -78,12 +76,12 @@ class TrusteeIndividualExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
       dateOfBirth = Some(date),
       phoneNumber = None,
       identification = Some(combined),
-      address = Some(address),
+      address = Some(ukAddress),
       entityStart = date,
       provisional = true
     )
 
-    val result = extractor(answers, trustee, index).get
+    val result = extractor.extract(emptyUserAnswers, trustee, index).get
 
     result.get(IndividualOrBusinessPage).get mustBe Individual
     result.get(NamePage).get mustBe name
@@ -93,26 +91,26 @@ class TrusteeIndividualExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
     result.get(NationalInsuranceNumberPage) mustNot be(defined)
     result.get(AddressYesNoPage).get mustBe true
     result.get(LiveInTheUkYesNoPage).get mustBe true
-    result.get(UkAddressPage).get mustBe address
+    result.get(UkAddressPage).get mustBe ukAddress
     result.get(NonUkAddressPage) mustNot be(defined)
     result.get(PassportOrIdCardDetailsYesNoPage).get mustBe true
     result.get(PassportOrIdCardDetailsPage).get mustBe combined
 
   }
 
-  "should populate user answers when trustee has no NINO or passport/ID card" in {
+  "should populate user answers when trustee has a non-UK address" in {
 
     val trustee = TrusteeIndividual(
       name = name,
       dateOfBirth = Some(date),
       phoneNumber = None,
       identification = None,
-      address = Some(address),
+      address = Some(nonUkAddress),
       entityStart = date,
       provisional = true
     )
 
-    val result = extractor(answers, trustee, index).get
+    val result = extractor.extract(emptyUserAnswers, trustee, index).get
 
     result.get(IndividualOrBusinessPage).get mustBe Individual
     result.get(NamePage).get mustBe name
@@ -121,8 +119,37 @@ class TrusteeIndividualExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
     result.get(NationalInsuranceNumberYesNoPage).get mustBe false
     result.get(NationalInsuranceNumberPage) mustNot be(defined)
     result.get(AddressYesNoPage).get mustBe true
-    result.get(LiveInTheUkYesNoPage).get mustBe true
-    result.get(UkAddressPage).get mustBe address
+    result.get(LiveInTheUkYesNoPage).get mustBe false
+    result.get(UkAddressPage) mustNot be(defined)
+    result.get(NonUkAddressPage).get mustBe nonUkAddress
+    result.get(PassportOrIdCardDetailsYesNoPage) must not be defined
+    result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
+
+  }
+
+  "should populate user answers when trustee has minimum data" in {
+
+    val trustee = TrusteeIndividual(
+      name = name,
+      dateOfBirth = None,
+      phoneNumber = None,
+      identification = None,
+      address = None,
+      entityStart = date,
+      provisional = true
+    )
+
+    val result = extractor.extract(emptyUserAnswers, trustee, index).get
+
+    result.get(IndividualOrBusinessPage).get mustBe Individual
+    result.get(NamePage).get mustBe name
+    result.get(DateOfBirthYesNoPage).get mustBe false
+    result.get(DateOfBirthPage) mustNot be(defined)
+    result.get(NationalInsuranceNumberYesNoPage).get mustBe false
+    result.get(NationalInsuranceNumberPage) mustNot be(defined)
+    result.get(AddressYesNoPage).get mustBe false
+    result.get(LiveInTheUkYesNoPage) mustNot be(defined)
+    result.get(UkAddressPage) mustNot be(defined)
     result.get(NonUkAddressPage) mustNot be(defined)
     result.get(PassportOrIdCardDetailsYesNoPage) must not be defined
     result.get(PassportOrIdCardDetailsPage) mustNot be(defined)

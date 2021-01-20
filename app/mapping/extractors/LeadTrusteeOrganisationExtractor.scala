@@ -18,73 +18,51 @@ package mapping.extractors
 
 import com.google.inject.Inject
 import models.IndividualOrBusiness.Business
-import models.{Address, LeadTrusteeOrganisation, NonUkAddress, UkAddress, UserAnswers}
-import pages.leadtrustee.organisation.UtrPage
-import pages.leadtrustee.{IndividualOrBusinessPage, organisation => ltorg}
+import models._
+import pages.leadtrustee.IndividualOrBusinessPage
+import pages.leadtrustee.organisation.{UtrPage, _}
 import play.api.Logging
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsError, JsSuccess, Reads}
 
 import scala.util.{Success, Try}
 
 class LeadTrusteeOrganisationExtractor @Inject()() extends Logging {
 
-  def getFromUserAnswers(answers: UserAnswers): Option[LeadTrusteeOrganisation] = {
-    val readFromUserAnswers: Reads[LeadTrusteeOrganisation] =
-      (
-        ltorg.NamePage.path.read[String] and
-        ltorg.TelephoneNumberPage.path.read[String] and
-        ltorg.EmailAddressPage.path.readNullable[String] and
-        ltorg.UtrPage.path.readNullable[String] and
-        ltorg.AddressInTheUkYesNoPage.path.read[Boolean].flatMap {
-          case true => ltorg.UkAddressPage.path.read[UkAddress].widen[Address]
-          case false => ltorg.NonUkAddressPage.path.read[Address].widen[Address]
-        }
-      ).apply(LeadTrusteeOrganisation.apply _)
-
-    answers.data.validate[LeadTrusteeOrganisation](readFromUserAnswers) match {
-      case JsError(errors) =>
-        logger.error(s"[Mapper][UTR: ${answers.utr}] Failed to rehydrate LeadTrusteeOrganisation from UserAnswers due to $errors")
-        None
-      case JsSuccess(value, _) => Some(value)
-    }
-  }
-
-  def populateUserAnswers(answers: UserAnswers, leadOrganisation: LeadTrusteeOrganisation): Try[UserAnswers] = {
-    answers.set(IndividualOrBusinessPage, Business)
+  def extract(answers: UserAnswers, leadOrganisation: LeadTrusteeOrganisation): Try[UserAnswers] = {
+    answers.deleteAtPath(pages.leadtrustee.basePath)
+      .flatMap(_.set(IndividualOrBusinessPage, Business))
       .flatMap(answers => extractRegisteredInUK(leadOrganisation.utr, answers))
-      .flatMap(_.set(ltorg.NamePage, leadOrganisation.name))
+      .flatMap(_.set(NamePage, leadOrganisation.name))
       .flatMap(answers => extractAddress(leadOrganisation.address, answers))
       .flatMap(answers => extractEmail(leadOrganisation.email, answers))
-      .flatMap(_.set(ltorg.TelephoneNumberPage, leadOrganisation.phoneNumber))
+      .flatMap(_.set(TelephoneNumberPage, leadOrganisation.phoneNumber))
   }
 
   private def extractEmail(email: Option[String], answers: UserAnswers): Try[UserAnswers] = {
     email match {
       case Some(x) =>
-        answers.set(ltorg.EmailAddressYesNoPage, true)
-          .flatMap(_.set(ltorg.EmailAddressPage, x))
-      case _ => answers.set(ltorg.EmailAddressYesNoPage, false)
+        answers.set(EmailAddressYesNoPage, true)
+          .flatMap(_.set(EmailAddressPage, x))
+      case _ => answers.set(EmailAddressYesNoPage, false)
     }
   }
 
   private def extractRegisteredInUK(utr: Option[String], answers: UserAnswers): Try[UserAnswers] = {
     utr match {
       case Some(x) =>
-        answers.set(ltorg.RegisteredInUkYesNoPage, true)
+        answers.set(RegisteredInUkYesNoPage, true)
         .flatMap(_.set(UtrPage, x))
-      case _ => answers.set(ltorg.RegisteredInUkYesNoPage, false)
+      case _ => answers.set(RegisteredInUkYesNoPage, false)
     }
   }
 
   private def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
     address match {
       case uk: UkAddress =>
-        answers.set(ltorg.UkAddressPage, uk)
-          .flatMap(_.set(ltorg.AddressInTheUkYesNoPage, true))
+        answers.set(UkAddressPage, uk)
+          .flatMap(_.set(AddressInTheUkYesNoPage, true))
       case nonUk: NonUkAddress =>
-        answers.set(ltorg.NonUkAddressPage, nonUk)
-          .flatMap(_.set(ltorg.AddressInTheUkYesNoPage, false))
+        answers.set(NonUkAddressPage, nonUk)
+          .flatMap(_.set(AddressInTheUkYesNoPage, false))
       case _ => Success(answers)
     }
   }

@@ -50,7 +50,7 @@ class LeadTrusteeIndividualPrintHelperSpec extends SpecBase {
           .set(EmailAddressPage, "email").success.value
           .set(TelephoneNumberPage, "tel").success.value
 
-        val result = helper(userAnswers, name.displayName)
+        val result = helper.print(userAnswers, name.displayName)
         result mustBe AnswerSection(
           headingKey = None,
           rows = Seq(

@@ -46,7 +46,7 @@ class AmendTrusteeOrganisationPrintHelperSpec extends SpecBase {
         .set(UkAddressPage, trusteeUkAddress).success.value
         .set(NonUkAddressPage, trusteeNonUkAddress).success.value
 
-      val result = helper(userAnswers, name.displayName)
+      val result = helper.print(userAnswers, name.displayName)
       result mustBe AnswerSection(
         headingKey = None,
         rows = Seq(

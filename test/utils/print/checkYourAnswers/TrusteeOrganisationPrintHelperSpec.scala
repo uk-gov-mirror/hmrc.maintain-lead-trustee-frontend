@@ -49,7 +49,7 @@ class TrusteeOrganisationPrintHelperSpec extends SpecBase {
         .set(NonUkAddressPage, trusteeNonUkAddress).success.value
         .set(WhenAddedPage, LocalDate.of(2020, 1, 1)).success.value
 
-      val result = helper(userAnswers, name.displayName)
+      val result = helper.print(userAnswers, name.displayName)
       result mustBe AnswerSection(
         headingKey = None,
         rows = Seq(

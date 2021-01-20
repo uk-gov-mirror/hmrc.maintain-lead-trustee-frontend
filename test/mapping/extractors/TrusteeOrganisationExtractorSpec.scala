@@ -16,27 +16,24 @@
 
 package mapping.extractors
 
-import generators.ModelGenerators
+import base.SpecBase
 import models.IndividualOrBusiness.Business
-import models.{TrustIdentificationOrgType, TrusteeOrganisation, UkAddress, UserAnswers}
-import org.scalatest.{FreeSpec, MustMatchers}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import models.{NonUkAddress, TrustIdentificationOrgType, TrusteeOrganisation, UkAddress}
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.amend.organisation._
-import play.api.libs.json.Json
 
 import java.time.LocalDate
 
-class TrusteeOrganisationExtractorSpec extends FreeSpec with ScalaCheckPropertyChecks with ModelGenerators with MustMatchers {
+class TrusteeOrganisationExtractorSpec extends SpecBase {
 
-  val answers = UserAnswers("Id", "UTRUTRUTR", LocalDate.of(1987, 12, 31), Json.obj())
-  val index = 0
+  private val index = 0
 
-  val name = "First Last"
-  val date = LocalDate.parse("1996-02-03")
-  val address = UkAddress("Line 1", "Line 2", None, None, "postcode")
+  private val name: String = "Name"
+  private val date: LocalDate = LocalDate.parse("1996-02-03")
+  private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postcode")
+  private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "country")
 
-  val extractor = new TrusteeOrganisationExtractor()
+  private val extractor = new TrusteeOrganisationExtractor()
 
   "should populate user answers when trustee has a UTR" in {
 
@@ -49,7 +46,7 @@ class TrusteeOrganisationExtractorSpec extends FreeSpec with ScalaCheckPropertyC
       provisional = true
     )
 
-    val result = extractor(answers, trustee, index).get
+    val result = extractor.extract(emptyUserAnswers, trustee, index).get
 
     result.get(IndividualOrBusinessPage).get mustBe Business
     result.get(NamePage).get mustBe name
@@ -62,18 +59,18 @@ class TrusteeOrganisationExtractorSpec extends FreeSpec with ScalaCheckPropertyC
 
   }
 
-  "should populate user answers when trustee has an address" in {
+  "should populate user answers when trustee has a UK address" in {
 
     val trustee = TrusteeOrganisation(
       name = name,
       phoneNumber = None,
       email = None,
-      identification = Some(TrustIdentificationOrgType(None, None, Some(address))),
+      identification = Some(TrustIdentificationOrgType(None, None, Some(ukAddress))),
       entityStart = date,
       provisional = true
     )
 
-    val result = extractor(answers, trustee, index).get
+    val result = extractor.extract(emptyUserAnswers, trustee, index).get
 
     result.get(IndividualOrBusinessPage).get mustBe Business
     result.get(NamePage).get mustBe name
@@ -81,8 +78,32 @@ class TrusteeOrganisationExtractorSpec extends FreeSpec with ScalaCheckPropertyC
     result.get(UtrPage) mustNot be(defined)
     result.get(AddressYesNoPage).get mustBe true
     result.get(AddressInTheUkYesNoPage).get mustBe true
-    result.get(UkAddressPage).get mustBe address
+    result.get(UkAddressPage).get mustBe ukAddress
     result.get(NonUkAddressPage) mustNot be(defined)
+
+  }
+
+  "should populate user answers when trustee has a non-UK address" in {
+
+    val trustee = TrusteeOrganisation(
+      name = name,
+      phoneNumber = None,
+      email = None,
+      identification = Some(TrustIdentificationOrgType(None, None, Some(nonUkAddress))),
+      entityStart = date,
+      provisional = true
+    )
+
+    val result = extractor.extract(emptyUserAnswers, trustee, index).get
+
+    result.get(IndividualOrBusinessPage).get mustBe Business
+    result.get(NamePage).get mustBe name
+    result.get(UtrYesNoPage).get mustBe false
+    result.get(UtrPage) mustNot be(defined)
+    result.get(AddressYesNoPage).get mustBe true
+    result.get(AddressInTheUkYesNoPage).get mustBe false
+    result.get(UkAddressPage) mustNot be(defined)
+    result.get(NonUkAddressPage).get mustBe nonUkAddress
 
   }
 
@@ -97,7 +118,7 @@ class TrusteeOrganisationExtractorSpec extends FreeSpec with ScalaCheckPropertyC
       provisional = true
     )
 
-    val result = extractor(answers, trustee, index).get
+    val result = extractor.extract(emptyUserAnswers, trustee, index).get
 
     result.get(IndividualOrBusinessPage).get mustBe Business
     result.get(NamePage).get mustBe name

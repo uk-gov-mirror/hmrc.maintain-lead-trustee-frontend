@@ -21,24 +21,22 @@ import connectors.TrustConnector
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import handlers.ErrorHandler
-
-import javax.inject.Inject
-import mapping.TrusteeOrganisationExtractor
-import mapping.extractors.{TrusteeIndividualExtractor, TrusteeOrganisationExtractor}
-import mapping.mappers.AmendedTrusteeMapper
+import mapping.extractors.TrusteeExtractor
+import mapping.mappers.TrusteeMapper
 import models.IndividualOrBusiness._
-import models.{IndividualOrBusiness, Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
-import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
+import models.{Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
+import pages.trustee.IndividualOrBusinessPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.print.checkYourAnswers.{AmendTrusteeIndividualPrintHelper, AmendTrusteeOrganisationPrintHelper}
+import utils.print.checkYourAnswers.TrusteePrintHelper
 import views.html.trustee.amend.CheckDetailsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckDetailsController @Inject()(
@@ -48,11 +46,9 @@ class CheckDetailsController @Inject()(
                                         standardActionSets: StandardActionSets,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
-                                        indHelper: AmendTrusteeIndividualPrintHelper,
-                                        orgHelper: AmendTrusteeOrganisationPrintHelper,
-                                        trusteeBuilder: AmendedTrusteeMapper,
-                                        indExtractor: TrusteeIndividualExtractor,
-                                        orgExtractor: TrusteeOrganisationExtractor,
+                                        printHelper: TrusteePrintHelper,
+                                        mapper: TrusteeMapper,
+                                        extractor: TrusteeExtractor,
                                         trustConnector: TrustConnector,
                                         nameAction: NameRequiredAction,
                                         val appConfig: FrontendAppConfig,
@@ -64,22 +60,22 @@ class CheckDetailsController @Inject()(
 
       trustService.getTrustee(request.userAnswers.utr, index).flatMap {
         case ind: TrusteeIndividual =>
-          val answers = indExtractor(request.userAnswers, ind, index)
+          val answers = extractor.extractTrusteeIndividual(request.userAnswers, ind, index)
           for {
             updatedAnswers <- Future.fromTry(answers)
             _ <- sessionRepository.set(updatedAnswers)
           } yield {
-            val section = indHelper(updatedAnswers, ind.name.displayName)
+            val section = printHelper.printAmendedIndividualTrustee(updatedAnswers, ind.name.displayName)
             Ok(view(section, index))
           }
 
         case org: TrusteeOrganisation =>
-          val answers = orgExtractor(request.userAnswers, org, index)
+          val answers = extractor.extractTrusteeOrganisation(request.userAnswers, org, index)
           for {
             updatedAnswers <- Future.fromTry(answers)
             _ <- sessionRepository.set(updatedAnswers)
           } yield {
-            val section = orgHelper(updatedAnswers, org.name)
+            val section = printHelper.printAmendedOrganisationTrustee(updatedAnswers, org.name)
             Ok(view(section, index))
           }
         case _ =>
@@ -93,10 +89,10 @@ class CheckDetailsController @Inject()(
 
       request.userAnswers.get(IndividualOrBusinessPage) map {
         case Individual =>
-          val section = indHelper(request.userAnswers, request.trusteeName)
+          val section = printHelper.printAmendedIndividualTrustee(request.userAnswers, request.trusteeName)
           Ok(view(section, index))
         case Business =>
-          val section = orgHelper(request.userAnswers, request.trusteeName)
+          val section = printHelper.printAmendedOrganisationTrustee(request.userAnswers, request.trusteeName)
           Ok(view(section, index))
       } getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] " +
@@ -107,28 +103,29 @@ class CheckDetailsController @Inject()(
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
-      request.userAnswers.get(WhenAddedPage).fold {
-        Future.successful(Redirect(controllers.trustee.routes.WhenAddedController.onPageLoad()))
-      } {
-        date =>
-          (request.userAnswers.get(IndividualOrBusinessPage) map {
-            case IndividualOrBusiness.Individual =>
-              val trusteeInd: TrusteeIndividual = trusteeBuilder.createTrusteeIndividual(request.userAnswers, date)
-              logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] amending trustee individual")
-              amendTrustee(request.userAnswers, trusteeInd, index)
-            case IndividualOrBusiness.Business =>
-              val trusteeOrg: TrusteeOrganisation = trusteeBuilder.createTrusteeOrganisation(request.userAnswers, date)
-              logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] amending trustee organisation")
-              amendTrustee(request.userAnswers, trusteeOrg, index)
-          }).getOrElse {
-            logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] " +
-              s"unable to amend trustee due to no user answer for individual or business")
-            Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-          }
+
+      val trustee: Option[Trustee] = request.userAnswers.get(IndividualOrBusinessPage) match {
+        case Some(Individual) =>
+          logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] amending trustee individual")
+          mapper.mapToTrusteeIndividual(request.userAnswers, adding = false)
+        case Some(Business) =>
+          logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] amending trustee organisation")
+          mapper.mapToTrusteeOrganisation(request.userAnswers)
+        case _ =>
+          None
+      }
+
+      trustee match {
+        case Some(t) =>
+          amendTrustee(request.userAnswers, t, index)
+        case _ =>
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] " +
+            s"unable to amend trustee due to no user answer for individual or business")
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
   }
 
-  private def amendTrustee(userAnswers: UserAnswers, t: Trustee, index: Int)(implicit hc: HeaderCarrier) = {
+  private def amendTrustee(userAnswers: UserAnswers, t: Trustee, index: Int)(implicit hc: HeaderCarrier): Future[Result] = {
     for {
       _ <- trustConnector.amendTrustee(userAnswers.utr, index, t)
       updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.trustee.basePath))

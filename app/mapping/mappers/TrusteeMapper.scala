@@ -17,66 +17,28 @@
 package mapping.mappers
 
 import models._
-import pages.trustee.{individual => ind, organisation => org}
 
-import java.time.LocalDate
+import javax.inject.Inject
 
-class TrusteeMapper {
+class TrusteeMapper @Inject()(trusteeIndividualMapper: TrusteeIndividualMapper,
+                              trusteeOrganisationMapper: TrusteeOrganisationMapper,
+                              leadTrusteeIndividualMapper: LeadTrusteeIndividualMapper,
+                              leadTrusteeOrganisationMapper: LeadTrusteeOrganisationMapper) {
 
-  def createTrusteeIndividual(userAnswers: UserAnswers, date: LocalDate): TrusteeIndividual = {
-    TrusteeIndividual(
-      userAnswers.get(ind.NamePage).get,
-      userAnswers.get(ind.DateOfBirthPage),
-      None,
-      buildIdentification(userAnswers),
-      buildIndAddress(userAnswers),
-      date,
-      provisional = true
-    )
+  def mapToTrusteeIndividual(userAnswers: UserAnswers, adding: Boolean): Option[TrusteeIndividual] = {
+    trusteeIndividualMapper.map(userAnswers, adding)
   }
 
-  private def buildIdentification(userAnswers: UserAnswers) : Option[IndividualIdentification] = {
-    userAnswers.get(ind.NationalInsuranceNumberPage).map (n => new NationalInsuranceNumber(n))
-      .orElse(userAnswers.get(ind.PassportDetailsPage))
-      .orElse(userAnswers.get(ind.IdCardDetailsPage))
+  def mapToTrusteeOrganisation(userAnswers: UserAnswers): Option[TrusteeOrganisation] = {
+    trusteeOrganisationMapper.map(userAnswers)
   }
 
-  private def buildIndAddress(userAnswers: UserAnswers): Option[Address] = {
-
-    val uk: Option[UkAddress] = userAnswers.get(ind.UkAddressPage)
-    val nonUk: Option[NonUkAddress] = userAnswers.get(ind.NonUkAddressPage)
-    (uk, nonUk) match {
-      case (Some(ukAddress), None) => Some(ukAddress)
-      case (None, Some(nonUkAddress)) => Some(nonUkAddress)
-      case _ => None
-    }
+  def mapToLeadTrusteeIndividual(userAnswers: UserAnswers): Option[LeadTrusteeIndividual] = {
+    leadTrusteeIndividualMapper.map(userAnswers)
   }
 
-  def createTrusteeOrganisation(userAnswers: UserAnswers, date: LocalDate): TrusteeOrganisation = {
-    TrusteeOrganisation(
-      userAnswers.get(org.NamePage).get,
-      None,
-      None,
-      Some(
-        TrustIdentificationOrgType(
-          None,
-          userAnswers.get(org.UtrPage),
-          buildOrgAddress(userAnswers)
-        )
-      ),
-      date,
-      provisional = true
-    )
+  def mapToLeadTrusteeOrganisation(userAnswers: UserAnswers): Option[LeadTrusteeOrganisation] = {
+    leadTrusteeOrganisationMapper.map(userAnswers)
   }
 
-  private def buildOrgAddress(userAnswers: UserAnswers): Option[Address] = {
-
-    val uk: Option[UkAddress] = userAnswers.get(org.UkAddressPage)
-    val nonUk: Option[NonUkAddress] = userAnswers.get(org.NonUkAddressPage)
-    (uk, nonUk) match {
-      case (Some(ukAddress), None) => Some(ukAddress)
-      case (None, Some(nonUkAddress)) => Some(nonUkAddress)
-      case _ => None
-    }
-  }
 }

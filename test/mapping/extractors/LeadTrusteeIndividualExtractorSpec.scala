@@ -16,30 +16,83 @@
 
 package mapping.extractors
 
-import generators.ModelGenerators
-import models.{IdCard, Passport, UserAnswers}
-import org.scalatest.{FreeSpec, MustMatchers}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.Json
+import base.SpecBase
+import models.IndividualOrBusiness.Individual
+import models._
+import pages.leadtrustee.IndividualOrBusinessPage
+import pages.leadtrustee.individual._
 
 import java.time.LocalDate
-import scala.util.{Failure, Success}
 
-class LeadTrusteeIndividualExtractorSpec extends FreeSpec with ScalaCheckPropertyChecks with ModelGenerators with MustMatchers {
-  "should round trip through user answers  except Passports & Id cards will be unified into CombinedPassportOrId" in {
-    forAll(arbitraryLeadTrusteeIndividual.arbitrary) { lt =>
-      val mapper = new LeadTrusteeIndividualExtractor()
-      val userAnswers = new UserAnswers("Id", "UTRUTRUTR", LocalDate.of(1987, 12, 31), Json.obj())
-      val expectedId = lt.identification match {
-        case p:Passport => p.asCombined
-        case id:IdCard => id.asCombined
-        case x => x
-      }
+class LeadTrusteeIndividualExtractorSpec extends SpecBase {
 
-      mapper.populateUserAnswers(userAnswers, lt) match {
-        case Failure(_) => fail("Setting user answers failed")
-        case Success(ua) => mapper.getFromUserAnswers(ua) mustBe Some(lt.copy(identification = expectedId))
-      }
-    }
+  private val name: Name = Name("First", None, "Last")
+  private val date: LocalDate = LocalDate.parse("1996-02-03")
+  private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postcode")
+  private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "country")
+  private val phone: String = "tel"
+  private val email: String = "email"
+  private val nino: String = "nino"
+
+  private val extractor: LeadTrusteeIndividualExtractor = new LeadTrusteeIndividualExtractor()
+
+  "should populate user answers when trustee has a NINO and UK address" in {
+
+    val identification = NationalInsuranceNumber(nino)
+
+    val trustee = LeadTrusteeIndividual(
+      name = name,
+      dateOfBirth = date,
+      phoneNumber = phone,
+      email = None,
+      identification = identification,
+      address = Some(ukAddress)
+    )
+
+    val result = extractor.extract(emptyUserAnswers, trustee).get
+
+    result.get(IndividualOrBusinessPage).get mustBe Individual
+    result.get(NamePage).get mustBe name
+    result.get(DateOfBirthPage).get mustBe date
+    result.get(UkCitizenPage).get mustBe true
+    result.get(NationalInsuranceNumberPage).get mustBe nino
+    result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
+    result.get(LiveInTheUkYesNoPage).get mustBe true
+    result.get(UkAddressPage).get mustBe ukAddress
+    result.get(NonUkAddressPage) mustNot be(defined)
+    result.get(EmailAddressYesNoPage).get mustBe false
+    result.get(EmailAddressPage) mustNot be(defined)
+    result.get(TelephoneNumberPage).get mustBe phone
+
+  }
+
+  "should populate user answers when trustee has a passport/ID card, non-UK address and email" in {
+
+    val combined = CombinedPassportOrIdCard("country", "number", date)
+
+    val trustee = LeadTrusteeIndividual(
+      name = name,
+      dateOfBirth = date,
+      phoneNumber = phone,
+      email = Some(email),
+      identification = combined,
+      address = Some(nonUkAddress)
+    )
+
+    val result = extractor.extract(emptyUserAnswers, trustee).get
+
+    result.get(IndividualOrBusinessPage).get mustBe Individual
+    result.get(NamePage).get mustBe name
+    result.get(DateOfBirthPage).get mustBe date
+    result.get(UkCitizenPage).get mustBe false
+    result.get(NationalInsuranceNumberPage) mustNot be(defined)
+    result.get(PassportOrIdCardDetailsPage).get mustBe combined
+    result.get(LiveInTheUkYesNoPage).get mustBe false
+    result.get(UkAddressPage) mustNot be(defined)
+    result.get(NonUkAddressPage).get mustBe nonUkAddress
+    result.get(EmailAddressYesNoPage).get mustBe true
+    result.get(EmailAddressPage).get mustBe email
+    result.get(TelephoneNumberPage).get mustBe phone
+
   }
 }
