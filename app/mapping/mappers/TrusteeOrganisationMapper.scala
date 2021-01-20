@@ -49,7 +49,7 @@ class TrusteeOrganisationMapper extends Logging {
 
   private def readIdentification: Reads[Option[TrustIdentificationOrgType]] = {
     (
-      Reads(_ => JsSuccess(None: Option[String])) and
+      Reads(_ => JsSuccess(None)) and
         UtrPage.path.readNullable[String] and
         readAddress
       ).tupled.map {

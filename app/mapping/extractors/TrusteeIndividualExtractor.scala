@@ -53,15 +53,15 @@ class TrusteeIndividualExtractor @Inject()() {
       case Some(NationalInsuranceNumber(nino)) =>
         answers.set(ind.NationalInsuranceNumberYesNoPage, true)
           .flatMap(_.set(ind.NationalInsuranceNumberPage, nino))
-      case Some(p:Passport) =>
+      case Some(p: Passport) =>
         answers.set(ind.NationalInsuranceNumberYesNoPage, false)
           .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, true))
           .flatMap(_.set(ind.PassportOrIdCardDetailsPage, p.asCombined))
-      case Some(id:IdCard) =>
+      case Some(id: IdCard) =>
         answers.set(ind.NationalInsuranceNumberYesNoPage, false)
           .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, true))
           .flatMap(_.set(ind.PassportOrIdCardDetailsPage, id.asCombined))
-      case Some(c:CombinedPassportOrIdCard) =>
+      case Some(c: CombinedPassportOrIdCard) =>
         answers.set(ind.NationalInsuranceNumberYesNoPage, false)
           .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, true))
           .flatMap(_.set(ind.PassportOrIdCardDetailsPage, c))
