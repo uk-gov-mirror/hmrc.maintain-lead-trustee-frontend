@@ -35,7 +35,6 @@ class LogoutController @Inject()(appConfig: FrontendAppConfig,
                                  identify: IdentifierAction,
                                  getData: DataRetrievalAction,
                                  requireData: DataRequiredAction,
-                                 config: FrontendAppConfig,
                                  auditConnector: AuditConnector
                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with Logging {
 
@@ -46,7 +45,7 @@ class LogoutController @Inject()(appConfig: FrontendAppConfig,
 
       logger.info(s"[Session ID: ${utils.Session.id(hc)}] user signed out from the service, asking for feedback")
 
-      if(config.logoutAudit) {
+      if(appConfig.logoutAudit) {
 
         val auditData = Map(
           "sessionId" -> Session.id(hc),
