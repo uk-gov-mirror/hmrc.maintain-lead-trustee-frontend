@@ -16,8 +16,6 @@
 
 package controllers.leadtrustee
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustConnector
 import models.IndividualOrBusiness.{Business, Individual}
@@ -33,11 +31,11 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
-import utils.countryOptions.CountryOptions
 import utils.print.{AnswerRowConverter, CheckAnswersFormatters}
 import viewmodels.AnswerSection
 import views.html.leadtrustee.CheckDetailsView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
@@ -83,7 +81,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
           .set(NamePage, trusteeName).success.value
           .set(UkAddressPage, trusteeAddress).success.value
 
-        val bound = new AnswerRowConverter(checkAnswersFormatters).bind(userAnswers, trusteeName.displayName, mock[CountryOptions])
+        val bound = new AnswerRowConverter(checkAnswersFormatters).bind(userAnswers, trusteeName.displayName)
 
         val answerSection = AnswerSection(None, Seq(
           bound.nameQuestion(NamePage, "leadtrustee.individual.name", controllers.leadtrustee.individual.routes.NameController.onPageLoad().url),
@@ -138,7 +136,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
           .set(pages.leadtrustee.organisation.NamePage, "Lead Org").success.value
           .set(pages.leadtrustee.organisation.UkAddressPage, trusteeAddress).success.value
 
-        val bound = new AnswerRowConverter(checkAnswersFormatters).bind(userAnswers, "Lead Org", mock[CountryOptions])
+        val bound = new AnswerRowConverter(checkAnswersFormatters).bind(userAnswers, "Lead Org")
 
         val answerSection = AnswerSection(None, Seq(
           bound.stringQuestion(pages.leadtrustee.organisation.NamePage, "leadtrustee.organisation.name", controllers.leadtrustee.organisation.routes.NameController.onPageLoad().url),

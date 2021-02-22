@@ -21,17 +21,14 @@ import models.UserAnswers
 import pages.trustee.WhenAddedPage
 import pages.trustee.organisation._
 import play.api.i18n.Messages
-import utils.countryOptions.CountryOptions
 import utils.print.AnswerRowConverter
 import viewmodels.AnswerSection
 
-class TrusteeOrganisationPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
-                                               countryOptions: CountryOptions
-                                              ) {
+class TrusteeOrganisationPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
   def print(userAnswers: UserAnswers, trusteeName: String)(implicit messages: Messages): AnswerSection = {
 
-    val bound = answerRowConverter.bind(userAnswers, trusteeName, countryOptions)
+    val bound = answerRowConverter.bind(userAnswers, trusteeName)
 
     AnswerSection(
       None,

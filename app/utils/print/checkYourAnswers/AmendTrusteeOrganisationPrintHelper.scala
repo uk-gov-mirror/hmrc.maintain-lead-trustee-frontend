@@ -20,17 +20,14 @@ import com.google.inject.Inject
 import models.UserAnswers
 import pages.trustee.amend.organisation._
 import play.api.i18n.Messages
-import utils.countryOptions.CountryOptions
 import utils.print.AnswerRowConverter
 import viewmodels.AnswerSection
 
-class AmendTrusteeOrganisationPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
-                                                    countryOptions: CountryOptions
-                                                   ) {
+class AmendTrusteeOrganisationPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
   def print(userAnswers: UserAnswers, trusteeName: String)(implicit messages: Messages): AnswerSection = {
 
-    val bound = answerRowConverter.bind(userAnswers, trusteeName, countryOptions)
+    val bound = answerRowConverter.bind(userAnswers, trusteeName)
 
     AnswerSection(
       None,
