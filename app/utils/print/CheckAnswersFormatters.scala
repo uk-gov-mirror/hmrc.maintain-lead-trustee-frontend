@@ -16,7 +16,7 @@
 
 package utils.print
 
-import models.{Address, CombinedPassportOrIdCard, IdCard, IdentificationDetailOptions, NonUkAddress, Passport, UkAddress}
+import models.{Address, CombinedPassportOrIdCard, IdCard, NonUkAddress, Passport, UkAddress}
 import org.joda.time.{LocalDate => JodaDate}
 import play.api.i18n.Messages
 import play.twirl.api.Html
@@ -67,7 +67,7 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
         Some(escape(address.postcode))
       ).flatten
 
-    Html(lines.mkString("<br />"))
+    breakLines(lines)
   }
 
   private def formatNonUkAddress(address: NonUkAddress)(implicit messages: Messages): Html = {
@@ -79,18 +79,11 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
         Some(country(address.country))
       ).flatten
 
-    Html(lines.mkString("<br />"))
+    breakLines(lines)
   }
 
-  private def country(code: String)(implicit messages: Messages): String =
-    countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse("")
-
-  def formatIdentificationDetails(identificationDetailOptions: IdentificationDetailOptions): Html = {
-    identificationDetailOptions match {
-      case IdentificationDetailOptions.IdCard => escape("ID card")
-      case IdentificationDetailOptions.Passport => escape("Passport")
-    }
-  }
+  private def country(code: String)(implicit messages: Messages): Html =
+    escape(countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse(""))
 
   def formatPassportOrIdCardDetails(id: CombinedPassportOrIdCard)(implicit messages: Messages): Html = {
     val lines =
@@ -100,7 +93,7 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
         Some(formatDate(id.expirationDate))
       ).flatten
 
-    Html(lines.mkString("<br />"))
+    breakLines(lines)
   }
 
   def formatPassportDetails(passport: Passport)(implicit messages: Messages): Html = {
@@ -109,6 +102,10 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
 
   def formatIdCardDetails(idCard: IdCard)(implicit messages: Messages): Html = {
     formatPassportOrIdCardDetails(idCard.asCombined)
+  }
+
+  private def breakLines(lines: Seq[Html]): Html = {
+    Html(lines.mkString("<br />"))
   }
 
 }
