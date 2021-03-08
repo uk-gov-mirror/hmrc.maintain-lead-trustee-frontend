@@ -47,7 +47,7 @@ class IndexController @Inject()(
           isUnderlyingData5mld <- connector.isTrust5mld(identifier)
           _ <- cacheRepository.set(UserAnswers.newSession(
             id = request.user.internalId,
-            utr = identifier,
+            identifier = identifier,
             startDate = trustDetails.startDate,
             is5mldEnabled = is5mldEnabled,
             isTaxable = trustDetails.trustTaxable.getOrElse(true),

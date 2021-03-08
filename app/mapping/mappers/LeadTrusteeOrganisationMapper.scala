@@ -39,7 +39,7 @@ class LeadTrusteeOrganisationMapper extends Logging {
 
     answers.data.validate[LeadTrusteeOrganisation](reads) match {
       case JsError(errors) =>
-        logger.error(s"[UTR: ${answers.utr}] Failed to rehydrate LeadTrusteeOrganisation from UserAnswers due to $errors")
+        logger.error(s"[UTR: ${answers.identifier}] Failed to rehydrate LeadTrusteeOrganisation from UserAnswers due to $errors")
         None
       case JsSuccess(value, _) => Some(value)
     }

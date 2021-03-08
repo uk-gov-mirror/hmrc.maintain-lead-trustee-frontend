@@ -70,7 +70,7 @@ class IndexControllerSpec extends SpecBase {
       verify(playbackRepository).set(uaCaptor.capture)
 
       uaCaptor.getValue.internalId mustBe "id"
-      uaCaptor.getValue.utr mustBe identifier
+      uaCaptor.getValue.identifier mustBe identifier
       uaCaptor.getValue.whenTrustSetup mustBe LocalDate.parse(startDate)
       uaCaptor.getValue.is5mldEnabled mustBe is5mldEnabled
       uaCaptor.getValue.isTaxable mustBe isTaxable

@@ -49,7 +49,7 @@ class LeadTrusteeIndividualMapper extends Logging {
 
     answers.data.validate[LeadTrusteeIndividual](reads) match {
       case JsError(errors) =>
-        logger.error(s"[UTR: ${answers.utr}] Failed to rehydrate LeadTrusteeIndividual from UserAnswers due to $errors")
+        logger.error(s"[UTR: ${answers.identifier}] Failed to rehydrate LeadTrusteeIndividual from UserAnswers due to $errors")
         None
       case JsSuccess(value, _) => Some(value)
     }

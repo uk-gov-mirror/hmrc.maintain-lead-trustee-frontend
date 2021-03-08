@@ -40,7 +40,7 @@ class TrusteeOrganisationMapper extends Logging {
 
     userAnswers.data.validate[TrusteeOrganisation](reads) match {
       case JsError(errors) =>
-        logger.error(s"[UTR: ${userAnswers.utr}] Failed to rehydrate TrusteeOrganisation from UserAnswers due to $errors")
+        logger.error(s"[UTR: ${userAnswers.identifier}] Failed to rehydrate TrusteeOrganisation from UserAnswers due to $errors")
         None
       case JsSuccess(value, _) =>
         Some(value)

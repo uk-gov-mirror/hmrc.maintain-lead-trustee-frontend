@@ -25,7 +25,7 @@ import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
                               internalId: String,
-                              utr: String,
+                              identifier: String,
                               whenTrustSetup: LocalDate,
                               data: JsObject = Json.obj(),
                               updatedAt: LocalDateTime = LocalDateTime.now,
@@ -93,10 +93,10 @@ final case class UserAnswers(
 
 object UserAnswers {
 
-  def newSession(id: String, utr: String, startDate: LocalDate, is5mldEnabled: Boolean, isTaxable: Boolean, isUnderlyingData5mld: Boolean) =
+  def newSession(id: String, identifier: String, startDate: LocalDate, is5mldEnabled: Boolean, isTaxable: Boolean, isUnderlyingData5mld: Boolean) =
     UserAnswers(
       internalId = id,
-      utr = utr,
+      identifier = identifier,
       whenTrustSetup = startDate,
       is5mldEnabled = is5mldEnabled,
       isTaxable = isTaxable,
@@ -109,7 +109,7 @@ object UserAnswers {
 
     (
       (__ \ "internalId").read[String] and
-        (__ \ "utr").read[String] and
+        ((__ \ "utr").read[String] or (__ \ "identifier").read[String]) and
         (__ \ "whenTrustSetup").read[LocalDate] and
         (__ \ "data").read[JsObject] and
         (__ \ "updatedAt").read(MongoDateTimeFormats.localDateTimeRead) and

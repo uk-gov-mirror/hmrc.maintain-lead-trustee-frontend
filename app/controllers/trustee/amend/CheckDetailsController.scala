@@ -58,7 +58,7 @@ class CheckDetailsController @Inject()(
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      trustService.getTrustee(request.userAnswers.utr, index).flatMap {
+      trustService.getTrustee(request.userAnswers.identifier, index).flatMap {
         case ind: TrusteeIndividual =>
           val answers = extractor.extractTrusteeIndividual(request.userAnswers, ind, index)
           for {
@@ -79,7 +79,7 @@ class CheckDetailsController @Inject()(
             Ok(view(section, index))
           }
         case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] Unable to retrieve trustee from trusts")
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] Unable to retrieve trustee from trusts")
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
   }
@@ -95,7 +95,7 @@ class CheckDetailsController @Inject()(
           val section = printHelper.printAmendedOrganisationTrustee(request.userAnswers, request.trusteeName)
           Ok(view(section, index))
       } getOrElse {
-        logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] " +
+        logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] " +
           s"unable to display updated trustee on check your answers due to not having user answer for individual or business")
         InternalServerError(errorHandler.internalServerErrorTemplate)
       }
@@ -106,10 +106,10 @@ class CheckDetailsController @Inject()(
 
       val trustee: Option[Trustee] = request.userAnswers.get(IndividualOrBusinessPage) match {
         case Some(Individual) =>
-          logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] amending trustee individual")
+          logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] amending trustee individual")
           mapper.mapToTrusteeIndividual(request.userAnswers, adding = false)
         case Some(Business) =>
-          logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] amending trustee organisation")
+          logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] amending trustee organisation")
           mapper.mapToTrusteeOrganisation(request.userAnswers)
         case _ =>
           None
@@ -119,7 +119,7 @@ class CheckDetailsController @Inject()(
         case Some(t) =>
           amendTrustee(request.userAnswers, t, index)
         case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] " +
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] " +
             s"unable to amend trustee due to no user answer for individual or business")
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
@@ -127,7 +127,7 @@ class CheckDetailsController @Inject()(
 
   private def amendTrustee(userAnswers: UserAnswers, t: Trustee, index: Int)(implicit hc: HeaderCarrier): Future[Result] = {
     for {
-      _ <- trustConnector.amendTrustee(userAnswers.utr, index, t)
+      _ <- trustConnector.amendTrustee(userAnswers.identifier, index, t)
       updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.trustee.basePath))
       _ <- sessionRepository.set(updatedUserAnswers)
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())

@@ -51,7 +51,7 @@ class RemoveTrusteeController @Inject()(
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      trust.getTrustee(request.userAnswers.utr, index).map {
+      trust.getTrustee(request.userAnswers.identifier, index).map {
         trustee =>
           val trusteeName = trustee match {
             case lti:TrusteeIndividual => lti.name.displayName
@@ -60,12 +60,12 @@ class RemoveTrusteeController @Inject()(
         Ok(view(messagesPrefix, form, index, trusteeName, formRoute(index)))
       } recoverWith {
         case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove trustee as trustee was not found ${iobe.getMessage}: IndexOutOfBoundsException")
 
           Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad()))
         case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] user cannot remove trustee as trustee was not found")
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] user cannot remove trustee as trustee was not found")
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
   }
@@ -75,7 +75,7 @@ class RemoveTrusteeController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          trust.getTrustee(request.userAnswers.utr, index).map {
+          trust.getTrustee(request.userAnswers.identifier, index).map {
             trustee =>
               val trusteeName = trustee match {
                 case lti:TrusteeIndividual => lti.name.displayName
@@ -87,18 +87,18 @@ class RemoveTrusteeController @Inject()(
         value => {
           if (value) {
 
-            trust.getTrustee(request.userAnswers.utr, index).flatMap {
+            trust.getTrustee(request.userAnswers.identifier, index).flatMap {
               trustee =>
                 if (trustee.isNewlyAdded) {
                   for {
-                    _ <- trust.removeTrustee(request.userAnswers.utr, RemoveTrustee(index))
+                    _ <- trust.removeTrustee(request.userAnswers.identifier, RemoveTrustee(index))
                   } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
                 } else {
                   Future.successful(Redirect(controllers.trustee.routes.WhenRemovedController.onPageLoad(index).url))
                 }
             } recoverWith {
               case _ =>
-                logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] user cannot remove trustee as trustee was not found")
+                logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] user cannot remove trustee as trustee was not found")
                 Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
             }
           } else {

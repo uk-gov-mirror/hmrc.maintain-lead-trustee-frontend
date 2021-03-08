@@ -54,7 +54,7 @@ class CheckDetailsController @Inject()(
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      connector.getLeadTrustee(request.userAnswers.utr).flatMap {
+      connector.getLeadTrustee(request.userAnswers.identifier).flatMap {
         case trusteeInd: LeadTrusteeIndividual =>
           val answers: Try[UserAnswers] = extractor.extractLeadTrusteeIndividual(request.userAnswers, trusteeInd)
           for {
@@ -72,7 +72,7 @@ class CheckDetailsController @Inject()(
             renderOrganisationLeadTrustee(updatedAnswers)
           }
         case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] Unable to retrieve Lead Trustee from trusts")
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] Unable to retrieve Lead Trustee from trusts")
           throw new RuntimeException("unable to retrieve lead trustee from trusts service")
       }
   }
@@ -110,16 +110,16 @@ class CheckDetailsController @Inject()(
       mapper.mapToLeadTrusteeIndividual(request.userAnswers) match {
         case None =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}]" +
-            s"[UTR: ${request.userAnswers.utr}] unable to build lead trustee individual from user answers," +
+            s"[UTR: ${request.userAnswers.identifier}] unable to build lead trustee individual from user answers," +
             s" cannot continue with submitting transform")
           Future.successful(InternalServerError)
         case Some(lt) =>
           request.userAnswers.get(lind.IndexPage) match {
             case None =>
-              logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] amending lead trustee")
+              logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] amending lead trustee")
               amendLeadTrustee(request.userAnswers, lt)
             case Some(index) =>
-              logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] promoting lead trustee")
+              logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] promoting lead trustee")
               promoteTrustee(request.userAnswers, lt, index)
           }
       }
@@ -130,16 +130,16 @@ class CheckDetailsController @Inject()(
       mapper.mapToLeadTrusteeOrganisation(request.userAnswers) match {
         case None =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}]" +
-            s"[UTR: ${request.userAnswers.utr}] unable to build lead trustee organisation from user answers," +
+            s"[UTR: ${request.userAnswers.identifier}] unable to build lead trustee organisation from user answers," +
             s" cannot continue with submitting transform")
           Future.successful(InternalServerError)
         case Some(lt) =>
           request.userAnswers.get(lorg.IndexPage) match {
             case None =>
-              logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] amending lead trustee")
+              logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] amending lead trustee")
               amendLeadTrustee(request.userAnswers, lt)
             case Some(index) =>
-              logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] promoting lead trustee")
+              logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] promoting lead trustee")
               promoteTrustee(request.userAnswers, lt, index)
           }
       }
@@ -147,7 +147,7 @@ class CheckDetailsController @Inject()(
 
   private def amendLeadTrustee(userAnswers: UserAnswers, lt: LeadTrustee)(implicit hc: HeaderCarrier): Future[Result] = {
     for {
-      _ <- connector.amendLeadTrustee(userAnswers.utr, lt)
+      _ <- connector.amendLeadTrustee(userAnswers.identifier, lt)
       updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.leadtrustee.basePath))
       _ <- repository.set(updatedUserAnswers)
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
@@ -155,7 +155,7 @@ class CheckDetailsController @Inject()(
 
   private def promoteTrustee(userAnswers: UserAnswers, lt: LeadTrustee, index: Int)(implicit hc: HeaderCarrier): Future[Result] = {
     for {
-      _ <- connector.promoteTrustee(userAnswers.utr, index, lt)
+      _ <- connector.promoteTrustee(userAnswers.identifier, index, lt)
       updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.leadtrustee.basePath))
       _ <- repository.set(updatedUserAnswers)
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())

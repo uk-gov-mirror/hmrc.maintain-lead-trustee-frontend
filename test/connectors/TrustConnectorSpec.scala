@@ -34,11 +34,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   with Inside with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  private def getLeadTrusteeUrl(utr: String): String = s"/trusts/trustees/$utr/transformed/lead-trustee"
-  private def getTrustDetailsUrl(utr: String) = s"/trusts/$utr/trust-details"
-  private def getTrusteesUrl(utr: String) = s"/trusts/trustees/$utr/transformed/trustee"
-  private def removeTrusteeUrl(utr: String) = s"/trusts/trustees/$utr/remove"
-  private def promoteTrusteeUrl(utr: String, index: Int) = s"/trusts/trustees/promote/$utr/$index"
+  private def getLeadTrusteeUrl(identifier: String): String = s"/trusts/trustees/$identifier/transformed/lead-trustee"
+  private def getTrustDetailsUrl(identifier: String) = s"/trusts/$identifier/trust-details"
+  private def getTrusteesUrl(identifier: String) = s"/trusts/trustees/$identifier/transformed/trustee"
+  private def removeTrusteeUrl(identifier: String) = s"/trusts/trustees/$identifier/remove"
+  private def promoteTrusteeUrl(identifier: String, index: Int) = s"/trusts/trustees/promote/$identifier/$index"
   private def isTrust5mldUrl(identifier: String) = s"/trusts/$identifier/is-trust-5mld"
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
@@ -132,7 +132,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   "TrustConnector getLeadTrustee" must {
 
     "must return playback data inside a Processed trust" in {
-      val utr = "1000000007"
+      val identifier = "1000000007"
       val json = Json.obj(
         "lineNo" -> "lineNo",
         "name" -> "name",
@@ -160,11 +160,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        get(urlEqualTo(getLeadTrusteeUrl(utr)))
+        get(urlEqualTo(getLeadTrusteeUrl(identifier)))
           .willReturn(okJson(json.toString))
       )
 
-      val processed = connector.getLeadTrustee(utr)
+      val processed = connector.getLeadTrustee(identifier)
 
       whenReady(processed) { leadTrustee =>
         leadTrustee mustBe LeadTrusteeOrganisation(
@@ -180,7 +180,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   }
 
   "TrustConnector getTrustsDetails" in {
-    val utr = "1000000007"
+    val identifier = "1000000007"
     val date: LocalDate = LocalDate.parse("2019-02-03")
     val json = Json.parse(
       """
@@ -211,11 +211,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
     val connector = application.injector.instanceOf[TrustConnector]
 
     server.stubFor(
-      get(urlEqualTo(getTrustDetailsUrl(utr)))
+      get(urlEqualTo(getTrustDetailsUrl(identifier)))
         .willReturn(okJson(json.toString))
     )
 
-    val processed = connector.getTrustDetails(utr)
+    val processed = connector.getTrustDetails(identifier)
 
     whenReady(processed) {
       r =>
@@ -227,7 +227,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
     "return Ok when the request is successful" in {
 
-      val utr = "1000000008"
+      val identifier = "1000000008"
 
       val trustee = RemoveTrustee(
         index = 0,
@@ -245,11 +245,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        put(urlEqualTo(removeTrusteeUrl(utr)))
+        put(urlEqualTo(removeTrusteeUrl(identifier)))
           .willReturn(ok)
       )
 
-      val result = connector.removeTrustee(utr, trustee)
+      val result = connector.removeTrustee(identifier, trustee)
 
       result.futureValue.status mustBe (OK)
 
@@ -258,7 +258,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
     "return Bad Request when the request is unsuccessful" in {
 
-      val utr = "1000000008"
+      val identifier = "1000000008"
 
       val trustee = RemoveTrustee(
         index = 0,
@@ -276,11 +276,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        put(urlEqualTo(removeTrusteeUrl(utr)))
+        put(urlEqualTo(removeTrusteeUrl(identifier)))
           .willReturn(badRequest)
       )
 
-      val result = connector.removeTrustee(utr, trustee)
+      val result = connector.removeTrustee(identifier, trustee)
 
       result.map(response => response.status mustBe BAD_REQUEST)
 
@@ -293,7 +293,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
     "must return playback data inside a Processed trust" in {
 
-      val utr = "1000000008"
+      val identifier = "1000000008"
 
       val json = Json.parse(
         """
@@ -338,11 +338,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        get(urlEqualTo(getTrusteesUrl(utr)))
+        get(urlEqualTo(getTrusteesUrl(identifier)))
           .willReturn(okJson(json.toString))
       )
 
-      val processed = connector.getTrustees(utr)
+      val processed = connector.getTrustees(identifier)
 
       whenReady(processed) { trustees =>
         trustees mustBe Trustees(
@@ -380,7 +380,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
     "return Ok when the request is successful" in {
 
-      val utr = "1000000008"
+      val identifier = "1000000008"
       val index = 0
 
       val newLeadTrustee = LeadTrusteeIndividual(
@@ -407,11 +407,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo(promoteTrusteeUrl(utr, index)))
+        post(urlEqualTo(promoteTrusteeUrl(identifier, index)))
           .willReturn(ok)
       )
 
-      val result = connector.promoteTrustee(utr, index, newLeadTrustee)
+      val result = connector.promoteTrustee(identifier, index, newLeadTrustee)
 
       result.futureValue.status mustBe (OK)
 
@@ -420,7 +420,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
     "return Bad Request when the request is unsuccessful" in {
 
-      val utr = "1000000008"
+      val identifier = "1000000008"
       val index = 0
 
       val newLeadTrustee = LeadTrusteeIndividual(
@@ -447,11 +447,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo(promoteTrusteeUrl(utr, index)))
+        post(urlEqualTo(promoteTrusteeUrl(identifier, index)))
           .willReturn(badRequest)
       )
 
-      val result = connector.promoteTrustee(utr, index, newLeadTrustee)
+      val result = connector.promoteTrustee(identifier, index, newLeadTrustee)
 
       result.map(response => response.status mustBe BAD_REQUEST)
 
@@ -463,7 +463,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   "TrustConnector amendTrustee" must {
 
     val index = 0
-    val utr = "UTRUTRUTR"
+    val identifier = "UTRUTRUTR"
 
     "Return Ok when the request is successful" in {
 
@@ -478,11 +478,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo(s"/trusts/trustees/amend/$utr/$index"))
+        post(urlEqualTo(s"/trusts/trustees/amend/$identifier/$index"))
           .willReturn(ok)
       )
 
-      val result = connector.amendTrustee(utr, index, arbitraryTrusteeIndividual.arbitrary.sample.get)
+      val result = connector.amendTrustee(identifier, index, arbitraryTrusteeIndividual.arbitrary.sample.get)
       result.futureValue.status mustBe (OK)
 
       application.stop()
@@ -501,11 +501,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo(s"/trusts/trustees/amend/$utr/$index"))
+        post(urlEqualTo(s"/trusts/trustees/amend/$identifier/$index"))
           .willReturn(badRequest)
       )
 
-      val result = connector.amendTrustee(utr, index, arbitraryTrusteeIndividual.arbitrary.sample.get)
+      val result = connector.amendTrustee(identifier, index, arbitraryTrusteeIndividual.arbitrary.sample.get)
 
       result.map(response => response.status mustBe BAD_REQUEST)
 
@@ -517,7 +517,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
     "return true" when {
       "untransformed data is 5mld" in {
-        val utr = "1000000007"
+        val identifier = "1000000007"
         val json = JsBoolean(true)
 
         val application = applicationBuilder()
@@ -531,11 +531,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
         val connector = application.injector.instanceOf[TrustConnector]
 
         server.stubFor(
-          get(urlEqualTo(isTrust5mldUrl(utr)))
+          get(urlEqualTo(isTrust5mldUrl(identifier)))
             .willReturn(okJson(json.toString))
         )
 
-        val processed = connector.isTrust5mld(utr)
+        val processed = connector.isTrust5mld(identifier)
 
         whenReady(processed) {
           r =>
@@ -546,7 +546,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
     "return false" when {
       "untransformed data is 4mld" in {
-        val utr = "1000000007"
+        val identifier = "1000000007"
         val json = JsBoolean(false)
 
         val application = applicationBuilder()
@@ -560,11 +560,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
         val connector = application.injector.instanceOf[TrustConnector]
 
         server.stubFor(
-          get(urlEqualTo(isTrust5mldUrl(utr)))
+          get(urlEqualTo(isTrust5mldUrl(identifier)))
             .willReturn(okJson(json.toString))
         )
 
-        val processed = connector.isTrust5mld(utr)
+        val processed = connector.isTrust5mld(identifier)
 
         whenReady(processed) {
           r =>
