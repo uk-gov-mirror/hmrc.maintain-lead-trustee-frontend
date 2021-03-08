@@ -24,6 +24,7 @@ import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
+import services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
@@ -32,16 +33,26 @@ class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  actions: StandardActionSets,
                                  cacheRepository : PlaybackRepository,
-                                 connector: TrustConnector)
+                                 connector: TrustConnector,
+                                 featureFlagService: FeatureFlagService)
                                (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(utr: String): Action[AnyContent] = (actions.auth andThen actions.saveSession(utr)).async {
+  def onPageLoad(identifier: String): Action[AnyContent] = (actions.auth andThen actions.saveSession(identifier)).async {
       implicit request =>
-        logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: $utr]" +
+        logger.info(s"[Session ID: ${utils.Session.id(hc)}][Identifier: $identifier]" +
           s" user has started to maintain trustees")
         for {
-          date <- connector.getTrustStartDate(utr)
-          _ <- cacheRepository.set(UserAnswers.newSession(request.user.internalId, utr, date.startDate))
+          trustDetails <- connector.getTrustDetails(identifier)
+          is5mldEnabled <- featureFlagService.is5mldEnabled()
+          isUnderlyingData5mld <- connector.isTrust5mld(identifier)
+          _ <- cacheRepository.set(UserAnswers.newSession(
+            id = request.user.internalId,
+            utr = identifier,
+            startDate = trustDetails.startDate,
+            is5mldEnabled = is5mldEnabled,
+            isTaxable = trustDetails.trustTaxable.getOrElse(true),
+            isUnderlyingData5mld = isUnderlyingData5mld)
+          )
         } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
     }
 }

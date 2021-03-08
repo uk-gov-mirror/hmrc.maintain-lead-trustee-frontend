@@ -23,10 +23,10 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
-import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, Name, NationalInsuranceNumber, RemoveTrustee, TrustIdentificationOrgType, TrustStartDate, TrusteeIndividual, TrusteeOrganisation, Trustees, UkAddress}
+import models._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsBoolean, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -35,14 +35,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   private def getLeadTrusteeUrl(utr: String): String = s"/trusts/trustees/$utr/transformed/lead-trustee"
-
-  private def getTrustStartDateUrl(utr: String): String = s"/trusts/$utr/trust-details"
-
+  private def getTrustDetailsUrl(utr: String) = s"/trusts/$utr/trust-details"
   private def getTrusteesUrl(utr: String) = s"/trusts/trustees/$utr/transformed/trustee"
-
   private def removeTrusteeUrl(utr: String) = s"/trusts/trustees/$utr/remove"
-
   private def promoteTrusteeUrl(utr: String, index: Int) = s"/trusts/trustees/promote/$utr/$index"
+  private def isTrust5mldUrl(identifier: String) = s"/trusts/$identifier/is-trust-5mld"
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
 
@@ -182,52 +179,47 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
     }
   }
 
-  "TrustConnector getTrustStartDate" must {
+  "TrustConnector getTrustsDetails" in {
+    val utr = "1000000007"
+    val date: LocalDate = LocalDate.parse("2019-02-03")
+    val json = Json.parse(
+      """
+        |{
+        | "startDate": "2019-02-03",
+        | "lawCountry": "AD",
+        | "administrationCountry": "GB",
+        | "residentialStatus": {
+        |   "uk": {
+        |     "scottishLaw": false,
+        |     "preOffShore": "AD"
+        |   }
+        | },
+        | "typeOfTrust": "Will Trust or Intestacy Trust",
+        | "deedOfVariation": "Previously there was only an absolute interest under the will",
+        | "interVivos": false
+        |}
+        |""".stripMargin)
 
-    "must return trust start date" in {
-      val utr = "1000000007"
+    val application = applicationBuilder()
+      .configure(
+        Seq(
+          "microservice.services.trusts.port" -> server.port(),
+          "auditing.enabled" -> false
+        ): _*
+      ).build()
 
-      val json = Json.parse(
-        """
-          |{
-          | "startDate": "1920-03-28",
-          | "lawCountry": "AD",
-          | "administrationCountry": "GB",
-          | "residentialStatus": {
-          |   "uk": {
-          |     "scottishLaw": false,
-          |     "preOffShore": "AD"
-          |   }
-          | },
-          | "typeOfTrust": "Will Trust or Intestacy Trust",
-          | "deedOfVariation": "Previously there was only an absolute interest under the will",
-          | "interVivos": false
-          |}
-          |""".stripMargin)
+    val connector = application.injector.instanceOf[TrustConnector]
 
-      val application = applicationBuilder()
-        .configure(
-          Seq(
-            "microservice.services.trusts.port" -> server.port(),
-            "auditing.enabled" -> false
-          ): _*
-        ).build()
+    server.stubFor(
+      get(urlEqualTo(getTrustDetailsUrl(utr)))
+        .willReturn(okJson(json.toString))
+    )
 
-      val connector = application.injector.instanceOf[TrustConnector]
+    val processed = connector.getTrustDetails(utr)
 
-      server.stubFor(
-        get(urlEqualTo(getTrustStartDateUrl(utr)))
-          .willReturn(okJson(json.toString))
-      )
-
-      val processed = connector.getTrustStartDate(utr)
-
-      whenReady(processed) { startDate =>
-        startDate mustBe TrustStartDate(
-          "1920-03-28"
-        )
-      }
-      application.stop()
+    whenReady(processed) {
+      r =>
+        r mustBe TrustDetails(startDate = date, None)
     }
   }
 
@@ -521,4 +513,64 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
     }
   }
 
+  "TrustConnector isTrust5mld" must {
+
+    "return true" when {
+      "untransformed data is 5mld" in {
+        val utr = "1000000007"
+        val json = JsBoolean(true)
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          get(urlEqualTo(isTrust5mldUrl(utr)))
+            .willReturn(okJson(json.toString))
+        )
+
+        val processed = connector.isTrust5mld(utr)
+
+        whenReady(processed) {
+          r =>
+            r mustBe true
+        }
+      }
+    }
+
+    "return false" when {
+      "untransformed data is 4mld" in {
+        val utr = "1000000007"
+        val json = JsBoolean(false)
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          get(urlEqualTo(isTrust5mldUrl(utr)))
+            .willReturn(okJson(json.toString))
+        )
+
+        val processed = connector.isTrust5mld(utr)
+
+        whenReady(processed) {
+          r =>
+            r mustBe false
+        }
+      }
+    }
+  }
 }
