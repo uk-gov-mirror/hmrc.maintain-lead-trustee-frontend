@@ -23,8 +23,9 @@ import pages.trustee.individual._
 import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsError, JsSuccess, Reads}
-
 import java.time.LocalDate
+
+import models.Constant.GB
 
 class TrusteeIndividualMapper extends Logging {
 
@@ -35,6 +36,7 @@ class TrusteeIndividualMapper extends Logging {
           DateOfBirthPage.path.readNullable[LocalDate] and
           Reads(_ => JsSuccess(None)) and
           readIdentification(adding) and
+          readCountryOfResidence and
           readAddress and
           WhenAddedPage.path.read[LocalDate] and
           Reads(_ => JsSuccess(true))
@@ -81,6 +83,16 @@ class TrusteeIndividualMapper extends Logging {
       case true => PassportOrIdCardDetailsYesNoPage.path.read[Boolean].flatMap[Option[IndividualIdentification]] {
         case true => PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].map(Some(_))
         case false => Reads(_ => JsSuccess(None))
+      }
+      case _ => Reads(_ => JsSuccess(None))
+    }
+  }
+
+  private def readCountryOfResidence: Reads[Option[String]] = {
+    CountryOfResidenceYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
+      case Some(true) => CountryOfResidenceInTheUkYesNoPage.path.read[Boolean].flatMap {
+        case true => Reads(_ => JsSuccess(Some(GB)))
+        case false => CountryOfResidencePage.path.read[String].map(Some(_))
       }
       case _ => Reads(_ => JsSuccess(None))
     }

@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package pages.trustee.individual
 
-object Constant {
-  final val dateTimePattern = "yyyy-MM-dd"
-  final val GB = "GB"
+import pages.QuestionPage
+import pages.trustee.basePath
+import play.api.libs.json.JsPath
+
+case object CountryOfResidencePage extends QuestionPage[String] {
+
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "countryOfResidence"
 }

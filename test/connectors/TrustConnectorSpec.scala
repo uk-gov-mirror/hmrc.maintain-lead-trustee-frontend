@@ -353,6 +353,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
               phoneNumber = None,
               identification = Some(NationalInsuranceNumber("JS123456A")),
               None,
+              None,
               entityStart = LocalDate.parse("2019-02-28"),
               provisional = true
             ),

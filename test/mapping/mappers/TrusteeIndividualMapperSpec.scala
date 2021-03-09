@@ -19,10 +19,11 @@ package mapping.mappers
 import base.SpecBase
 import models._
 import pages.trustee.WhenAddedPage
-import pages.trustee.amend.individual.{PassportOrIdCardDetailsYesNoPage, PassportOrIdCardDetailsPage}
+import pages.trustee.amend.individual.{PassportOrIdCardDetailsPage, PassportOrIdCardDetailsYesNoPage}
 import pages.trustee.individual._
-
 import java.time.LocalDate
+
+import models.Constant.GB
 
 class TrusteeIndividualMapperSpec extends SpecBase {
 
@@ -160,6 +161,58 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             phoneNumber = None,
             identification = None,
             address = Some(ukAddress),
+            entityStart = startDate,
+            provisional = true
+          )
+        }
+
+        "trustee has GB Residency" in {
+          val userAnswers = baseAnswers
+            .set(DateOfBirthYesNoPage, false).success.value
+            .set(NationalInsuranceNumberYesNoPage, false).success.value
+            .set(CountryOfResidenceYesNoPage, true).success.value
+            .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
+            .set(AddressYesNoPage, false).success.value
+            .set(PassportDetailsYesNoPage, false).success.value
+            .set(IdCardDetailsYesNoPage, false).success.value
+            .set(WhenAddedPage, startDate).success.value
+
+          val result = mapper.map(userAnswers, adding = true).get
+
+          result mustBe TrusteeIndividual(
+            name = name,
+            dateOfBirth = None,
+            phoneNumber = None,
+            identification = None,
+            countryOfResidence = Some(GB),
+            address = None,
+            entityStart = startDate,
+            provisional = true
+          )
+        }
+
+        "trustee has US Residency" in {
+
+          val userAnswers = baseAnswers
+            .set(DateOfBirthYesNoPage, false).success.value
+            .set(NationalInsuranceNumberYesNoPage, false).success.value
+            .set(CountryOfResidenceYesNoPage, true).success.value
+            .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
+            .set(CountryOfResidencePage, "US").success.value
+            .set(AddressYesNoPage, false).success.value
+            .set(PassportDetailsYesNoPage, false).success.value
+            .set(IdCardDetailsYesNoPage, false).success.value
+            .set(WhenAddedPage, startDate).success.value
+
+          val result = mapper.map(userAnswers, adding = true).get
+
+          result mustBe TrusteeIndividual(
+            name = name,
+            dateOfBirth = None,
+            phoneNumber = None,
+            identification = None,
+            countryOfResidence = Some("US"),
+            address = None,
             entityStart = startDate,
             provisional = true
           )

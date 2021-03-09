@@ -38,7 +38,7 @@ class TrusteeSpec extends FreeSpec with MustMatchers {
     val json = Json.parse(jsonStr)
 
     val result = json.validate[Trustee]
-    result mustBe JsSuccess(TrusteeIndividual(Name("First", None, "Last"), None, None, None, None, LocalDate.of(2018, 2, 1), true), __)
+    result mustBe JsSuccess(TrusteeIndividual(Name("First", None, "Last"), None, None, None, None, None, LocalDate.of(2018, 2, 1), true), __)
 
   }
 }
