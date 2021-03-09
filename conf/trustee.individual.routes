@@ -36,3 +36,18 @@ POST       /has-id-card                           controllers.trustee.individual
 
 GET        /id-card                               controllers.trustee.individual.IdCardDetailsController.onPageLoad()
 POST       /id-card                               controllers.trustee.individual.IdCardDetailsController.onSubmit()
+
+GET        /has-country-of-residence              controllers.trustee.individual.CountryOfResidenceYesNoController.onPageLoad()
+POST       /has-country-of-residence              controllers.trustee.individual.CountryOfResidenceYesNoController.onSubmit()
+GET        /change-has-country-of-residence       controllers.trustee.individual.CountryOfResidenceYesNoController.onPageLoad()
+POST       /change-has-country-of-residence       controllers.trustee.individual.CountryOfResidenceYesNoController.onSubmit()
+
+GET        /uk-residence                          controllers.trustee.individual.CountryOfResidenceInTheUkYesNoController.onPageLoad()
+POST       /uk-residence                          controllers.trustee.individual.CountryOfResidenceInTheUkYesNoController.onSubmit()
+GET        /change-uk-residence                   controllers.trustee.individual.CountryOfResidenceInTheUkYesNoController.onPageLoad()
+POST       /change-uk-residence                   controllers.trustee.individual.CountryOfResidenceInTheUkYesNoController.onSubmit()
+
+GET        /country-of-residence                  controllers.trustee.individual.CountryOfResidenceController.onPageLoad()
+POST       /country-of-residence                  controllers.trustee.individual.CountryOfResidenceController.onSubmit()
+GET        /change-country-of-residence           controllers.trustee.individual.CountryOfResidenceController.onPageLoad()
+POST       /change-country-of-residence           controllers.trustee.individual.CountryOfResidenceController.onSubmit()
