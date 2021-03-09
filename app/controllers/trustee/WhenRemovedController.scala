@@ -45,7 +45,7 @@ class WhenRemovedController @Inject()(
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      trust.getTrustee(request.userAnswers.utr, index).map {
+      trust.getTrustee(request.userAnswers.identifier, index).map {
         trustee =>
           val (trusteeName, entityStartDate) = trustee match {
             case lti:TrusteeIndividual => (lti.name.displayName, lti.entityStart)
@@ -61,7 +61,7 @@ class WhenRemovedController @Inject()(
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      trust.getTrustee(request.userAnswers.utr, index).flatMap {
+      trust.getTrustee(request.userAnswers.identifier, index).flatMap {
         trustee =>
           val (trusteeName, entityStartDate) = trustee match {
             case lti:TrusteeIndividual => (lti.name.displayName, lti.entityStart)
@@ -76,7 +76,7 @@ class WhenRemovedController @Inject()(
             },
             value =>
               for {
-                _ <- trustService.removeTrustee(request.userAnswers.utr, RemoveTrustee(index, value))
+                _ <- trustService.removeTrustee(request.userAnswers.identifier, RemoveTrustee(index, value))
               } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
           )
       }

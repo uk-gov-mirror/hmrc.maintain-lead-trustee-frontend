@@ -25,10 +25,13 @@ import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
                               internalId: String,
-                              utr: String,
+                              identifier: String,
                               whenTrustSetup: LocalDate,
                               data: JsObject = Json.obj(),
-                              updatedAt: LocalDateTime = LocalDateTime.now
+                              updatedAt: LocalDateTime = LocalDateTime.now,
+                              is5mldEnabled: Boolean = false,
+                              isTaxable: Boolean = true,
+                              isUnderlyingData5mld: Boolean = false
                             ) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
@@ -90,7 +93,15 @@ final case class UserAnswers(
 
 object UserAnswers {
 
-  def newSession(id: String, utr: String, date: String) = UserAnswers(id, utr, LocalDate.parse(date))
+  def newSession(id: String, identifier: String, startDate: LocalDate, is5mldEnabled: Boolean, isTaxable: Boolean, isUnderlyingData5mld: Boolean) =
+    UserAnswers(
+      internalId = id,
+      identifier = identifier,
+      whenTrustSetup = startDate,
+      is5mldEnabled = is5mldEnabled,
+      isTaxable = isTaxable,
+      isUnderlyingData5mld = isUnderlyingData5mld
+    )
 
   implicit lazy val reads: Reads[UserAnswers] = {
 
@@ -98,10 +109,13 @@ object UserAnswers {
 
     (
       (__ \ "internalId").read[String] and
-        (__ \ "utr").read[String] and
+        ((__ \ "utr").read[String] or (__ \ "identifier").read[String]) and
         (__ \ "whenTrustSetup").read[LocalDate] and
         (__ \ "data").read[JsObject] and
-        (__ \ "updatedAt").read(MongoDateTimeFormats.localDateTimeRead)
+        (__ \ "updatedAt").read(MongoDateTimeFormats.localDateTimeRead) and
+        (__ \ "is5mldEnabled").readWithDefault[Boolean](false) and
+        (__ \ "isTaxable").readWithDefault[Boolean](true) and
+        (__ \ "isUnderlyingData5mld").readWithDefault[Boolean](false)
       ) (UserAnswers.apply _)
   }
 
@@ -114,7 +128,10 @@ object UserAnswers {
         (__ \ "utr").write[String] and
         (__ \ "whenTrustSetup").write[LocalDate] and
         (__ \ "data").write[JsObject] and
-        (__ \ "updatedAt").write(MongoDateTimeFormats.localDateTimeWrite)
+        (__ \ "updatedAt").write(MongoDateTimeFormats.localDateTimeWrite) and
+        (__ \ "is5mldEnabled").write[Boolean] and
+        (__ \ "isTaxable").write[Boolean] and
+        (__ \ "isUnderlyingData5mld").write[Boolean]
       ) (unlift(UserAnswers.unapply))
   }
 }

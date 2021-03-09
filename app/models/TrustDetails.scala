@@ -16,13 +16,14 @@
 
 package models
 
-import play.api.libs.json.{Json, OFormat}
+import java.time.LocalDate
 
-object TrustStartDate {
+import play.api.libs.json.{Format, Json}
 
-  implicit val formats: OFormat[TrustStartDate] = Json.format[TrustStartDate]
+case class TrustDetails(startDate: LocalDate, trustTaxable: Option[Boolean])
+
+object TrustDetails {
+
+  implicit val formats: Format[TrustDetails] = Json.format[TrustDetails]
+
 }
-
-case class TrustStartDate(startDate: String)
-
-

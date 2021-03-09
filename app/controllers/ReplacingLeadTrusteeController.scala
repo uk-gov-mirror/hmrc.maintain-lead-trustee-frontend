@@ -58,7 +58,7 @@ class ReplacingLeadTrusteeController @Inject()(
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      trust.getAllTrustees(request.userAnswers.utr) map {
+      trust.getAllTrustees(request.userAnswers.identifier) map {
         case AllTrustees(leadTrustee, trustees) =>
           val trusteeNames = trustees
             .map {
@@ -72,7 +72,7 @@ class ReplacingLeadTrusteeController @Inject()(
           Ok(view(form, getLeadTrusteeName(leadTrustee), trusteeNames))
       } recoverWith {
         case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
 
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
@@ -82,7 +82,7 @@ class ReplacingLeadTrusteeController @Inject()(
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      trust.getAllTrustees(request.userAnswers.utr) flatMap {
+      trust.getAllTrustees(request.userAnswers.identifier) flatMap {
         case AllTrustees(leadTrustee, trustees) =>
           val trusteeNames = trustees.map {
             case ind: TrusteeIndividual => ind.name.displayName
@@ -106,7 +106,7 @@ class ReplacingLeadTrusteeController @Inject()(
           )
       } recoverWith {
         case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
 
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))

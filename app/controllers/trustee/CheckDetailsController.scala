@@ -56,7 +56,7 @@ class CheckDetailsController @Inject()(
         case Some(Business) =>
           Ok(view(printHelper.printOrganisationTrustee(request.userAnswers, request.trusteeName)))
         case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] unable to display trustee on check your answers")
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] unable to display trustee on check your answers")
           InternalServerError(errorHandler.internalServerErrorTemplate)
       }
   }
@@ -75,11 +75,11 @@ class CheckDetailsController @Inject()(
 
       trustee match {
         case Some(t) =>
-          trustConnector.addTrustee(request.userAnswers.utr, t).map(_ =>
+          trustConnector.addTrustee(request.userAnswers.identifier, t).map(_ =>
             Redirect(controllers.routes.AddATrusteeController.onPageLoad())
           )
         case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] unable to submit trustee on check your answers")
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] unable to submit trustee on check your answers")
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
   }

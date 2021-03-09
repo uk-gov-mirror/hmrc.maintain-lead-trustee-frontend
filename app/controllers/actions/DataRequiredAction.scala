@@ -34,7 +34,7 @@ class DataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionC
 
     request.userAnswers match {
       case None =>
-        logger.warn(s"[Authentication][UTR: ${request.userAnswers.map(_.utr).getOrElse("No UTR")}] No user answers in session")
+        logger.warn(s"[Authentication][UTR: ${request.userAnswers.map(_.identifier).getOrElse("No UTR")}] No user answers in session")
         Future.successful(Left(Redirect(routes.SessionExpiredController.onPageLoad())))
       case Some(data) =>
         Future.successful(Right(DataRequest(request.request, data, request.user)))

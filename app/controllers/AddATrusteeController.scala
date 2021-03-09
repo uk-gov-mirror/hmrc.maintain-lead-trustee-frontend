@@ -61,7 +61,7 @@ class AddATrusteeController @Inject()(
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      trust.getAllTrustees(request.userAnswers.utr) map {
+      trust.getAllTrustees(request.userAnswers.identifier) map {
         case AllTrustees(None, Nil) =>
           Ok(yesNoView(yesNoForm))
         case all: AllTrustees =>
@@ -86,7 +86,7 @@ class AddATrusteeController @Inject()(
           }
       } recoverWith {
         case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
 
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
@@ -113,7 +113,7 @@ class AddATrusteeController @Inject()(
   def submitAnother(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      trust.getAllTrustees(request.userAnswers.utr).flatMap { trustees =>
+      trust.getAllTrustees(request.userAnswers.identifier).flatMap { trustees =>
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
@@ -139,7 +139,7 @@ class AddATrusteeController @Inject()(
               Future.successful(Redirect(appConfig.maintainATrustOverview))
             case AddATrustee.NoComplete =>
               for {
-                _ <- trustStoreConnector.setTaskComplete(request.userAnswers.utr)
+                _ <- trustStoreConnector.setTaskComplete(request.userAnswers.identifier)
               } yield {
                 Redirect(appConfig.maintainATrustOverview)
               }
@@ -147,7 +147,7 @@ class AddATrusteeController @Inject()(
         )
       } recoverWith {
         case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
 
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
@@ -158,7 +158,7 @@ class AddATrusteeController @Inject()(
     implicit request =>
 
       for {
-        _ <- trustStoreConnector.setTaskComplete(request.userAnswers.utr)
+        _ <- trustStoreConnector.setTaskComplete(request.userAnswers.identifier)
       } yield {
         Redirect(appConfig.maintainATrustOverview)
       }

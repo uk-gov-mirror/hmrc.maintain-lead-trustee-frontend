@@ -35,7 +35,7 @@ class Navigator @Inject()() {
     parameterisedNavigation orElse
     LeadTrusteeNavigator.routes orElse
     TrusteeNavigator.routes orElse {
-    case _ => ua => controllers.routes.IndexController.onPageLoad(ua.utr)
+    case _ => ua => controllers.routes.IndexController.onPageLoad(ua.identifier)
   }
 
   def nextPage(page: Page, userAnswers: UserAnswers): Call =

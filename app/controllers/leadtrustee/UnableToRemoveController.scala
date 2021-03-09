@@ -38,7 +38,7 @@ class UnableToRemoveController @Inject()(
   def onPageLoad: Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      service.getLeadTrustee(request.userAnswers.utr) map {
+      service.getLeadTrustee(request.userAnswers.identifier) map {
         case Some(lt) =>
           lt match {
             case LeadTrusteeIndividual(name, _, _, _, _, _) =>
@@ -47,7 +47,7 @@ class UnableToRemoveController @Inject()(
               Ok(view(name))
           }
         case None =>
-        logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}] no lead trustee in user answers to remove")
+        logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] no lead trustee in user answers to remove")
         Redirect(controllers.routes.AddATrusteeController.onPageLoad())
       }
   }

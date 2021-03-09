@@ -18,11 +18,11 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.{LeadTrustee, RemoveTrustee, TrustStartDate, Trustee, Trustees}
+import models.{LeadTrustee, RemoveTrustee, TrustDetails, Trustee, Trustees}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.http.HttpClient
-import uk.gov.hmrc.http.HttpReads.Implicits.{readRaw, readFromJson}
+import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readRaw}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,10 +34,11 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
     http.GET[LeadTrustee](getLeadTrusteeUrl(utr))
   }
 
-  private def getTrustStartDateUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/trust-details"
+  private def getTrustDetailsUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/trust-details"
 
-  def getTrustStartDate(utr: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[TrustStartDate] = {
-    http.GET[TrustStartDate](getTrustStartDateUrl(utr))
+  def getTrustDetails(utr: String)
+                     (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[TrustDetails] = {
+    http.GET[TrustDetails](getTrustDetailsUrl(utr))
   }
 
   private def addTrusteeUrl(utr: String) = s"${config.trustsUrl}/trusts/trustees/add/$utr"
@@ -76,6 +77,11 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
     http.POST[LeadTrustee, HttpResponse](promoteTrusteeUrl(utr, index), newLeadTrustee)(LeadTrustee.writes, readRaw, hc, ec)
   }
 
+  def isTrust5mld(identifier: String)
+                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+    val url: String = s"${config.trustsUrl}/trusts/$identifier/is-trust-5mld"
+    http.GET[Boolean](url)
+  }
 }
 
 

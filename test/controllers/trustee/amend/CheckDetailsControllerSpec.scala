@@ -95,7 +95,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           contentAsString(result) mustEqual
             view(answerSection, index)(request, messages).toString
 
-          verify(trustService).getTrustee(eqTo(userAnswers.utr), eqTo(index))(any(), any())
+          verify(trustService).getTrustee(eqTo(userAnswers.identifier), eqTo(index))(any(), any())
           verify(extractor).extract(eqTo(userAnswers), eqTo(trustee), eqTo(index))
           verify(printHelper).print(eqTo(userAnswers), eqTo(indName.displayName))(any())
         }
@@ -131,7 +131,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           contentAsString(result) mustEqual
             view(answerSection, index)(request, messages).toString
 
-          verify(trustService).getTrustee(eqTo(userAnswers.utr), eqTo(index))(any(), any())
+          verify(trustService).getTrustee(eqTo(userAnswers.identifier), eqTo(index))(any(), any())
           verify(extractor).extract(eqTo(userAnswers), eqTo(trustee), eqTo(index))
           verify(printHelper).print(eqTo(userAnswers), eqTo(orgName))(any())
         }
@@ -259,7 +259,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           captor.getValue.data mustBe Json.obj()
 
           verify(mapper).map(userAnswers, adding = false)
-          verify(mockTrustConnector).amendTrustee(eqTo(userAnswers.utr), eqTo(index), eqTo(trustee))(any(), any())
+          verify(mockTrustConnector).amendTrustee(eqTo(userAnswers.identifier), eqTo(index), eqTo(trustee))(any(), any())
         }
 
         "business" in {
@@ -303,7 +303,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           captor.getValue.data mustBe Json.obj()
 
           verify(mapper).map(userAnswers)
-          verify(mockTrustConnector).amendTrustee(eqTo(userAnswers.utr), eqTo(index), eqTo(trustee))(any(), any())
+          verify(mockTrustConnector).amendTrustee(eqTo(userAnswers.identifier), eqTo(index), eqTo(trustee))(any(), any())
         }
       }
 
