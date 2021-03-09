@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import forms.YesNoFormProvider
-import models.{Name, UserAnswers}
+import models.{Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.individual.{CountryOfResidenceYesNoPage, NamePage}
@@ -43,7 +43,7 @@ class CountryOfResidenceYesNoControllerSpec extends SpecBase with MockitoSugar {
   override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
     .set(NamePage, name).success.value
 
-  lazy val countryOfResidenceYesNo: String = routes.CountryOfResidenceYesNoController.onPageLoad().url
+  lazy val countryOfResidenceYesNo: String = routes.CountryOfResidenceYesNoController.onPageLoad(NormalMode).url
 
   "CountryOfResidenceYesNo Controller" must {
 
@@ -60,7 +60,7 @@ class CountryOfResidenceYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, trusteeName)(request, messages).toString
+        view(form, NormalMode, trusteeName)(request, messages).toString
 
       application.stop()
     }
@@ -81,7 +81,7 @@ class CountryOfResidenceYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), trusteeName)(request, messages).toString
+        view(form.fill(true), NormalMode, trusteeName)(request, messages).toString
 
       application.stop()
     }
@@ -125,7 +125,7 @@ class CountryOfResidenceYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, trusteeName)(request, messages).toString
+        view(boundForm, NormalMode, trusteeName)(request, messages).toString
 
       application.stop()
     }

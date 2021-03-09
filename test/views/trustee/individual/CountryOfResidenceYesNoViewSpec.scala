@@ -22,6 +22,7 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.trustee.individual.CountryOfResidenceYesNoView
 import controllers.trustee.individual.routes
+import models.NormalMode
 
 class CountryOfResidenceYesNoViewSpec extends YesNoViewBehaviours {
 
@@ -34,12 +35,12 @@ class CountryOfResidenceYesNoViewSpec extends YesNoViewBehaviours {
     val view = viewFor[CountryOfResidenceYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name)(fakeRequest, messages)
+      view.apply(form, NormalMode, name)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), routes.CountryOfResidenceYesNoController.onSubmit().url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), routes.CountryOfResidenceYesNoController.onSubmit(NormalMode).url)
   }
 }

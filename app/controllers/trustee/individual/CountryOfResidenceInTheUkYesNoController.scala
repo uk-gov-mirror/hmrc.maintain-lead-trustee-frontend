@@ -20,6 +20,7 @@ import controllers.actions.StandardActionSets
 import controllers.trustee.actions.NameRequiredAction
 import forms.YesNoFormProvider
 import javax.inject.Inject
+import models.Mode
 import navigation.Navigator
 import pages.trustee.individual.CountryOfResidenceInTheUkYesNoPage
 import play.api.data.Form
@@ -43,7 +44,7 @@ class CountryOfResidenceInTheUkYesNoController @Inject()(
 
   private val form: Form[Boolean] = formProvider.withPrefix("trustee.individual.countryOfResidenceInTheUkYesNo")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(CountryOfResidenceInTheUkYesNoPage) match {
@@ -51,15 +52,15 @@ class CountryOfResidenceInTheUkYesNoController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.trusteeName))
+      Ok(view(preparedForm, mode, request.trusteeName))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
 
         value =>
           for {

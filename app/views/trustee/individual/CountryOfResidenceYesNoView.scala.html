@@ -21,13 +21,13 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("trustee.individual.countryOfResidenceYesNo.title")}"
 ) {
 
-        @formHelper(action = CountryOfResidenceYesNoController.onSubmit(), 'autoComplete -> "off") {
+        @formHelper(action = CountryOfResidenceYesNoController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
