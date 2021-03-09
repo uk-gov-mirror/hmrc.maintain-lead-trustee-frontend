@@ -53,6 +53,7 @@ case class TrusteeIndividual(name: Name,
                              dateOfBirth: Option[LocalDate],
                              phoneNumber: Option[String],
                              identification: Option[IndividualIdentification],
+                             countryOfResidence: Option[String] = None,
                              address: Option[Address],
                              entityStart: LocalDate,
                              provisional: Boolean) extends Trustee
@@ -77,6 +78,7 @@ object TrusteeIndividual {
       (__ \ 'dateOfBirth).readNullable[LocalDate] and
       (__ \ 'phoneNumber).readNullable[String] and
       __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ 'identification)) and
+      (__ \ 'countryOfResidence).readNullable[String] and
       __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)) and
       (__ \ "entityStart").read[LocalDate] and
       (__ \ "provisional").read[Boolean]).apply(TrusteeIndividual.apply _)
@@ -86,6 +88,7 @@ object TrusteeIndividual {
       (__ \ 'dateOfBirth).writeNullable[LocalDate] and
       (__ \ 'phoneNumber).writeNullable[String] and
       (__ \ 'identification).writeNullable[IndividualIdentification] and
+      (__ \ 'countryOfResidence).writeNullable[String] and
       (__ \ 'identification \ 'address).writeNullable[Address] and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]).apply(unlift(TrusteeIndividual.unapply))

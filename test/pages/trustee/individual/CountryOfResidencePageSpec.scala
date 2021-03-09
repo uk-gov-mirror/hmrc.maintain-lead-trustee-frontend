@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package pages.trustee.individual
 
-object Constant {
-  final val dateTimePattern = "yyyy-MM-dd"
-  final val GB = "GB"
+import pages.behaviours.PageBehaviours
+
+class CountryOfResidencePageSpec extends PageBehaviours {
+
+  "CountryOfResidencePage" must {
+
+    beRetrievable[String](CountryOfResidencePage)
+
+    beSettable[String](CountryOfResidencePage)
+
+    beRemovable[String](CountryOfResidencePage)
+  }
 }
