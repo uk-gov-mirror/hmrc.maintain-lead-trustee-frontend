@@ -55,7 +55,10 @@ class IndexControllerSpec extends SpecBase {
         .thenReturn(Future.successful(isUnderlyingData5mld))
 
       val application = applicationBuilder(userAnswers = None)
-        .overrides(bind[TrustConnector].toInstance(mockTrustConnector))
+        .overrides(
+          bind[TrustConnector].toInstance(mockTrustConnector),
+          bind[FeatureFlagService].toInstance(mockFeatureFlagService)
+        )
         .build()
 
       val request = FakeRequest(GET, routes.IndexController.onPageLoad(identifier).url)
