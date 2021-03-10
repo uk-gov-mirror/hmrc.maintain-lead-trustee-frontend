@@ -16,41 +16,94 @@
 
 package navigation.trustee
 
-import models.UserAnswers
+import controllers.trustee.individual.{routes => rts}
+import controllers.trustee.amend.individual.{routes => amendRts}
+import models.{Mode, NormalMode, UserAnswers}
+import pages.trustee.amend.individual.IndexPage
 import pages.trustee.individual._
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
-import controllers.trustee.individual.{routes => rts}
 
 object IndividualTrusteeNavigator {
-  private val simpleNavigation: PartialFunction[Page, Call] = {
-    case NamePage => rts.DateOfBirthYesNoController.onPageLoad()
-    case DateOfBirthPage => rts.NationalInsuranceNumberYesNoController.onPageLoad()
-    case NationalInsuranceNumberPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
-    case UkAddressPage => rts.PassportDetailsYesNoController.onPageLoad()
-    case NonUkAddressPage => rts.PassportDetailsYesNoController.onPageLoad()
-    case PassportDetailsPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
-    case IdCardDetailsPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
+
+  def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case CountryOfNationalityPage => ua => navigateAwayFromCountryOfNationalityPages(mode, ua)
+    case CountryOfResidencePage => ua => navigateAwayFromCountryOfResidencePages(mode, ua)
   }
 
-  private val yesNoNavigation : PartialFunction[Page, UserAnswers => Call] = {
-    case DateOfBirthYesNoPage => ua =>
-      yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(), rts.NationalInsuranceNumberYesNoController.onPageLoad())
-    case NationalInsuranceNumberYesNoPage => ua =>
-      yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.AddressYesNoController.onPageLoad())
-    case AddressYesNoPage => ua =>
-      yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(), controllers.trustee.routes.WhenAddedController.onPageLoad())
-    case LiveInTheUkYesNoPage => ua =>
-      yesNoNav(ua, LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
-    case PassportDetailsYesNoPage => ua =>
-      yesNoNav(ua, PassportDetailsYesNoPage, rts.PassportDetailsController.onPageLoad(), rts.IdCardDetailsYesNoController.onPageLoad())
-    case IdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, IdCardDetailsYesNoPage, rts.IdCardDetailsController.onPageLoad(), controllers.trustee.routes.WhenAddedController.onPageLoad())
+  def conditionalNavigation(mode: Mode) : PartialFunction[Page, UserAnswers => Call] = {
+    case CountryOfNationalityYesNoPage => ua =>
+      yesNoNav(ua,
+        CountryOfNationalityYesNoPage,
+        rts.CountryOfNationalityInTheUkYesNoController.onPageLoad(mode),
+        navigateAwayFromCountryOfNationalityPages(mode, ua)
+      )
+    case CountryOfNationalityInTheUkYesNoPage => ua =>
+      yesNoNav(ua,
+        CountryOfNationalityInTheUkYesNoPage,
+        navigateAwayFromCountryOfNationalityPages(mode, ua),
+        rts.CountryOfNationalityController.onPageLoad(mode)
+      )
+    case CountryOfResidenceYesNoPage => ua =>
+      yesNoNav(ua,
+        CountryOfResidenceYesNoPage,
+        rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode),
+        navigateAwayFromCountryOfResidencePages(mode, ua)
+      )
+    case CountryOfResidenceInTheUkYesNoPage => ua =>
+      yesNoNav(ua,
+        CountryOfResidenceInTheUkYesNoPage,
+        navigateAwayFromCountryOfResidencePages(mode, ua),
+        rts.CountryOfResidenceController.onPageLoad(mode)
+      )
+    case MentalCapacityYesNoPage => ua =>
+      yesNoNav(ua,
+        MentalCapacityYesNoPage,
+        navigateAwayFromMentalCapacityPage(mode, ua),
+        navigateAwayFromMentalCapacityPage(mode, ua)
+      )
   }
 
-  val routes: PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation andThen (c => (_:UserAnswers) => c) orElse
-    yesNoNavigation
+  def navigateAwayFromCountryOfNationalityPages(mode: Mode, userAnswers: UserAnswers)  = {
+    (userAnswers.isTaxable, mode) match {
+      case (false, _) =>
+        rts.CountryOfResidenceYesNoController.onPageLoad(mode)
+      case (true, NormalMode) =>
+        rts.NationalInsuranceNumberYesNoController.onPageLoad()
+      case (true, _) =>
+        amendRts.NationalInsuranceNumberYesNoController.onPageLoad()
+    }
+  }
+
+  def navigateAwayFromCountryOfResidencePages(mode: Mode, userAnswers: UserAnswers)  = {
+    (userAnswers.isTaxable, mode) match {
+      case (false, _) =>
+        rts.MentalCapacityYesNoController.onPageLoad(mode)
+      case (true, NormalMode) =>
+        rts.PassportDetailsYesNoController.onPageLoad()
+      case (true, _) =>
+        amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad()
+    }
+  }
+
+  def navigateAwayFromMentalCapacityPage(mode: Mode, userAnswers: UserAnswers)  = {
+    if (mode == NormalMode) {
+      controllers.trustee.routes.WhenAddedController.onPageLoad()
+    } else {
+      checkDetailsNavigation(userAnswers)
+    }
+  }
+
+  private def checkDetailsNavigation(userAnswers: UserAnswers): Call = {
+    userAnswers.get(IndexPage) match {
+      case Some(index) => controllers.trustee.amend.routes.CheckDetailsController.onPageLoadUpdated(index)
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
+
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation(mode) orElse
+      conditionalNavigation(mode)
 
   def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
     ua.get(fromPage)

@@ -18,7 +18,7 @@ package navigation
 
 import javax.inject.{Inject, Singleton}
 import models.TrusteeType._
-import models.UserAnswers
+import models.{Mode, NormalMode, UserAnswers}
 import navigation.leadtrustee.LeadTrusteeNavigator
 import navigation.trustee.TrusteeNavigator
 import pages.{Page, TrusteeTypePage}
@@ -27,19 +27,20 @@ import play.api.mvc.Call
 @Singleton
 class Navigator @Inject()() {
 
-  private val parameterisedNavigation : PartialFunction[Page, UserAnswers => Call] = {
+  val parameterisedNavigation : PartialFunction[Page, UserAnswers => Call] = {
     case TrusteeTypePage => trusteeTypeNavigation()
   }
 
-  private val normalRoutes: Page => UserAnswers => Call =
+  def normalRoutes(mode: Mode): Page => UserAnswers => Call =
     parameterisedNavigation orElse
     LeadTrusteeNavigator.routes orElse
-    TrusteeNavigator.routes orElse {
+    TrusteeNavigator.routes(mode) orElse {
     case _ => ua => controllers.routes.IndexController.onPageLoad(ua.identifier)
   }
 
-  def nextPage(page: Page, userAnswers: UserAnswers): Call =
-      normalRoutes(page)(userAnswers)
+  def nextPage(page: Page, userAnswers: UserAnswers): Call = nextPage(page, NormalMode, userAnswers)
+
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = normalRoutes(mode)(page)(userAnswers)
 
   private def trusteeTypeNavigation()(userAnswers: UserAnswers): Call = {
     userAnswers.get(TrusteeTypePage).map {
