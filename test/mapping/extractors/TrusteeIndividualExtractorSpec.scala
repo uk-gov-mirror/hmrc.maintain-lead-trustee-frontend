@@ -24,7 +24,7 @@ import pages.trustee.amend.individual._
 import java.time.LocalDate
 
 import models.Constant.GB
-import pages.trustee.individual.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
+import pages.trustee.individual.{CountryOfNationalityInTheUkYesNoPage, CountryOfNationalityPage, CountryOfNationalityYesNoPage, CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage, MentalCapacityYesNoPage}
 
 class TrusteeIndividualExtractorSpec extends SpecBase {
 
@@ -62,12 +62,12 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
         result.get(DateOfBirthPage).get mustBe date
         result.get(NationalInsuranceNumberYesNoPage).get mustBe true
         result.get(NationalInsuranceNumberPage).get mustBe nino
-        result.get(AddressYesNoPage) mustNot be(defined)
-        result.get(LiveInTheUkYesNoPage) mustNot be(defined)
-        result.get(UkAddressPage) mustNot be(defined)
-        result.get(NonUkAddressPage) mustNot be(defined)
-        result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
-        result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
+        result.get(AddressYesNoPage) mustBe None
+        result.get(LiveInTheUkYesNoPage) mustBe None
+        result.get(UkAddressPage) mustBe None
+        result.get(NonUkAddressPage) mustBe None
+        result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
+        result.get(PassportOrIdCardDetailsPage) mustBe None
 
       }
 
@@ -92,11 +92,11 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
         result.get(DateOfBirthYesNoPage).get mustBe true
         result.get(DateOfBirthPage).get mustBe date
         result.get(NationalInsuranceNumberYesNoPage).get mustBe false
-        result.get(NationalInsuranceNumberPage) mustNot be(defined)
+        result.get(NationalInsuranceNumberPage) mustBe None
         result.get(AddressYesNoPage).get mustBe true
         result.get(LiveInTheUkYesNoPage).get mustBe true
         result.get(UkAddressPage).get mustBe ukAddress
-        result.get(NonUkAddressPage) mustNot be(defined)
+        result.get(NonUkAddressPage) mustBe None
         result.get(PassportOrIdCardDetailsYesNoPage).get mustBe true
         result.get(PassportOrIdCardDetailsPage).get mustBe combined
 
@@ -121,13 +121,13 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
         result.get(DateOfBirthYesNoPage).get mustBe true
         result.get(DateOfBirthPage).get mustBe date
         result.get(NationalInsuranceNumberYesNoPage).get mustBe false
-        result.get(NationalInsuranceNumberPage) mustNot be(defined)
+        result.get(NationalInsuranceNumberPage) mustBe None
         result.get(AddressYesNoPage).get mustBe true
         result.get(LiveInTheUkYesNoPage).get mustBe false
-        result.get(UkAddressPage) mustNot be(defined)
+        result.get(UkAddressPage) mustBe None
         result.get(NonUkAddressPage).get mustBe nonUkAddress
-        result.get(PassportOrIdCardDetailsYesNoPage) must not be defined
-        result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
+        result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
+        result.get(PassportOrIdCardDetailsPage) mustBe None
 
       }
 
@@ -148,15 +148,15 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
         result.get(IndividualOrBusinessPage).get mustBe Individual
         result.get(NamePage).get mustBe name
         result.get(DateOfBirthYesNoPage).get mustBe false
-        result.get(DateOfBirthPage) mustNot be(defined)
+        result.get(DateOfBirthPage) mustBe None
         result.get(NationalInsuranceNumberYesNoPage).get mustBe false
-        result.get(NationalInsuranceNumberPage) mustNot be(defined)
+        result.get(NationalInsuranceNumberPage) mustBe None
         result.get(AddressYesNoPage).get mustBe false
-        result.get(LiveInTheUkYesNoPage) mustNot be(defined)
-        result.get(UkAddressPage) mustNot be(defined)
-        result.get(NonUkAddressPage) mustNot be(defined)
-        result.get(PassportOrIdCardDetailsYesNoPage) must not be defined
-        result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
+        result.get(LiveInTheUkYesNoPage) mustBe None
+        result.get(UkAddressPage) mustBe None
+        result.get(NonUkAddressPage) mustBe None
+        result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
+        result.get(PassportOrIdCardDetailsPage) mustBe None
 
       }
     }
@@ -165,7 +165,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
       "taxable" when {
         "underlying trust data is 4mld" when {
           val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = false)
-          "has no country of residence and no address" in {
+          "has no country of residence, nationality or mental capacity" in {
 
             val trustee = TrusteeIndividual(
               name = name,
@@ -182,18 +182,22 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(IndividualOrBusinessPage).get mustBe Individual
             result.get(NamePage).get mustBe name
             result.get(DateOfBirthYesNoPage).get mustBe false
-            result.get(DateOfBirthPage) mustNot be(defined)
+            result.get(DateOfBirthPage) mustBe None
             result.get(NationalInsuranceNumberYesNoPage).get mustBe false
-            result.get(NationalInsuranceNumberPage) mustNot be(defined)
+            result.get(NationalInsuranceNumberPage) mustBe None
             result.get(CountryOfResidenceYesNoPage) mustBe None
             result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
             result.get(CountryOfResidencePage) mustBe None
+            result.get(CountryOfNationalityYesNoPage) mustBe None
+            result.get(CountryOfNationalityInTheUkYesNoPage) mustBe None
+            result.get(CountryOfNationalityPage) mustBe None
             result.get(AddressYesNoPage).get mustBe false
-            result.get(LiveInTheUkYesNoPage) mustNot be(defined)
-            result.get(UkAddressPage) mustNot be(defined)
-            result.get(NonUkAddressPage) mustNot be(defined)
-            result.get(PassportOrIdCardDetailsYesNoPage) must not be defined
-            result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
+            result.get(LiveInTheUkYesNoPage) mustBe None
+            result.get(UkAddressPage) mustBe None
+            result.get(NonUkAddressPage) mustBe None
+            result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
+            result.get(PassportOrIdCardDetailsPage) mustBe None
+            result.get(MentalCapacityYesNoPage) mustBe None
           }
 
           "has no country of residence but does have an address" in {
@@ -225,7 +229,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
         "underlying trust data is 5mld" when {
           val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = true)
 
-          "has no country of residence and no address" in {
+          "has no country of residence, nationality or mental capacity" in {
             val trustee = TrusteeIndividual(
               name = name,
               dateOfBirth = None,
@@ -242,17 +246,20 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(IndividualOrBusinessPage).get mustBe Individual
             result.get(NamePage).get mustBe name
             result.get(DateOfBirthYesNoPage).get mustBe false
-            result.get(DateOfBirthPage) mustNot be(defined)
+            result.get(DateOfBirthPage) mustBe None
             result.get(NationalInsuranceNumberYesNoPage).get mustBe false
-            result.get(NationalInsuranceNumberPage) mustNot be(defined)
+            result.get(NationalInsuranceNumberPage) mustBe None
             result.get(CountryOfResidenceYesNoPage).get mustBe false
             result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
             result.get(CountryOfResidencePage) mustBe None
+            result.get(CountryOfNationalityYesNoPage).get mustBe false
+            result.get(CountryOfNationalityInTheUkYesNoPage) mustBe None
+            result.get(CountryOfNationalityPage) mustBe None
             result.get(AddressYesNoPage).get mustBe false
-            result.get(LiveInTheUkYesNoPage) mustNot be(defined)
-            result.get(UkAddressPage) mustNot be(defined)
-            result.get(NonUkAddressPage) mustNot be(defined)
-
+            result.get(LiveInTheUkYesNoPage) mustBe None
+            result.get(UkAddressPage) mustBe None
+            result.get(NonUkAddressPage) mustBe None
+            result.get(MentalCapacityYesNoPage) mustBe None
           }
 
           "has no country of residence but does have an address" in {
@@ -300,10 +307,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(CountryOfResidenceYesNoPage).get mustBe true
             result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
             result.get(CountryOfResidencePage).get mustBe GB
-            result.get(AddressYesNoPage).get mustBe false
-            result.get(LiveInTheUkYesNoPage) mustBe None
-            result.get(UkAddressPage) mustBe None
-            result.get(NonUkAddressPage) mustBe None
           }
 
           "has a country of residence in Spain" in {
@@ -325,12 +328,70 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(CountryOfResidenceYesNoPage).get mustBe true
             result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
             result.get(CountryOfResidencePage).get mustBe "Spain"
-            result.get(AddressYesNoPage).get mustBe false
-            result.get(LiveInTheUkYesNoPage) mustBe None
-            result.get(UkAddressPage) mustBe None
-            result.get(NonUkAddressPage) mustBe None
           }
 
+          "has a country of nationality in GB" in {
+            val trustee = TrusteeIndividual(
+              name = name,
+              dateOfBirth = None,
+              phoneNumber = None,
+              identification = None,
+              nationality = Some(GB),
+              address = None,
+              entityStart = date,
+              provisional = true
+            )
+
+            val result = extractor.extract(baseAnswers, trustee, index).get
+
+            result.get(IndexPage).get mustBe index
+            result.get(NamePage).get mustBe name
+            result.get(CountryOfNationalityYesNoPage).get mustBe true
+            result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe true
+            result.get(CountryOfNationalityPage).get mustBe GB
+          }
+
+          "has a country of nationality in Spain" in {
+            val trustee = TrusteeIndividual(
+              name = name,
+              dateOfBirth = None,
+              phoneNumber = None,
+              identification = None,
+              nationality = Some("Spain"),
+              address = None,
+              entityStart = date,
+              provisional = true
+            )
+
+            val result = extractor.extract(baseAnswers, trustee, index).get
+
+            result.get(IndexPage).get mustBe index
+            result.get(NamePage).get mustBe name
+            result.get(CountryOfNationalityYesNoPage).get mustBe true
+            result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe false
+            result.get(CountryOfNationalityPage).get mustBe "Spain"
+          }
+
+          "has a mental capacity" in {
+            val trustee = TrusteeIndividual(
+              name = name,
+              dateOfBirth = None,
+              phoneNumber = None,
+              identification = None,
+              nationality = None,
+              mentalCapacityYesNo = Some(true),
+              address = None,
+              entityStart = date,
+              provisional = true
+            )
+
+            val result = extractor.extract(baseAnswers, trustee, index).get
+
+            result.get(IndexPage).get mustBe index
+            result.get(NamePage).get mustBe name
+            result.get(MentalCapacityYesNoPage).get mustBe true
+          }
+          
           "has an NINO" in {
             val identification = NationalInsuranceNumber(nino)
 
@@ -381,7 +442,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
       "non taxable" when {
         val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = false, isUnderlyingData5mld = true)
 
-        "has no country of residence" in {
+        "has no country of residence, nationality or mental capacity" in {
           val trustee = TrusteeIndividual(
             name = name,
             dateOfBirth = None,
@@ -399,15 +460,20 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           result.get(CountryOfResidenceYesNoPage).get mustBe false
           result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
           result.get(CountryOfResidencePage) mustBe None
+          result.get(CountryOfNationalityYesNoPage).get mustBe false
+          result.get(CountryOfNationalityInTheUkYesNoPage) mustBe None
+          result.get(CountryOfNationalityPage) mustBe None
+          result.get(MentalCapacityYesNoPage) mustBe None
         }
 
-        "has a country of residence in Spain" in {
+        "has a country of residence and nationality in Spain" in {
           val trustee = TrusteeIndividual(
             name = name,
             dateOfBirth = None,
             phoneNumber = None,
             identification = None,
             countryOfResidence = Some("Spain"),
+            nationality = Some("Spain"),
             address = None,
             entityStart = date,
             provisional = true
@@ -420,6 +486,9 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           result.get(CountryOfResidenceYesNoPage).get mustBe true
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
           result.get(CountryOfResidencePage).get mustBe "Spain"
+          result.get(CountryOfNationalityYesNoPage).get mustBe true
+          result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe false
+          result.get(CountryOfNationalityPage).get mustBe "Spain"
         }
 
         "has an address" in {
@@ -442,6 +511,26 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           result.get(LiveInTheUkYesNoPage) mustBe None
           result.get(UkAddressPage) mustBe None
           result.get(NonUkAddressPage) mustBe None
+        }
+
+        "has a mental capacity" in {
+          val trustee = TrusteeIndividual(
+            name = name,
+            dateOfBirth = None,
+            phoneNumber = None,
+            identification = None,
+            nationality = None,
+            mentalCapacityYesNo = Some(true),
+            address = None,
+            entityStart = date,
+            provisional = true
+          )
+
+          val result = extractor.extract(baseAnswers, trustee, index).get
+
+          result.get(IndexPage).get mustBe index
+          result.get(NamePage).get mustBe name
+          result.get(MentalCapacityYesNoPage).get mustBe true
         }
 
         "has an NINO" in {

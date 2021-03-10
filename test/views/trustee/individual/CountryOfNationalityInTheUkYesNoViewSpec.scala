@@ -17,32 +17,32 @@
 package views.trustee.individual
 
 import forms.YesNoFormProvider
+import models.{Name, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.trustee.individual.CountryOfResidenceInTheUkYesNoView
+import views.html.trustee.individual.CountryOfNationalityInTheUkYesNoView
 import controllers.trustee.individual.routes
-import models.NormalMode
-import controllers.trustee.individual.routes
+class CountryOfNationalityInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
-class CountryOfResidenceInTheUkYesNoViewSpec extends YesNoViewBehaviours {
+  val messageKeyPrefix = "trustee.individual.countryOfNationalityUkYesNo"
+  val name: Name = Name("First", None, "Last")
 
-  val messageKeyPrefix = "trustee.individual.countryOfResidenceInTheUkYesNo"
-  val name = "Name"
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
-  val form = new YesNoFormProvider().withPrefix(messageKeyPrefix)
+  "CountryOfNationalityUkYesNoView" must {
 
-  "CountryOfResidenceInTheUkYesNoView view" must {
-
-    val view = viewFor[CountryOfResidenceInTheUkYesNoView](Some(emptyUserAnswers))
+    val view = viewFor[CountryOfNationalityInTheUkYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, name)(fakeRequest, messages)
+      view.apply(form, NormalMode, name.displayName)(fakeRequest, messages)
 
-    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), routes.CountryOfResidenceInTheUkYesNoController.onSubmit(NormalMode).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.CountryOfNationalityInTheUkYesNoController.onSubmit(NormalMode).url)
+
+    behave like pageWithASubmitButton(applyView(form))
   }
 }

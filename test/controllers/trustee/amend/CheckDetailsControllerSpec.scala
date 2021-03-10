@@ -68,7 +68,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val userAnswers = emptyUserAnswers
 
-          val trustee: TrusteeIndividual = TrusteeIndividual(indName, None, None, None, None, None, date, provisional = false)
+          val trustee: TrusteeIndividual = TrusteeIndividual(indName, None, None, None, None, None, None, None, date, provisional = false)
 
           val trustService = mock[TrustService]
           val extractor: TrusteeIndividualExtractor = mock[TrusteeIndividualExtractor]
@@ -235,7 +235,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
             .overrides(bind[TrustConnector].toInstance(mockTrustConnector))
             .build()
 
-          val trustee = TrusteeIndividual(indName, None, None, None, None, None, date, provisional = true)
+          val trustee = TrusteeIndividual(indName, None, None, None, None, None, None, None, date, provisional = true)
 
           when(mapper.map(any(), any())).thenReturn(Some(trustee))
 

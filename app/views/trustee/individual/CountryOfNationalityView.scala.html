@@ -15,27 +15,33 @@
  *@
 
 @import controllers.trustee.individual.routes._
+@import utils.InputOption
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, name: String, countryOptions: Seq[InputOption])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("trustee.individual.countryOfResidenceInTheUkYesNo.title")}"
+    title = s"${errorPrefix(form)}${messages("trustee.individual.countryOfNationality.title")}"
 ) {
 
-    @formHelper(action = CountryOfResidenceInTheUkYesNoController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = CountryOfNationalityController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.input_yes_no(
-            field = form("value"),
-            label = messages("trustee.individual.countryOfResidenceInTheUkYesNo.heading", name)
+        @components.select(field = form("value"),
+            label = messages("trustee.individual.countryOfNationality.heading", name),
+            labelClasses = Set("heading-large"),
+            labelAsHeading = true,
+            options = countryOptions,
+            placeholder = Some(messages("site.address.country.select")),
+            formGroupClasses = Set("autocomplete-wrapper form-control-3-4"),
+            selectAttribute = Set("data-non-uk-countries")
         )
 
         @components.submit_button()

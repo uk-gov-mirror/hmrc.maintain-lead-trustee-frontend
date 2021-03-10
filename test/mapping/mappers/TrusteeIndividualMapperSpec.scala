@@ -185,6 +185,8 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             phoneNumber = None,
             identification = None,
             countryOfResidence = Some(GB),
+            nationality = None,
+            mentalCapacityYesNo = None,
             address = None,
             entityStart = startDate,
             provisional = true
@@ -212,6 +214,118 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             phoneNumber = None,
             identification = None,
             countryOfResidence = Some("US"),
+            nationality = None,
+            mentalCapacityYesNo = None,
+            address = None,
+            entityStart = startDate,
+            provisional = true
+          )
+        }
+
+        "trustee has GB Nationality" in {
+          val userAnswers = baseAnswers
+            .set(DateOfBirthYesNoPage, false).success.value
+            .set(NationalInsuranceNumberYesNoPage, false).success.value
+            .set(CountryOfNationalityYesNoPage, true).success.value
+            .set(CountryOfNationalityInTheUkYesNoPage, true).success.value
+            .set(AddressYesNoPage, false).success.value
+            .set(PassportDetailsYesNoPage, false).success.value
+            .set(IdCardDetailsYesNoPage, false).success.value
+            .set(WhenAddedPage, startDate).success.value
+
+          val result = mapper.map(userAnswers, adding = true).get
+
+          result mustBe TrusteeIndividual(
+            name = name,
+            dateOfBirth = None,
+            phoneNumber = None,
+            identification = None,
+            countryOfResidence = None,
+            nationality = Some(GB),
+            mentalCapacityYesNo = None,
+            address = None,
+            entityStart = startDate,
+            provisional = true
+          )
+        }
+
+        "trustee has US Nationality" in {
+
+          val userAnswers = baseAnswers
+            .set(DateOfBirthYesNoPage, false).success.value
+            .set(NationalInsuranceNumberYesNoPage, false).success.value
+            .set(CountryOfNationalityYesNoPage, true).success.value
+            .set(CountryOfNationalityInTheUkYesNoPage, false).success.value
+            .set(CountryOfNationalityPage, "US").success.value
+            .set(AddressYesNoPage, false).success.value
+            .set(PassportDetailsYesNoPage, false).success.value
+            .set(IdCardDetailsYesNoPage, false).success.value
+            .set(WhenAddedPage, startDate).success.value
+
+          val result = mapper.map(userAnswers, adding = true).get
+
+          result mustBe TrusteeIndividual(
+            name = name,
+            dateOfBirth = None,
+            phoneNumber = None,
+            identification = None,
+            countryOfResidence = None,
+            nationality = Some("US"),
+            mentalCapacityYesNo = None,
+            address = None,
+            entityStart = startDate,
+            provisional = true
+          )
+        }
+
+        "trustee has Mental Capacity false" in {
+
+          val userAnswers = baseAnswers
+            .set(DateOfBirthYesNoPage, false).success.value
+            .set(NationalInsuranceNumberYesNoPage, false).success.value
+            .set(MentalCapacityYesNoPage, true).success.value
+            .set(AddressYesNoPage, false).success.value
+            .set(PassportDetailsYesNoPage, false).success.value
+            .set(IdCardDetailsYesNoPage, false).success.value
+            .set(WhenAddedPage, startDate).success.value
+
+          val result = mapper.map(userAnswers, adding = true).get
+
+          result mustBe TrusteeIndividual(
+            name = name,
+            dateOfBirth = None,
+            phoneNumber = None,
+            identification = None,
+            countryOfResidence = None,
+            nationality = None,
+            mentalCapacityYesNo = Some(false),
+            address = None,
+            entityStart = startDate,
+            provisional = true
+          )
+        }
+
+        "trustee has Mental Capacity true" in {
+
+          val userAnswers = baseAnswers
+            .set(DateOfBirthYesNoPage, false).success.value
+            .set(NationalInsuranceNumberYesNoPage, false).success.value
+            .set(MentalCapacityYesNoPage, false).success.value
+            .set(AddressYesNoPage, false).success.value
+            .set(PassportDetailsYesNoPage, false).success.value
+            .set(IdCardDetailsYesNoPage, false).success.value
+            .set(WhenAddedPage, startDate).success.value
+
+          val result = mapper.map(userAnswers, adding = true).get
+
+          result mustBe TrusteeIndividual(
+            name = name,
+            dateOfBirth = None,
+            phoneNumber = None,
+            identification = None,
+            countryOfResidence = None,
+            nationality = None,
+            mentalCapacityYesNo = Some(true),
             address = None,
             entityStart = startDate,
             provisional = true
@@ -230,6 +344,13 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             .set(NonUkAddressPage, nonUkAddress).success.value
             .set(PassportOrIdCardDetailsYesNoPage, true).success.value
             .set(PassportOrIdCardDetailsPage, combined).success.value
+            .set(CountryOfResidenceYesNoPage, true).success.value
+            .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
+            .set(CountryOfResidencePage, "Spain").success.value
+            .set(CountryOfNationalityYesNoPage, true).success.value
+            .set(CountryOfNationalityInTheUkYesNoPage, false).success.value
+            .set(CountryOfNationalityPage, "Spain").success.value
+            .set(MentalCapacityYesNoPage, true).success.value
             .set(WhenAddedPage, startDate).success.value
 
           val result = mapper.map(userAnswers, adding = false).get
@@ -240,6 +361,9 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             phoneNumber = None,
             identification = Some(combined),
             address = Some(nonUkAddress),
+            countryOfResidence = Some("Spain"),
+            nationality = Some("Spain"),
+            mentalCapacityYesNo = Some(false),
             entityStart = startDate,
             provisional = true
           )

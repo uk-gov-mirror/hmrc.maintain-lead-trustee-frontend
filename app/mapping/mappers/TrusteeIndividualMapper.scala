@@ -36,8 +36,10 @@ class TrusteeIndividualMapper extends Logging {
           DateOfBirthPage.path.readNullable[LocalDate] and
           Reads(_ => JsSuccess(None)) and
           readIdentification(adding) and
-          readCountryOfResidence and
           readAddress and
+          readCountryOfResidence and
+          readCountryOfNationality and
+          readMentalCapacity and
           WhenAddedPage.path.read[LocalDate] and
           Reads(_ => JsSuccess(true))
         ).apply(TrusteeIndividual.apply _ )
@@ -94,6 +96,24 @@ class TrusteeIndividualMapper extends Logging {
         case true => Reads(_ => JsSuccess(Some(GB)))
         case false => CountryOfResidencePage.path.read[String].map(Some(_))
       }
+      case _ => Reads(_ => JsSuccess(None))
+    }
+  }
+
+  private def readCountryOfNationality: Reads[Option[String]] = {
+    CountryOfNationalityYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
+      case Some(true) => CountryOfNationalityInTheUkYesNoPage.path.read[Boolean].flatMap {
+        case true => Reads(_ => JsSuccess(Some(GB)))
+        case false => CountryOfNationalityPage.path.read[String].map(Some(_))
+      }
+      case _ => Reads(_ => JsSuccess(None))
+    }
+  }
+
+  private def readMentalCapacity: Reads[Option[Boolean]] = {
+    MentalCapacityYesNoPage.path.readNullable[Boolean].flatMap[Option[Boolean]] {
+      case Some(true) => Reads(_ => JsSuccess(Some(false)))
+      case Some(false) => Reads(_ => JsSuccess(Some(true)))
       case _ => Reads(_ => JsSuccess(None))
     }
   }
