@@ -39,15 +39,9 @@ POST       /id-card                               controllers.trustee.individual
 
 GET        /has-country-of-residence              controllers.trustee.individual.CountryOfResidenceYesNoController.onPageLoad(mode: Mode = NormalMode)
 POST       /has-country-of-residence              controllers.trustee.individual.CountryOfResidenceYesNoController.onSubmit(mode: Mode = NormalMode)
-GET        /change-has-country-of-residence       controllers.trustee.individual.CountryOfResidenceYesNoController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-has-country-of-residence       controllers.trustee.individual.CountryOfResidenceYesNoController.onSubmit(mode: Mode = CheckMode)
 
 GET        /uk-residence                          controllers.trustee.individual.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode: Mode = NormalMode)
 POST       /uk-residence                          controllers.trustee.individual.CountryOfResidenceInTheUkYesNoController.onSubmit(mode: Mode = NormalMode)
-GET        /change-uk-residence                   controllers.trustee.individual.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-uk-residence                   controllers.trustee.individual.CountryOfResidenceInTheUkYesNoController.onSubmit(mode: Mode = CheckMode)
 
 GET        /country-of-residence                  controllers.trustee.individual.CountryOfResidenceController.onPageLoad(mode: Mode = NormalMode)
 POST       /country-of-residence                  controllers.trustee.individual.CountryOfResidenceController.onSubmit(mode: Mode = NormalMode)
-GET        /change-country-of-residence           controllers.trustee.individual.CountryOfResidenceController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-country-of-residence           controllers.trustee.individual.CountryOfResidenceController.onSubmit(mode: Mode = CheckMode)

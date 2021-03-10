@@ -30,3 +30,12 @@ POST       /has-passport-or-id-card               controllers.trustee.amend.indi
 
 GET        /passport-or-id-card                   controllers.trustee.amend.individual.PassportOrIdCardDetailsController.onPageLoad()
 POST       /passport-or-id-card                   controllers.trustee.amend.individual.PassportOrIdCardDetailsController.onSubmit()
+
+GET        /change-has-country-of-residence       controllers.trustee.individual.CountryOfResidenceYesNoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-has-country-of-residence       controllers.trustee.individual.CountryOfResidenceYesNoController.onSubmit(mode: Mode = CheckMode)
+
+GET        /change-uk-residence                   controllers.trustee.individual.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-uk-residence                   controllers.trustee.individual.CountryOfResidenceInTheUkYesNoController.onSubmit(mode: Mode = CheckMode)
+
+GET        /change-country-of-residence           controllers.trustee.individual.CountryOfResidenceController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-country-of-residence           controllers.trustee.individual.CountryOfResidenceController.onSubmit(mode: Mode = CheckMode)
