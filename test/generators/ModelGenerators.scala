@@ -149,11 +149,13 @@ trait ModelGenerators {
         dob <- datesBetween(LocalDate.of(1916, 1, 1), LocalDate.of(2010, 12, 31))
         phone <- arbitrary[Option[String]]
         id <- arbitrary[Option[IndividualIdentification]]
-        countryOfResidence <- arbitrary[Option[String]]
         address <- arbitrary[Option[Address]]
+        countryOfResidence <- arbitrary[Option[String]]
+        nationality <- arbitrary[Option[String]]
+        mentalCapacity <- arbitrary[Option[Boolean]]
         enitityStart <- datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(2019, 12, 31))
         provisional <- arbitrary[Boolean]
-      } yield TrusteeIndividual(name, Some(dob), phone, id, countryOfResidence, address, enitityStart, provisional)
+      } yield TrusteeIndividual(name, Some(dob), phone, id, address, countryOfResidence, nationality, mentalCapacity, enitityStart, provisional)
     }
   }
 
