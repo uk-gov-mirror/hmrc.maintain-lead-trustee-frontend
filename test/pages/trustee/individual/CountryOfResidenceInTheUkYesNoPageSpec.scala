@@ -16,8 +16,6 @@
 
 package pages.trustee.individual
 
-import java.time.LocalDate
-
 import pages.behaviours.PageBehaviours
 
 class CountryOfResidenceInTheUkYesNoPageSpec extends PageBehaviours {
