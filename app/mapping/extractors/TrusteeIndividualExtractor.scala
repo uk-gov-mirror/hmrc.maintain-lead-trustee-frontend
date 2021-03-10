@@ -22,8 +22,9 @@ import models._
 import pages.trustee.amend.{individual => ind}
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import java.time.LocalDate
+
 import models.Constant.GB
-import pages.trustee.individual.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
+import pages.trustee.individual.{CountryOfNationalityInTheUkYesNoPage, CountryOfNationalityPage, CountryOfNationalityYesNoPage, CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage, MentalCapacityYesNoPage}
 
 import scala.util.{Success, Try}
 
@@ -35,8 +36,10 @@ class TrusteeIndividualExtractor @Inject()() {
       .flatMap(_.set(ind.IndexPage, index))
       .flatMap(_.set(ind.NamePage, trustee.name))
       .flatMap(answers => extractDateOfBirth(trustee.dateOfBirth, answers))
-      .flatMap(answers => extractCountryOfResidence(trustee.countryOfResidence, answers))
       .flatMap(answers => extractAddress(trustee.address, answers))
+      .flatMap(answers => extractCountryOfResidence(trustee.countryOfResidence, answers))
+      .flatMap(answers => extractCountryOfNationality(trustee.nationality, answers))
+      .flatMap(answers => extractMentalCapacity(trustee.mentalCapacityYesNo, answers))
       .flatMap(answers => extractIdentification(trustee.identification, answers))
       .flatMap(_.set(WhenAddedPage, trustee.entityStart))
   }
@@ -48,6 +51,25 @@ class TrusteeIndividualExtractor @Inject()() {
           .flatMap(_.set(ind.DateOfBirthPage, dob))
       case _ =>
         answers.set(ind.DateOfBirthYesNoPage, false)
+    }
+  }
+
+  private def extractCountryOfNationality(countryOfNationality: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+    if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
+      countryOfNationality match {
+        case Some(GB) => answers
+          .set(CountryOfNationalityYesNoPage, true)
+          .flatMap(_.set(CountryOfNationalityInTheUkYesNoPage, true))
+          .flatMap(_.set(CountryOfNationalityPage, GB))
+        case Some(country) => answers
+          .set(CountryOfNationalityYesNoPage, true)
+          .flatMap(_.set(CountryOfNationalityInTheUkYesNoPage, false))
+          .flatMap(_.set(CountryOfNationalityPage, country))
+        case None => answers
+          .set(CountryOfNationalityYesNoPage, false)
+      }
+    } else {
+      Success(answers)
     }
   }
 
@@ -64,6 +86,20 @@ class TrusteeIndividualExtractor @Inject()() {
           .flatMap(_.set(CountryOfResidencePage, country))
         case None => answers
           .set(CountryOfResidenceYesNoPage, false)
+      }
+    } else {
+      Success(answers)
+    }
+  }
+
+  private def extractMentalCapacity(mentalCapacityYesNo: Option[Boolean], answers: UserAnswers): Try[UserAnswers] = {
+    if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
+      mentalCapacityYesNo match {
+        case Some(true) => answers
+          .set(MentalCapacityYesNoPage, true)
+        case Some(false) => answers
+          .set(MentalCapacityYesNoPage, false)
+        case None => Success(answers)
       }
     } else {
       Success(answers)
