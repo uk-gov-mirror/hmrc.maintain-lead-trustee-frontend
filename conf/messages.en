@@ -495,6 +495,30 @@ trustee.individual.passportOrIdCardDetails.expiryDate.error.invalid = Enter a re
 trustee.individual.passportOrIdCardDetails.expiryDate.error.future = ID card expiry date must be after 31 December 1499 and before 01 January 2100
 trustee.individual.passportOrIdCardDetails.expiryDate.error.past = ID card expiry date must be after 31 December 1499 and before 01 January 2100
 
+trustee.individual.countryOfNationalityYesNo.title = Do you know the trustee’s country of nationality?
+trustee.individual.countryOfNationalityYesNo.heading = Do you know {0}’s country of nationality?
+trustee.individual.countryOfNationalityYesNo.checkYourAnswersLabel = Do you know {0}’s country of nationality?
+trustee.individual.countryOfNationalityYesNo.error.required = Select yes if you know the trustee’s country of nationality
+trustee.individual.countryOfNationalityYesNo.hint = The country of nationality is usually where the individual was born and where their passport is registered.
+
+trustee.individual.countryOfNationalityUkYesNo.title = Does the trustee have UK nationality?
+trustee.individual.countryOfNationalityUkYesNo.heading = Does {0} have UK nationality?
+trustee.individual.countryOfNationalityUkYesNo.checkYourAnswersLabel = Does {0} have UK nationality?
+trustee.individual.countryOfNationalityUkYesNo.error.required = Select yes if the trustee has UK nationality
+
+trustee.individual.countryOfNationality.title = What is the trustee’s country of nationality?
+trustee.individual.countryOfNationality.heading = What is {0}’s country of nationality?
+trustee.individual.countryOfNationality.checkYourAnswersLabel = What is {0}’s country of nationality?
+trustee.individual.countryOfNationality.error.required = Enter a country
+trustee.individual.countryOfNationality.error.length = The country of nationality must be 100 characters or less
+trustee.individual.countryOfNationality.error.invalidCharacters = The country of nationality must only include letters a to z, apostrophes, commas, full stops, hyphens, round brackets and spaces
+
+trustee.individual.mentalCapacityYesNo.title = Does the trustee have mental capacity at the time of registration?
+trustee.individual.mentalCapacityYesNo.heading = Does {0} have mental capacity at the time of registration?
+trustee.individual.mentalCapacityYesNo.checkYourAnswersLabel = Does {0} have mental capacity at the time of registration?
+trustee.individual.mentalCapacityYesNo.error.required = Select yes if you know the trustee has mental capacity at the time of registration
+trustee.individual.mentalCapacityYesNo.hint = A trustee does not have mental capacity if they cannot understand information and make decisions about the trust due to a mental illness, learning disability, dementia or related condition, or they cannot communicate.
+
 trustee.organisation.name.heading = What is the business’s name?
 trustee.organisation.name.title = What is the business’s name?
 trustee.organisation.name.error.required = Enter the business’s name
