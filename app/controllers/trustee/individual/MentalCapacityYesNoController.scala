@@ -65,7 +65,7 @@ class MentalCapacityYesNoController @Inject()(
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(MentalCapacityYesNoPage, value))
               _              <- repository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(MentalCapacityYesNoPage, updatedAnswers))
+            } yield Redirect(navigator.nextPage(MentalCapacityYesNoPage, mode, updatedAnswers))
         )
     }
 }

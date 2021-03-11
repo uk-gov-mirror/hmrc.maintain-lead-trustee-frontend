@@ -65,7 +65,7 @@ class CountryOfNationalityInTheUkYesNoController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfNationalityInTheUkYesNoPage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(CountryOfNationalityInTheUkYesNoPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(CountryOfNationalityInTheUkYesNoPage, mode, updatedAnswers))
       )
   }
 }
