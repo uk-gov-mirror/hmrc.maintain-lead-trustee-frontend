@@ -541,6 +541,24 @@ trustee.organisation.utr.p1 = You can
 trustee.organisation.utr.link = find a lost UTR number (opens in a new window or tab)
 trustee.organisation.utr.checkYourAnswersLabel = What is {0}’s Unique Taxpayer Reference (UTR)?
 
+trustee.organisation.countryOfResidenceYesNo.title = Do you know the trustee’s country of residence?
+trustee.organisation.countryOfResidenceYesNo.heading = Do you know {0}’s country of residence?
+trustee.organisation.countryOfResidenceYesNo.checkYourAnswersLabel = Do you know {0}’s country of residence?
+trustee.organisation.countryOfResidenceYesNo.error.required = Select yes if you know the trustee’s country of residence
+trustee.organisation.countryOfResidenceYesNo.hint = The country of residence is usually where the business is registered (incorporated). The business has UK residency if it is registered with Companies House.
+
+trustee.organisation.countryOfResidenceInTheUkYesNo.title = Does the trustee have UK residency?
+trustee.organisation.countryOfResidenceInTheUkYesNo.heading = Does {0} have UK residency?
+trustee.organisation.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel = Does {0} have UK residency?
+trustee.organisation.countryOfResidenceInTheUkYesNo.error.required = Select yes if the business has UK residency
+
+trustee.organisation.countryOfResidence.title = What is the trustee’s country of residence?
+trustee.organisation.countryOfResidence.heading = What is {0}’s country of residence?
+trustee.organisation.countryOfResidence.checkYourAnswersLabel = What is {0}’s country of residence?
+trustee.organisation.countryOfResidence.error.required = Enter a country
+trustee.organisation.countryOfResidence.error.length = The country of residence must be 100 characters or less
+trustee.organisation.countryOfResidence.error.invalidCharacters = The country of residence must only include letters a to z, apostrophes, commas, full stops, hyphens, round brackets and spaces
+
 trustee.organisation.addressYesNo.checkYourAnswersLabel = Do you know {0}’s address?
 trustee.organisation.addressYesNo.title = Do you know the trustee’s address?
 trustee.organisation.addressYesNo.heading = Do you know {0}’s address?
