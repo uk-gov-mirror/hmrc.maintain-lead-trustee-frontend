@@ -254,6 +254,81 @@ class AddIndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckProperty
           }
         }
 
+        "Country of Residence Pages" must {
+          "Yes No page -> Yes -> Country of Residence In The Uk page" in {
+            val answers = baseAnswers
+              .set(CountryOfResidenceYesNoPage, true).success.value
+
+            navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers)
+              .mustBe(controllers.trustee.individual.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
+          }
+
+          "Yes No page -> No (with Nino) -> Mental Capacity Page" in {
+            val answers = baseAnswers
+              .set(NationalInsuranceNumberYesNoPage, true).success.value
+              .set(CountryOfResidenceYesNoPage, false).success.value
+
+            navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers)
+              .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
+          }
+
+          "Yes No page -> No (without Nino) -> Address Page" in {
+            val answers = baseAnswers
+              .set(NationalInsuranceNumberYesNoPage, false).success.value
+              .set(CountryOfResidenceYesNoPage, false).success.value
+
+            navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers)
+              .mustBe(rts.AddressYesNoController.onPageLoad())
+          }
+
+          "In The Uk page -> Yes (with Nino) -> Mental Capacity Page" in {
+            val answers = baseAnswers
+              .set(NationalInsuranceNumberYesNoPage, true).success.value
+              .set(CountryOfResidenceYesNoPage, true).success.value
+              .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
+
+            navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, answers)
+              .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
+          }
+
+          "In The Uk page -> Yes (without Nino) -> Address Page" in {
+            val answers = baseAnswers
+              .set(NationalInsuranceNumberYesNoPage, false).success.value
+              .set(CountryOfResidenceYesNoPage, true).success.value
+              .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
+
+            navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, answers)
+              .mustBe(rts.AddressYesNoController.onPageLoad())
+          }
+
+          "In The Uk page -> No -> Country of Residence page" in {
+            val answers = baseAnswers
+              .set(CountryOfResidenceYesNoPage, true).success.value
+              .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
+
+            navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, answers)
+              .mustBe(controllers.trustee.individual.routes.CountryOfResidenceController.onPageLoad(mode))
+          }
+
+          "page (with Nino) -> Mental Capacity Page" in {
+            val answers = baseAnswers
+              .set(NationalInsuranceNumberYesNoPage, true).success.value
+              .set(CountryOfResidencePage, "ES").success.value
+
+            navigator.nextPage(CountryOfResidencePage, mode, answers)
+              .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
+          }
+
+          "page (without Nino) -> Address Page" in {
+            val answers = baseAnswers
+              .set(NationalInsuranceNumberYesNoPage, false).success.value
+              .set(CountryOfResidencePage, "ES").success.value
+
+            navigator.nextPage(CountryOfResidencePage, mode, answers)
+              .mustBe(rts.AddressYesNoController.onPageLoad())
+          }
+        }
+
         "Mental Capacity Yes No page" must {
           "-> Yes -> When Added page" in {
             val answers = baseAnswers

@@ -20,6 +20,7 @@ import controllers.trustee.individual.{routes => rts}
 import controllers.trustee.amend.individual.{routes => amendRts}
 import models.{Mode, NormalMode, UserAnswers}
 import pages.trustee.amend.individual.IndexPage
+import pages.trustee.amend.individual.{NationalInsuranceNumberYesNoPage => AmendNinoYesNoPage}
 import pages.trustee.individual._
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
@@ -76,13 +77,25 @@ object IndividualTrusteeNavigator {
   }
 
   def navigateAwayFromCountryOfResidencePages(mode: Mode, userAnswers: UserAnswers)  = {
+    lazy val navigateToAdd = if (userAnswers.get(NationalInsuranceNumberYesNoPage).getOrElse(false)) {
+      rts.MentalCapacityYesNoController.onPageLoad(mode)
+    } else {
+      rts.AddressYesNoController.onPageLoad()
+    }
+
+    lazy val navigateToAmend = if (userAnswers.get(AmendNinoYesNoPage).getOrElse(false)) {
+      rts.MentalCapacityYesNoController.onPageLoad(mode)
+    } else {
+      amendRts.AddressYesNoController.onPageLoad()
+    }
+
     (userAnswers.isTaxable, mode) match {
       case (false, _) =>
         rts.MentalCapacityYesNoController.onPageLoad(mode)
       case (true, NormalMode) =>
-        rts.PassportDetailsYesNoController.onPageLoad()
+        navigateToAdd
       case (true, _) =>
-        amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad()
+        navigateToAmend
     }
   }
 
