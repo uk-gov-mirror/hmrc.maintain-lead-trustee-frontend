@@ -319,6 +319,27 @@ class AmendAddIndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPro
           }
         }
 
+        "Do you know address page -> No -> Mental Capacity page" in {
+          val answers = baseAnswers
+            .set(AddressYesNoPage, false).success.value
+
+          navigator.nextPage(AddressYesNoPage, answers)
+            .mustBe(controllers.trustee.individual.routes.MentalCapacityYesNoController.onPageLoad(mode))
+        }
+
+        "Passport or ID card details page -> Mental Capacity page" in {
+          navigator.nextPage(PassportOrIdCardDetailsPage, baseAnswers)
+            .mustBe(controllers.trustee.individual.routes.MentalCapacityYesNoController.onPageLoad(mode))
+        }
+
+        "Do you know Passport or ID card details page -> No -> Mental Capacity page" in {
+          val answers = baseAnswers
+            .set(PassportOrIdCardDetailsYesNoPage, false).success.value
+
+          navigator.nextPage(PassportOrIdCardDetailsYesNoPage, answers)
+            .mustBe(controllers.trustee.individual.routes.MentalCapacityYesNoController.onPageLoad(mode))
+        }
+
         "Mental Capacity Yes No page" must {
           "Yes -> Check Details page" in {
             val answers = baseAnswers

@@ -329,6 +329,32 @@ class AddIndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckProperty
           }
         }
 
+        "Do you know address page -> No -> Mental Capacity page" in {
+          val answers = baseAnswers
+            .set(AddressYesNoPage, false).success.value
+
+          navigator.nextPage(AddressYesNoPage, answers)
+            .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
+        }
+
+        "Passport details page -> Mental Capacity page" in {
+          navigator.nextPage(PassportDetailsPage, baseAnswers)
+            .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
+        }
+
+        "ID card details page -> Mental Capacity page" in {
+          navigator.nextPage(IdCardDetailsPage, baseAnswers)
+            .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
+        }
+
+        "Do you know ID card details page -> No -> Mental Capacity page" in {
+          val answers = baseAnswers
+            .set(IdCardDetailsYesNoPage, false).success.value
+
+          navigator.nextPage(IdCardDetailsYesNoPage, answers)
+            .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
+        }
+
         "Mental Capacity Yes No page" must {
           "-> Yes -> When Added page" in {
             val answers = baseAnswers

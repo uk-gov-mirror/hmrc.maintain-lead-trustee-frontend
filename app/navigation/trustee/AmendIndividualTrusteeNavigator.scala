@@ -17,7 +17,6 @@
 package navigation.trustee
 
 import controllers.trustee.amend.individual.{routes => rts}
-import controllers.trustee.individual.routes.{CountryOfNationalityYesNoController, CountryOfResidenceYesNoController}
 import models.{CheckMode, UserAnswers}
 import pages.trustee.amend.individual._
 import pages.{Page, QuestionPage}
@@ -44,18 +43,18 @@ object AmendIndividualTrusteeNavigator {
     case NationalInsuranceNumberPage => ua =>
       navigateAwayFromNinoPages(ua)
     case AddressYesNoPage => ua =>
-      yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(), checkDetailsNavigation(ua))
+      yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(), navigateToMentalCapacityOrCheckDetailsPage(ua))
     case LiveInTheUkYesNoPage => ua =>
       yesNoNav(ua, LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
     case PassportOrIdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, rts.PassportOrIdCardDetailsController.onPageLoad(), checkDetailsNavigation(ua))
+      yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, rts.PassportOrIdCardDetailsController.onPageLoad(), navigateToMentalCapacityOrCheckDetailsPage(ua))
     case PassportOrIdCardDetailsPage => ua =>
-      checkDetailsNavigation(ua)
+      navigateToMentalCapacityOrCheckDetailsPage(ua)
   }
 
   def navigateAwayFromDateOfBirthPages(userAnswers: UserAnswers)  = {
     if (userAnswers.is5mldEnabled) {
-      CountryOfNationalityYesNoController.onPageLoad(mode)
+      controllers.trustee.individual.routes.CountryOfNationalityYesNoController.onPageLoad(mode)
     } else {
       rts.NationalInsuranceNumberYesNoController.onPageLoad()
     }
@@ -63,15 +62,22 @@ object AmendIndividualTrusteeNavigator {
 
   def navigateAwayFromNinoPages(userAnswers: UserAnswers)  = {
     if (userAnswers.is5mldEnabled) {
-      CountryOfResidenceYesNoController.onPageLoad(mode)
+      controllers.trustee.individual.routes.CountryOfResidenceYesNoController.onPageLoad(mode)
     } else {
       userAnswers.get(NationalInsuranceNumberYesNoPage) match {
-        case Some(true) => checkDetailsNavigation(userAnswers)
+        case Some(true) => navigateToMentalCapacityOrCheckDetailsPage(userAnswers)
         case _ => rts.AddressYesNoController.onPageLoad()
       }
     }
   }
 
+  def navigateToMentalCapacityOrCheckDetailsPage(userAnswers: UserAnswers)  = {
+    if (userAnswers.is5mldEnabled) {
+      controllers.trustee.individual.routes.MentalCapacityYesNoController.onPageLoad(mode)
+    } else {
+      checkDetailsNavigation(userAnswers)
+    }
+  }
   val routes: PartialFunction[Page, UserAnswers => Call] =
     simpleNavigation andThen (c => (_:UserAnswers) => c) orElse
       conditionalNavigation

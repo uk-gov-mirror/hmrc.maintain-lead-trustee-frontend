@@ -30,8 +30,6 @@ object AddIndividualTrusteeNavigator {
     case NamePage => rts.DateOfBirthYesNoController.onPageLoad()
     case UkAddressPage => rts.PassportDetailsYesNoController.onPageLoad()
     case NonUkAddressPage => rts.PassportDetailsYesNoController.onPageLoad()
-    case PassportDetailsPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
-    case IdCardDetailsPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
   }
 
   val conditionalNavigation : PartialFunction[Page, UserAnswers => Call] = {
@@ -44,13 +42,15 @@ object AddIndividualTrusteeNavigator {
     case NationalInsuranceNumberPage => ua =>
       navigateAwayFromNinoPages(ua)
     case AddressYesNoPage => ua =>
-      yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(), controllers.trustee.routes.WhenAddedController.onPageLoad())
+      yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(), navigateToMentalCapacityOrWhenAddedPage(ua))
     case LiveInTheUkYesNoPage => ua =>
       yesNoNav(ua, LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
     case PassportDetailsYesNoPage => ua =>
       yesNoNav(ua, PassportDetailsYesNoPage, rts.PassportDetailsController.onPageLoad(), rts.IdCardDetailsYesNoController.onPageLoad())
     case IdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, IdCardDetailsYesNoPage, rts.IdCardDetailsController.onPageLoad(), controllers.trustee.routes.WhenAddedController.onPageLoad())
+      yesNoNav(ua, IdCardDetailsYesNoPage, rts.IdCardDetailsController.onPageLoad(), navigateToMentalCapacityOrWhenAddedPage(ua))
+    case PassportDetailsPage => ua => navigateToMentalCapacityOrWhenAddedPage(ua)
+    case IdCardDetailsPage => ua => navigateToMentalCapacityOrWhenAddedPage(ua)
   }
 
   def navigateAwayFromDateOfBirthPages(userAnswers: UserAnswers)  = {
@@ -66,9 +66,17 @@ object AddIndividualTrusteeNavigator {
       rts.CountryOfResidenceYesNoController.onPageLoad(mode)
     } else {
       userAnswers.get(NationalInsuranceNumberYesNoPage) match {
-        case Some(true) => controllers.trustee.routes.WhenAddedController.onPageLoad()
+        case Some(true) => navigateToMentalCapacityOrWhenAddedPage(userAnswers)
         case _ => rts.AddressYesNoController.onPageLoad()
       }
+    }
+  }
+
+  def navigateToMentalCapacityOrWhenAddedPage(userAnswers: UserAnswers)  = {
+    if (userAnswers.is5mldEnabled) {
+      rts.MentalCapacityYesNoController.onPageLoad(mode)
+    } else {
+      controllers.trustee.routes.WhenAddedController.onPageLoad()
     }
   }
 
