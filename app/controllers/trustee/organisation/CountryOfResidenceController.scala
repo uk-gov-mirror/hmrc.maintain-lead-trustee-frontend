@@ -69,7 +69,7 @@ class CountryOfResidenceController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfResidencePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(CountryOfResidencePage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(CountryOfResidencePage, mode, updatedAnswers))
         }
       )
   }
