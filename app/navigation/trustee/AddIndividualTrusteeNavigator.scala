@@ -49,11 +49,13 @@ object AddIndividualTrusteeNavigator {
       yesNoNav(ua, PassportDetailsYesNoPage, rts.PassportDetailsController.onPageLoad(), rts.IdCardDetailsYesNoController.onPageLoad())
     case IdCardDetailsYesNoPage => ua =>
       yesNoNav(ua, IdCardDetailsYesNoPage, rts.IdCardDetailsController.onPageLoad(), navigateToMentalCapacityOrWhenAddedPage(ua))
-    case PassportDetailsPage => ua => navigateToMentalCapacityOrWhenAddedPage(ua)
-    case IdCardDetailsPage => ua => navigateToMentalCapacityOrWhenAddedPage(ua)
+    case PassportDetailsPage => ua =>
+      navigateToMentalCapacityOrWhenAddedPage(ua)
+    case IdCardDetailsPage => ua =>
+      navigateToMentalCapacityOrWhenAddedPage(ua)
   }
 
-  def navigateAwayFromDateOfBirthPages(userAnswers: UserAnswers)  = {
+  private def navigateAwayFromDateOfBirthPages(userAnswers: UserAnswers)  = {
     if (userAnswers.is5mldEnabled) {
       rts.CountryOfNationalityYesNoController.onPageLoad(mode)
     } else {
@@ -61,7 +63,7 @@ object AddIndividualTrusteeNavigator {
     }
   }
 
-  def navigateAwayFromNinoPages(userAnswers: UserAnswers)  = {
+  private def navigateAwayFromNinoPages(userAnswers: UserAnswers)  = {
     if (userAnswers.is5mldEnabled) {
       rts.CountryOfResidenceYesNoController.onPageLoad(mode)
     } else {
@@ -72,7 +74,7 @@ object AddIndividualTrusteeNavigator {
     }
   }
 
-  def navigateToMentalCapacityOrWhenAddedPage(userAnswers: UserAnswers)  = {
+  private def navigateToMentalCapacityOrWhenAddedPage(userAnswers: UserAnswers)  = {
     if (userAnswers.is5mldEnabled) {
       rts.MentalCapacityYesNoController.onPageLoad(mode)
     } else {

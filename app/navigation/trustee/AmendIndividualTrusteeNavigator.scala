@@ -32,7 +32,6 @@ object AmendIndividualTrusteeNavigator {
     case NonUkAddressPage => rts.PassportOrIdCardDetailsYesNoController.onPageLoad()
   }
 
-
   private val conditionalNavigation : PartialFunction[Page, UserAnswers => Call] = {
     case DateOfBirthYesNoPage => ua =>
       yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(), navigateAwayFromDateOfBirthPages(ua))
@@ -52,7 +51,7 @@ object AmendIndividualTrusteeNavigator {
       navigateToMentalCapacityOrCheckDetailsPage(ua)
   }
 
-  def navigateAwayFromDateOfBirthPages(userAnswers: UserAnswers)  = {
+  private def navigateAwayFromDateOfBirthPages(userAnswers: UserAnswers)  = {
     if (userAnswers.is5mldEnabled) {
       controllers.trustee.individual.routes.CountryOfNationalityYesNoController.onPageLoad(mode)
     } else {
@@ -60,7 +59,7 @@ object AmendIndividualTrusteeNavigator {
     }
   }
 
-  def navigateAwayFromNinoPages(userAnswers: UserAnswers)  = {
+  private def navigateAwayFromNinoPages(userAnswers: UserAnswers)  = {
     if (userAnswers.is5mldEnabled) {
       controllers.trustee.individual.routes.CountryOfResidenceYesNoController.onPageLoad(mode)
     } else {
@@ -71,13 +70,21 @@ object AmendIndividualTrusteeNavigator {
     }
   }
 
-  def navigateToMentalCapacityOrCheckDetailsPage(userAnswers: UserAnswers)  = {
+  private def navigateToMentalCapacityOrCheckDetailsPage(userAnswers: UserAnswers)  = {
     if (userAnswers.is5mldEnabled) {
       controllers.trustee.individual.routes.MentalCapacityYesNoController.onPageLoad(mode)
     } else {
       checkDetailsNavigation(userAnswers)
     }
   }
+
+  private def checkDetailsNavigation(userAnswers: UserAnswers): Call = {
+    userAnswers.get(IndexPage) match {
+      case Some(index) => controllers.trustee.amend.routes.CheckDetailsController.onPageLoadUpdated(index)
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
+
   val routes: PartialFunction[Page, UserAnswers => Call] =
     simpleNavigation andThen (c => (_:UserAnswers) => c) orElse
       conditionalNavigation
@@ -86,12 +93,5 @@ object AmendIndividualTrusteeNavigator {
     ua.get(fromPage)
       .map(if (_) yesCall else noCall)
       .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
-  }
-
-  private def checkDetailsNavigation(userAnswers: UserAnswers): Call = {
-    userAnswers.get(IndexPage) match {
-      case Some(index) => controllers.trustee.amend.routes.CheckDetailsController.onPageLoadUpdated(index)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
-    }
   }
 }

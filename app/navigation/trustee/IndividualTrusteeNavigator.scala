@@ -65,7 +65,7 @@ object IndividualTrusteeNavigator {
       )
   }
 
-  def navigateAwayFromCountryOfNationalityPages(mode: Mode, userAnswers: UserAnswers)  = {
+  private def navigateAwayFromCountryOfNationalityPages(mode: Mode, userAnswers: UserAnswers)  = {
     (userAnswers.isTaxable, mode) match {
       case (false, _) =>
         rts.CountryOfResidenceYesNoController.onPageLoad(mode)
@@ -76,7 +76,7 @@ object IndividualTrusteeNavigator {
     }
   }
 
-  def navigateAwayFromCountryOfResidencePages(mode: Mode, userAnswers: UserAnswers)  = {
+  private def navigateAwayFromCountryOfResidencePages(mode: Mode, userAnswers: UserAnswers)  = {
     lazy val navigateToAdd = if (userAnswers.get(NationalInsuranceNumberYesNoPage).getOrElse(false)) {
       rts.MentalCapacityYesNoController.onPageLoad(mode)
     } else {
@@ -99,7 +99,7 @@ object IndividualTrusteeNavigator {
     }
   }
 
-  def navigateAwayFromMentalCapacityPage(mode: Mode, userAnswers: UserAnswers)  = {
+  private def navigateAwayFromMentalCapacityPage(mode: Mode, userAnswers: UserAnswers)  = {
     if (mode == NormalMode) {
       controllers.trustee.routes.WhenAddedController.onPageLoad()
     } else {
