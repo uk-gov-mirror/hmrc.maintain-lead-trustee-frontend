@@ -17,35 +17,40 @@
 package navigation.trustee
 
 import controllers.trustee.amend.individual.{routes => rts}
-import controllers.trustee.individual.routes.CountryOfNationalityYesNoController
+import controllers.trustee.individual.routes.{CountryOfNationalityYesNoController, CountryOfResidenceYesNoController}
 import models.{CheckMode, UserAnswers}
 import pages.trustee.amend.individual._
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
 object AmendIndividualTrusteeNavigator {
+
   final val mode = CheckMode
-  private val simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case NamePage => _ => rts.DateOfBirthYesNoController.onPageLoad()
-    case DateOfBirthPage => ua => navigateAwayFromDateOfBirthPages(ua)
-    case NationalInsuranceNumberPage => ua => checkDetailsNavigation(ua)
-    case UkAddressPage => _ => rts.PassportOrIdCardDetailsYesNoController.onPageLoad()
-    case NonUkAddressPage => _ => rts.PassportOrIdCardDetailsYesNoController.onPageLoad()
-    case PassportOrIdCardDetailsPage => ua => checkDetailsNavigation(ua)
+
+  val simpleNavigation: PartialFunction[Page, Call] = {
+    case NamePage => rts.DateOfBirthYesNoController.onPageLoad()
+    case UkAddressPage => rts.PassportOrIdCardDetailsYesNoController.onPageLoad()
+    case NonUkAddressPage => rts.PassportOrIdCardDetailsYesNoController.onPageLoad()
   }
 
 
   private val conditionalNavigation : PartialFunction[Page, UserAnswers => Call] = {
     case DateOfBirthYesNoPage => ua =>
       yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(), navigateAwayFromDateOfBirthPages(ua))
+    case DateOfBirthPage => ua =>
+      navigateAwayFromDateOfBirthPages(ua)
     case NationalInsuranceNumberYesNoPage => ua =>
-      yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.AddressYesNoController.onPageLoad())
+      yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(), navigateAwayFromNinoPages(ua))
+    case NationalInsuranceNumberPage => ua =>
+      navigateAwayFromNinoPages(ua)
     case AddressYesNoPage => ua =>
       yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(), checkDetailsNavigation(ua))
     case LiveInTheUkYesNoPage => ua =>
       yesNoNav(ua, LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
     case PassportOrIdCardDetailsYesNoPage => ua =>
       yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, rts.PassportOrIdCardDetailsController.onPageLoad(), checkDetailsNavigation(ua))
+    case PassportOrIdCardDetailsPage => ua =>
+      checkDetailsNavigation(ua)
   }
 
   def navigateAwayFromDateOfBirthPages(userAnswers: UserAnswers)  = {
@@ -56,8 +61,19 @@ object AmendIndividualTrusteeNavigator {
     }
   }
 
+  def navigateAwayFromNinoPages(userAnswers: UserAnswers)  = {
+    if (userAnswers.is5mldEnabled) {
+      CountryOfResidenceYesNoController.onPageLoad(mode)
+    } else {
+      userAnswers.get(NationalInsuranceNumberYesNoPage) match {
+        case Some(true) => checkDetailsNavigation(userAnswers)
+        case _ => rts.AddressYesNoController.onPageLoad()
+      }
+    }
+  }
+
   val routes: PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation orElse
+    simpleNavigation andThen (c => (_:UserAnswers) => c) orElse
       conditionalNavigation
 
   def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {

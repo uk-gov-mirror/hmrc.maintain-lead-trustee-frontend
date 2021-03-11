@@ -70,6 +70,7 @@ class AmendAddIndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPro
 
       "NINO page -> Check your answers page" in {
         val answers = emptyUserAnswers
+          .set(NationalInsuranceNumberYesNoPage, true).success.value
           .set(IndexPage, index).success.value
 
         navigator.nextPage(NationalInsuranceNumberPage, answers)
@@ -215,22 +216,52 @@ class AmendAddIndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPro
           }
         }
 
-        "Mental Capacity Yes No page -> Yes -> Check Details page" in {
-          val answers = baseAnswers
-            .set(IndexPage, index).success.value
-            .set(MentalCapacityYesNoPage, true).success.value
+        "Nino Pages" must {
+          "Do you know NINO page -> Yes -> NINO page" in {
+            val answers = baseAnswers
+              .set(NationalInsuranceNumberYesNoPage, true).success.value
 
-          navigator.nextPage(MentalCapacityYesNoPage, mode, answers)
-            .mustBe(controllers.trustee.amend.routes.CheckDetailsController.onPageLoadUpdated(index))
+            navigator.nextPage(NationalInsuranceNumberYesNoPage, answers)
+              .mustBe(rts.NationalInsuranceNumberController.onPageLoad())
+          }
+
+          "NINO page -> Country of Residence Yes No page" in {
+            val answers = baseAnswers
+              .set(NationalInsuranceNumberYesNoPage, true).success.value
+              .set(IndexPage, index).success.value
+
+            navigator.nextPage(NationalInsuranceNumberPage, answers)
+              .mustBe(controllers.trustee.individual.routes.CountryOfResidenceYesNoController.onPageLoad(mode))
+          }
+
+          "Do you know NINO page -> No -> Country of Residence Yes No page" in {
+            val answers = baseAnswers
+              .set(NationalInsuranceNumberYesNoPage, false).success.value
+              .set(IndexPage, index).success.value
+
+            navigator.nextPage(NationalInsuranceNumberYesNoPage, answers)
+              .mustBe(controllers.trustee.individual.routes.CountryOfResidenceYesNoController.onPageLoad(mode))
+          }
         }
 
-        "Mental Capacity Yes No page -> No -> Check Details page" in {
-          val answers = baseAnswers
-            .set(IndexPage, index).success.value
-            .set(MentalCapacityYesNoPage, false).success.value
+        "Mental Capacity Yes No page" must {
+          "Yes -> Check Details page" in {
+            val answers = baseAnswers
+              .set(IndexPage, index).success.value
+              .set(MentalCapacityYesNoPage, true).success.value
 
-          navigator.nextPage(MentalCapacityYesNoPage, mode, answers)
-            .mustBe(controllers.trustee.amend.routes.CheckDetailsController.onPageLoadUpdated(index))
+            navigator.nextPage(MentalCapacityYesNoPage, mode, answers)
+              .mustBe(controllers.trustee.amend.routes.CheckDetailsController.onPageLoadUpdated(index))
+          }
+
+          "No -> Check Details page" in {
+            val answers = baseAnswers
+              .set(IndexPage, index).success.value
+              .set(MentalCapacityYesNoPage, false).success.value
+
+            navigator.nextPage(MentalCapacityYesNoPage, mode, answers)
+              .mustBe(controllers.trustee.amend.routes.CheckDetailsController.onPageLoadUpdated(index))
+          }
         }
       }
 

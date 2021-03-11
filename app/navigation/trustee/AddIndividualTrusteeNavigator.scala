@@ -23,10 +23,11 @@ import play.api.mvc.Call
 import controllers.trustee.individual.{routes => rts}
 
 object AddIndividualTrusteeNavigator {
+
   final val mode = NormalMode
+
   val simpleNavigation: PartialFunction[Page, Call] = {
     case NamePage => rts.DateOfBirthYesNoController.onPageLoad()
-    case NationalInsuranceNumberPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
     case UkAddressPage => rts.PassportDetailsYesNoController.onPageLoad()
     case NonUkAddressPage => rts.PassportDetailsYesNoController.onPageLoad()
     case PassportDetailsPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
@@ -39,7 +40,9 @@ object AddIndividualTrusteeNavigator {
     case DateOfBirthYesNoPage => ua =>
       yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(), navigateAwayFromDateOfBirthPages(ua))
     case NationalInsuranceNumberYesNoPage => ua =>
-      yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.AddressYesNoController.onPageLoad())
+      yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(), navigateAwayFromNinoPages(ua))
+    case NationalInsuranceNumberPage => ua =>
+      navigateAwayFromNinoPages(ua)
     case AddressYesNoPage => ua =>
       yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(), controllers.trustee.routes.WhenAddedController.onPageLoad())
     case LiveInTheUkYesNoPage => ua =>
@@ -55,6 +58,17 @@ object AddIndividualTrusteeNavigator {
       rts.CountryOfNationalityYesNoController.onPageLoad(mode)
     } else {
       rts.NationalInsuranceNumberYesNoController.onPageLoad()
+    }
+  }
+
+  def navigateAwayFromNinoPages(userAnswers: UserAnswers)  = {
+    if (userAnswers.is5mldEnabled) {
+      rts.CountryOfResidenceYesNoController.onPageLoad(mode)
+    } else {
+      userAnswers.get(NationalInsuranceNumberYesNoPage) match {
+        case Some(true) => controllers.trustee.routes.WhenAddedController.onPageLoad()
+        case _ => rts.AddressYesNoController.onPageLoad()
+      }
     }
   }
 
