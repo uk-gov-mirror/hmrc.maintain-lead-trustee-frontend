@@ -24,7 +24,7 @@
 @(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("trustee.individual.countryOfNationalityUkYesNo.title")}"
+    title = s"${errorPrefix(form)}${messages("trustee.individual.countryOfNationalityInTheUkYesNo.title")}"
 ) {
 
     @formHelper(action = CountryOfNationalityInTheUkYesNoController.onSubmit(mode), 'autoComplete -> "off") {
@@ -35,7 +35,7 @@
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("trustee.individual.countryOfNationalityUkYesNo.heading", name)
+            label = messages("trustee.individual.countryOfNationalityInTheUkYesNo.heading", name)
         )
 
         @components.submit_button()

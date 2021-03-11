@@ -27,7 +27,7 @@ case object CountryOfResidenceInTheUkYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = basePath \ toString
 
-  override def toString: String = "countryOfResidenceUkYesNo"
+  override def toString: String = "countryOfResidenceInTheUkYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
