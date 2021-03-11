@@ -26,13 +26,13 @@ object AddIndividualTrusteeNavigator {
 
   final val mode = NormalMode
 
-  val simpleNavigation: PartialFunction[Page, Call] = {
+  private val simpleNavigation: PartialFunction[Page, Call] = {
     case NamePage => rts.DateOfBirthYesNoController.onPageLoad()
     case UkAddressPage => rts.PassportDetailsYesNoController.onPageLoad()
     case NonUkAddressPage => rts.PassportDetailsYesNoController.onPageLoad()
   }
 
-  val conditionalNavigation : PartialFunction[Page, UserAnswers => Call] = {
+  private val conditionalNavigation : PartialFunction[Page, UserAnswers => Call] = {
     case DateOfBirthPage => ua =>
       navigateAwayFromDateOfBirthPages(ua)
     case DateOfBirthYesNoPage => ua =>

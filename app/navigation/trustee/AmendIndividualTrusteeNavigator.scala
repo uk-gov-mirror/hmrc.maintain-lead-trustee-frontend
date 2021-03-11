@@ -26,7 +26,7 @@ object AmendIndividualTrusteeNavigator {
 
   final val mode = CheckMode
 
-  val simpleNavigation: PartialFunction[Page, Call] = {
+  private val simpleNavigation: PartialFunction[Page, Call] = {
     case NamePage => rts.DateOfBirthYesNoController.onPageLoad()
     case UkAddressPage => rts.PassportOrIdCardDetailsYesNoController.onPageLoad()
     case NonUkAddressPage => rts.PassportOrIdCardDetailsYesNoController.onPageLoad()
