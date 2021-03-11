@@ -27,11 +27,11 @@ import play.api.mvc.Call
 @Singleton
 class Navigator @Inject()() {
 
-  val parameterisedNavigation : PartialFunction[Page, UserAnswers => Call] = {
+  private val parameterisedNavigation : PartialFunction[Page, UserAnswers => Call] = {
     case TrusteeTypePage => trusteeTypeNavigation()
   }
 
-  def normalRoutes(mode: Mode): Page => UserAnswers => Call =
+  private def normalRoutes(mode: Mode): Page => UserAnswers => Call =
     parameterisedNavigation orElse
     LeadTrusteeNavigator.routes orElse
     TrusteeNavigator.routes(mode) orElse {
