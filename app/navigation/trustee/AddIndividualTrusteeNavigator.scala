@@ -23,6 +23,7 @@ import play.api.mvc.Call
 import controllers.trustee.individual.{routes => rts}
 
 object AddIndividualTrusteeNavigator {
+  final val mode = NormalMode
   val simpleNavigation: PartialFunction[Page, Call] = {
     case NamePage => rts.DateOfBirthYesNoController.onPageLoad()
     case NationalInsuranceNumberPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
@@ -51,7 +52,7 @@ object AddIndividualTrusteeNavigator {
 
   def navigateAwayFromDateOfBirthPages(userAnswers: UserAnswers)  = {
     if (userAnswers.is5mldEnabled) {
-      rts.CountryOfNationalityYesNoController.onPageLoad(NormalMode)
+      rts.CountryOfNationalityYesNoController.onPageLoad(mode)
     } else {
       rts.NationalInsuranceNumberYesNoController.onPageLoad()
     }

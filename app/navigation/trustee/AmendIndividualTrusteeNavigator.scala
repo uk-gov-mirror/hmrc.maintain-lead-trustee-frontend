@@ -24,6 +24,7 @@ import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
 object AmendIndividualTrusteeNavigator {
+  final val mode = CheckMode
   private val simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
     case NamePage => _ => rts.DateOfBirthYesNoController.onPageLoad()
     case DateOfBirthPage => ua => navigateAwayFromDateOfBirthPages(ua)
@@ -49,7 +50,7 @@ object AmendIndividualTrusteeNavigator {
 
   def navigateAwayFromDateOfBirthPages(userAnswers: UserAnswers)  = {
     if (userAnswers.is5mldEnabled) {
-      CountryOfNationalityYesNoController.onPageLoad(CheckMode)
+      CountryOfNationalityYesNoController.onPageLoad(mode)
     } else {
       rts.NationalInsuranceNumberYesNoController.onPageLoad()
     }
