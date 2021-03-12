@@ -19,9 +19,11 @@ package mapping.extractors
 import models.IndividualOrBusiness.Business
 import models.{Address, NonUkAddress, TrustIdentificationOrgType, TrusteeOrganisation, UkAddress, UserAnswers}
 import pages.trustee.amend.{organisation => org}
+import pages.trustee.organisation.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
+import models.Constant.GB
 
-import scala.util.Try
+import scala.util.{Success, Try}
 
 class TrusteeOrganisationExtractor {
 
@@ -31,33 +33,61 @@ class TrusteeOrganisationExtractor {
       .flatMap(_.set(org.IndexPage, index))
       .flatMap(_.set(org.NamePage, trustee.name))
       .flatMap(answers => extractIdentification(trustee.identification, answers))
+      .flatMap(answers => extractCountryOfResidence(trustee.countryOfResidence, answers))
       .flatMap(_.set(WhenAddedPage, trustee.entityStart))
   }
 
+  private def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+    if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
+      countryOfResidence match {
+        case Some(GB) => answers
+          .set(CountryOfResidenceYesNoPage, true)
+          .flatMap(_.set(CountryOfResidenceInTheUkYesNoPage, true))
+          .flatMap(_.set(CountryOfResidencePage, GB))
+        case Some(country) => answers
+          .set(CountryOfResidenceYesNoPage, true)
+          .flatMap(_.set(CountryOfResidenceInTheUkYesNoPage, false))
+          .flatMap(_.set(CountryOfResidencePage, country))
+        case None => answers
+          .set(CountryOfResidenceYesNoPage, false)
+      }
+    } else {
+      Success(answers)
+    }
+  }
+
   private def extractIdentification(identification: Option[TrustIdentificationOrgType], answers: UserAnswers): Try[UserAnswers] = {
-    identification match {
-      case Some(TrustIdentificationOrgType(_, Some(utr), None)) =>
-        answers.set(org.UtrYesNoPage, true)
-          .flatMap(_.set(org.UtrPage, utr))
-      case Some(TrustIdentificationOrgType(_, None, Some(address))) =>
-        answers.set(org.UtrYesNoPage, false)
-          .flatMap(answers => extractAddress(address, answers))
-      case _ =>
-        answers.set(org.UtrYesNoPage, false)
-          .flatMap(_.set(org.AddressYesNoPage, false))
+    if (answers.isTaxable || !answers.is5mldEnabled) {
+      identification match {
+        case Some(TrustIdentificationOrgType(_, Some(utr), None)) =>
+          answers.set(org.UtrYesNoPage, true)
+            .flatMap(_.set(org.UtrPage, utr))
+        case Some(TrustIdentificationOrgType(_, None, Some(address))) =>
+          answers.set(org.UtrYesNoPage, false)
+            .flatMap(answers => extractAddress(address, answers))
+        case _ =>
+          answers.set(org.UtrYesNoPage, false)
+            .flatMap(_.set(org.AddressYesNoPage, false))
+      }
+    } else {
+      Success(answers)
     }
   }
 
   private def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
-    address match {
-      case uk: UkAddress =>
-        answers.set(org.AddressYesNoPage, true)
-          .flatMap(_.set(org.AddressInTheUkYesNoPage, true))
-          .flatMap(_.set(org.UkAddressPage, uk))
-      case nonUk: NonUkAddress =>
-        answers.set(org.AddressYesNoPage, true)
-          .flatMap(_.set(org.AddressInTheUkYesNoPage, false))
-          .flatMap(_.set(org.NonUkAddressPage, nonUk))
+    if (answers.isTaxable || !answers.is5mldEnabled) {
+      address match {
+        case uk: UkAddress =>
+          answers.set(org.AddressYesNoPage, true)
+            .flatMap(_.set(org.AddressInTheUkYesNoPage, true))
+            .flatMap(_.set(org.UkAddressPage, uk))
+        case nonUk: NonUkAddress =>
+          answers.set(org.AddressYesNoPage, true)
+            .flatMap(_.set(org.AddressInTheUkYesNoPage, false))
+            .flatMap(_.set(org.NonUkAddressPage, nonUk))
+      }
+    } else {
+      Success(answers)
     }
   }
 

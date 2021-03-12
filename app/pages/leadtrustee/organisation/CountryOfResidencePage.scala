@@ -16,24 +16,12 @@
 
 package pages.leadtrustee.organisation
 
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class RegisteredInUkYesNoPageSpec extends PageBehaviours {
+case object CountryOfResidencePage extends QuestionPage[String] {
 
-  "RegisteredInUkYesNo page" must {
+  override def path: JsPath = basePath \ toString
 
-    beRetrievable[Boolean](RegisteredInUkYesNoPage)
-
-    beSettable[Boolean](RegisteredInUkYesNoPage)
-
-    beRemovable[Boolean](RegisteredInUkYesNoPage)
-
-    "implement cleanup logic when NO selected" in {
-      val userAnswers = emptyUserAnswers
-        .set(UtrPage, "1234567890")
-        .flatMap(_.set(RegisteredInUkYesNoPage, false))
-
-      userAnswers.get.get(UtrPage) mustBe None
-    }
-  }
+  override def toString: String = "countryOfResidence"
 }

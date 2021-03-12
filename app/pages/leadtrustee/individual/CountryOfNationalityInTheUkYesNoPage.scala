@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package pages.leadtrustee.organisation
+package pages.leadtrustee.individual
 
-import pages.behaviours.PageBehaviours
+import models.UserAnswers
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class RegisteredInUkYesNoPageSpec extends PageBehaviours {
+import scala.util.Try
 
-  "RegisteredInUkYesNo page" must {
+case object CountryOfNationalityInTheUkYesNoPage extends QuestionPage[Boolean] {
 
-    beRetrievable[Boolean](RegisteredInUkYesNoPage)
+  override def path: JsPath = basePath \ toString
 
-    beSettable[Boolean](RegisteredInUkYesNoPage)
+  override def toString: String = "countryOfNationalityUkYesNo"
 
-    beRemovable[Boolean](RegisteredInUkYesNoPage)
-
-    "implement cleanup logic when NO selected" in {
-      val userAnswers = emptyUserAnswers
-        .set(UtrPage, "1234567890")
-        .flatMap(_.set(RegisteredInUkYesNoPage, false))
-
-      userAnswers.get.get(UtrPage) mustBe None
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(true) =>
+        userAnswers.remove(CountryOfNationalityPage)
+      case _ =>
+        super.cleanup(value, userAnswers)
     }
   }
 }

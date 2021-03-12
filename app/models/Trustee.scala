@@ -104,6 +104,7 @@ case class TrusteeOrganisation(name: String,
                                phoneNumber: Option[String] = None,
                                email: Option[String] = None,
                                identification: Option[TrustIdentificationOrgType],
+                               countryOfResidence: Option[String] = None,
                                entityStart: LocalDate,
                                provisional: Boolean) extends Trustee
 

@@ -22,11 +22,11 @@ class CountryOfNationalityInTheUkYesNoPageSpec extends PageBehaviours {
 
   "CountryOfNationalityInTheUkYesNoPage" must {
 
-    beRetrievable[Boolean](CountryOfNationalityYesNoPage)
+    beRetrievable[Boolean](CountryOfNationalityInTheUkYesNoPage)
 
-    beSettable[Boolean](CountryOfNationalityYesNoPage)
+    beSettable[Boolean](CountryOfNationalityInTheUkYesNoPage)
 
-    beRemovable[Boolean](CountryOfNationalityYesNoPage)
+    beRemovable[Boolean](CountryOfNationalityInTheUkYesNoPage)
 
     "implement cleanup logic when YES selected" in {
       val userAnswers = emptyUserAnswers

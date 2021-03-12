@@ -366,6 +366,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
                 safeId = None,
                 address = None
               )),
+              countryOfResidence = None,
               entityStart = LocalDate.parse("2019-02-28"),
               provisional = false
             )
