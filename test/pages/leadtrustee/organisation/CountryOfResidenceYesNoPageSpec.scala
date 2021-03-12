@@ -18,22 +18,26 @@ package pages.leadtrustee.organisation
 
 import pages.behaviours.PageBehaviours
 
-class RegisteredInUkYesNoPageSpec extends PageBehaviours {
+class CountryOfResidenceYesNoPageSpec extends PageBehaviours {
 
-  "RegisteredInUkYesNo page" must {
+  "CountryOfResidenceYesNoPage" must {
 
-    beRetrievable[Boolean](RegisteredInUkYesNoPage)
+    beRetrievable[Boolean](CountryOfResidenceYesNoPage)
 
-    beSettable[Boolean](RegisteredInUkYesNoPage)
+    beSettable[Boolean](CountryOfResidenceYesNoPage)
 
-    beRemovable[Boolean](RegisteredInUkYesNoPage)
+    beRemovable[Boolean](CountryOfResidenceYesNoPage)
 
     "implement cleanup logic when NO selected" in {
       val userAnswers = emptyUserAnswers
-        .set(UtrPage, "1234567890")
-        .flatMap(_.set(RegisteredInUkYesNoPage, false))
+        .set(CountryOfResidencePage, "FR").success.value
+        .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
+        .set(CountryOfResidencePage, "FR").success.value
 
-      userAnswers.get.get(UtrPage) mustBe None
+      val result = userAnswers.set(CountryOfResidenceYesNoPage, false).success.value
+
+      result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
+      result.get(CountryOfResidencePage) mustBe None
     }
   }
 }

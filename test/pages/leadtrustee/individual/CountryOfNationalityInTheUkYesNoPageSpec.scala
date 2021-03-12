@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package pages.leadtrustee.organisation
+package pages.leadtrustee.individual
 
 import pages.behaviours.PageBehaviours
 
-class RegisteredInUkYesNoPageSpec extends PageBehaviours {
+class CountryOfNationalityInTheUkYesNoPageSpec extends PageBehaviours {
 
-  "RegisteredInUkYesNo page" must {
+  "CountryOfNationalityInTheUkYesNoPage" must {
 
-    beRetrievable[Boolean](RegisteredInUkYesNoPage)
+    beRetrievable[Boolean](CountryOfNationalityYesNoPage)
 
-    beSettable[Boolean](RegisteredInUkYesNoPage)
+    beSettable[Boolean](CountryOfNationalityYesNoPage)
 
-    beRemovable[Boolean](RegisteredInUkYesNoPage)
+    beRemovable[Boolean](CountryOfNationalityYesNoPage)
 
-    "implement cleanup logic when NO selected" in {
+    "implement cleanup logic when YES selected" in {
       val userAnswers = emptyUserAnswers
-        .set(UtrPage, "1234567890")
-        .flatMap(_.set(RegisteredInUkYesNoPage, false))
+        .set(CountryOfNationalityPage, "FR").success.value
 
-      userAnswers.get.get(UtrPage) mustBe None
+      val result = userAnswers.set(CountryOfNationalityInTheUkYesNoPage, true).success.value
+
+      result.get(CountryOfNationalityPage) mustBe None
     }
   }
 }

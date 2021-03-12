@@ -34,7 +34,7 @@ class AddressInTheUkYesNoPageSpec extends PageBehaviours {
         .set(NonUkAddressPage, NonUkAddress("line1", "line2", None, "country"))
         .flatMap(_.set(AddressInTheUkYesNoPage, true))
 
-      userAnswers.get.get(NonUkAddressPage) mustNot be(defined)
+      userAnswers.get.get(NonUkAddressPage) mustBe None
     }
 
     "implement cleanup logic when NO selected" in {
@@ -42,7 +42,7 @@ class AddressInTheUkYesNoPageSpec extends PageBehaviours {
         .set(UkAddressPage, UkAddress("line1", "line2", None, None, "postcode"))
         .flatMap(_.set(AddressInTheUkYesNoPage, false))
 
-      userAnswers.get.get(UkAddressPage) mustNot be(defined)
+      userAnswers.get.get(UkAddressPage) mustBe None
     }
   }
 }
