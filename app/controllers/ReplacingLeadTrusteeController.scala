@@ -17,6 +17,8 @@
 package controllers
 
 import controllers.actions.StandardActionSets
+import controllers.leadtrustee.individual.{routes => ltiRts}
+import controllers.leadtrustee.organisation.{routes => ltoRts}
 import forms.ReplaceLeadTrusteeFormProvider
 import handlers.ErrorHandler
 import mapping.extractors.{IndividualTrusteeToLeadTrusteeExtractor, OrganisationTrusteeToLeadTrusteeExtractor}
@@ -25,7 +27,7 @@ import models.{AllTrustees, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrgan
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc._
 import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -80,10 +82,10 @@ class ReplacingLeadTrusteeController @Inject()(
               trustees(index) match {
                 case trustee: TrusteeIndividual =>
                   val extractedAnswers = individualTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
-                  populateUserAnswersAndRedirect(extractedAnswers)
+                  populateUserAnswersAndRedirect(extractedAnswers, ltiRts.NeedToAnswerQuestionsController.onPageLoad())
                 case trustee: TrusteeOrganisation =>
                   val extractedAnswers = organisationTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
-                  populateUserAnswersAndRedirect(extractedAnswers)
+                  populateUserAnswersAndRedirect(extractedAnswers, ltoRts.NeedToAnswerQuestionsController.onPageLoad())
               }
             }
           )
@@ -116,11 +118,12 @@ class ReplacingLeadTrusteeController @Inject()(
     }
   }
 
-  private def populateUserAnswersAndRedirect(extractedAnswers: Try[UserAnswers]): Future[Result] = {
+  private def populateUserAnswersAndRedirect(extractedAnswers: Try[UserAnswers],
+                                             redirectUrl: Call): Future[Result] = {
     for {
       updatedAnswers <- Future.fromTry(extractedAnswers)
       _ <- playbackRepository.set(updatedAnswers)
-    } yield Redirect(controllers.leadtrustee.individual.routes.NeedToAnswerQuestionsController.onPageLoad())
+    } yield Redirect(redirectUrl)
   }
 
   private def recovery(implicit request: DataRequest[AnyContent]): PartialFunction[Throwable, Future[Result]] = {

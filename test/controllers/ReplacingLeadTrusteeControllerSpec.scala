@@ -228,38 +228,74 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "redirect to the next page when valid data is submitted" when {
 
-      val trustee = TrusteeIndividual(
-        name = Name(firstName = "Joe", middleName = Some("Joseph"), lastName = "Bloggs"),
-        dateOfBirth = None,
-        phoneNumber = None,
-        identification = None,
-        address = None,
-        entityStart = LocalDate.parse("2019-02-28"),
-        provisional = true
-      )
+      "individual" in {
 
-      val fakeService = new FakeService(Trustees(List(trustee)))
+        val trustee = TrusteeIndividual(
+          name = Name(firstName = "Joe", middleName = Some("Joseph"), lastName = "Bloggs"),
+          dateOfBirth = None,
+          phoneNumber = None,
+          identification = None,
+          address = None,
+          entityStart = LocalDate.parse("2019-02-28"),
+          provisional = true
+        )
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+        val fakeService = new FakeService(Trustees(List(trustee)))
 
-      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+        val mockPlaybackRepository = mock[PlaybackRepository]
 
-      val request = FakeRequest(POST, replacingLeadTrusteeRoute)
-        .withFormUrlEncodedBody(("value", "0"))
+        when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind(classOf[TrustService]).toInstance(fakeService))
-        .build()
+        val request = FakeRequest(POST, replacingLeadTrusteeRoute)
+          .withFormUrlEncodedBody(("value", "0"))
 
-      val result = route(application, request).value
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
-      status(result) mustEqual SEE_OTHER
+        val result = route(application, request).value
 
-      redirectLocation(result).value mustBe controllers.leadtrustee.individual.routes.NeedToAnswerQuestionsController.onPageLoad().url
+        status(result) mustEqual SEE_OTHER
 
-      application.stop()
+        redirectLocation(result).value mustBe controllers.leadtrustee.individual.routes.NeedToAnswerQuestionsController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "organisation" in {
+
+        val trustee = TrusteeOrganisation(
+          name = "Amazon",
+          phoneNumber = None,
+          email = None,
+          identification = None,
+          entityStart = date,
+          provisional = true
+        )
+
+        val fakeService = new FakeService(Trustees(List(trustee)))
+
+        val mockPlaybackRepository = mock[PlaybackRepository]
+
+        when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+
+        val request = FakeRequest(POST, replacingLeadTrusteeRoute)
+          .withFormUrlEncodedBody(("value", "0"))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustBe controllers.leadtrustee.organisation.routes.NeedToAnswerQuestionsController.onPageLoad().url
+
+        application.stop()
+      }
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
