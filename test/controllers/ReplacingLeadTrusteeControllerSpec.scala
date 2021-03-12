@@ -228,63 +228,161 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "redirect to the next page when valid data is submitted" when {
 
-      val trustee = TrusteeIndividual(
-        name = Name(firstName = "Joe", middleName = Some("Joseph"), lastName = "Bloggs"),
-        dateOfBirth = None,
-        phoneNumber = None,
-        identification = None,
-        address = None,
-        entityStart = LocalDate.parse("2019-02-28"),
-        provisional = true
-      )
+      "individual" in {
 
-      val fakeService = new FakeService(Trustees(List(trustee)))
+        val trustee = TrusteeIndividual(
+          name = Name(firstName = "Joe", middleName = Some("Joseph"), lastName = "Bloggs"),
+          dateOfBirth = None,
+          phoneNumber = None,
+          identification = None,
+          address = None,
+          entityStart = LocalDate.parse("2019-02-28"),
+          provisional = true
+        )
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+        val fakeService = new FakeService(Trustees(List(trustee)))
 
-      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+        val mockPlaybackRepository = mock[PlaybackRepository]
 
-      val request = FakeRequest(POST, replacingLeadTrusteeRoute)
-        .withFormUrlEncodedBody(("value", "0"))
+        when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind(classOf[TrustService]).toInstance(fakeService))
-        .build()
+        val request = FakeRequest(POST, replacingLeadTrusteeRoute)
+          .withFormUrlEncodedBody(("value", "0"))
 
-      val result = route(application, request).value
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
-      status(result) mustEqual SEE_OTHER
+        val result = route(application, request).value
 
-      redirectLocation(result).value mustBe controllers.leadtrustee.individual.routes.NeedToAnswerQuestionsController.onPageLoad().url
+        status(result) mustEqual SEE_OTHER
 
-      application.stop()
+        redirectLocation(result).value mustBe controllers.leadtrustee.individual.routes.NeedToAnswerQuestionsController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "organisation" in {
+
+        val trustee = TrusteeOrganisation(
+          name = "Amazon",
+          phoneNumber = None,
+          email = None,
+          identification = None,
+          entityStart = date,
+          provisional = true
+        )
+
+        val fakeService = new FakeService(Trustees(List(trustee)))
+
+        val mockPlaybackRepository = mock[PlaybackRepository]
+
+        when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+
+        val request = FakeRequest(POST, replacingLeadTrusteeRoute)
+          .withFormUrlEncodedBody(("value", "0"))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustBe controllers.leadtrustee.organisation.routes.NeedToAnswerQuestionsController.onPageLoad().url
+
+        application.stop()
+      }
     }
 
-    "return a Bad Request and errors when invalid data is submitted" in {
+    "return a Bad Request and errors when invalid data is submitted" when {
 
-      val fakeService = new FakeService(Trustees(Nil))
+      "individual lead trustee" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind(classOf[TrustService]).toInstance(fakeService))
-        .build()
+        val fakeService = new FakeService(Trustees(Nil))
 
-      val request = FakeRequest(POST, replacingLeadTrusteeRoute)
-        .withFormUrlEncodedBody(("value", ""))
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
-      val boundForm = form.bind(Map("value" -> ""))
+        val request = FakeRequest(POST, replacingLeadTrusteeRoute)
+          .withFormUrlEncodedBody(("value", ""))
 
-      val view = application.injector.instanceOf[ReplacingLeadTrusteeView]
+        val boundForm = form.bind(Map("value" -> ""))
 
-      val result = route(application, request).value
+        val view = application.injector.instanceOf[ReplacingLeadTrusteeView]
 
-      status(result) mustEqual BAD_REQUEST
+        val result = route(application, request).value
 
-      contentAsString(result) mustEqual
-        view(boundForm, "John Smith", Nil)(request, messages).toString
+        status(result) mustEqual BAD_REQUEST
 
-      application.stop()
+        contentAsString(result) mustEqual
+          view(boundForm, "John Smith", Nil)(request, messages).toString
+
+        application.stop()
+      }
+
+      "organisation lead trustee" in {
+
+        val leadTrustee = LeadTrusteeOrganisation(
+          name = "Amazon",
+          phoneNumber = "tel",
+          email = None,
+          utr = None,
+          address = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
+        )
+
+        val fakeService = new FakeService(Trustees(Nil), Some(leadTrustee))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
+
+        val request = FakeRequest(POST, replacingLeadTrusteeRoute)
+          .withFormUrlEncodedBody(("value", ""))
+
+        val boundForm = form.bind(Map("value" -> ""))
+
+        val view = application.injector.instanceOf[ReplacingLeadTrusteeView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+
+        contentAsString(result) mustEqual
+          view(boundForm, "Amazon", Nil)(request, messages).toString
+
+        application.stop()
+      }
+
+      //should never happen
+      "no lead trustee" in {
+
+        val fakeService = new FakeService(Trustees(Nil), None)
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
+
+        val request = FakeRequest(POST, replacingLeadTrusteeRoute)
+          .withFormUrlEncodedBody(("value", ""))
+
+        val boundForm = form.bind(Map("value" -> ""))
+
+        val view = application.injector.instanceOf[ReplacingLeadTrusteeView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+
+        contentAsString(result) mustEqual
+          view(boundForm, "the lead trustee", Nil)(request, messages).toString
+
+        application.stop()
+      }
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {

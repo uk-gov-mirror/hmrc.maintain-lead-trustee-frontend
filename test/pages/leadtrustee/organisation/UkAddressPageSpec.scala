@@ -16,24 +16,17 @@
 
 package pages.leadtrustee.organisation
 
+import models.UkAddress
 import pages.behaviours.PageBehaviours
 
-class RegisteredInUkYesNoPageSpec extends PageBehaviours {
+class UkAddressPageSpec extends PageBehaviours {
 
-  "RegisteredInUkYesNo page" must {
+  "UkAddressPage" must {
 
-    beRetrievable[Boolean](RegisteredInUkYesNoPage)
+    beRetrievable[UkAddress](UkAddressPage)
 
-    beSettable[Boolean](RegisteredInUkYesNoPage)
+    beSettable[UkAddress](UkAddressPage)
 
-    beRemovable[Boolean](RegisteredInUkYesNoPage)
-
-    "implement cleanup logic when NO selected" in {
-      val userAnswers = emptyUserAnswers
-        .set(UtrPage, "1234567890")
-        .flatMap(_.set(RegisteredInUkYesNoPage, false))
-
-      userAnswers.get.get(UtrPage) mustBe None
-    }
+    beRemovable[UkAddress](UkAddressPage)
   }
 }

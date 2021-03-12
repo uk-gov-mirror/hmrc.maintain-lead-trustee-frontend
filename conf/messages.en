@@ -205,6 +205,18 @@ leadtrustee.individual.dateOfBirth.error.invalid = Enter a real date of birth
 leadtrustee.individual.dateOfBirth.error.future = Date of birth must be today or in the past
 leadtrustee.individual.dateOfBirth.error.past = Date of birth must be after 31 December 1499
 
+leadtrustee.individual.countryOfNationalityUkYesNo.title = Does the lead trustee have UK nationality?
+leadtrustee.individual.countryOfNationalityUkYesNo.heading = Does {0} have UK nationality?
+leadtrustee.individual.countryOfNationalityUkYesNo.checkYourAnswersLabel = Does {0} have UK nationality?
+leadtrustee.individual.countryOfNationalityUkYesNo.error.required = Select yes if the lead trustee has UK nationality
+
+leadtrustee.individual.countryOfNationality.title = What is the lead trustee’s country of nationality?
+leadtrustee.individual.countryOfNationality.heading = What is {0}’s country of nationality?
+leadtrustee.individual.countryOfNationality.checkYourAnswersLabel = What is {0}’s country of nationality?
+leadtrustee.individual.countryOfNationality.error.required = Enter a country
+leadtrustee.individual.countryOfNationality.error.length = The country of nationality must be 100 characters or less
+leadtrustee.individual.countryOfNationality.error.invalidCharacters = The country of nationality must only include letters a to z, apostrophes, commas, full stops, hyphens, round brackets and spaces
+
 leadtrustee.individual.ukCitizen.title = Does the lead trustee have a National Insurance number?
 leadtrustee.individual.ukCitizen.heading = Does {0} have a National Insurance number?
 leadtrustee.individual.ukCitizen.checkYourAnswersLabel = Does {0} have a National Insurance number?
@@ -235,6 +247,18 @@ leadtrustee.individual.passportOrIdCardDetails.expiryDate.error.required = Passp
 leadtrustee.individual.passportOrIdCardDetails.expiryDate.error.invalid = Enter a real date when the lead trustee’s passport or ID card expires
 leadtrustee.individual.passportOrIdCardDetails.expiryDate.error.past = Passport or ID card expiry date must be after 31 December 1499 and before 01 January 2100
 leadtrustee.individual.passportOrIdCardDetails.expiryDate.error.future = Passport or ID card expiry date must be after 31 December 1499 and before 01 January 2100
+
+leadtrustee.individual.countryOfResidenceInTheUkYesNo.title = Does the lead trustee have UK residency?
+leadtrustee.individual.countryOfResidenceInTheUkYesNo.heading = Does {0} have UK residency?
+leadtrustee.individual.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel = Does {0} have UK residency?
+leadtrustee.individual.countryOfResidenceInTheUkYesNo.error.required = Select yes if the lead trustee has UK residency
+
+leadtrustee.individual.countryOfResidence.title = What is the lead trustee’s country of residence?
+leadtrustee.individual.countryOfResidence.heading = What is {0}’s country of residence?
+leadtrustee.individual.countryOfResidence.checkYourAnswersLabel = What is {0}’s country of residence?
+leadtrustee.individual.countryOfResidence.error.required = Enter a country
+leadtrustee.individual.countryOfResidence.error.length = The country of residence must be 100 characters or less
+leadtrustee.individual.countryOfResidence.error.invalidCharacters = The country of residence must only include letters a to z, apostrophes, commas, full stops, hyphens, round brackets and spaces
 
 leadtrustee.individual.liveInTheUkYesNo.title = Does the lead trustee live in the UK?
 leadtrustee.individual.liveInTheUkYesNo.heading = Does {0} live in the UK?
@@ -291,6 +315,18 @@ leadtrustee.organisation.utr.hint = This is 10 numbers, for example 1234567890. 
 leadtrustee.organisation.utr.p1 = You can
 leadtrustee.organisation.utr.link = find a lost UTR number (opens in a new window or tab)
 leadtrustee.organisation.utr.checkYourAnswersLabel = What is {0}’s Unique Taxpayer Reference (UTR)?
+
+leadtrustee.organisation.countryOfResidenceInTheUkYesNo.title = Does the lead trustee have UK residency?
+leadtrustee.organisation.countryOfResidenceInTheUkYesNo.heading = Does {0} have UK residency?
+leadtrustee.organisation.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel = Does {0} have UK residency?
+leadtrustee.organisation.countryOfResidenceInTheUkYesNo.error.required = Select yes if the lead trustee has UK residency
+
+leadtrustee.organisation.countryOfResidence.title = What is the lead trustee’s country of residence?
+leadtrustee.organisation.countryOfResidence.heading = What is {0}’s country of residence?
+leadtrustee.organisation.countryOfResidence.checkYourAnswersLabel = What is {0}’s country of residence?
+leadtrustee.organisation.countryOfResidence.error.required = Enter a country
+leadtrustee.organisation.countryOfResidence.error.length = The country of residence must be 100 characters or less
+leadtrustee.organisation.countryOfResidence.error.invalidCharacters = The country of residence must only include letters a to z, apostrophes, commas, full stops, hyphens, round brackets and spaces
 
 leadtrustee.organisation.addressInTheUkYesNo.title = Is the lead trustee’s address in the UK?
 leadtrustee.organisation.addressInTheUkYesNo.heading = Is {0}’s address in the UK?
