@@ -128,9 +128,9 @@ class ReplacingLeadTrusteeController @Inject()(
   }
 
   private def recovery(implicit request: DataRequest[AnyContent]): PartialFunction[Throwable, Future[Result]] = {
-    case _ =>
-      logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-        s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
+    case e =>
+      logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+        s" Problem getting trustees: ${e.getMessage}")
 
       Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
   }
