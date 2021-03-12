@@ -34,6 +34,7 @@ import views.html.ReplacingLeadTrusteeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class ReplacingLeadTrusteeController @Inject()(
                                                 override val messagesApi: MessagesApi,
@@ -75,12 +76,14 @@ class ReplacingLeadTrusteeController @Inject()(
               Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), radioOptions)))
             },
             value => {
-              value.toInt match {
-                case index =>
-                  trustees(index) match {
-                    case ind: TrusteeIndividual => populateUserAnswersAndRedirect(request.userAnswers, ind, index)
-                    case org: TrusteeOrganisation => populateUserAnswersAndRedirect(request.userAnswers, org, index)
-                  }
+              val index = value.toInt
+              trustees(index) match {
+                case trustee: TrusteeIndividual =>
+                  val extractedAnswers = individualTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
+                  populateUserAnswersAndRedirect(extractedAnswers)
+                case trustee: TrusteeOrganisation =>
+                  val extractedAnswers = organisationTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
+                  populateUserAnswersAndRedirect(extractedAnswers)
               }
             }
           )
@@ -93,13 +96,13 @@ class ReplacingLeadTrusteeController @Inject()(
     trustees
       .zipWithIndex
       .filter(_._1 match {
-        case ind: TrusteeIndividual => !ind.mentalCapacityYesNo.contains(false)
+        case trustee: TrusteeIndividual => !trustee.mentalCapacityYesNo.contains(false)
         case _: TrusteeOrganisation => true
       })
       .map { x =>
         val name = x._1 match {
-          case ind: TrusteeIndividual => ind.name.displayName
-          case org: TrusteeOrganisation => org.name
+          case trustee: TrusteeIndividual => trustee.name.displayName
+          case trustee: TrusteeOrganisation => trustee.name
         }
         RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", name)
       }
@@ -107,24 +110,17 @@ class ReplacingLeadTrusteeController @Inject()(
 
   private def getLeadTrusteeName(leadTrustee: Option[LeadTrustee])(implicit request: DataRequest[AnyContent]): String = {
     leadTrustee match {
-      case Some(ltInd: LeadTrusteeIndividual) => ltInd.name.displayName
-      case Some(ltOrg: LeadTrusteeOrganisation) => ltOrg.name
+      case Some(individual: LeadTrusteeIndividual) => individual.name.displayName
+      case Some(organisation: LeadTrusteeOrganisation) => organisation.name
       case None => request.messages(messagesApi)("leadTrusteeName.defaultText")
     }
   }
 
-  private def populateUserAnswersAndRedirect(userAnswers: UserAnswers, trustee: TrusteeIndividual, index: Int): Future[Result] = {
+  private def populateUserAnswersAndRedirect(extractedAnswers: Try[UserAnswers]): Future[Result] = {
     for {
-      updatedAnswers <- Future.fromTry(individualTrusteeToLeadTrusteeExtractor.extract(userAnswers, trustee, index))
+      updatedAnswers <- Future.fromTry(extractedAnswers)
       _ <- playbackRepository.set(updatedAnswers)
     } yield Redirect(controllers.leadtrustee.individual.routes.NeedToAnswerQuestionsController.onPageLoad())
-  }
-
-  private def populateUserAnswersAndRedirect(userAnswers: UserAnswers, trustee: TrusteeOrganisation, index: Int): Future[Result] = {
-    for {
-      updatedAnswers <- Future.fromTry(organisationTrusteeToLeadTrusteeExtractor.extract(userAnswers, trustee, index))
-      _ <- playbackRepository.set(updatedAnswers)
-    } yield Redirect(controllers.leadtrustee.organisation.routes.NeedToAnswerQuestionsController.onPageLoad())
   }
 
   private def recovery(implicit request: DataRequest[AnyContent]): PartialFunction[Throwable, Future[Result]] = {
