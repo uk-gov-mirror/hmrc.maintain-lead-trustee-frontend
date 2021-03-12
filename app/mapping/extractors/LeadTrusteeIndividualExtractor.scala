@@ -17,13 +17,14 @@
 package mapping.extractors
 
 import com.google.inject.Inject
+import models.Constant.GB
 import models.IndividualOrBusiness.Individual
 import models._
 import pages.leadtrustee.IndividualOrBusinessPage
 import pages.leadtrustee.individual._
 import play.api.Logging
 
-import scala.util.Try
+import scala.util.{Success, Try}
 
 class LeadTrusteeIndividualExtractor @Inject()() extends Logging {
 
@@ -32,10 +33,44 @@ class LeadTrusteeIndividualExtractor @Inject()() extends Logging {
       .flatMap(_.set(IndividualOrBusinessPage, Individual))
       .flatMap(_.set(NamePage, leadIndividual.name))
       .flatMap(_.set(DateOfBirthPage, leadIndividual.dateOfBirth))
+      .flatMap(answers => extractCountryOfNationality(leadIndividual.nationality, answers))
       .flatMap(answers => extractLeadIndividualIdentification(leadIndividual, answers))
-      .flatMap(answers => extractEmail(leadIndividual.email, answers))
       .flatMap(answers => extractAddress(leadIndividual.address, answers))
+      .flatMap(answers => extractCountryOfResidence(leadIndividual.countryOfResidence, answers))
+      .flatMap(answers => extractEmail(leadIndividual.email, answers))
       .flatMap(_.set(TelephoneNumberPage, leadIndividual.phoneNumber))
+  }
+
+  private def extractCountryOfNationality(countryOfNationality: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+    if (answers.is5mldEnabled) {
+      countryOfNationality match {
+        case Some(GB) => answers
+          .set(CountryOfNationalityInTheUkYesNoPage, true)
+          .flatMap(_.set(CountryOfNationalityPage, GB))
+        case Some(country) => answers
+          .set(CountryOfNationalityInTheUkYesNoPage, false)
+          .flatMap(_.set(CountryOfNationalityPage, country))
+        case _ => Success(answers)
+      }
+    } else {
+      Success(answers)
+    }
+  }
+
+  private def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+    if (answers.is5mldEnabled) {
+      countryOfResidence match {
+        case Some(GB) => answers
+          .set(CountryOfResidenceInTheUkYesNoPage, true)
+          .flatMap(_.set(CountryOfResidencePage, GB))
+        case Some(country) => answers
+          .set(CountryOfResidenceInTheUkYesNoPage, false)
+          .flatMap(_.set(CountryOfResidencePage, country))
+        case _ => Success(answers)
+      }
+    } else {
+      Success(answers)
+    }
   }
 
   private def extractLeadIndividualIdentification(leadIndividual: LeadTrusteeIndividual, answers: UserAnswers): Try[UserAnswers] = {

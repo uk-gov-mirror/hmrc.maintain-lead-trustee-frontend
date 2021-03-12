@@ -17,6 +17,7 @@
 package mapping.mappers
 
 import base.SpecBase
+import models.Constant.GB
 import models._
 import pages.leadtrustee.individual._
 
@@ -112,8 +113,8 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
             email = Some(email),
             identification = NationalInsuranceNumber(nino),
             address = ukAddress,
-            countryOfResidence = Some("GB"),
-            nationality = Some("GB")
+            countryOfResidence = Some(GB),
+            nationality = Some(GB)
           )
         }
 
