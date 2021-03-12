@@ -22,6 +22,7 @@ import pages.trustee.organisation._
 import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsError, JsSuccess, Reads}
+import models.Constant.GB
 
 import java.time.LocalDate
 
@@ -34,6 +35,7 @@ class TrusteeOrganisationMapper extends Logging {
           Reads(_ => JsSuccess(None)) and
           Reads(_ => JsSuccess(None)) and
           readIdentification and
+          readCountryOfResidence and
           WhenAddedPage.path.read[LocalDate] and
           Reads(_ => JsSuccess(true))
         ).apply(TrusteeOrganisation.apply _ )
@@ -65,5 +67,16 @@ class TrusteeOrganisationMapper extends Logging {
       case _ => Reads(_ => JsSuccess(None)).widen[Option[Address]]
     }
   }
+
+  private def readCountryOfResidence: Reads[Option[String]] = {
+    CountryOfResidenceYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
+      case Some(true) => CountryOfResidenceInTheUkYesNoPage.path.read[Boolean].flatMap {
+        case true => Reads(_ => JsSuccess(Some(GB)))
+        case false => CountryOfResidencePage.path.read[String].map(Some(_))
+      }
+      case _ => Reads(_ => JsSuccess(None))
+    }
+  }
+
 
 }

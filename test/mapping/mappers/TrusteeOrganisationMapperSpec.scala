@@ -18,9 +18,9 @@ package mapping.mappers
 
 import base.SpecBase
 import models._
-import pages.leadtrustee.organisation.RegisteredInUkYesNoPage
 import pages.trustee.WhenAddedPage
 import pages.trustee.organisation._
+import models.Constant.GB
 
 import java.time.LocalDate
 
@@ -43,7 +43,6 @@ class TrusteeOrganisationMapperSpec extends SpecBase {
 
       "trustee has UTR" in {
         val userAnswers = baseAnswers
-          .set(RegisteredInUkYesNoPage, true).success.value
           .set(UtrPage, utr).success.value
           .set(WhenAddedPage, startDate).success.value
 
@@ -61,7 +60,6 @@ class TrusteeOrganisationMapperSpec extends SpecBase {
 
       "trustee has UK address" in {
         val userAnswers = baseAnswers
-          .set(RegisteredInUkYesNoPage, false).success.value
           .set(AddressYesNoPage, true).success.value
           .set(AddressInTheUkYesNoPage, true).success.value
           .set(UkAddressPage, ukAddress).success.value
@@ -81,7 +79,6 @@ class TrusteeOrganisationMapperSpec extends SpecBase {
 
       "trustee has non-UK address" in {
         val userAnswers = baseAnswers
-          .set(RegisteredInUkYesNoPage, false).success.value
           .set(AddressYesNoPage, true).success.value
           .set(AddressInTheUkYesNoPage, false).success.value
           .set(NonUkAddressPage, nonUkAddress).success.value
@@ -101,7 +98,6 @@ class TrusteeOrganisationMapperSpec extends SpecBase {
 
       "trustee has no UTR or address" in {
         val userAnswers = baseAnswers
-          .set(RegisteredInUkYesNoPage, false).success.value
           .set(AddressYesNoPage, false).success.value
           .set(WhenAddedPage, startDate).success.value
 
@@ -116,6 +112,50 @@ class TrusteeOrganisationMapperSpec extends SpecBase {
           provisional = true
         )
       }
+
+      "trustee has GB Residency" in {
+        val userAnswers = baseAnswers
+          .set(AddressYesNoPage, false).success.value
+          .set(WhenAddedPage, startDate).success.value
+          .set(CountryOfResidenceYesNoPage, true).success.value
+          .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
+
+        val result = mapper.map(userAnswers).get
+
+        result mustBe TrusteeOrganisation(
+          name = name,
+          phoneNumber = None,
+          email = None,
+          identification = None,
+          countryOfResidence = Some(GB),
+          entityStart = startDate,
+          provisional = true
+        )
+
+      }
+
+      "trustee has US Residency" in {
+        val userAnswers = baseAnswers
+          .set(AddressYesNoPage, false).success.value
+          .set(WhenAddedPage, startDate).success.value
+          .set(CountryOfResidenceYesNoPage, true).success.value
+          .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
+          .set(CountryOfResidencePage, "US").success.value
+
+        val result = mapper.map(userAnswers).get
+
+        result mustBe TrusteeOrganisation(
+          name = name,
+          phoneNumber = None,
+          email = None,
+          identification = None,
+          countryOfResidence = Some("US"),
+          entityStart = startDate,
+          provisional = true
+        )
+
+      }
+
     }
   }
 }
