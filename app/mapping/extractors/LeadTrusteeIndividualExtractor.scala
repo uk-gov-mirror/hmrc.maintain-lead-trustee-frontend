@@ -16,99 +16,43 @@
 
 package mapping.extractors
 
-import com.google.inject.Inject
-import models.Constant.GB
-import models.IndividualOrBusiness.Individual
 import models._
+import pages.QuestionPage
 import pages.leadtrustee.IndividualOrBusinessPage
 import pages.leadtrustee.individual._
-import play.api.Logging
+import play.api.libs.json.JsPath
 
-import scala.util.{Success, Try}
+import scala.util.Try
 
-class LeadTrusteeIndividualExtractor @Inject()() extends Logging {
+class LeadTrusteeIndividualExtractor extends IndividualExtractor {
+
+  override def basePath: JsPath = pages.leadtrustee.basePath
+  override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
+
+  override def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean] = CountryOfNationalityInTheUkYesNoPage
+  override def countryOfNationalityPage: QuestionPage[String] = CountryOfNationalityPage
+
+  override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
+  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
+
+  override def ukAddressYesNoPage: QuestionPage[Boolean] = LiveInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
+
+  override def ninoYesNoPage: QuestionPage[Boolean] = UkCitizenPage
+  override def ninoPage: QuestionPage[String] = NationalInsuranceNumberPage
+  override def passportOrIdCardDetailsPage: QuestionPage[CombinedPassportOrIdCard] = PassportOrIdCardDetailsPage
 
   def extract(answers: UserAnswers, leadIndividual: LeadTrusteeIndividual): Try[UserAnswers] = {
-    answers.deleteAtPath(pages.leadtrustee.basePath)
-      .flatMap(_.set(IndividualOrBusinessPage, Individual))
+    super.extract(answers)
       .flatMap(_.set(NamePage, leadIndividual.name))
       .flatMap(_.set(DateOfBirthPage, leadIndividual.dateOfBirth))
       .flatMap(answers => extractCountryOfNationality(leadIndividual.nationality, answers))
-      .flatMap(answers => extractLeadIndividualIdentification(leadIndividual, answers))
-      .flatMap(answers => extractAddress(leadIndividual.address, answers))
+      .flatMap(answers => extractIdentification(Some(leadIndividual.identification), answers))
+      .flatMap(answers => extractAddress(Some(leadIndividual.address), answers))
       .flatMap(answers => extractCountryOfResidence(leadIndividual.countryOfResidence, answers))
-      .flatMap(answers => extractEmail(leadIndividual.email, answers))
+      .flatMap(answers => extractConditionalValue(leadIndividual.email, EmailAddressYesNoPage, EmailAddressPage, answers))
       .flatMap(_.set(TelephoneNumberPage, leadIndividual.phoneNumber))
-  }
-
-  private def extractCountryOfNationality(countryOfNationality: Option[String], answers: UserAnswers): Try[UserAnswers] = {
-    if (answers.is5mldEnabled) {
-      countryOfNationality match {
-        case Some(GB) => answers
-          .set(CountryOfNationalityInTheUkYesNoPage, true)
-          .flatMap(_.set(CountryOfNationalityPage, GB))
-        case Some(country) => answers
-          .set(CountryOfNationalityInTheUkYesNoPage, false)
-          .flatMap(_.set(CountryOfNationalityPage, country))
-        case _ => Success(answers)
-      }
-    } else {
-      Success(answers)
-    }
-  }
-
-  private def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
-    if (answers.is5mldEnabled) {
-      countryOfResidence match {
-        case Some(GB) => answers
-          .set(CountryOfResidenceInTheUkYesNoPage, true)
-          .flatMap(_.set(CountryOfResidencePage, GB))
-        case Some(country) => answers
-          .set(CountryOfResidenceInTheUkYesNoPage, false)
-          .flatMap(_.set(CountryOfResidencePage, country))
-        case _ => Success(answers)
-      }
-    } else {
-      Success(answers)
-    }
-  }
-
-  private def extractLeadIndividualIdentification(leadIndividual: LeadTrusteeIndividual, answers: UserAnswers): Try[UserAnswers] = {
-    leadIndividual.identification match {
-      case NationalInsuranceNumber(nino) =>
-        answers.set(UkCitizenPage, true)
-          .flatMap(_.set(NationalInsuranceNumberPage, nino))
-      case passport:Passport =>
-        answers.set(UkCitizenPage, false)
-          .flatMap(_.set(PassportOrIdCardDetailsPage, passport.asCombined))
-      case idCard:IdCard =>
-        answers.set(UkCitizenPage, false)
-          .flatMap(_.set(PassportOrIdCardDetailsPage, idCard.asCombined))
-      case comb:CombinedPassportOrIdCard =>
-        answers.set(UkCitizenPage, false)
-          .flatMap(_.set(PassportOrIdCardDetailsPage, comb))
-    }
-  }
-
-  private def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
-    address match {
-      case uk: UkAddress => answers
-        .set(UkAddressPage, uk)
-        .flatMap(_.set(LiveInTheUkYesNoPage, true))
-      case nonUk: NonUkAddress => answers
-        .set(NonUkAddressPage, nonUk)
-        .flatMap(_.set(LiveInTheUkYesNoPage, false))
-    }
-  }
-
-  private def extractEmail(email: Option[String], answers: UserAnswers): Try[UserAnswers] = {
-    email match {
-      case Some(x) => answers
-        .set(EmailAddressYesNoPage, true)
-        .flatMap(_.set(EmailAddressPage, x))
-      case _ => answers
-        .set(EmailAddressYesNoPage, false)
-    }
   }
 
 }

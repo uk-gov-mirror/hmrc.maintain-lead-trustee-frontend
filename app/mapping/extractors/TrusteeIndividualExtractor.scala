@@ -16,26 +16,34 @@
 
 package mapping.extractors
 
-import com.google.inject.Inject
-import models.IndividualOrBusiness.Individual
-import models._
-import pages.trustee.amend.{individual => ind}
-import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
-import java.time.LocalDate
-
 import models.Constant.GB
-import pages.trustee.individual.{CountryOfNationalityInTheUkYesNoPage, CountryOfNationalityPage, CountryOfNationalityYesNoPage, CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage, MentalCapacityYesNoPage}
+import models._
+import pages.QuestionPage
+import pages.trustee.amend.{individual => ind}
+import pages.trustee.individual._
+import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
+import play.api.libs.json.JsPath
 
 import scala.util.{Success, Try}
 
-class TrusteeIndividualExtractor @Inject()() {
+class TrusteeIndividualExtractor extends IndividualExtractor {
+
+  override def basePath: JsPath = pages.trustee.basePath
+  override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
+
+  override def countryOfNationalityYesNoPage: QuestionPage[Boolean] = CountryOfNationalityYesNoPage
+  override def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean] = CountryOfNationalityInTheUkYesNoPage
+  override def countryOfNationalityPage: QuestionPage[String] = CountryOfNationalityPage
+
+  override def countryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceYesNoPage
+  override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
+  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
 
   def extract(answers: UserAnswers, trustee: TrusteeIndividual, index: Int): Try[UserAnswers] = {
-    answers.deleteAtPath(pages.trustee.basePath)
-      .flatMap(_.set(IndividualOrBusinessPage, Individual))
+    super.extract(answers)
       .flatMap(_.set(ind.IndexPage, index))
       .flatMap(_.set(ind.NamePage, trustee.name))
-      .flatMap(answers => extractDateOfBirth(trustee.dateOfBirth, answers))
+      .flatMap(answers => extractConditionalValue(trustee.dateOfBirth, DateOfBirthYesNoPage, DateOfBirthPage, answers))
       .flatMap(answers => extractAddress(trustee.address, answers))
       .flatMap(answers => extractCountryOfResidence(trustee.countryOfResidence, answers))
       .flatMap(answers => extractCountryOfNationality(trustee.nationality, answers))
@@ -44,48 +52,23 @@ class TrusteeIndividualExtractor @Inject()() {
       .flatMap(_.set(WhenAddedPage, trustee.entityStart))
   }
 
-  private def extractDateOfBirth(dateOfBirth: Option[LocalDate], answers: UserAnswers): Try[UserAnswers] = {
-    dateOfBirth match {
-      case Some(dob) =>
-        answers.set(ind.DateOfBirthYesNoPage, true)
-          .flatMap(_.set(ind.DateOfBirthPage, dob))
-      case _ =>
-        answers.set(ind.DateOfBirthYesNoPage, false)
-    }
-  }
-
-  private def extractCountryOfNationality(countryOfNationality: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+  override def extractCountryOfResidenceOrNationality(country: Option[String],
+                                                      answers: UserAnswers,
+                                                      yesNoPage: QuestionPage[Boolean],
+                                                      ukYesNoPage: QuestionPage[Boolean],
+                                                      page: QuestionPage[String]): Try[UserAnswers] ={
     if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
-      countryOfNationality match {
+      country match {
         case Some(GB) => answers
-          .set(CountryOfNationalityYesNoPage, true)
-          .flatMap(_.set(CountryOfNationalityInTheUkYesNoPage, true))
-          .flatMap(_.set(CountryOfNationalityPage, GB))
+          .set(yesNoPage, true)
+          .flatMap(_.set(ukYesNoPage, true))
+          .flatMap(_.set(page, GB))
         case Some(country) => answers
-          .set(CountryOfNationalityYesNoPage, true)
-          .flatMap(_.set(CountryOfNationalityInTheUkYesNoPage, false))
-          .flatMap(_.set(CountryOfNationalityPage, country))
+          .set(yesNoPage, true)
+          .flatMap(_.set(ukYesNoPage, false))
+          .flatMap(_.set(page, country))
         case None => answers
-          .set(CountryOfNationalityYesNoPage, false)
-      }
-    } else {
-      Success(answers)
-    }
-  }
-
-  private def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
-    if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
-      countryOfResidence match {
-        case Some(GB) => answers
-          .set(CountryOfResidenceYesNoPage, true)
-          .flatMap(_.set(CountryOfResidenceInTheUkYesNoPage, true))
-          .flatMap(_.set(CountryOfResidencePage, GB))
-        case Some(country) => answers
-          .set(CountryOfResidenceYesNoPage, true)
-          .flatMap(_.set(CountryOfResidenceInTheUkYesNoPage, false))
-          .flatMap(_.set(CountryOfResidencePage, country))
-        case None => answers
-          .set(CountryOfResidenceYesNoPage, false)
+          .set(yesNoPage, false)
       }
     } else {
       Success(answers)
@@ -94,19 +77,13 @@ class TrusteeIndividualExtractor @Inject()() {
 
   private def extractMentalCapacity(mentalCapacityYesNo: Option[Boolean], answers: UserAnswers): Try[UserAnswers] = {
     if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
-      mentalCapacityYesNo match {
-        case Some(true) => answers
-          .set(MentalCapacityYesNoPage, true)
-        case Some(false) => answers
-          .set(MentalCapacityYesNoPage, false)
-        case None => Success(answers)
-      }
+      extractValue(mentalCapacityYesNo, MentalCapacityYesNoPage, answers)
     } else {
       Success(answers)
     }
   }
 
-  private def extractIdentification(identification: Option[IndividualIdentification], answers: UserAnswers): Try[UserAnswers] = {
+  override def extractIdentification(identification: Option[IndividualIdentification], answers: UserAnswers): Try[UserAnswers] = {
     if (answers.isTaxable || !answers.is5mldEnabled) {
       identification match {
         case Some(NationalInsuranceNumber(nino)) =>
@@ -132,7 +109,7 @@ class TrusteeIndividualExtractor @Inject()() {
     }
   }
 
-  private def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
+  override def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
     if (answers.isTaxable || !answers.is5mldEnabled) {
       address match {
         case Some(uk: UkAddress) =>
