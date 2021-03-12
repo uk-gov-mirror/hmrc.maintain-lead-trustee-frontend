@@ -173,7 +173,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
         when(connector.addTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
         when(mapper.map(any()))
-          .thenReturn(Some(TrusteeOrganisation(orgName, None, None, None, date, provisional = true)))
+          .thenReturn(Some(TrusteeOrganisation(orgName, None, None, None, None, date, provisional = true)))
 
         val request = FakeRequest(POST, submitDetailsRoute)
 
