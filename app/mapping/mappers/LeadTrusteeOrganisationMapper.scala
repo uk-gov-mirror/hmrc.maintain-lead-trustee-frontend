@@ -18,31 +18,19 @@ package mapping.mappers
 
 import models._
 import pages.leadtrustee.organisation._
-import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-class LeadTrusteeOrganisationMapper extends Logging {
+class LeadTrusteeOrganisationMapper extends Mapper[LeadTrusteeOrganisation] {
 
-  def map(answers: UserAnswers): Option[LeadTrusteeOrganisation] = {
-    val reads: Reads[LeadTrusteeOrganisation] =
-      (
-        NamePage.path.read[String] and
-          TelephoneNumberPage.path.read[String] and
-          EmailAddressPage.path.readNullable[String] and
-          UtrPage.path.readNullable[String] and
-          AddressInTheUkYesNoPage.path.read[Boolean].flatMap {
-            case true => UkAddressPage.path.read[UkAddress].widen[Address]
-            case false => NonUkAddressPage.path.read[Address].widen[Address]
-          }
-        ).apply(LeadTrusteeOrganisation.apply _)
-
-    answers.data.validate[LeadTrusteeOrganisation](reads) match {
-      case JsError(errors) =>
-        logger.error(s"[UTR: ${answers.identifier}] Failed to rehydrate LeadTrusteeOrganisation from UserAnswers due to $errors")
-        None
-      case JsSuccess(value, _) => Some(value)
-    }
-  }
-
+  override val reads: Reads[LeadTrusteeOrganisation] = (
+    NamePage.path.read[String] and
+      TelephoneNumberPage.path.read[String] and
+      EmailAddressPage.path.readNullable[String] and
+      UtrPage.path.readNullable[String] and
+      AddressInTheUkYesNoPage.path.read[Boolean].flatMap {
+        case true => UkAddressPage.path.read[UkAddress].widen[Address]
+        case false => NonUkAddressPage.path.read[Address].widen[Address]
+      }
+    )(LeadTrusteeOrganisation.apply _)
 }

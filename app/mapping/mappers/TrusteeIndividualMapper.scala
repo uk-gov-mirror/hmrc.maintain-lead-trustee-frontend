@@ -16,76 +16,51 @@
 
 package mapping.mappers
 
+import models.Constant.GB
 import models._
 import pages.trustee.WhenAddedPage
 import pages.trustee.amend.individual.{PassportOrIdCardDetailsPage, PassportOrIdCardDetailsYesNoPage}
 import pages.trustee.individual._
-import play.api.Logging
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsError, JsSuccess, Reads}
+import play.api.libs.json.{JsSuccess, Reads}
+
 import java.time.LocalDate
 
-import models.Constant.GB
+class TrusteeIndividualMapper extends Mapper[TrusteeIndividual] {
 
-class TrusteeIndividualMapper extends Logging {
+  override val reads: Reads[TrusteeIndividual] = (
+    NamePage.path.read[Name] and
+      DateOfBirthPage.path.readNullable[LocalDate] and
+      Reads(_ => JsSuccess(None)) and
+      readIdentification and
+      readAddress and
+      readCountryOfResidence and
+      readCountryOfNationality and
+      readMentalCapacity and
+      WhenAddedPage.path.read[LocalDate] and
+      Reads(_ => JsSuccess(true))
+    )(TrusteeIndividual.apply _)
 
-  def map(userAnswers: UserAnswers, adding: Boolean): Option[TrusteeIndividual] = {
-    val reads: Reads[TrusteeIndividual] =
-      (
-        NamePage.path.read[Name] and
-          DateOfBirthPage.path.readNullable[LocalDate] and
-          Reads(_ => JsSuccess(None)) and
-          readIdentification(adding) and
-          readAddress and
-          readCountryOfResidence and
-          readCountryOfNationality and
-          readMentalCapacity and
-          WhenAddedPage.path.read[LocalDate] and
-          Reads(_ => JsSuccess(true))
-        ).apply(TrusteeIndividual.apply _ )
-
-    userAnswers.data.validate[TrusteeIndividual](reads) match {
-      case JsError(errors) =>
-        logger.error(s"[UTR: ${userAnswers.identifier}] Failed to rehydrate TrusteeIndividual from UserAnswers due to $errors")
-        None
-      case JsSuccess(value, _) =>
-        Some(value)
-    }
-  }
-
-  private def readIdentification(adding: Boolean): Reads[Option[IndividualIdentification]] = {
+  private def readIdentification: Reads[Option[IndividualIdentification]] = {
     NationalInsuranceNumberYesNoPage.path.readNullable[Boolean].flatMap[Option[IndividualIdentification]] {
       case Some(true) => NationalInsuranceNumberPage.path.read[String].map(nino => Some(NationalInsuranceNumber(nino)))
-      case _ => if (adding) readSeparatePassportOrIdCard else readCombinedPassportOrIdCard
+      case _ => readPassportOrIdCard
     }
   }
 
-  private def readSeparatePassportOrIdCard: Reads[Option[IndividualIdentification]] = {
-    (for {
+  private def readPassportOrIdCard: Reads[Option[IndividualIdentification]] = {
+    val identification = for {
       hasNino <- NationalInsuranceNumberYesNoPage.path.readWithDefault(false)
       hasAddress <- AddressYesNoPage.path.readWithDefault(false)
       hasPassport <- PassportDetailsYesNoPage.path.readWithDefault(false)
       hasIdCard <- IdCardDetailsYesNoPage.path.readWithDefault(false)
-    } yield (hasNino, hasAddress, hasPassport, hasIdCard)).flatMap[Option[IndividualIdentification]] {
-      case (false, true, true, false) => PassportDetailsPage.path.read[Passport].map(Some(_))
-      case (false, true, false, true) => IdCardDetailsPage.path.read[IdCard].map(Some(_))
-      case _ => Reads(_ => JsSuccess(None))
-    }
-  }
+      hasPassportOrIdCard <- PassportOrIdCardDetailsYesNoPage.path.readWithDefault(false)
+    } yield (hasNino, hasAddress, hasPassport, hasIdCard, hasPassportOrIdCard)
 
-  private def readCombinedPassportOrIdCard: Reads[Option[IndividualIdentification]] = {
-    NationalInsuranceNumberYesNoPage.path.readNullable[Boolean].flatMap {
-      case Some(false) => readPassportOrIdIfAddressExists
-      case _ => Reads(_ => JsSuccess(None))
-    }
-  }
-
-  private def readPassportOrIdIfAddressExists: Reads[Option[IndividualIdentification]] = {
-    AddressYesNoPage.path.readNullable[Boolean].flatMap {
-      case Some(true) => PassportOrIdCardDetailsYesNoPage.path.read[Boolean].flatMap[Option[IndividualIdentification]] {
-        case true => PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].map(Some(_))
-        case false => Reads(_ => JsSuccess(None))
-      }
+    identification.flatMap[Option[IndividualIdentification]] {
+      case (false, true, true, false, false) => PassportDetailsPage.path.read[Passport].map(Some(_))
+      case (false, true, false, true, false) => IdCardDetailsPage.path.read[IdCard].map(Some(_))
+      case (false, true, false, false, true) => PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].map(Some(_))
       case _ => Reads(_ => JsSuccess(None))
     }
   }

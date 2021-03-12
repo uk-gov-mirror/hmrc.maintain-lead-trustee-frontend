@@ -25,8 +25,8 @@ class TrusteeMapper @Inject()(trusteeIndividualMapper: TrusteeIndividualMapper,
                               leadTrusteeIndividualMapper: LeadTrusteeIndividualMapper,
                               leadTrusteeOrganisationMapper: LeadTrusteeOrganisationMapper) {
 
-  def mapToTrusteeIndividual(userAnswers: UserAnswers, adding: Boolean): Option[TrusteeIndividual] = {
-    trusteeIndividualMapper.map(userAnswers, adding)
+  def mapToTrusteeIndividual(userAnswers: UserAnswers): Option[TrusteeIndividual] = {
+    trusteeIndividualMapper.map(userAnswers)
   }
 
   def mapToTrusteeOrganisation(userAnswers: UserAnswers): Option[TrusteeOrganisation] = {

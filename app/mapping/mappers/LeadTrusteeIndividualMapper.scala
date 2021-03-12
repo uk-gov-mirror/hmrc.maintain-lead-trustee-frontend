@@ -19,49 +19,38 @@ package mapping.mappers
 import models.Constant.GB
 import models._
 import pages.leadtrustee.individual._
-import play.api.Logging
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsError, JsSuccess, Reads}
+import play.api.libs.json.{JsSuccess, Reads}
 
 import java.time.LocalDate
 
-class LeadTrusteeIndividualMapper extends Logging {
+class LeadTrusteeIndividualMapper extends Mapper[LeadTrusteeIndividual] {
 
-  def map(answers: UserAnswers): Option[LeadTrusteeIndividual] = {
-    val reads: Reads[LeadTrusteeIndividual] = (
-      NamePage.path.read[Name] and
-        DateOfBirthPage.path.read[LocalDate] and
-        TelephoneNumberPage.path.read[String] and
-        EmailAddressYesNoPage.path.read[Boolean].flatMap[Option[String]] {
-          case true => EmailAddressPage.path.read[String].map(Some(_))
-          case false => Reads( _=> JsSuccess(None))
-        } and
-        UkCitizenPage.path.read[Boolean].flatMap {
-          case true => NationalInsuranceNumberPage.path.read[String].map(NationalInsuranceNumber(_)).widen[IndividualIdentification]
-          case false => PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].widen[IndividualIdentification]
-        } and
-        (LiveInTheUkYesNoPage.path.read[Boolean] orElse CountryOfResidenceInTheUkYesNoPage.path.read[Boolean]).flatMap {
-          case true => UkAddressPage.path.read[UkAddress].widen[Address]
-          case false => NonUkAddressPage.path.read[NonUkAddress].widen[Address]
-        } and
-        CountryOfResidenceInTheUkYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
-          case Some(true) => Reads(_ => JsSuccess(Some(GB)))
-          case Some(false) => CountryOfResidencePage.path.read[String].map(Some(_))
-          case None => Reads(_ => JsSuccess(None))
-        } and
-        CountryOfNationalityInTheUkYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
-          case Some(true) => Reads(_ => JsSuccess(Some(GB)))
-          case Some(false) => CountryOfNationalityPage.path.read[String].map(Some(_))
-          case None => Reads(_ => JsSuccess(None))
-        }
-      )(LeadTrusteeIndividual.apply _)
-
-    answers.data.validate[LeadTrusteeIndividual](reads) match {
-      case JsError(errors) =>
-        logger.error(s"[UTR: ${answers.identifier}] Failed to rehydrate LeadTrusteeIndividual from UserAnswers due to $errors")
-        None
-      case JsSuccess(value, _) => Some(value)
-    }
-  }
-
+  override val reads: Reads[LeadTrusteeIndividual] = (
+    NamePage.path.read[Name] and
+      DateOfBirthPage.path.read[LocalDate] and
+      TelephoneNumberPage.path.read[String] and
+      EmailAddressYesNoPage.path.read[Boolean].flatMap[Option[String]] {
+        case true => EmailAddressPage.path.read[String].map(Some(_))
+        case false => Reads( _=> JsSuccess(None))
+      } and
+      UkCitizenPage.path.read[Boolean].flatMap {
+        case true => NationalInsuranceNumberPage.path.read[String].map(NationalInsuranceNumber(_)).widen[IndividualIdentification]
+        case false => PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].widen[IndividualIdentification]
+      } and
+      (LiveInTheUkYesNoPage.path.read[Boolean] orElse CountryOfResidenceInTheUkYesNoPage.path.read[Boolean]).flatMap {
+        case true => UkAddressPage.path.read[UkAddress].widen[Address]
+        case false => NonUkAddressPage.path.read[NonUkAddress].widen[Address]
+      } and
+      CountryOfResidenceInTheUkYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
+        case Some(true) => Reads(_ => JsSuccess(Some(GB)))
+        case Some(false) => CountryOfResidencePage.path.read[String].map(Some(_))
+        case None => Reads(_ => JsSuccess(None))
+      } and
+      CountryOfNationalityInTheUkYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
+        case Some(true) => Reads(_ => JsSuccess(Some(GB)))
+        case Some(false) => CountryOfNationalityPage.path.read[String].map(Some(_))
+        case None => Reads(_ => JsSuccess(None))
+      }
+    )(LeadTrusteeIndividual.apply _)
 }

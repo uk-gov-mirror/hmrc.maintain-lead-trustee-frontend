@@ -66,7 +66,7 @@ class CheckDetailsController @Inject()(
 
       val trustee: Option[Trustee] = request.userAnswers.get(IndividualOrBusinessPage) match {
         case Some(Individual) =>
-          mapper.mapToTrusteeIndividual(request.userAnswers, adding = true)
+          mapper.mapToTrusteeIndividual(request.userAnswers)
         case Some(Business) =>
           mapper.mapToTrusteeOrganisation(request.userAnswers)
         case _ =>

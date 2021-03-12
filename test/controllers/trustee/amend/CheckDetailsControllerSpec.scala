@@ -237,7 +237,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val trustee = TrusteeIndividual(indName, None, None, None, None, None, None, None, date, provisional = true)
 
-          when(mapper.map(any(), any())).thenReturn(Some(trustee))
+          when(mapper.map(any())).thenReturn(Some(trustee))
 
           when(mockTrustConnector.amendTrustee(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
@@ -258,7 +258,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           verify(playbackRepository).set(captor.capture)
           captor.getValue.data mustBe Json.obj()
 
-          verify(mapper).map(userAnswers, adding = false)
+          verify(mapper).map(userAnswers)
           verify(mockTrustConnector).amendTrustee(eqTo(userAnswers.identifier), eqTo(index), eqTo(trustee))(any(), any())
         }
 
@@ -336,7 +336,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
               .overrides(bind[TrusteeIndividualMapper].toInstance(mapper))
               .build()
 
-            when(mapper.map(any(), any())).thenReturn(None)
+            when(mapper.map(any())).thenReturn(None)
 
             val request = FakeRequest(POST, onSubmitRoute)
 
@@ -346,7 +346,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
             application.stop()
 
-            verify(mapper).map(userAnswers, adding = false)
+            verify(mapper).map(userAnswers)
           }
 
           "business" in {

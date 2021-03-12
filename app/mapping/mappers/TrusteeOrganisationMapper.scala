@@ -16,49 +16,37 @@
 
 package mapping.mappers
 
+import models.Constant.GB
 import models._
 import pages.trustee.WhenAddedPage
 import pages.trustee.organisation._
-import play.api.Logging
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsError, JsSuccess, Reads}
-import models.Constant.GB
+import play.api.libs.json.{JsSuccess, Reads}
 
 import java.time.LocalDate
 
-class TrusteeOrganisationMapper extends Logging {
+class TrusteeOrganisationMapper extends Mapper[TrusteeOrganisation] {
 
-  def map(userAnswers: UserAnswers): Option[TrusteeOrganisation] = {
-    val reads: Reads[TrusteeOrganisation] =
-      (
-        NamePage.path.read[String] and
-          Reads(_ => JsSuccess(None)) and
-          Reads(_ => JsSuccess(None)) and
-          readIdentification and
-          readCountryOfResidence and
-          WhenAddedPage.path.read[LocalDate] and
-          Reads(_ => JsSuccess(true))
-        ).apply(TrusteeOrganisation.apply _ )
-
-    userAnswers.data.validate[TrusteeOrganisation](reads) match {
-      case JsError(errors) =>
-        logger.error(s"[UTR: ${userAnswers.identifier}] Failed to rehydrate TrusteeOrganisation from UserAnswers due to $errors")
-        None
-      case JsSuccess(value, _) =>
-        Some(value)
-    }
-  }
-
-  private def readIdentification: Reads[Option[TrustIdentificationOrgType]] = {
-    (
+  override val reads: Reads[TrusteeOrganisation] = (
+    NamePage.path.read[String] and
       Reads(_ => JsSuccess(None)) and
-        UtrPage.path.readNullable[String] and
-        readAddress
-      ).tupled.map {
+      Reads(_ => JsSuccess(None)) and
+      readIdentification and
+      readCountryOfResidence and
+      WhenAddedPage.path.read[LocalDate] and
+      Reads(_ => JsSuccess(true))
+    )(TrusteeOrganisation.apply _)
+
+  private def readIdentification: Reads[Option[TrustIdentificationOrgType]] = (
+    Reads(_ => JsSuccess(None)) and
+      UtrPage.path.readNullable[String] and
+      readAddress
+    )
+    .tupled
+    .map {
       case (None, None, None) => None
       case (safeId, utr, address) => Some(TrustIdentificationOrgType(safeId, utr, address))
     }
-  }
 
   private def readAddress: Reads[Option[Address]] = {
     AddressInTheUkYesNoPage.path.readNullable[Boolean].flatMap {
@@ -77,6 +65,5 @@ class TrusteeOrganisationMapper extends Logging {
       case _ => Reads(_ => JsSuccess(None))
     }
   }
-
 
 }

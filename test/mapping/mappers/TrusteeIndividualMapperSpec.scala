@@ -60,7 +60,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             .set(NationalInsuranceNumberPage, nino).success.value
             .set(WhenAddedPage, startDate).success.value
 
-          val result = mapper.map(userAnswers, adding = true).get
+          val result = mapper.map(userAnswers).get
 
           result mustBe TrusteeIndividual(
             name = name,
@@ -80,7 +80,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             .set(AddressYesNoPage, false).success.value
             .set(WhenAddedPage, startDate).success.value
 
-          val result = mapper.map(userAnswers, adding = true).get
+          val result = mapper.map(userAnswers).get
 
           result mustBe TrusteeIndividual(
             name = name,
@@ -104,7 +104,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             .set(PassportDetailsPage, passport).success.value
             .set(WhenAddedPage, startDate).success.value
 
-          val result = mapper.map(userAnswers, adding = true).get
+          val result = mapper.map(userAnswers).get
 
           result mustBe TrusteeIndividual(
             name = name,
@@ -129,7 +129,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             .set(IdCardDetailsPage, idCard).success.value
             .set(WhenAddedPage, startDate).success.value
 
-          val result = mapper.map(userAnswers, adding = true).get
+          val result = mapper.map(userAnswers).get
 
           result mustBe TrusteeIndividual(
             name = name,
@@ -153,7 +153,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             .set(IdCardDetailsYesNoPage, false).success.value
             .set(WhenAddedPage, startDate).success.value
 
-          val result = mapper.map(userAnswers, adding = true).get
+          val result = mapper.map(userAnswers).get
 
           result mustBe TrusteeIndividual(
             name = name,
@@ -177,7 +177,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             .set(IdCardDetailsYesNoPage, false).success.value
             .set(WhenAddedPage, startDate).success.value
 
-          val result = mapper.map(userAnswers, adding = true).get
+          val result = mapper.map(userAnswers).get
 
           result mustBe TrusteeIndividual(
             name = name,
@@ -206,7 +206,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             .set(IdCardDetailsYesNoPage, false).success.value
             .set(WhenAddedPage, startDate).success.value
 
-          val result = mapper.map(userAnswers, adding = true).get
+          val result = mapper.map(userAnswers).get
 
           result mustBe TrusteeIndividual(
             name = name,
@@ -233,7 +233,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             .set(IdCardDetailsYesNoPage, false).success.value
             .set(WhenAddedPage, startDate).success.value
 
-          val result = mapper.map(userAnswers, adding = true).get
+          val result = mapper.map(userAnswers).get
 
           result mustBe TrusteeIndividual(
             name = name,
@@ -262,7 +262,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             .set(IdCardDetailsYesNoPage, false).success.value
             .set(WhenAddedPage, startDate).success.value
 
-          val result = mapper.map(userAnswers, adding = true).get
+          val result = mapper.map(userAnswers).get
 
           result mustBe TrusteeIndividual(
             name = name,
@@ -289,7 +289,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             .set(IdCardDetailsYesNoPage, false).success.value
             .set(WhenAddedPage, startDate).success.value
 
-          val result = mapper.map(userAnswers, adding = true).get
+          val result = mapper.map(userAnswers).get
 
           result mustBe TrusteeIndividual(
             name = name,
@@ -316,7 +316,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             .set(IdCardDetailsYesNoPage, false).success.value
             .set(WhenAddedPage, startDate).success.value
 
-          val result = mapper.map(userAnswers, adding = true).get
+          val result = mapper.map(userAnswers).get
 
           result mustBe TrusteeIndividual(
             name = name,
@@ -353,7 +353,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             .set(MentalCapacityYesNoPage, true).success.value
             .set(WhenAddedPage, startDate).success.value
 
-          val result = mapper.map(userAnswers, adding = false).get
+          val result = mapper.map(userAnswers).get
 
           result mustBe TrusteeIndividual(
             name = name,

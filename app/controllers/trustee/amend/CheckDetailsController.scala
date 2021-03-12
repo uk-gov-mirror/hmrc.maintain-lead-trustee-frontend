@@ -107,7 +107,7 @@ class CheckDetailsController @Inject()(
       val trustee: Option[Trustee] = request.userAnswers.get(IndividualOrBusinessPage) match {
         case Some(Individual) =>
           logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] amending trustee individual")
-          mapper.mapToTrusteeIndividual(request.userAnswers, adding = false)
+          mapper.mapToTrusteeIndividual(request.userAnswers)
         case Some(Business) =>
           logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] amending trustee organisation")
           mapper.mapToTrusteeOrganisation(request.userAnswers)
