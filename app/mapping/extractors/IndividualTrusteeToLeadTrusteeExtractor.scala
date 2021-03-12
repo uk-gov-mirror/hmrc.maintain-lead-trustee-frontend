@@ -16,6 +16,7 @@
 
 package mapping.extractors
 
+import models.Constant.GB
 import models.IndividualOrBusiness.Individual
 import models._
 import pages.leadtrustee.IndividualOrBusinessPage
@@ -32,8 +33,10 @@ class IndividualTrusteeToLeadTrusteeExtractor {
       .flatMap(_.set(IndexPage, index))
       .flatMap(_.set(NamePage, trustee.name))
       .flatMap(answers => extractDateOfBirth(trustee.dateOfBirth, answers))
+      .flatMap(answers => extractCountryOfNationality(trustee.nationality, answers))
       .flatMap(answers => extractIdentification(trustee.identification, answers))
       .flatMap(answers => extractAddress(trustee.address, answers))
+      .flatMap(answers => extractCountryOfResidence(trustee.countryOfResidence, answers))
       .flatMap(answers => extractTelephoneNumber(trustee.phoneNumber, answers))
   }
 
@@ -43,6 +46,38 @@ class IndividualTrusteeToLeadTrusteeExtractor {
         answers.set(DateOfBirthPage, dob)
       case _ =>
         Success(answers)
+    }
+  }
+
+  private def extractCountryOfNationality(countryOfNationality: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+    if (answers.is5mldEnabled) {
+      countryOfNationality match {
+        case Some(GB) => answers
+          .set(CountryOfNationalityInTheUkYesNoPage, true)
+          .flatMap(_.set(CountryOfNationalityPage, GB))
+        case Some(country) => answers
+          .set(CountryOfNationalityInTheUkYesNoPage, false)
+          .flatMap(_.set(CountryOfNationalityPage, country))
+        case _ => Success(answers)
+      }
+    } else {
+      Success(answers)
+    }
+  }
+
+  private def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+    if (answers.is5mldEnabled) {
+      countryOfResidence match {
+        case Some(GB) => answers
+          .set(CountryOfResidenceInTheUkYesNoPage, true)
+          .flatMap(_.set(CountryOfResidencePage, GB))
+        case Some(country) => answers
+          .set(CountryOfResidenceInTheUkYesNoPage, false)
+          .flatMap(_.set(CountryOfResidencePage, country))
+        case _ => Success(answers)
+      }
+    } else {
+      Success(answers)
     }
   }
 
