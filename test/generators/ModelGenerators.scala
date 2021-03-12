@@ -125,7 +125,7 @@ trait ModelGenerators {
         phone <- arbitrary[String]
         email <- arbitrary[Option[String]]
         id <- arbitrary[IndividualIdentification]
-        address <- arbitrary[Option[Address]]
+        address <- arbitrary[Address]
       } yield LeadTrusteeIndividual(name, dob, phone, email, id, address)
     }
   }

@@ -46,7 +46,7 @@ class LeadTrusteeIndividualExtractorSpec extends SpecBase {
       phoneNumber = phone,
       email = None,
       identification = identification,
-      address = Some(ukAddress)
+      address = ukAddress
     )
 
     val result = extractor.extract(emptyUserAnswers, trustee).get
@@ -76,7 +76,7 @@ class LeadTrusteeIndividualExtractorSpec extends SpecBase {
       phoneNumber = phone,
       email = Some(email),
       identification = combined,
-      address = Some(nonUkAddress)
+      address = nonUkAddress
     )
 
     val result = extractor.extract(emptyUserAnswers, trustee).get

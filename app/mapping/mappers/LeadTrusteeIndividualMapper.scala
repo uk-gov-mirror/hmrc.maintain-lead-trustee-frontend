@@ -40,12 +40,11 @@ class LeadTrusteeIndividualMapper extends Logging {
             case true => NationalInsuranceNumberPage.path.read[String].map(NationalInsuranceNumber(_)).widen[IndividualIdentification]
             case false => PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].widen[IndividualIdentification]
           } and
-          LiveInTheUkYesNoPage.path.readNullable[Boolean].flatMap {
-            case Some(true) => UkAddressPage.path.readNullable[UkAddress].widen[Option[Address]]
-            case Some(false) => NonUkAddressPage.path.readNullable[NonUkAddress].widen[Option[Address]]
-            case _ => Reads(_ => JsSuccess(None)).widen[Option[Address]]
+          LiveInTheUkYesNoPage.path.read[Boolean].flatMap {
+            case true => UkAddressPage.path.read[UkAddress].widen[Address]
+            case false => NonUkAddressPage.path.read[NonUkAddress].widen[Address]
           }
-        ).apply(LeadTrusteeIndividual.apply _ )
+        )(LeadTrusteeIndividual.apply _)
 
     answers.data.validate[LeadTrusteeIndividual](reads) match {
       case JsError(errors) =>

@@ -17,9 +17,8 @@
 package services
 
 import java.time.LocalDate
-
 import connectors.TrustConnector
-import models.{AllTrustees, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, TrusteeIndividual, Trustees}
+import models.{AllTrustees, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, TrusteeIndividual, Trustees, UkAddress}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -61,7 +60,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
         phoneNumber = "+446565657",
         email = None,
         identification = NationalInsuranceNumber("JP121212A"),
-        address = None
+        address = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
       )
 
       when(mockConnector.getTrustees(any())(any(), any()))

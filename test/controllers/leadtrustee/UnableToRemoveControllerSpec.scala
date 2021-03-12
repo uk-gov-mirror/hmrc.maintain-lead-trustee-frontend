@@ -47,7 +47,7 @@ class UnableToRemoveControllerSpec extends SpecBase   {
         phoneNumber = "1234567890",
         None,
         identification = CombinedPassportOrIdCard("Great Briton", "12345678654", LocalDate.parse("1970-09-24")),
-        address = Some(UkAddress("Test Line 1","Test Line 2", None,None,"AB1 1BA"))
+        address = UkAddress("Test Line 1", "Test Line 2", None, None, "AB1 1BA")
 
       )
 

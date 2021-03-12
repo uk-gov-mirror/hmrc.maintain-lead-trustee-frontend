@@ -61,7 +61,7 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
           phoneNumber = phone,
           email = Some(email),
           identification = NationalInsuranceNumber(nino),
-          address = Some(ukAddress)
+          address = ukAddress
         )
       }
 
@@ -82,7 +82,7 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
           phoneNumber = phone,
           email = None,
           identification = combined,
-          address = Some(nonUkAddress)
+          address = nonUkAddress
         )
       }
     }

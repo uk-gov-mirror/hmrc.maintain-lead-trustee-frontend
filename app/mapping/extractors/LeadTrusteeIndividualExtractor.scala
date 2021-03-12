@@ -23,7 +23,7 @@ import pages.leadtrustee.IndividualOrBusinessPage
 import pages.leadtrustee.individual._
 import play.api.Logging
 
-import scala.util.{Success, Try}
+import scala.util.Try
 
 class LeadTrusteeIndividualExtractor @Inject()() extends Logging {
 
@@ -55,24 +55,24 @@ class LeadTrusteeIndividualExtractor @Inject()() extends Logging {
     }
   }
 
-  private def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
+  private def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
     address match {
-      case Some(uk: UkAddress) =>
-        answers.set(UkAddressPage, uk)
-          .flatMap(_.set(LiveInTheUkYesNoPage, true))
-      case Some(nonUk: NonUkAddress) =>
-        answers.set(NonUkAddressPage, nonUk)
-          .flatMap(_.set(LiveInTheUkYesNoPage, false))
-      case None => Success(answers)
+      case uk: UkAddress => answers
+        .set(UkAddressPage, uk)
+        .flatMap(_.set(LiveInTheUkYesNoPage, true))
+      case nonUk: NonUkAddress => answers
+        .set(NonUkAddressPage, nonUk)
+        .flatMap(_.set(LiveInTheUkYesNoPage, false))
     }
   }
 
   private def extractEmail(email: Option[String], answers: UserAnswers): Try[UserAnswers] = {
     email match {
-      case Some(x) =>
-        answers.set(EmailAddressYesNoPage, true)
-          .flatMap(_.set(EmailAddressPage, x))
-      case _ => answers.set(EmailAddressYesNoPage, false)
+      case Some(x) => answers
+        .set(EmailAddressYesNoPage, true)
+        .flatMap(_.set(EmailAddressPage, x))
+      case _ => answers
+        .set(EmailAddressYesNoPage, false)
     }
   }
 

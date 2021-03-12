@@ -43,6 +43,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
   private lazy val replacingLeadTrusteeRoute: String = routes.ReplacingLeadTrusteeController.onPageLoad().url
 
   private val date: LocalDate = LocalDate.parse("2019-02-28")
+  private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
 
   private val leadTrusteeIndividual = LeadTrusteeIndividual(
     name = Name(firstName = "John", middleName = Some("Jonathan"), lastName = "Smith"),
@@ -50,7 +51,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
     phoneNumber = "+446565657",
     email = None,
     identification = NationalInsuranceNumber("JP121212A"),
-    address = None
+    address = ukAddress
   )
 
   private class FakeService(data: Trustees, leadTrustee: Option[LeadTrustee] = Some(leadTrusteeIndividual)) extends TrustService {
@@ -332,7 +333,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
           phoneNumber = "tel",
           email = None,
           utr = None,
-          address = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
+          address = ukAddress
         )
 
         val fakeService = new FakeService(Trustees(Nil), Some(leadTrustee))

@@ -17,13 +17,12 @@
 package controllers.trustee
 
 import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustStoreConnector
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
 import models.IndividualOrBusiness.Individual
-import models.{AddATrustee, AllTrustees, LeadTrustee, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, Trustee, TrusteeIndividual, Trustees, UserAnswers}
+import models.{AddATrustee, AllTrustees, LeadTrustee, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, Trustee, TrusteeIndividual, Trustees, UkAddress, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
@@ -75,7 +74,7 @@ class AddATrusteeControllerSpec extends SpecBase {
     phoneNumber = "+446565657",
     email = None,
     identification = NationalInsuranceNumber("JP121212A"),
-    address = None
+    address = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
   ))
 
   private val trustee = TrusteeIndividual(
