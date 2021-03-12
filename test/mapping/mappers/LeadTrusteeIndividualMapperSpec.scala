@@ -27,7 +27,8 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
   private val name: Name = Name("First", None, "Last")
   private val dateOfBirth: LocalDate = LocalDate.parse("1996-02-03")
   private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postcode")
-  private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "country")
+  private val country: String = "FR"
+  private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, country)
   private val nino: String = "nino"
   private val email: String = "email"
   private val phone: String = "tel"
@@ -43,47 +44,104 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
 
     "map user answers to lead trustee individual" when {
 
-      "trustee has NINO, UK address and email" in {
-        val userAnswers = baseAnswers
-          .set(UkCitizenPage, true).success.value
-          .set(NationalInsuranceNumberPage, nino).success.value
-          .set(LiveInTheUkYesNoPage, true).success.value
-          .set(UkAddressPage, ukAddress).success.value
-          .set(EmailAddressYesNoPage, true).success.value
-          .set(EmailAddressPage, email).success.value
-          .set(TelephoneNumberPage, phone).success.value
+      "4mld" when {
 
-        val result = mapper.map(userAnswers).get
+        "trustee has NINO, UK address and email" in {
+          val userAnswers = baseAnswers
+            .set(UkCitizenPage, true).success.value
+            .set(NationalInsuranceNumberPage, nino).success.value
+            .set(LiveInTheUkYesNoPage, true).success.value
+            .set(UkAddressPage, ukAddress).success.value
+            .set(EmailAddressYesNoPage, true).success.value
+            .set(EmailAddressPage, email).success.value
+            .set(TelephoneNumberPage, phone).success.value
 
-        result mustBe LeadTrusteeIndividual(
-          name = name,
-          dateOfBirth = dateOfBirth,
-          phoneNumber = phone,
-          email = Some(email),
-          identification = NationalInsuranceNumber(nino),
-          address = ukAddress
-        )
+          val result = mapper.map(userAnswers).get
+
+          result mustBe LeadTrusteeIndividual(
+            name = name,
+            dateOfBirth = dateOfBirth,
+            phoneNumber = phone,
+            email = Some(email),
+            identification = NationalInsuranceNumber(nino),
+            address = ukAddress
+          )
+        }
+
+        "trustee has passport/ID card, non-UK address and no email" in {
+          val userAnswers = baseAnswers
+            .set(UkCitizenPage, false).success.value
+            .set(PassportOrIdCardDetailsPage, combined).success.value
+            .set(LiveInTheUkYesNoPage, false).success.value
+            .set(NonUkAddressPage, nonUkAddress).success.value
+            .set(EmailAddressYesNoPage, false).success.value
+            .set(TelephoneNumberPage, phone).success.value
+
+          val result = mapper.map(userAnswers).get
+
+          result mustBe LeadTrusteeIndividual(
+            name = name,
+            dateOfBirth = dateOfBirth,
+            phoneNumber = phone,
+            email = None,
+            identification = combined,
+            address = nonUkAddress
+          )
+        }
       }
 
-      "trustee has passport/ID card, non-UK address and no email" in {
-        val userAnswers = baseAnswers
-          .set(UkCitizenPage, false).success.value
-          .set(PassportOrIdCardDetailsPage, combined).success.value
-          .set(LiveInTheUkYesNoPage, false).success.value
-          .set(NonUkAddressPage, nonUkAddress).success.value
-          .set(EmailAddressYesNoPage, false).success.value
-          .set(TelephoneNumberPage, phone).success.value
+      "5mld" when {
 
-        val result = mapper.map(userAnswers).get
+        "trustee has UK nationality, NINO, and UK residency/address" in {
+          val userAnswers = baseAnswers
+            .set(CountryOfNationalityInTheUkYesNoPage, true).success.value
+            .set(UkCitizenPage, true).success.value
+            .set(NationalInsuranceNumberPage, nino).success.value
+            .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
+            .set(UkAddressPage, ukAddress).success.value
+            .set(EmailAddressYesNoPage, true).success.value
+            .set(EmailAddressPage, email).success.value
+            .set(TelephoneNumberPage, phone).success.value
 
-        result mustBe LeadTrusteeIndividual(
-          name = name,
-          dateOfBirth = dateOfBirth,
-          phoneNumber = phone,
-          email = None,
-          identification = combined,
-          address = nonUkAddress
-        )
+          val result = mapper.map(userAnswers).get
+
+          result mustBe LeadTrusteeIndividual(
+            name = name,
+            dateOfBirth = dateOfBirth,
+            phoneNumber = phone,
+            email = Some(email),
+            identification = NationalInsuranceNumber(nino),
+            address = ukAddress,
+            countryOfResidence = Some("GB"),
+            nationality = Some("GB")
+          )
+        }
+
+        "trustee has non-UK nationality, passport/ID card, and non-UK residency/address" in {
+          val userAnswers = baseAnswers
+            .set(CountryOfNationalityInTheUkYesNoPage, false).success.value
+            .set(CountryOfNationalityPage, country).success.value
+            .set(UkCitizenPage, false).success.value
+            .set(PassportOrIdCardDetailsPage, combined).success.value
+            .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
+            .set(CountryOfResidencePage, country).success.value
+            .set(NonUkAddressPage, nonUkAddress).success.value
+            .set(EmailAddressYesNoPage, false).success.value
+            .set(TelephoneNumberPage, phone).success.value
+
+          val result = mapper.map(userAnswers).get
+
+          result mustBe LeadTrusteeIndividual(
+            name = name,
+            dateOfBirth = dateOfBirth,
+            phoneNumber = phone,
+            email = None,
+            identification = combined,
+            address = nonUkAddress,
+            countryOfResidence = Some(country),
+            nationality = Some(country)
+          )
+        }
       }
     }
   }

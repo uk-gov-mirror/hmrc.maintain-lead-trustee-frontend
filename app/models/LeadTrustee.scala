@@ -48,7 +48,9 @@ case class LeadTrusteeIndividual(name: Name,
                                  phoneNumber: String,
                                  email: Option[String] = None,
                                  identification: IndividualIdentification,
-                                 address: Address) extends LeadTrustee
+                                 address: Address,
+                                 countryOfResidence: Option[String] = None,
+                                 nationality: Option[String] = None) extends LeadTrustee
 
 object LeadTrusteeIndividual {
   implicit val reads: Reads[LeadTrusteeIndividual] = (
@@ -57,7 +59,9 @@ object LeadTrusteeIndividual {
       (__ \ 'phoneNumber).read[String] and
       (__ \ 'email).readNullable[String] and
       (__ \ 'identification).read[IndividualIdentification] and
-      (__ \ 'identification \ 'address).read[Address]
+      (__ \ 'identification \ 'address).read[Address] and
+      (__ \ 'countryOfResidence).readNullable[String] and
+      (__ \ 'nationality).readNullable[String]
     ).apply(LeadTrusteeIndividual.apply _)
 
   implicit val writes: Writes[LeadTrusteeIndividual] = (
@@ -66,7 +70,9 @@ object LeadTrusteeIndividual {
       (__ \ 'phoneNumber).write[String] and
       (__ \ 'email).writeNullable[String] and
       (__ \ 'identification).write[IndividualIdentification] and
-      (__ \ 'identification \ 'address).write[Address]
+      (__ \ 'identification \ 'address).write[Address] and
+      (__ \ 'countryOfResidence).writeNullable[String] and
+      (__ \ 'nationality).writeNullable[String]
     ).apply(unlift(LeadTrusteeIndividual.unapply))
 }
 
