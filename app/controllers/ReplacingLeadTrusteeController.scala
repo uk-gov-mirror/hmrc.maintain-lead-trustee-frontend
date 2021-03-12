@@ -21,7 +21,7 @@ import forms.ReplaceLeadTrusteeFormProvider
 import handlers.ErrorHandler
 import mapping.extractors.{IndividualTrusteeToLeadTrusteeExtractor, OrganisationTrusteeToLeadTrusteeExtractor}
 import models.requests.DataRequest
-import models.{AllTrustees, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
+import models.{AllTrustees, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -57,22 +57,10 @@ class ReplacingLeadTrusteeController @Inject()(
 
       trust.getAllTrustees(request.userAnswers.identifier) map {
         case AllTrustees(leadTrustee, trustees) =>
-          val trusteeNames = trustees
-            .map {
-              case ind: TrusteeIndividual => ind.name.displayName
-              case org: TrusteeOrganisation => org.name
-            }
-            .zipWithIndex.map {
-            x => RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", x._1)
-          }
-
-          Ok(view(form, getLeadTrusteeName(leadTrustee), trusteeNames))
+          val radioOptions = generateRadioOptions(trustees)
+          Ok(view(form, getLeadTrusteeName(leadTrustee), radioOptions))
       } recoverWith {
-        case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
-
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        recovery
       }
   }
 
@@ -81,16 +69,11 @@ class ReplacingLeadTrusteeController @Inject()(
 
       trust.getAllTrustees(request.userAnswers.identifier) flatMap {
         case AllTrustees(leadTrustee, trustees) =>
-          val trusteeNames = trustees.map {
-            case ind: TrusteeIndividual => ind.name.displayName
-            case org: TrusteeOrganisation => org.name
-          }.zipWithIndex.map(
-            x => RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", x._1)
-          )
-
           form.bindFromRequest().fold(
-            formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), trusteeNames))),
+            formWithErrors => {
+              val radioOptions = generateRadioOptions(trustees)
+              Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), radioOptions)))
+            },
             value => {
               value.toInt match {
                 case index =>
@@ -102,11 +85,23 @@ class ReplacingLeadTrusteeController @Inject()(
             }
           )
       } recoverWith {
-        case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
+        recovery
+      }
+  }
 
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+  private def generateRadioOptions(trustees: List[Trustee]): List[RadioOption] = {
+    trustees
+      .zipWithIndex
+      .filter(_._1 match {
+        case ind: TrusteeIndividual => !ind.mentalCapacityYesNo.contains(false)
+        case _: TrusteeOrganisation => true
+      })
+      .map { x =>
+        val name = x._1 match {
+          case ind: TrusteeIndividual => ind.name.displayName
+          case org: TrusteeOrganisation => org.name
+        }
+        RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", name)
       }
   }
 
@@ -130,6 +125,14 @@ class ReplacingLeadTrusteeController @Inject()(
       updatedAnswers <- Future.fromTry(organisationTrusteeToLeadTrusteeExtractor.extract(userAnswers, trustee, index))
       _ <- playbackRepository.set(updatedAnswers)
     } yield Redirect(controllers.leadtrustee.organisation.routes.NeedToAnswerQuestionsController.onPageLoad())
+  }
+
+  private def recovery(implicit request: DataRequest[AnyContent]): PartialFunction[Throwable, Future[Result]] = {
+    case _ =>
+      logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+        s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
+
+      Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
   }
 
 }

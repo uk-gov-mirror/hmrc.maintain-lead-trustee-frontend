@@ -16,14 +16,13 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.SpecBase
 import forms.TrusteeTypeFormProvider
-import models.{AllTrustees, LeadTrustee, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, Trustee, TrusteeIndividual, TrusteeOrganisation, Trustees}
+import models._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -33,101 +32,222 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import viewmodels.RadioOption
 import views.html.ReplacingLeadTrusteeView
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new TrusteeTypeFormProvider()
-  val messageKeyPrefix: String = "replacingLeadTrustee"
-  val form = formProvider.withPrefix(messageKeyPrefix)
+  private val messageKeyPrefix: String = "replacingLeadTrustee"
+  private val form: Form[TrusteeType] = new TrusteeTypeFormProvider().withPrefix(messageKeyPrefix)
   
-  lazy val replacingLeadTrusteeRoute = routes.ReplacingLeadTrusteeController.onPageLoad().url
+  private lazy val replacingLeadTrusteeRoute: String = routes.ReplacingLeadTrusteeController.onPageLoad().url
+
+  private val date: LocalDate = LocalDate.parse("2019-02-28")
 
   private val leadTrusteeIndividual = LeadTrusteeIndividual(
-    name = Name(
-      firstName = "Lead First",
-      middleName = None,
-      lastName = "Last"
-    ),
-    dateOfBirth = LocalDate.parse("2010-10-10"),
+    name = Name(firstName = "John", middleName = Some("Jonathan"), lastName = "Smith"),
+    dateOfBirth = date,
     phoneNumber = "+446565657",
     email = None,
     identification = NationalInsuranceNumber("JP121212A"),
     address = None
   )
 
-  private val trustee = TrusteeIndividual(
-    name = Name(firstName = "First", middleName = None, lastName = "Last"),
-    dateOfBirth = Some(LocalDate.parse("1983-09-24")),
-    phoneNumber = None,
-    identification = Some(NationalInsuranceNumber("JS123456A")),
-    address = None,
-    entityStart = LocalDate.parse("2019-02-28"),
-    provisional = true
-  )
-
-  val trustees = Trustees(List(trustee, trustee))
-
-  val radioOptions = trustees.trustees.map {
-    case ind: TrusteeIndividual => ind.name.displayName
-    case org: TrusteeOrganisation => org.name
-  }.zipWithIndex.map(
-    x => RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", x._1)
-  )
-
-  class FakeService(data: Trustees, leadTrustee: Option[LeadTrustee] = Some(leadTrusteeIndividual)) extends TrustService {
+  private class FakeService(data: Trustees, leadTrustee: Option[LeadTrustee] = Some(leadTrusteeIndividual)) extends TrustService {
 
     override def getLeadTrustee(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] =
-      Future.successful(leadTrustee)
+      ???
 
     override def getAllTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees] =
       Future.successful(AllTrustees(leadTrustee, data.trustees))
 
-    override def getTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] = Future.successful(data)
+    override def getTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] =
+      ???
 
     override def getTrustee(utr: String, index: Int)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Trustee] =
-      Future.successful(trustee)
+      ???
 
-    override def removeTrustee(utr: String, trustee: RemoveTrustee)
-                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(200, ""))
-
+    override def removeTrustee(utr: String, trustee: RemoveTrustee)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+      ???
   }
 
   "ReplacingLeadTrustee controller" must {
 
-    "return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET" when {
 
-      val fakeService = new FakeService(trustees)
+      "4mld" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind(classOf[TrustService]).toInstance(fakeService))
-        .build()
+        val indTrustee = TrusteeIndividual(
+          name = Name(firstName = "Joe", middleName = None, lastName = "Bloggs"),
+          dateOfBirth = None,
+          phoneNumber = None,
+          identification = None,
+          address = None,
+          entityStart = date,
+          provisional = true
+        )
 
-      val request = FakeRequest(GET, replacingLeadTrusteeRoute)
+        val orgTrustee = TrusteeOrganisation(
+          name = "Amazon",
+          phoneNumber = None,
+          email = None,
+          identification = None,
+          entityStart = date,
+          provisional = true
+        )
 
-      val result = route(application, request).value
+        val trustees = Trustees(List(indTrustee, orgTrustee))
 
-      val view = application.injector.instanceOf[ReplacingLeadTrusteeView]
+        val expectedRadioOptions = List(
+          RadioOption(s"$messageKeyPrefix.0", "0", "Joe Bloggs"),
+          RadioOption(s"$messageKeyPrefix.1", "1", "Amazon")
+        )
 
-      status(result) mustEqual OK
+        val fakeService = new FakeService(trustees)
 
-      contentAsString(result) mustEqual
-        view(form, leadTrusteeIndividual.name.displayName, radioOptions)(request, messages).toString
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
-      application.stop()
+        val request = FakeRequest(GET, replacingLeadTrusteeRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[ReplacingLeadTrusteeView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form, "John Smith", expectedRadioOptions)(request, messages).toString
+
+        application.stop()
+      }
+
+      "5mld" when {
+
+        "all trustees mentally capable" in {
+
+          val trustee1 = TrusteeIndividual(
+            name = Name(firstName = "Joe", middleName = Some("Joseph"), lastName = "Bloggs"),
+            dateOfBirth = None,
+            phoneNumber = None,
+            identification = None,
+            address = None,
+            mentalCapacityYesNo = Some(true),
+            entityStart = date,
+            provisional = true
+          )
+
+          val trustee2 = TrusteeIndividual(
+            name = Name(firstName = "John", middleName = Some("Joe"), lastName = "Doe"),
+            dateOfBirth = None,
+            phoneNumber = None,
+            identification = None,
+            address = None,
+            mentalCapacityYesNo = Some(true),
+            entityStart = date,
+            provisional = true
+          )
+
+          val trustees = Trustees(List(trustee1, trustee2))
+
+          val expectedRadioOptions = List(
+            RadioOption(s"$messageKeyPrefix.0", "0", "Joe Bloggs"),
+            RadioOption(s"$messageKeyPrefix.1", "1", "John Doe")
+          )
+
+          val fakeService = new FakeService(trustees)
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+            .build()
+
+          val request = FakeRequest(GET, replacingLeadTrusteeRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[ReplacingLeadTrusteeView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(form, "John Smith", expectedRadioOptions)(request, messages).toString
+
+          application.stop()
+        }
+
+        "trustees contains a mentally incapable trustee" in {
+
+          val indTrustee1 = TrusteeIndividual(
+            name = Name(firstName = "Joe", middleName = Some("Joseph"), lastName = "Bloggs"),
+            dateOfBirth = None,
+            phoneNumber = None,
+            identification = None,
+            address = None,
+            mentalCapacityYesNo = Some(false),
+            entityStart = date,
+            provisional = true
+          )
+
+          val indTrustee2 = TrusteeIndividual(
+            name = Name(firstName = "John", middleName = Some("Joe"), lastName = "Doe"),
+            dateOfBirth = None,
+            phoneNumber = None,
+            identification = None,
+            address = None,
+            mentalCapacityYesNo = Some(true),
+            entityStart = date,
+            provisional = true
+          )
+
+          val trustees = Trustees(List(indTrustee1, indTrustee2))
+
+          val expectedRadioOptions = List(
+            RadioOption(s"$messageKeyPrefix.1", "1", "John Doe")
+          )
+
+          val fakeService = new FakeService(trustees)
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+            .build()
+
+          val request = FakeRequest(GET, replacingLeadTrusteeRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[ReplacingLeadTrusteeView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(form, "John Smith", expectedRadioOptions)(request, messages).toString
+
+          application.stop()
+        }
+      }
     }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val fakeService = new FakeService(trustees)
+      val trustee = TrusteeIndividual(
+        name = Name(firstName = "Joe", middleName = Some("Joseph"), lastName = "Bloggs"),
+        dateOfBirth = None,
+        phoneNumber = None,
+        identification = None,
+        address = None,
+        entityStart = LocalDate.parse("2019-02-28"),
+        provisional = true
+      )
+
+      val fakeService = new FakeService(Trustees(List(trustee)))
 
       val mockPlaybackRepository = mock[PlaybackRepository]
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val request =
-        FakeRequest(POST, replacingLeadTrusteeRoute)
-          .withFormUrlEncodedBody(("value", "0"))
+      val request = FakeRequest(POST, replacingLeadTrusteeRoute)
+        .withFormUrlEncodedBody(("value", "0"))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind(classOf[TrustService]).toInstance(fakeService))
@@ -144,15 +264,14 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val fakeService = new FakeService(trustees)
+      val fakeService = new FakeService(Trustees(Nil))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind(classOf[TrustService]).toInstance(fakeService))
         .build()
 
-      val request =
-        FakeRequest(POST, replacingLeadTrusteeRoute)
-          .withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, replacingLeadTrusteeRoute)
+        .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
@@ -163,7 +282,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, leadTrusteeIndividual.name.displayName, radioOptions)(request, messages).toString
+        view(boundForm, "John Smith", Nil)(request, messages).toString
 
       application.stop()
     }
@@ -187,9 +306,8 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request =
-        FakeRequest(POST, replacingLeadTrusteeRoute)
-          .withFormUrlEncodedBody(("value", "add-new"))
+      val request = FakeRequest(POST, replacingLeadTrusteeRoute)
+        .withFormUrlEncodedBody(("value", "0"))
 
       val result = route(application, request).value
 
