@@ -16,8 +16,8 @@
 
 package mapping.mappers
 
-import models.Constant.GB
 import models._
+import pages.QuestionPage
 import pages.trustee.WhenAddedPage
 import pages.trustee.amend.individual.{PassportOrIdCardDetailsPage, PassportOrIdCardDetailsYesNoPage}
 import pages.trustee.individual._
@@ -26,7 +26,7 @@ import play.api.libs.json.{JsSuccess, Reads}
 
 import java.time.LocalDate
 
-class TrusteeIndividualMapper extends Mapper[TrusteeIndividual] {
+class TrusteeIndividualMapper extends TrusteeMapper[TrusteeIndividual] {
 
   override val reads: Reads[TrusteeIndividual] = (
     NamePage.path.read[Name] and
@@ -65,40 +65,23 @@ class TrusteeIndividualMapper extends Mapper[TrusteeIndividual] {
     }
   }
 
-  private def readCountryOfResidence: Reads[Option[String]] = {
-    CountryOfResidenceYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
-      case Some(true) => CountryOfResidenceInTheUkYesNoPage.path.read[Boolean].flatMap {
-        case true => Reads(_ => JsSuccess(Some(GB)))
-        case false => CountryOfResidencePage.path.read[String].map(Some(_))
-      }
-      case _ => Reads(_ => JsSuccess(None))
-    }
-  }
-
   private def readCountryOfNationality: Reads[Option[String]] = {
-    CountryOfNationalityYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
-      case Some(true) => CountryOfNationalityInTheUkYesNoPage.path.read[Boolean].flatMap {
-        case true => Reads(_ => JsSuccess(Some(GB)))
-        case false => CountryOfNationalityPage.path.read[String].map(Some(_))
-      }
-      case _ => Reads(_ => JsSuccess(None))
-    }
+    readCountryOfResidenceOrNationality(CountryOfNationalityYesNoPage, CountryOfNationalityInTheUkYesNoPage, CountryOfNationalityPage)
   }
 
   private def readMentalCapacity: Reads[Option[Boolean]] = {
     MentalCapacityYesNoPage.path.readNullable[Boolean].flatMap[Option[Boolean]] {
-      case Some(true) => Reads(_ => JsSuccess(Some(false)))
-      case Some(false) => Reads(_ => JsSuccess(Some(true)))
+      case Some(value) => Reads(_ => JsSuccess(Some(!value)))
       case _ => Reads(_ => JsSuccess(None))
     }
   }
 
-  private def readAddress: Reads[Option[Address]] = {
-    LiveInTheUkYesNoPage.path.readNullable[Boolean].flatMap {
-      case Some(true) => UkAddressPage.path.readNullable[UkAddress].widen[Option[Address]]
-      case Some(false) => NonUkAddressPage.path.readNullable[NonUkAddress].widen[Option[Address]]
-      case _ => Reads(_ => JsSuccess(None)).widen[Option[Address]]
-    }
-  }
+  override def ukAddressYesNoPage: QuestionPage[Boolean] = LiveInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
+
+  override def countryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceYesNoPage
+  override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
+  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
 
 }

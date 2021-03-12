@@ -22,7 +22,7 @@ import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import handlers.ErrorHandler
 import mapping.extractors.TrusteeExtractor
-import mapping.mappers.TrusteeMapper
+import mapping.mappers.TrusteeMappers
 import models.IndividualOrBusiness._
 import models.{Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
 import pages.trustee.IndividualOrBusinessPage
@@ -47,7 +47,7 @@ class CheckDetailsController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
                                         printHelper: TrusteePrintHelper,
-                                        mapper: TrusteeMapper,
+                                        mapper: TrusteeMappers,
                                         extractor: TrusteeExtractor,
                                         trustConnector: TrustConnector,
                                         nameAction: NameRequiredAction,

@@ -62,7 +62,7 @@ object LeadTrusteeIndividual {
       (__ \ 'identification \ 'address).read[Address] and
       (__ \ 'countryOfResidence).readNullable[String] and
       (__ \ 'nationality).readNullable[String]
-    ).apply(LeadTrusteeIndividual.apply _)
+    )(LeadTrusteeIndividual.apply _)
 
   implicit val writes: Writes[LeadTrusteeIndividual] = (
     (__ \ 'name).write[Name] and
@@ -73,14 +73,15 @@ object LeadTrusteeIndividual {
       (__ \ 'identification \ 'address).write[Address] and
       (__ \ 'countryOfResidence).writeNullable[String] and
       (__ \ 'nationality).writeNullable[String]
-    ).apply(unlift(LeadTrusteeIndividual.unapply))
+    )(unlift(LeadTrusteeIndividual.unapply))
 }
 
 case class LeadTrusteeOrganisation(name: String,
                                    phoneNumber: String,
                                    email: Option[String] = None,
                                    utr: Option[String],
-                                   address: Address) extends LeadTrustee
+                                   address: Address,
+                                   countryOfResidence: Option[String] = None) extends LeadTrustee
 
 object LeadTrusteeOrganisation {
   implicit val reads: Reads[LeadTrusteeOrganisation] = (
@@ -88,14 +89,16 @@ object LeadTrusteeOrganisation {
       (__ \ 'phoneNumber).read[String] and
       (__ \ 'email).readNullable[String] and
       (__ \ 'identification \ 'utr).readNullable[String] and
-      (__ \ 'identification \ 'address).read[Address]
-    ).apply(LeadTrusteeOrganisation.apply _)
+      (__ \ 'identification \ 'address).read[Address] and
+      (__ \ 'countryOfResidence).readNullable[String]
+    )(LeadTrusteeOrganisation.apply _)
 
   implicit val writes: Writes[LeadTrusteeOrganisation] = (
     (__ \ 'name).write[String] and
       (__ \ 'phoneNumber).write[String] and
       (__ \ 'email).writeNullable[String] and
       (__ \ 'identification \ 'utr).writeNullable[String] and
-      (__ \ 'identification \ 'address).write[Address]
-    ).apply(unlift(LeadTrusteeOrganisation.unapply))
+      (__ \ 'identification \ 'address).write[Address] and
+      (__ \ 'countryOfResidence).writeNullable[String]
+    )(unlift(LeadTrusteeOrganisation.unapply))
 }

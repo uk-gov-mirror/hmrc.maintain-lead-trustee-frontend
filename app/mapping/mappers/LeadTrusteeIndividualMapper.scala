@@ -16,15 +16,15 @@
 
 package mapping.mappers
 
-import models.Constant.GB
 import models._
+import pages.QuestionPage
 import pages.leadtrustee.individual._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsSuccess, Reads}
 
 import java.time.LocalDate
 
-class LeadTrusteeIndividualMapper extends Mapper[LeadTrusteeIndividual] {
+class LeadTrusteeIndividualMapper extends LeadTrusteeMapper[LeadTrusteeIndividual] {
 
   override val reads: Reads[LeadTrusteeIndividual] = (
     NamePage.path.read[Name] and
@@ -38,19 +38,16 @@ class LeadTrusteeIndividualMapper extends Mapper[LeadTrusteeIndividual] {
         case true => NationalInsuranceNumberPage.path.read[String].map(NationalInsuranceNumber(_)).widen[IndividualIdentification]
         case false => PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].widen[IndividualIdentification]
       } and
-      (LiveInTheUkYesNoPage.path.read[Boolean] orElse CountryOfResidenceInTheUkYesNoPage.path.read[Boolean]).flatMap {
-        case true => UkAddressPage.path.read[UkAddress].widen[Address]
-        case false => NonUkAddressPage.path.read[NonUkAddress].widen[Address]
-      } and
-      CountryOfResidenceInTheUkYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
-        case Some(true) => Reads(_ => JsSuccess(Some(GB)))
-        case Some(false) => CountryOfResidencePage.path.read[String].map(Some(_))
-        case None => Reads(_ => JsSuccess(None))
-      } and
-      CountryOfNationalityInTheUkYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
-        case Some(true) => Reads(_ => JsSuccess(Some(GB)))
-        case Some(false) => CountryOfNationalityPage.path.read[String].map(Some(_))
-        case None => Reads(_ => JsSuccess(None))
-      }
+      readAddress and
+      readCountryOfResidence and
+      readCountryOfResidenceOrNationality(CountryOfNationalityInTheUkYesNoPage, CountryOfNationalityPage)
     )(LeadTrusteeIndividual.apply _)
+
+  override def ukAddressYesNoPage: QuestionPage[Boolean] = LiveInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
+
+  override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
+  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
+
 }

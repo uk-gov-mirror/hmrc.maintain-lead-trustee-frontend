@@ -16,8 +16,8 @@
 
 package mapping.mappers
 
-import models.Constant.GB
 import models._
+import pages.QuestionPage
 import pages.trustee.WhenAddedPage
 import pages.trustee.organisation._
 import play.api.libs.functional.syntax._
@@ -25,7 +25,7 @@ import play.api.libs.json.{JsSuccess, Reads}
 
 import java.time.LocalDate
 
-class TrusteeOrganisationMapper extends Mapper[TrusteeOrganisation] {
+class TrusteeOrganisationMapper extends TrusteeMapper[TrusteeOrganisation] {
 
   override val reads: Reads[TrusteeOrganisation] = (
     NamePage.path.read[String] and
@@ -48,22 +48,12 @@ class TrusteeOrganisationMapper extends Mapper[TrusteeOrganisation] {
       case (safeId, utr, address) => Some(TrustIdentificationOrgType(safeId, utr, address))
     }
 
-  private def readAddress: Reads[Option[Address]] = {
-    AddressInTheUkYesNoPage.path.readNullable[Boolean].flatMap {
-      case Some(true) => UkAddressPage.path.readNullable[UkAddress].widen[Option[Address]]
-      case Some(false) => NonUkAddressPage.path.readNullable[NonUkAddress].widen[Option[Address]]
-      case _ => Reads(_ => JsSuccess(None)).widen[Option[Address]]
-    }
-  }
+  override def ukAddressYesNoPage: QuestionPage[Boolean] = AddressInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
-  private def readCountryOfResidence: Reads[Option[String]] = {
-    CountryOfResidenceYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
-      case Some(true) => CountryOfResidenceInTheUkYesNoPage.path.read[Boolean].flatMap {
-        case true => Reads(_ => JsSuccess(Some(GB)))
-        case false => CountryOfResidencePage.path.read[String].map(Some(_))
-      }
-      case _ => Reads(_ => JsSuccess(None))
-    }
-  }
+  override def countryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceYesNoPage
+  override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
+  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
 
 }

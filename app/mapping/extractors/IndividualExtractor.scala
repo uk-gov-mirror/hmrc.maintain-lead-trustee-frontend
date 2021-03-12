@@ -20,19 +20,14 @@ import models.Constant.GB
 import models.IndividualOrBusiness.Individual
 import models._
 import pages.{EmptyPage, QuestionPage}
-import play.api.libs.json.{JsPath, Writes}
 
 import scala.util.{Success, Try}
 
-trait IndividualExtractor {
+trait IndividualExtractor extends Extractor {
 
   def extract(answers: UserAnswers): Try[UserAnswers] = {
-    answers.deleteAtPath(basePath)
-      .flatMap(_.set(individualOrBusinessPage, Individual))
+    super.extract(answers, Individual)
   }
-
-  def basePath: JsPath
-  def individualOrBusinessPage: QuestionPage[IndividualOrBusiness]
 
   def countryOfNationalityYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
   def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean]
@@ -118,30 +113,6 @@ trait IndividualExtractor {
         .flatMap(_.set(passportOrIdCardDetailsPage, c))
     } getOrElse {
       Success(answers)
-    }
-  }
-
-  def extractValue[T](optionalValue: Option[T],
-                      page: QuestionPage[T],
-                      answers: UserAnswers)
-                     (implicit wts: Writes[T]): Try[UserAnswers] = {
-    optionalValue match {
-      case Some(value) => answers.set(page, value)
-      case _ => Success(answers)
-    }
-  }
-
-  def extractConditionalValue[T](optionalValue: Option[T],
-                                 yesNoPage: QuestionPage[Boolean],
-                                 page: QuestionPage[T],
-                                 answers: UserAnswers)
-                                (implicit wts: Writes[T]): Try[UserAnswers] = {
-    optionalValue match {
-      case Some(value) => answers
-        .set(yesNoPage, true)
-        .flatMap(_.set(page, value))
-      case None => answers
-        .set(yesNoPage, false)
     }
   }
 

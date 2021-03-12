@@ -17,20 +17,27 @@
 package mapping.mappers
 
 import models._
+import pages.QuestionPage
 import pages.leadtrustee.organisation._
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-class LeadTrusteeOrganisationMapper extends Mapper[LeadTrusteeOrganisation] {
+class LeadTrusteeOrganisationMapper extends LeadTrusteeMapper[LeadTrusteeOrganisation] {
 
   override val reads: Reads[LeadTrusteeOrganisation] = (
     NamePage.path.read[String] and
       TelephoneNumberPage.path.read[String] and
       EmailAddressPage.path.readNullable[String] and
       UtrPage.path.readNullable[String] and
-      AddressInTheUkYesNoPage.path.read[Boolean].flatMap {
-        case true => UkAddressPage.path.read[UkAddress].widen[Address]
-        case false => NonUkAddressPage.path.read[Address].widen[Address]
-      }
+      readAddress and
+      readCountryOfResidence
     )(LeadTrusteeOrganisation.apply _)
+
+  override def ukAddressYesNoPage: QuestionPage[Boolean] = AddressInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
+
+  override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
+  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
+
 }

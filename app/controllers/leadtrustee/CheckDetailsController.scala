@@ -21,7 +21,7 @@ import connectors.TrustConnector
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.{routes => ltRoutes}
 import mapping.extractors.TrusteeExtractor
-import mapping.mappers.TrusteeMapper
+import mapping.mappers.TrusteeMappers
 import models.requests.DataRequest
 import models.{LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, UserAnswers}
 import pages.leadtrustee.{individual => lind, organisation => lorg}
@@ -45,7 +45,7 @@ class CheckDetailsController @Inject()(
                                         connector: TrustConnector,
                                         extractor: TrusteeExtractor,
                                         printHelper: TrusteePrintHelper,
-                                        mapper: TrusteeMapper,
+                                        mapper: TrusteeMappers,
                                         repository: PlaybackRepository
                                       )(implicit val executionContext: ExecutionContext)
 
