@@ -42,7 +42,7 @@ object AddIndividualTrusteeNavigator {
     case NationalInsuranceNumberPage => ua =>
       navigateAwayFromNinoPages(ua)
     case AddressYesNoPage => ua =>
-      yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(), navigateToMentalCapacityOrWhenAddedPage(ua))
+      yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(), navigateAwayFromNoAddressPage(ua))
     case LiveInTheUkYesNoPage => ua =>
       yesNoNav(ua, LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
     case PassportDetailsYesNoPage => ua =>
@@ -71,6 +71,14 @@ object AddIndividualTrusteeNavigator {
         case Some(true) => navigateToMentalCapacityOrWhenAddedPage(userAnswers)
         case _ => rts.AddressYesNoController.onPageLoad()
       }
+    }
+  }
+
+  private def navigateAwayFromNoAddressPage(userAnswers: UserAnswers) = {
+    if (userAnswers.is5mldEnabled) {
+      rts.PassportDetailsYesNoController.onPageLoad()
+    } else {
+      navigateToMentalCapacityOrWhenAddedPage(userAnswers)
     }
   }
 

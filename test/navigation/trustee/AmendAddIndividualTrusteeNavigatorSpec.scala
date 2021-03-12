@@ -319,12 +319,24 @@ class AmendAddIndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPro
           }
         }
 
-        "Do you know address page -> No -> Mental Capacity page" in {
-          val answers = baseAnswers
-            .set(AddressYesNoPage, false).success.value
+        "Address Pages" must {
+          "Do you know address page -> No -> Passport or ID card details page" in {
+            val answers = baseAnswers
+              .set(AddressYesNoPage, false).success.value
 
-          navigator.nextPage(AddressYesNoPage, answers)
-            .mustBe(controllers.trustee.individual.routes.MentalCapacityYesNoController.onPageLoad(mode))
+            navigator.nextPage(AddressYesNoPage, answers)
+              .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad())
+          }
+
+          "UK address page -> Passport or ID card details page" in {
+            navigator.nextPage(UkAddressPage, baseAnswers)
+              .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad())
+          }
+
+          "Non-UK address page -> Passport or ID card details page" in {
+            navigator.nextPage(NonUkAddressPage, baseAnswers)
+              .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad())
+          }
         }
 
         "Passport or ID card details page -> Mental Capacity page" in {
@@ -451,6 +463,7 @@ class AmendAddIndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPro
               .mustBe(controllers.trustee.individual.routes.MentalCapacityYesNoController.onPageLoad(mode))
           }
         }
+
       }
     }
   }
