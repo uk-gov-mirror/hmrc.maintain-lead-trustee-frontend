@@ -50,7 +50,7 @@ class IndividualTrusteeToLeadTrusteeExtractor extends IndividualExtractor {
       .flatMap(answers => extractValue(trustee.dateOfBirth, DateOfBirthPage, answers))
       .flatMap(answers => extractCountryOfNationality(trustee.nationality, answers))
       .flatMap(answers => extractIdentification(trustee.identification, answers))
-      .flatMap(answers => extractAddress(trustee.address, answers))
+      .flatMap(answers => extractOptionalAddress(trustee.address, answers))
       .flatMap(answers => extractCountryOfResidence(trustee.countryOfResidence, answers))
       .flatMap(answers => extractValue(trustee.phoneNumber, TelephoneNumberPage, answers))
   }

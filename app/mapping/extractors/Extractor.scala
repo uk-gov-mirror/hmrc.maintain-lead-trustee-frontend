@@ -16,8 +16,9 @@
 
 package mapping.extractors
 
-import models.{IndividualOrBusiness, UserAnswers}
-import pages.QuestionPage
+import models.Constant.GB
+import models.{Address, IndividualOrBusiness, NonUkAddress, UkAddress, UserAnswers}
+import pages.{EmptyPage, QuestionPage}
 import play.api.libs.json.{JsPath, Writes}
 
 import scala.util.{Success, Try}
@@ -31,6 +32,62 @@ trait Extractor {
 
   def basePath: JsPath
   def individualOrBusinessPage: QuestionPage[IndividualOrBusiness]
+
+  def ukAddressYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
+  def ukAddressPage: QuestionPage[UkAddress] = new EmptyPage[UkAddress]
+  def nonUkAddressPage: QuestionPage[NonUkAddress] = new EmptyPage[NonUkAddress]
+
+  def extractOptionalAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
+    address match {
+      case Some(value) => extractAddress(value, answers)
+      case None => Success(answers)
+    }
+  }
+
+  def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
+    address match {
+      case uk: UkAddress => answers
+        .set(ukAddressYesNoPage, true)
+        .flatMap(_.set(ukAddressPage, uk))
+      case nonUk: NonUkAddress => answers
+        .set(ukAddressYesNoPage, false)
+        .flatMap(_.set(nonUkAddressPage, nonUk))
+    }
+  }
+
+  def countryOfResidenceYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
+  def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean]
+  def countryOfResidencePage: QuestionPage[String]
+
+  def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+    extractCountryOfResidenceOrNationality(
+      country = countryOfResidence,
+      answers = answers,
+      yesNoPage = countryOfResidenceYesNoPage,
+      ukYesNoPage = ukCountryOfResidenceYesNoPage,
+      page = countryOfResidencePage
+    )
+  }
+
+  def extractCountryOfResidenceOrNationality(country: Option[String],
+                                             answers: UserAnswers,
+                                             yesNoPage: QuestionPage[Boolean],
+                                             ukYesNoPage: QuestionPage[Boolean],
+                                             page: QuestionPage[String]): Try[UserAnswers] = {
+    if (answers.is5mldEnabled) {
+      country match {
+        case Some(GB) => answers
+          .set(ukYesNoPage, true)
+          .flatMap(_.set(page, GB))
+        case Some(country) => answers
+          .set(ukYesNoPage, false)
+          .flatMap(_.set(page, country))
+        case None => Success(answers)
+      }
+    } else {
+      Success(answers)
+    }
+  }
 
   def extractValue[T](optionalValue: Option[T],
                       page: QuestionPage[T],

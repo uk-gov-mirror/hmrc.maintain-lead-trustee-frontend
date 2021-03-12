@@ -49,7 +49,7 @@ class LeadTrusteeIndividualExtractor extends IndividualExtractor {
       .flatMap(_.set(DateOfBirthPage, leadIndividual.dateOfBirth))
       .flatMap(answers => extractCountryOfNationality(leadIndividual.nationality, answers))
       .flatMap(answers => extractIdentification(Some(leadIndividual.identification), answers))
-      .flatMap(answers => extractAddress(Some(leadIndividual.address), answers))
+      .flatMap(answers => extractAddress(leadIndividual.address, answers))
       .flatMap(answers => extractCountryOfResidence(leadIndividual.countryOfResidence, answers))
       .flatMap(answers => extractConditionalValue(leadIndividual.email, EmailAddressYesNoPage, EmailAddressPage, answers))
       .flatMap(_.set(TelephoneNumberPage, leadIndividual.phoneNumber))

@@ -16,7 +16,6 @@
 
 package mapping.extractors
 
-import models.Constant.GB
 import models.IndividualOrBusiness.Individual
 import models._
 import pages.{EmptyPage, QuestionPage}
@@ -33,10 +32,6 @@ trait IndividualExtractor extends Extractor {
   def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean]
   def countryOfNationalityPage: QuestionPage[String]
 
-  def countryOfResidenceYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean]
-  def countryOfResidencePage: QuestionPage[String]
-
   def extractCountryOfNationality(countryOfNationality: Option[String], answers: UserAnswers): Try[UserAnswers] = {
     extractCountryOfResidenceOrNationality(
       country = countryOfNationality,
@@ -45,52 +40,6 @@ trait IndividualExtractor extends Extractor {
       ukYesNoPage = ukCountryOfNationalityYesNoPage,
       page = countryOfNationalityPage
     )
-  }
-
-  def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
-    extractCountryOfResidenceOrNationality(
-      country = countryOfResidence,
-      answers = answers,
-      yesNoPage = countryOfResidenceYesNoPage,
-      ukYesNoPage = ukCountryOfResidenceYesNoPage,
-      page = countryOfResidencePage
-    )
-  }
-
-  def extractCountryOfResidenceOrNationality(country: Option[String],
-                                             answers: UserAnswers,
-                                             yesNoPage: QuestionPage[Boolean],
-                                             ukYesNoPage: QuestionPage[Boolean],
-                                             page: QuestionPage[String]): Try[UserAnswers] = {
-    if (answers.is5mldEnabled) {
-      country match {
-        case Some(GB) => answers
-          .set(ukYesNoPage, true)
-          .flatMap(_.set(page, GB))
-        case Some(country) => answers
-          .set(ukYesNoPage, false)
-          .flatMap(_.set(page, country))
-        case None => Success(answers)
-      }
-    } else {
-      Success(answers)
-    }
-  }
-
-  def ukAddressYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def ukAddressPage: QuestionPage[UkAddress] = new EmptyPage[UkAddress]
-  def nonUkAddressPage: QuestionPage[NonUkAddress] = new EmptyPage[NonUkAddress]
-
-  def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
-    address match {
-      case Some(uk: UkAddress) => answers
-        .set(ukAddressYesNoPage, true)
-        .flatMap(_.set(ukAddressPage, uk))
-      case Some(nonUk: NonUkAddress) => answers
-        .set(ukAddressYesNoPage, false)
-        .flatMap(_.set(nonUkAddressPage, nonUk))
-      case _ => Success(answers)
-    }
   }
 
   def ninoYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]

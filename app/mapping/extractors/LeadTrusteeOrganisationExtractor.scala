@@ -16,55 +16,34 @@
 
 package mapping.extractors
 
-import com.google.inject.Inject
-import models.IndividualOrBusiness.Business
 import models._
+import pages.QuestionPage
 import pages.leadtrustee.IndividualOrBusinessPage
 import pages.leadtrustee.organisation.{UtrPage, _}
-import play.api.Logging
+import play.api.libs.json.JsPath
 
-import scala.util.{Success, Try}
+import scala.util.Try
 
-class LeadTrusteeOrganisationExtractor @Inject()() extends Logging {
+class LeadTrusteeOrganisationExtractor extends OrganisationExtractor {
 
   def extract(answers: UserAnswers, leadOrganisation: LeadTrusteeOrganisation): Try[UserAnswers] = {
-    answers.deleteAtPath(pages.leadtrustee.basePath)
-      .flatMap(_.set(IndividualOrBusinessPage, Business))
-      .flatMap(answers => extractRegisteredInUK(leadOrganisation.utr, answers))
+    super.extract(answers)
+      .flatMap(answers => extractConditionalValue(leadOrganisation.utr, RegisteredInUkYesNoPage, UtrPage, answers))
       .flatMap(_.set(NamePage, leadOrganisation.name))
       .flatMap(answers => extractAddress(leadOrganisation.address, answers))
-      .flatMap(answers => extractEmail(leadOrganisation.email, answers))
+      .flatMap(answers => extractCountryOfResidence(leadOrganisation.countryOfResidence, answers))
+      .flatMap(answers => extractConditionalValue(leadOrganisation.email, EmailAddressYesNoPage, EmailAddressPage, answers))
       .flatMap(_.set(TelephoneNumberPage, leadOrganisation.phoneNumber))
   }
 
-  private def extractEmail(email: Option[String], answers: UserAnswers): Try[UserAnswers] = {
-    email match {
-      case Some(x) =>
-        answers.set(EmailAddressYesNoPage, true)
-          .flatMap(_.set(EmailAddressPage, x))
-      case _ => answers.set(EmailAddressYesNoPage, false)
-    }
-  }
+  override def basePath: JsPath = pages.leadtrustee.basePath
+  override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
 
-  private def extractRegisteredInUK(utr: Option[String], answers: UserAnswers): Try[UserAnswers] = {
-    utr match {
-      case Some(x) =>
-        answers.set(RegisteredInUkYesNoPage, true)
-        .flatMap(_.set(UtrPage, x))
-      case _ => answers.set(RegisteredInUkYesNoPage, false)
-    }
-  }
+  override def ukAddressYesNoPage: QuestionPage[Boolean] = AddressInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
-  private def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
-    address match {
-      case uk: UkAddress =>
-        answers.set(UkAddressPage, uk)
-          .flatMap(_.set(AddressInTheUkYesNoPage, true))
-      case nonUk: NonUkAddress =>
-        answers.set(NonUkAddressPage, nonUk)
-          .flatMap(_.set(AddressInTheUkYesNoPage, false))
-      case _ => Success(answers)
-    }
-  }
+  override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
+  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
 
 }

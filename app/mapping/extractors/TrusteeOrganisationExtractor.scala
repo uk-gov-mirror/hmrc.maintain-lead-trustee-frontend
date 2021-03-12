@@ -16,20 +16,20 @@
 
 package mapping.extractors
 
-import models.IndividualOrBusiness.Business
-import models.{Address, NonUkAddress, TrustIdentificationOrgType, TrusteeOrganisation, UkAddress, UserAnswers}
+import models.Constant.GB
+import models.{Address, IndividualOrBusiness, NonUkAddress, TrustIdentificationOrgType, TrusteeOrganisation, UkAddress, UserAnswers}
+import pages.QuestionPage
 import pages.trustee.amend.{organisation => org}
 import pages.trustee.organisation.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
-import models.Constant.GB
+import play.api.libs.json.JsPath
 
 import scala.util.{Success, Try}
 
-class TrusteeOrganisationExtractor {
+class TrusteeOrganisationExtractor extends OrganisationExtractor {
 
   def extract(answers: UserAnswers, trustee: TrusteeOrganisation, index: Int): Try[UserAnswers] = {
-    answers.deleteAtPath(pages.trustee.basePath)
-      .flatMap(_.set(IndividualOrBusinessPage, Business))
+    super.extract(answers)
       .flatMap(_.set(org.IndexPage, index))
       .flatMap(_.set(org.NamePage, trustee.name))
       .flatMap(answers => extractIdentification(trustee.identification, answers))
@@ -37,7 +37,7 @@ class TrusteeOrganisationExtractor {
       .flatMap(_.set(WhenAddedPage, trustee.entityStart))
   }
 
-  private def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+  override def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
     if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
       countryOfResidence match {
         case Some(GB) => answers
@@ -74,7 +74,7 @@ class TrusteeOrganisationExtractor {
     }
   }
 
-  private def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
+  override def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
     if (answers.isTaxable || !answers.is5mldEnabled) {
       address match {
         case uk: UkAddress =>
@@ -91,4 +91,9 @@ class TrusteeOrganisationExtractor {
     }
   }
 
+  override def basePath: JsPath = pages.trustee.basePath
+  override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
+
+  override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = ???
+  override def countryOfResidencePage: QuestionPage[String] = ???
 }

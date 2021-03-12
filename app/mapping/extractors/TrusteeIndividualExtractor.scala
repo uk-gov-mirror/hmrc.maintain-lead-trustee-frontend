@@ -44,7 +44,7 @@ class TrusteeIndividualExtractor extends IndividualExtractor {
       .flatMap(_.set(ind.IndexPage, index))
       .flatMap(_.set(ind.NamePage, trustee.name))
       .flatMap(answers => extractConditionalValue(trustee.dateOfBirth, DateOfBirthYesNoPage, DateOfBirthPage, answers))
-      .flatMap(answers => extractAddress(trustee.address, answers))
+      .flatMap(answers => extractOptionalAddress(trustee.address, answers))
       .flatMap(answers => extractCountryOfResidence(trustee.countryOfResidence, answers))
       .flatMap(answers => extractCountryOfNationality(trustee.nationality, answers))
       .flatMap(answers => extractMentalCapacity(trustee.mentalCapacityYesNo, answers))
@@ -109,7 +109,7 @@ class TrusteeIndividualExtractor extends IndividualExtractor {
     }
   }
 
-  override def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
+  override def extractOptionalAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
     if (answers.isTaxable || !answers.is5mldEnabled) {
       address match {
         case Some(uk: UkAddress) =>

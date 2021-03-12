@@ -16,23 +16,24 @@
 
 package mapping.extractors
 
-import models.IndividualOrBusiness.Business
 import models._
+import pages.QuestionPage
 import pages.leadtrustee.IndividualOrBusinessPage
 import pages.leadtrustee.organisation._
+import play.api.libs.json.JsPath
 
 import scala.util.{Success, Try}
 
-class OrganisationTrusteeToLeadTrusteeExtractor {
+class OrganisationTrusteeToLeadTrusteeExtractor extends OrganisationExtractor {
 
   def extract(userAnswers: UserAnswers, trustee: TrusteeOrganisation, index: Int): Try[UserAnswers] = {
-    userAnswers.deleteAtPath(pages.leadtrustee.basePath)
-      .flatMap(_.set(IndividualOrBusinessPage, Business))
+    super.extract(userAnswers)
       .flatMap(_.set(IndexPage, index))
       .flatMap(answers => extractIdentification(trustee.identification, answers))
       .flatMap(_.set(NamePage, trustee.name))
+      .flatMap(answers => extractCountryOfResidence(trustee.countryOfResidence, answers))
       .flatMap(answers => extractEmail(trustee.email, answers))
-      .flatMap(answers => extractTelephoneNumber(trustee.phoneNumber, answers))
+      .flatMap(answers => extractValue(trustee.phoneNumber, TelephoneNumberPage, answers))
   }
 
   private def extractIdentification(identification: Option[TrustIdentificationOrgType], answers: UserAnswers): Try[UserAnswers] = {
@@ -47,17 +48,6 @@ class OrganisationTrusteeToLeadTrusteeExtractor {
     }
   }
 
-  private def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
-    address match {
-      case uk: UkAddress => answers
-        .set(AddressInTheUkYesNoPage, true)
-        .flatMap(_.set(UkAddressPage, uk))
-      case nonUk: NonUkAddress => answers
-        .set(AddressInTheUkYesNoPage, false)
-        .flatMap(_.set(NonUkAddressPage, nonUk))
-    }
-  }
-
   private def extractEmail(emailAddress: Option[String], answers: UserAnswers): Try[UserAnswers] = {
     emailAddress match {
       case Some(email) => answers
@@ -67,11 +57,14 @@ class OrganisationTrusteeToLeadTrusteeExtractor {
     }
   }
 
-  private def extractTelephoneNumber(phoneNumber: Option[String], answers: UserAnswers): Try[UserAnswers] = {
-    phoneNumber match {
-      case Some(tel) => answers.set(TelephoneNumberPage, tel)
-      case _ => Success(answers)
-    }
-  }
+  override def basePath: JsPath = pages.leadtrustee.basePath
+  override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
+
+  override def ukAddressYesNoPage: QuestionPage[Boolean] = AddressInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
+
+  override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
+  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
 
 }
