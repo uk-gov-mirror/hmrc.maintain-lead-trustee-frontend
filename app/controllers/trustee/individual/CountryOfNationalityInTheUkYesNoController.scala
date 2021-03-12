@@ -41,7 +41,7 @@ class CountryOfNationalityInTheUkYesNoController @Inject()(
                                                      nameAction: NameRequiredAction
                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form: Form[Boolean] = formProvider.withPrefix("trustee.individual.countryOfNationalityUkYesNo")
+  private val form: Form[Boolean] = formProvider.withPrefix("trustee.individual.countryOfNationalityInTheUkYesNo")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>

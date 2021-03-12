@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import models.IndividualOrBusiness.Individual
-import models.{IdCard, Name, NonUkAddress, Passport, UkAddress}
+import models.{IdCard, Name, NonUkAddress, NormalMode, Passport, UkAddress}
 import pages.trustee.individual._
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.twirl.api.Html
@@ -31,6 +31,7 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
   val name: Name = Name("First", Some("Middle"), "Last")
   val trusteeUkAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
   val trusteeNonUkAddress = NonUkAddress("value 1", "value 2", None, "DE")
+  val country: String = "DE"
 
   "TrusteeIndividualPrintHelper" must {
 
@@ -43,8 +44,14 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
         .set(NamePage, name).success.value
         .set(DateOfBirthYesNoPage, true).success.value
         .set(DateOfBirthPage, LocalDate.of(2010, 10, 10)).success.value
+        .set(CountryOfNationalityYesNoPage, true).success.value
+        .set(CountryOfNationalityInTheUkYesNoPage, false).success.value
+        .set(CountryOfNationalityPage, country).success.value
         .set(NationalInsuranceNumberYesNoPage, true).success.value
         .set(NationalInsuranceNumberPage, "AA000000A").success.value
+        .set(CountryOfResidenceYesNoPage, true).success.value
+        .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
+        .set(CountryOfResidencePage, country).success.value
         .set(AddressYesNoPage, true).success.value
         .set(LiveInTheUkYesNoPage, true).success.value
         .set(UkAddressPage, trusteeUkAddress).success.value
@@ -53,17 +60,29 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
         .set(PassportDetailsPage, Passport("GB", "1", LocalDate.of(2030, 10, 10))).success.value
         .set(IdCardDetailsYesNoPage, true).success.value
         .set(IdCardDetailsPage, IdCard("GB", "1", LocalDate.of(2030, 10, 10))).success.value
+        .set(MentalCapacityYesNoPage, true).success.value
         .set(WhenAddedPage, LocalDate.of(2020, 1, 1)).success.value
 
       val result = helper.print(userAnswers, name.displayName)
+      val mode = NormalMode
       result mustBe AnswerSection(
         headingKey = None,
         rows = Seq(
           AnswerRow(label = Html(messages("trustee.individual.name.checkYourAnswersLabel")), answer = Html("First Middle Last"), changeUrl = controllers.trustee.individual.routes.NameController.onPageLoad().url),
           AnswerRow(label = Html(messages("trustee.individual.dateOfBirthYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.individual.routes.DateOfBirthYesNoController.onPageLoad().url),
           AnswerRow(label = Html(messages("trustee.individual.dateOfBirth.checkYourAnswersLabel", name.displayName)), answer = Html("10 October 2010"), changeUrl = controllers.trustee.individual.routes.DateOfBirthController.onPageLoad().url),
+
+          AnswerRow(label = Html(messages("trustee.individual.countryOfNationalityYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.individual.routes.CountryOfNationalityYesNoController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("trustee.individual.countryOfNationalityInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("No"), changeUrl = controllers.trustee.individual.routes.CountryOfNationalityInTheUkYesNoController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("trustee.individual.countryOfNationality.checkYourAnswersLabel", name.displayName)), answer = Html("Germany"), changeUrl = controllers.trustee.individual.routes.CountryOfNationalityController.onPageLoad(mode).url),
+
           AnswerRow(label = Html(messages("trustee.individual.nationalInsuranceNumberYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad().url),
           AnswerRow(label = Html(messages("trustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName)), answer = Html("AA 00 00 00 A"), changeUrl = controllers.trustee.individual.routes.NationalInsuranceNumberController.onPageLoad().url),
+
+          AnswerRow(label = Html(messages("trustee.individual.countryOfResidenceYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.individual.routes.CountryOfResidenceYesNoController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("trustee.individual.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("No"), changeUrl = controllers.trustee.individual.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("trustee.individual.countryOfResidence.checkYourAnswersLabel", name.displayName)), answer = Html("Germany"), changeUrl = controllers.trustee.individual.routes.CountryOfResidenceController.onPageLoad(mode).url),
+
           AnswerRow(label = Html(messages("trustee.individual.addressYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.individual.routes.AddressYesNoController.onPageLoad().url),
           AnswerRow(label = Html(messages("trustee.individual.liveInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.individual.routes.LiveInTheUkYesNoController.onPageLoad().url),
           AnswerRow(label = Html(messages("trustee.individual.ukAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = controllers.trustee.individual.routes.UkAddressController.onPageLoad().url),
@@ -72,6 +91,9 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
           AnswerRow(label = Html(messages("trustee.individual.passportDetails.checkYourAnswersLabel", name.displayName)), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = controllers.trustee.individual.routes.PassportDetailsController.onPageLoad().url),
           AnswerRow(label = Html(messages("trustee.individual.idCardDetailsYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.individual.routes.IdCardDetailsYesNoController.onPageLoad().url),
           AnswerRow(label = Html(messages("trustee.individual.idCardDetails.checkYourAnswersLabel", name.displayName)), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = controllers.trustee.individual.routes.IdCardDetailsController.onPageLoad().url),
+
+          AnswerRow(label = Html(messages("trustee.individual.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.trustee.individual.routes.MentalCapacityYesNoController.onPageLoad(mode).url),
+
           AnswerRow(label = Html(messages("trustee.whenAdded.checkYourAnswersLabel", name.displayName)), answer = Html("1 January 2020"), changeUrl = controllers.trustee.routes.WhenAddedController.onPageLoad().url)
         )
       )

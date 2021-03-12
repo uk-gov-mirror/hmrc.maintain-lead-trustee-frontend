@@ -30,14 +30,14 @@ import views.html.trustee.individual.CountryOfNationalityInTheUkYesNoView
 
 class CountryOfNationalityInTheUkYesNoControllerSpec extends SpecBase {
 
-  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("trustee.individual.countryOfNationalityUkYesNo")
+  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("trustee.individual.countryOfNationalityInTheUkYesNo")
   private val onPageLoadRoute: String = routes.CountryOfNationalityInTheUkYesNoController.onPageLoad(NormalMode).url
   private val name: Name = Name("FirstName", None, "LastName")
   private val onwardRoute = Call("GET", "/foo")
 
   val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-  "CountryOfNationalityUkYesNoController" must {
+  "CountryOfNationalityInTheUkYesNoController" must {
 
     "return OK and the correct view for a GET" in {
 

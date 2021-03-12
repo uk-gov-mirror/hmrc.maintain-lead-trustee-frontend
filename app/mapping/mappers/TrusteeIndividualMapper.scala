@@ -54,9 +54,9 @@ class TrusteeIndividualMapper extends Logging {
   }
 
   private def readIdentification(adding: Boolean): Reads[Option[IndividualIdentification]] = {
-    NationalInsuranceNumberYesNoPage.path.read[Boolean].flatMap[Option[IndividualIdentification]] {
-      case true => NationalInsuranceNumberPage.path.read[String].map(nino => Some(NationalInsuranceNumber(nino)))
-      case false => if (adding) readSeparatePassportOrIdCard else readCombinedPassportOrIdCard
+    NationalInsuranceNumberYesNoPage.path.readNullable[Boolean].flatMap[Option[IndividualIdentification]] {
+      case Some(true) => NationalInsuranceNumberPage.path.read[String].map(nino => Some(NationalInsuranceNumber(nino)))
+      case _ => if (adding) readSeparatePassportOrIdCard else readCombinedPassportOrIdCard
     }
   }
 
@@ -74,15 +74,15 @@ class TrusteeIndividualMapper extends Logging {
   }
 
   private def readCombinedPassportOrIdCard: Reads[Option[IndividualIdentification]] = {
-    NationalInsuranceNumberYesNoPage.path.read[Boolean].flatMap {
-      case true => Reads(_ => JsSuccess(None))
-      case false => readPassportOrIdIfAddressExists
+    NationalInsuranceNumberYesNoPage.path.readNullable[Boolean].flatMap {
+      case Some(false) => readPassportOrIdIfAddressExists
+      case _ => Reads(_ => JsSuccess(None))
     }
   }
 
   private def readPassportOrIdIfAddressExists: Reads[Option[IndividualIdentification]] = {
-    AddressYesNoPage.path.read[Boolean].flatMap {
-      case true => PassportOrIdCardDetailsYesNoPage.path.read[Boolean].flatMap[Option[IndividualIdentification]] {
+    AddressYesNoPage.path.readNullable[Boolean].flatMap {
+      case Some(true) => PassportOrIdCardDetailsYesNoPage.path.read[Boolean].flatMap[Option[IndividualIdentification]] {
         case true => PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].map(Some(_))
         case false => Reads(_ => JsSuccess(None))
       }

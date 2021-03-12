@@ -25,12 +25,12 @@ import views.html.trustee.individual.CountryOfNationalityInTheUkYesNoView
 import controllers.trustee.individual.routes
 class CountryOfNationalityInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "trustee.individual.countryOfNationalityUkYesNo"
+  val messageKeyPrefix = "trustee.individual.countryOfNationalityInTheUkYesNo"
   val name: Name = Name("First", None, "Last")
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
-  "CountryOfNationalityUkYesNoView" must {
+  "countryOfNationalityInTheUkYesNoView" must {
 
     val view = viewFor[CountryOfNationalityInTheUkYesNoView](Some(emptyUserAnswers))
 

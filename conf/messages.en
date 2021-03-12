@@ -537,10 +537,10 @@ trustee.individual.countryOfNationalityYesNo.checkYourAnswersLabel = Do you know
 trustee.individual.countryOfNationalityYesNo.error.required = Select yes if you know the trustee’s country of nationality
 trustee.individual.countryOfNationalityYesNo.hint = The country of nationality is usually where the individual was born and where their passport is registered.
 
-trustee.individual.countryOfNationalityUkYesNo.title = Does the trustee have UK nationality?
-trustee.individual.countryOfNationalityUkYesNo.heading = Does {0} have UK nationality?
-trustee.individual.countryOfNationalityUkYesNo.checkYourAnswersLabel = Does {0} have UK nationality?
-trustee.individual.countryOfNationalityUkYesNo.error.required = Select yes if the trustee has UK nationality
+trustee.individual.countryOfNationalityInTheUkYesNo.title = Does the trustee have UK nationality?
+trustee.individual.countryOfNationalityInTheUkYesNo.heading = Does {0} have UK nationality?
+trustee.individual.countryOfNationalityInTheUkYesNo.checkYourAnswersLabel = Does {0} have UK nationality?
+trustee.individual.countryOfNationalityInTheUkYesNo.error.required = Select yes if the trustee has UK nationality
 
 trustee.individual.countryOfNationality.title = What is the trustee’s country of nationality?
 trustee.individual.countryOfNationality.heading = What is {0}’s country of nationality?
