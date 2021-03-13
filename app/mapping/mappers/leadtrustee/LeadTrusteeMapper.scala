@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package mapping.mappers
+package mapping.mappers.leadtrustee
 
+import mapping.mappers.Mapper
 import models.Constant.GB
 import models.{Address, NonUkAddress, UkAddress}
 import pages.QuestionPage
@@ -24,7 +25,9 @@ import play.api.libs.json.{JsSuccess, Reads}
 trait LeadTrusteeMapper[T] extends Mapper[T] {
 
   def ukAddressYesNoPage: QuestionPage[Boolean]
+
   def ukAddressPage: QuestionPage[UkAddress]
+
   def nonUkAddressPage: QuestionPage[NonUkAddress]
 
   def readAddress: Reads[Address] = {
@@ -35,6 +38,7 @@ trait LeadTrusteeMapper[T] extends Mapper[T] {
   }
 
   def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean]
+
   def countryOfResidencePage: QuestionPage[String]
 
   def readCountryOfResidence: Reads[Option[String]] = {

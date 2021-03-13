@@ -16,6 +16,8 @@
 
 package mapping.mappers
 
+import mapping.mappers.leadtrustee.{LeadTrusteeIndividualMapper, LeadTrusteeOrganisationMapper}
+import mapping.mappers.trustee.{TrusteeIndividualMapper, TrusteeOrganisationMapper}
 import models._
 
 import javax.inject.Inject

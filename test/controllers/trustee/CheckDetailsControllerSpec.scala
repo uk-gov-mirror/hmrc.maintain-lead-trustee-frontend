@@ -18,7 +18,7 @@ package controllers.trustee
 
 import base.SpecBase
 import connectors.TrustConnector
-import mapping.mappers.{TrusteeIndividualMapper, TrusteeOrganisationMapper}
+import mapping.mappers.trustee.{TrusteeIndividualMapper, TrusteeOrganisationMapper}
 import models.IndividualOrBusiness.{Business, Individual}
 import models.{Name, TrusteeIndividual, TrusteeOrganisation}
 import org.mockito.Matchers.{any, eq => eqTo}

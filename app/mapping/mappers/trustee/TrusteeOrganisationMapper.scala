@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package mapping.mappers
+package mapping.mappers.trustee
 
 import models._
 import pages.QuestionPage
