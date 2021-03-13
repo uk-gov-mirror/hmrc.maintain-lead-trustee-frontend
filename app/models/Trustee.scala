@@ -23,16 +23,15 @@ import play.api.libs.json._
 
 
 sealed trait Trustee {
-  val provisional : Boolean
-
-  def isNewlyAdded : Boolean = provisional
+  val provisional: Boolean
+  def isNewlyAdded: Boolean = provisional
 }
 
 object Trustee {
 
   implicit val writes: Writes[Trustee] = Writes[Trustee] {
-    case lti:TrusteeIndividual => Json.toJson(lti)(TrusteeIndividual.writes)
-    case lto:TrusteeOrganisation => Json.toJson(lto)(TrusteeOrganisation.formats)
+    case trustee: TrusteeIndividual => Json.toJson(trustee)(TrusteeIndividual.writes)
+    case trustee: TrusteeOrganisation => Json.toJson(trustee)(TrusteeOrganisation.formats)
   }
 
   implicit val reads : Reads[Trustee] = Reads { data : JsValue =>
@@ -61,22 +60,16 @@ case class TrusteeIndividual(name: Name,
                              provisional: Boolean) extends Trustee
 
 object TrusteeIndividual {
-  def attemptedRead[T:Reads] : Reads[Option[T]] = Reads[Option[T]] (_.validate[T].fold(
-    _ => JsSuccess(None),
-    t => JsSuccess(Some(t))
-  ))
 
   def readNullableAtSubPath[T:Reads](subPath : JsPath) : Reads[Option[T]] = Reads (
     _.transform(subPath.json.pick)
-        .flatMap(_.validate[T])
-        .map(Some(_))
-        .recoverWith(_ => JsSuccess(None))
+      .flatMap(_.validate[T])
+      .map(Some(_))
+      .recoverWith(_ => JsSuccess(None))
   )
 
-  implicit val dateFormat: Format[LocalDate] = Format[LocalDate](Reads.DefaultLocalDateReads, Writes.DefaultLocalDateWrites)
-
-  implicit val reads: Reads[TrusteeIndividual] =
-    ((__ \ 'name).read[Name] and
+  implicit val reads: Reads[TrusteeIndividual] = (
+    (__ \ 'name).read[Name] and
       (__ \ 'dateOfBirth).readNullable[LocalDate] and
       (__ \ 'phoneNumber).readNullable[String] and
       __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ 'identification)) and
@@ -85,10 +78,11 @@ object TrusteeIndividual {
       (__ \ 'nationality).readNullable[String] and
       (__ \ 'legallyIncapable).readNullable[Boolean].map(_.map(!_)) and
       (__ \ "entityStart").read[LocalDate] and
-      (__ \ "provisional").read[Boolean]).apply(TrusteeIndividual.apply _)
+      (__ \ "provisional").read[Boolean]
+    )(TrusteeIndividual.apply _)
 
-  implicit val writes: Writes[TrusteeIndividual] =
-    ((__ \ 'name).write[Name] and
+  implicit val writes: Writes[TrusteeIndividual] = (
+    (__ \ 'name).write[Name] and
       (__ \ 'dateOfBirth).writeNullable[LocalDate] and
       (__ \ 'phoneNumber).writeNullable[String] and
       (__ \ 'identification).writeNullable[IndividualIdentification] and
@@ -97,7 +91,8 @@ object TrusteeIndividual {
       (__ \ 'nationality).writeNullable[String] and
       (__ \ 'legallyIncapable).writeNullable[Boolean](x => JsBoolean(!x)) and
       (__ \ "entityStart").write[LocalDate] and
-      (__ \ "provisional").write[Boolean]).apply(unlift(TrusteeIndividual.unapply))
+      (__ \ "provisional").write[Boolean]
+    )(unlift(TrusteeIndividual.unapply))
 }
 
 case class TrusteeOrganisation(name: String,
@@ -109,8 +104,6 @@ case class TrusteeOrganisation(name: String,
                                provisional: Boolean) extends Trustee
 
 object TrusteeOrganisation {
-  implicit val dateFormat: Format[LocalDate] = Format[LocalDate](Reads.DefaultLocalDateReads, Writes.DefaultLocalDateWrites)
-
   implicit val formats: Format[TrusteeOrganisation] = Json.format[TrusteeOrganisation]
 }
 
