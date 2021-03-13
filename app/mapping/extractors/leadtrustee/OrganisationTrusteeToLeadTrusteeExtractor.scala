@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package mapping.extractors
+package mapping.extractors.leadtrustee
 
 import models.IndividualOrBusiness.Business
 import models._
 import pages.QuestionPage
-import pages.leadtrustee.IndividualOrBusinessPage
 import pages.leadtrustee.organisation._
-import play.api.libs.json.JsPath
 
 import scala.util.{Success, Try}
 
-class OrganisationTrusteeToLeadTrusteeExtractor extends Extractor {
-
-  override def basePath: JsPath = pages.leadtrustee.basePath
-  override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
+class OrganisationTrusteeToLeadTrusteeExtractor extends LeadTrusteeExtractor {
 
   override def ukAddressYesNoPage: QuestionPage[Boolean] = AddressInTheUkYesNoPage
   override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
@@ -40,14 +35,14 @@ class OrganisationTrusteeToLeadTrusteeExtractor extends Extractor {
   def extract(userAnswers: UserAnswers, trustee: TrusteeOrganisation, index: Int): Try[UserAnswers] = {
     super.extract(userAnswers, Business)
       .flatMap(_.set(IndexPage, index))
-      .flatMap(answers => extractIdentification(trustee.identification, answers))
+      .flatMap(answers => extractOrgIdentification(trustee.identification, answers))
       .flatMap(_.set(NamePage, trustee.name))
       .flatMap(answers => extractCountryOfResidence(trustee.countryOfResidence, answers))
       .flatMap(answers => extractEmail(trustee.email, answers))
       .flatMap(answers => extractValue(trustee.phoneNumber, TelephoneNumberPage, answers))
   }
 
-  private def extractIdentification(identification: Option[TrustIdentificationOrgType], answers: UserAnswers): Try[UserAnswers] = {
+  private def extractOrgIdentification(identification: Option[TrustIdentificationOrgType], answers: UserAnswers): Try[UserAnswers] = {
     identification match {
       case Some(TrustIdentificationOrgType(_, Some(utr), None)) => answers
         .set(RegisteredInUkYesNoPage, true)

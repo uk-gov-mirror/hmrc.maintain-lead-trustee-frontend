@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package mapping.extractors
+package mapping.extractors.leadtrustee
 
 import models.IndividualOrBusiness.Individual
 import models._
 import pages.QuestionPage
-import pages.leadtrustee.IndividualOrBusinessPage
 import pages.leadtrustee.individual._
-import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-class LeadTrusteeIndividualExtractor extends LeadTrusteeExtractor {
-
-  override def basePath: JsPath = pages.leadtrustee.basePath
-  override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
+class IndividualTrusteeToLeadTrusteeExtractor extends LeadTrusteeExtractor {
 
   override def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean] = CountryOfNationalityInTheUkYesNoPage
   override def countryOfNationalityPage: QuestionPage[String] = CountryOfNationalityPage
@@ -44,16 +39,16 @@ class LeadTrusteeIndividualExtractor extends LeadTrusteeExtractor {
   override def ninoPage: QuestionPage[String] = NationalInsuranceNumberPage
   override def passportOrIdCardDetailsPage: QuestionPage[CombinedPassportOrIdCard] = PassportOrIdCardDetailsPage
 
-  def extract(answers: UserAnswers, leadIndividual: LeadTrusteeIndividual): Try[UserAnswers] = {
-    super.extract(answers, Individual)
-      .flatMap(_.set(NamePage, leadIndividual.name))
-      .flatMap(_.set(DateOfBirthPage, leadIndividual.dateOfBirth))
-      .flatMap(answers => extractCountryOfNationality(leadIndividual.nationality, answers))
-      .flatMap(answers => extractIdentification(Some(leadIndividual.identification), answers))
-      .flatMap(answers => extractAddress(leadIndividual.address, answers))
-      .flatMap(answers => extractCountryOfResidence(leadIndividual.countryOfResidence, answers))
-      .flatMap(answers => extractConditionalValue(leadIndividual.email, EmailAddressYesNoPage, EmailAddressPage, answers))
-      .flatMap(_.set(TelephoneNumberPage, leadIndividual.phoneNumber))
+  def extract(userAnswers: UserAnswers, trustee: TrusteeIndividual, index: Int): Try[UserAnswers] = {
+    super.extract(userAnswers, Individual)
+      .flatMap(_.set(IndexPage, index))
+      .flatMap(_.set(NamePage, trustee.name))
+      .flatMap(answers => extractValue(trustee.dateOfBirth, DateOfBirthPage, answers))
+      .flatMap(answers => extractCountryOfNationality(trustee.nationality, answers))
+      .flatMap(answers => extractIndIdentification(trustee.identification, answers))
+      .flatMap(answers => extractOptionalAddress(trustee.address, answers))
+      .flatMap(answers => extractCountryOfResidence(trustee.countryOfResidence, answers))
+      .flatMap(answers => extractValue(trustee.phoneNumber, TelephoneNumberPage, answers))
   }
 
 }

@@ -18,7 +18,7 @@ package controllers.trustee.amend
 
 import base.SpecBase
 import connectors.TrustConnector
-import mapping.extractors._
+import mapping.extractors.trustee.{TrusteeIndividualExtractor, TrusteeOrganisationExtractor}
 import mapping.mappers.trustee.{TrusteeIndividualMapper, TrusteeOrganisationMapper}
 import models.IndividualOrBusiness.{Business, Individual}
 import models.{Name, TrusteeIndividual, TrusteeOrganisation, UserAnswers}

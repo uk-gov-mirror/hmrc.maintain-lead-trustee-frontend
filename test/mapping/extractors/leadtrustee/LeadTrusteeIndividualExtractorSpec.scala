@@ -14,26 +14,32 @@
  * limitations under the License.
  */
 
-package mapping.extractors
+package mapping.extractors.leadtrustee
 
 import base.SpecBase
 import models.Constant.GB
-import models.{LeadTrusteeOrganisation, NonUkAddress, UkAddress}
-import pages.leadtrustee.organisation._
+import models.IndividualOrBusiness.Individual
+import models._
+import pages.leadtrustee.IndividualOrBusinessPage
+import pages.leadtrustee.individual._
 
-class LeadTrusteeOrganisationExtractorSpec extends SpecBase {
+import java.time.LocalDate
 
-  private val name: String = "Name"
+class LeadTrusteeIndividualExtractorSpec extends SpecBase {
+
+  private val name: Name = Name("First", None, "Last")
+  private val date: LocalDate = LocalDate.parse("1996-02-03")
   private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postcode")
   private val country: String = "FR"
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, country)
   private val phone: String = "tel"
-  private val utr: String = "utr"
   private val email: String = "email"
+  private val nino: String = "nino"
+  private val combined = CombinedPassportOrIdCard(country, "number", date)
 
-  private val extractor = new LeadTrusteeOrganisationExtractor()
-
-  "Lead trustee organisation extractor" must {
+  private val extractor: LeadTrusteeIndividualExtractor = new LeadTrusteeIndividualExtractor()
+  
+  "LeadTrusteeIndividualExtractor" must {
 
     "populate user answers" when {
 
@@ -41,107 +47,139 @@ class LeadTrusteeOrganisationExtractorSpec extends SpecBase {
 
         val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
 
-        "trustee has a UTR, a UK address and no email" in {
+        "trustee has a NINO and UK address" in {
 
-          val trustee = LeadTrusteeOrganisation(
+          val identification = NationalInsuranceNumber(nino)
+
+          val trustee = LeadTrusteeIndividual(
             name = name,
+            dateOfBirth = date,
             phoneNumber = phone,
             email = None,
-            utr = Some(utr),
+            identification = identification,
             address = ukAddress
           )
 
           val result = extractor.extract(baseAnswers, trustee).get
 
-          result.get(RegisteredInUkYesNoPage).get mustBe true
+          result.get(IndividualOrBusinessPage).get mustBe Individual
           result.get(NamePage).get mustBe name
-          result.get(UtrPage).get mustBe utr
-          result.get(AddressInTheUkYesNoPage).get mustBe true
+          result.get(DateOfBirthPage).get mustBe date
+          result.get(UkCitizenPage).get mustBe true
+          result.get(NationalInsuranceNumberPage).get mustBe nino
+          result.get(PassportOrIdCardDetailsPage) mustBe None
+          result.get(LiveInTheUkYesNoPage).get mustBe true
           result.get(UkAddressPage).get mustBe ukAddress
           result.get(NonUkAddressPage) mustBe None
           result.get(EmailAddressYesNoPage).get mustBe false
           result.get(EmailAddressPage) mustBe None
           result.get(TelephoneNumberPage).get mustBe phone
+
         }
 
-        "trustee has no UTR, a non-UK address and an email" in {
+        "trustee has a passport/ID card, non-UK address and email" in {
 
-          val trustee = LeadTrusteeOrganisation(
+          val trustee = LeadTrusteeIndividual(
             name = name,
+            dateOfBirth = date,
             phoneNumber = phone,
             email = Some(email),
-            utr = None,
+            identification = combined,
             address = nonUkAddress
           )
 
           val result = extractor.extract(baseAnswers, trustee).get
 
-          result.get(RegisteredInUkYesNoPage).get mustBe false
+          result.get(IndividualOrBusinessPage).get mustBe Individual
           result.get(NamePage).get mustBe name
-          result.get(UtrPage) mustBe None
-          result.get(AddressInTheUkYesNoPage).get mustBe false
+          result.get(DateOfBirthPage).get mustBe date
+          result.get(UkCitizenPage).get mustBe false
+          result.get(NationalInsuranceNumberPage) mustBe None
+          result.get(PassportOrIdCardDetailsPage).get mustBe combined
+          result.get(LiveInTheUkYesNoPage).get mustBe false
           result.get(UkAddressPage) mustBe None
           result.get(NonUkAddressPage).get mustBe nonUkAddress
           result.get(EmailAddressYesNoPage).get mustBe true
           result.get(EmailAddressPage).get mustBe email
           result.get(TelephoneNumberPage).get mustBe phone
+
         }
       }
-      
+
       "5mld" when {
 
         val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
 
-        "trustee has a UTR, a UK residency/address and no email" in {
+        "trustee has UK nationality, NINO, and UK residency/address" in {
 
-          val trustee = LeadTrusteeOrganisation(
+          val identification = NationalInsuranceNumber(nino)
+
+          val trustee = LeadTrusteeIndividual(
             name = name,
+            dateOfBirth = date,
             phoneNumber = phone,
             email = None,
-            utr = Some(utr),
+            identification = identification,
             address = ukAddress,
-            countryOfResidence = Some(GB)
+            countryOfResidence = Some(GB),
+            nationality = Some(GB)
           )
 
           val result = extractor.extract(baseAnswers, trustee).get
 
-          result.get(RegisteredInUkYesNoPage).get mustBe true
+          result.get(IndividualOrBusinessPage).get mustBe Individual
           result.get(NamePage).get mustBe name
-          result.get(UtrPage).get mustBe utr
+          result.get(DateOfBirthPage).get mustBe date
+          result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe true
+          result.get(CountryOfNationalityPage).get mustBe GB
+          result.get(UkCitizenPage).get mustBe true
+          result.get(NationalInsuranceNumberPage).get mustBe nino
+          result.get(PassportOrIdCardDetailsPage) mustBe None
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
           result.get(CountryOfResidencePage).get mustBe GB
-          result.get(AddressInTheUkYesNoPage).get mustBe true
+          result.get(LiveInTheUkYesNoPage).get mustBe true
           result.get(UkAddressPage).get mustBe ukAddress
           result.get(NonUkAddressPage) mustBe None
           result.get(EmailAddressYesNoPage).get mustBe false
           result.get(EmailAddressPage) mustBe None
           result.get(TelephoneNumberPage).get mustBe phone
+
         }
 
-        "trustee has no UTR, a non-UK residency/address and an email" in {
+        "trustee has non-UK nationality, passport/ID card, non-UK residency/address, and email" in {
 
-          val trustee = LeadTrusteeOrganisation(
+          val combined = CombinedPassportOrIdCard("country", "number", date)
+
+          val trustee = LeadTrusteeIndividual(
             name = name,
+            dateOfBirth = date,
             phoneNumber = phone,
             email = Some(email),
-            utr = None,
+            identification = combined,
             address = nonUkAddress,
-            countryOfResidence = Some(country)
+            countryOfResidence = Some(country),
+            nationality = Some(country)
           )
 
           val result = extractor.extract(baseAnswers, trustee).get
 
-          result.get(RegisteredInUkYesNoPage).get mustBe false
+          result.get(IndividualOrBusinessPage).get mustBe Individual
           result.get(NamePage).get mustBe name
-          result.get(UtrPage) mustBe None
+          result.get(DateOfBirthPage).get mustBe date
+          result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe false
+          result.get(CountryOfNationalityPage).get mustBe country
+          result.get(UkCitizenPage).get mustBe false
+          result.get(NationalInsuranceNumberPage) mustBe None
+          result.get(PassportOrIdCardDetailsPage).get mustBe combined
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
           result.get(CountryOfResidencePage).get mustBe country
-          result.get(AddressInTheUkYesNoPage).get mustBe false
+          result.get(LiveInTheUkYesNoPage).get mustBe false
           result.get(UkAddressPage) mustBe None
           result.get(NonUkAddressPage).get mustBe nonUkAddress
           result.get(EmailAddressYesNoPage).get mustBe true
           result.get(EmailAddressPage).get mustBe email
           result.get(TelephoneNumberPage).get mustBe phone
+
         }
       }
     }

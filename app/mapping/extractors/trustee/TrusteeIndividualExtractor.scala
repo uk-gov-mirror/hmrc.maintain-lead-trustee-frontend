@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package mapping.extractors
+package mapping.extractors.trustee
 
 import models.IndividualOrBusiness.Individual
 import models._
 import pages.QuestionPage
+import pages.trustee.WhenAddedPage
 import pages.trustee.amend.{individual => ind}
 import pages.trustee.individual._
-import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
-import play.api.libs.json.JsPath
 
 import scala.util.{Success, Try}
 
 class TrusteeIndividualExtractor extends TrusteeExtractor {
-
-  override def basePath: JsPath = pages.trustee.basePath
-  override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
 
   override def addressYesNoPage: QuestionPage[Boolean] = AddressYesNoPage
   override def ukAddressYesNoPage: QuestionPage[Boolean] = LiveInTheUkYesNoPage

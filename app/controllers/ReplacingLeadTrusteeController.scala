@@ -21,9 +21,9 @@ import controllers.leadtrustee.individual.{routes => ltiRts}
 import controllers.leadtrustee.organisation.{routes => ltoRts}
 import forms.ReplaceLeadTrusteeFormProvider
 import handlers.ErrorHandler
-import mapping.extractors.{IndividualTrusteeToLeadTrusteeExtractor, OrganisationTrusteeToLeadTrusteeExtractor}
+import mapping.extractors.leadtrustee._
+import models._
 import models.requests.DataRequest
-import models.{AllTrustees, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

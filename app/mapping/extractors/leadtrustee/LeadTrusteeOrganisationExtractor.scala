@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package mapping.extractors
+package mapping.extractors.leadtrustee
 
 import models.IndividualOrBusiness.Business
 import models._
 import pages.QuestionPage
-import pages.leadtrustee.IndividualOrBusinessPage
 import pages.leadtrustee.organisation.{UtrPage, _}
-import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-class LeadTrusteeOrganisationExtractor extends Extractor {
-
-  override def basePath: JsPath = pages.leadtrustee.basePath
-  override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
+class LeadTrusteeOrganisationExtractor extends LeadTrusteeExtractor {
 
   override def ukAddressYesNoPage: QuestionPage[Boolean] = AddressInTheUkYesNoPage
   override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage

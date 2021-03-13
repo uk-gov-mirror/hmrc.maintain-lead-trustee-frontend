@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package mapping.extractors
+package mapping.extractors.trustee
 
 import base.SpecBase
+import models.Constant.GB
 import models.IndividualOrBusiness.Individual
 import models._
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.amend.individual._
-import java.time.LocalDate
-
-import models.Constant.GB
 import pages.trustee.individual.{CountryOfNationalityInTheUkYesNoPage, CountryOfNationalityPage, CountryOfNationalityYesNoPage, CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage, MentalCapacityYesNoPage}
+
+import java.time.LocalDate
 
 class TrusteeIndividualExtractorSpec extends SpecBase {
 

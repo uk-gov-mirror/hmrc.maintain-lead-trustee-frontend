@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package mapping.extractors
+package mapping.extractors.trustee
 
 import models.IndividualOrBusiness.Business
-import models.{IndividualOrBusiness, NonUkAddress, TrustIdentificationOrgType, TrusteeOrganisation, UkAddress, UserAnswers}
+import models.{NonUkAddress, TrustIdentificationOrgType, TrusteeOrganisation, UkAddress, UserAnswers}
 import pages.QuestionPage
+import pages.trustee.WhenAddedPage
 import pages.trustee.amend.{organisation => org}
 import pages.trustee.organisation.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
-import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
-import play.api.libs.json.JsPath
 
 import scala.util.{Success, Try}
 
 class TrusteeOrganisationExtractor extends TrusteeExtractor {
-
-  override def basePath: JsPath = pages.trustee.basePath
-  override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
 
   override def addressYesNoPage: QuestionPage[Boolean] = org.AddressYesNoPage
   override def ukAddressYesNoPage: QuestionPage[Boolean] = org.AddressInTheUkYesNoPage

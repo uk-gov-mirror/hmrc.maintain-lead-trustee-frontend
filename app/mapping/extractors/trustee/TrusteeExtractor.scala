@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-package mapping.extractors
+package mapping.extractors.trustee
 
+import mapping.extractors.Extractor
 import models.Constant.GB
-import models.{Address, NonUkAddress, UkAddress, UserAnswers}
+import models.{Address, IndividualOrBusiness, NonUkAddress, UkAddress, UserAnswers}
 import pages.QuestionPage
+import pages.trustee.IndividualOrBusinessPage
+import play.api.libs.json.JsPath
 
 import scala.util.{Success, Try}
 
 trait TrusteeExtractor extends Extractor {
+
+  override def basePath: JsPath = pages.trustee.basePath
+  override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
 
   def addressYesNoPage: QuestionPage[Boolean]
 

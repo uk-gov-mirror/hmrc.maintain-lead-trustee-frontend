@@ -16,6 +16,8 @@
 
 package mapping.extractors
 
+import mapping.extractors.leadtrustee.{LeadTrusteeIndividualExtractor, LeadTrusteeOrganisationExtractor}
+import mapping.extractors.trustee.{TrusteeIndividualExtractor, TrusteeOrganisationExtractor}
 import models._
 
 import javax.inject.Inject
