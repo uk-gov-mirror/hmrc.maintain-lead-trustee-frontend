@@ -16,6 +16,7 @@
 
 package pages.leadtrustee.organisation
 
+import models.{NonUkAddress, UkAddress}
 import pages.behaviours.PageBehaviours
 
 class CountryOfResidenceInTheUkYesNoPageSpec extends PageBehaviours {
@@ -28,13 +29,27 @@ class CountryOfResidenceInTheUkYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](CountryOfResidenceInTheUkYesNoPage)
 
-    "implement cleanup logic when YES selected" in {
-      val userAnswers = emptyUserAnswers
-        .set(CountryOfResidencePage, "FR").success.value
+    "implement cleanup" when {
 
-      val result = userAnswers.set(CountryOfResidenceInTheUkYesNoPage, true).success.value
+      "YES selected" in {
+        val userAnswers = emptyUserAnswers
+          .set(CountryOfResidencePage, "FR").success.value
+          .set(NonUkAddressPage, NonUkAddress("Line 1", "Line 2", None, "FR")).success.value
 
-      result.get(CountryOfResidencePage) mustBe None
+        val result = userAnswers.set(CountryOfResidenceInTheUkYesNoPage, true).success.value
+
+        result.get(CountryOfResidencePage) mustBe None
+        result.get(NonUkAddressPage) mustBe None
+      }
+
+      "NO selected" in {
+        val userAnswers = emptyUserAnswers
+          .set(UkAddressPage, UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")).success.value
+
+        val result = userAnswers.set(CountryOfResidenceInTheUkYesNoPage, false).success.value
+
+        result.get(UkAddressPage) mustBe None
+      }
     }
   }
 }
