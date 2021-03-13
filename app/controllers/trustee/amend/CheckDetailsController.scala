@@ -21,7 +21,7 @@ import connectors.TrustConnector
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import handlers.ErrorHandler
-import mapping.extractors.TrusteeExtractor
+import mapping.extractors.TrusteeExtractors
 import mapping.mappers.TrusteeMappers
 import models.IndividualOrBusiness._
 import models.{Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
@@ -48,7 +48,7 @@ class CheckDetailsController @Inject()(
                                         view: CheckDetailsView,
                                         printHelper: TrusteePrintHelper,
                                         mapper: TrusteeMappers,
-                                        extractor: TrusteeExtractor,
+                                        extractor: TrusteeExtractors,
                                         trustConnector: TrustConnector,
                                         nameAction: NameRequiredAction,
                                         val appConfig: FrontendAppConfig,

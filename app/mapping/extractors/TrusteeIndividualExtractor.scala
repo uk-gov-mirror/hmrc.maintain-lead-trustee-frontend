@@ -16,7 +16,7 @@
 
 package mapping.extractors
 
-import models.Constant.GB
+import models.IndividualOrBusiness.Individual
 import models._
 import pages.QuestionPage
 import pages.trustee.amend.{individual => ind}
@@ -26,10 +26,15 @@ import play.api.libs.json.JsPath
 
 import scala.util.{Success, Try}
 
-class TrusteeIndividualExtractor extends IndividualExtractor {
+class TrusteeIndividualExtractor extends TrusteeExtractor {
 
   override def basePath: JsPath = pages.trustee.basePath
   override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
+
+  override def addressYesNoPage: QuestionPage[Boolean] = AddressYesNoPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean] = LiveInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
   override def countryOfNationalityYesNoPage: QuestionPage[Boolean] = CountryOfNationalityYesNoPage
   override def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean] = CountryOfNationalityInTheUkYesNoPage
@@ -40,7 +45,7 @@ class TrusteeIndividualExtractor extends IndividualExtractor {
   override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
 
   def extract(answers: UserAnswers, trustee: TrusteeIndividual, index: Int): Try[UserAnswers] = {
-    super.extract(answers)
+    super.extract(answers, Individual)
       .flatMap(_.set(ind.IndexPage, index))
       .flatMap(_.set(ind.NamePage, trustee.name))
       .flatMap(answers => extractConditionalValue(trustee.dateOfBirth, DateOfBirthYesNoPage, DateOfBirthPage, answers))
@@ -52,29 +57,6 @@ class TrusteeIndividualExtractor extends IndividualExtractor {
       .flatMap(_.set(WhenAddedPage, trustee.entityStart))
   }
 
-  override def extractCountryOfResidenceOrNationality(country: Option[String],
-                                                      answers: UserAnswers,
-                                                      yesNoPage: QuestionPage[Boolean],
-                                                      ukYesNoPage: QuestionPage[Boolean],
-                                                      page: QuestionPage[String]): Try[UserAnswers] ={
-    if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
-      country match {
-        case Some(GB) => answers
-          .set(yesNoPage, true)
-          .flatMap(_.set(ukYesNoPage, true))
-          .flatMap(_.set(page, GB))
-        case Some(country) => answers
-          .set(yesNoPage, true)
-          .flatMap(_.set(ukYesNoPage, false))
-          .flatMap(_.set(page, country))
-        case None => answers
-          .set(yesNoPage, false)
-      }
-    } else {
-      Success(answers)
-    }
-  }
-
   private def extractMentalCapacity(mentalCapacityYesNo: Option[Boolean], answers: UserAnswers): Try[UserAnswers] = {
     if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
       extractValue(mentalCapacityYesNo, MentalCapacityYesNoPage, answers)
@@ -83,7 +65,7 @@ class TrusteeIndividualExtractor extends IndividualExtractor {
     }
   }
 
-  override def extractIdentification(identification: Option[IndividualIdentification], answers: UserAnswers): Try[UserAnswers] = {
+  private def extractIdentification(identification: Option[IndividualIdentification], answers: UserAnswers): Try[UserAnswers] = {
     if (answers.isTaxable || !answers.is5mldEnabled) {
       identification match {
         case Some(NationalInsuranceNumber(nino)) =>
@@ -103,25 +85,6 @@ class TrusteeIndividualExtractor extends IndividualExtractor {
             .flatMap(_.set(ind.PassportOrIdCardDetailsPage, c))
         case _ =>
           answers.set(ind.NationalInsuranceNumberYesNoPage, false)
-      }
-    } else {
-      Success(answers)
-    }
-  }
-
-  override def extractOptionalAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
-    if (answers.isTaxable || !answers.is5mldEnabled) {
-      address match {
-        case Some(uk: UkAddress) =>
-          answers.set(ind.AddressYesNoPage, true)
-            .flatMap(_.set(ind.LiveInTheUkYesNoPage, true))
-            .flatMap(_.set(ind.UkAddressPage, uk))
-        case Some(nonUk: NonUkAddress) =>
-          answers.set(ind.AddressYesNoPage, true)
-            .flatMap(_.set(ind.LiveInTheUkYesNoPage, false))
-            .flatMap(_.set(ind.NonUkAddressPage, nonUk))
-        case _ =>
-          answers.set(ind.AddressYesNoPage, false)
       }
     } else {
       Success(answers)

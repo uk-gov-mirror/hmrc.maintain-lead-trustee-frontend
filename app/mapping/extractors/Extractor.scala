@@ -55,6 +55,20 @@ trait Extractor {
     }
   }
 
+  def countryOfNationalityYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
+  def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
+  def countryOfNationalityPage: QuestionPage[String] = new EmptyPage[String]
+
+  def extractCountryOfNationality(countryOfNationality: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+    extractCountryOfResidenceOrNationality(
+      country = countryOfNationality,
+      answers = answers,
+      yesNoPage = countryOfNationalityYesNoPage,
+      ukYesNoPage = ukCountryOfNationalityYesNoPage,
+      page = countryOfNationalityPage
+    )
+  }
+
   def countryOfResidenceYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
   def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean]
   def countryOfResidencePage: QuestionPage[String]

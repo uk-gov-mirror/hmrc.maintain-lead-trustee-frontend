@@ -16,6 +16,7 @@
 
 package mapping.extractors
 
+import models.IndividualOrBusiness.Individual
 import models._
 import pages.QuestionPage
 import pages.leadtrustee.IndividualOrBusinessPage
@@ -24,7 +25,7 @@ import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-class LeadTrusteeIndividualExtractor extends IndividualExtractor {
+class LeadTrusteeIndividualExtractor extends LeadTrusteeExtractor {
 
   override def basePath: JsPath = pages.leadtrustee.basePath
   override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
@@ -44,7 +45,7 @@ class LeadTrusteeIndividualExtractor extends IndividualExtractor {
   override def passportOrIdCardDetailsPage: QuestionPage[CombinedPassportOrIdCard] = PassportOrIdCardDetailsPage
 
   def extract(answers: UserAnswers, leadIndividual: LeadTrusteeIndividual): Try[UserAnswers] = {
-    super.extract(answers)
+    super.extract(answers, Individual)
       .flatMap(_.set(NamePage, leadIndividual.name))
       .flatMap(_.set(DateOfBirthPage, leadIndividual.dateOfBirth))
       .flatMap(answers => extractCountryOfNationality(leadIndividual.nationality, answers))

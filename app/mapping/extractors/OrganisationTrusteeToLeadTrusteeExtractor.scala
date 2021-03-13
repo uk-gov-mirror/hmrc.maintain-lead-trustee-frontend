@@ -16,6 +16,7 @@
 
 package mapping.extractors
 
+import models.IndividualOrBusiness.Business
 import models._
 import pages.QuestionPage
 import pages.leadtrustee.IndividualOrBusinessPage
@@ -24,10 +25,20 @@ import play.api.libs.json.JsPath
 
 import scala.util.{Success, Try}
 
-class OrganisationTrusteeToLeadTrusteeExtractor extends OrganisationExtractor {
+class OrganisationTrusteeToLeadTrusteeExtractor extends Extractor {
+
+  override def basePath: JsPath = pages.leadtrustee.basePath
+  override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
+
+  override def ukAddressYesNoPage: QuestionPage[Boolean] = AddressInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
+
+  override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
+  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
 
   def extract(userAnswers: UserAnswers, trustee: TrusteeOrganisation, index: Int): Try[UserAnswers] = {
-    super.extract(userAnswers)
+    super.extract(userAnswers, Business)
       .flatMap(_.set(IndexPage, index))
       .flatMap(answers => extractIdentification(trustee.identification, answers))
       .flatMap(_.set(NamePage, trustee.name))
@@ -56,15 +67,5 @@ class OrganisationTrusteeToLeadTrusteeExtractor extends OrganisationExtractor {
       case _ => Success(answers)
     }
   }
-
-  override def basePath: JsPath = pages.leadtrustee.basePath
-  override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
-
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = AddressInTheUkYesNoPage
-  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
-  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
-
-  override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
-  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
 
 }

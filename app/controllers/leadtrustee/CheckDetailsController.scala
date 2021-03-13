@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import connectors.TrustConnector
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.{routes => ltRoutes}
-import mapping.extractors.TrusteeExtractor
+import mapping.extractors.TrusteeExtractors
 import mapping.mappers.TrusteeMappers
 import models.requests.DataRequest
 import models.{LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, UserAnswers}
@@ -43,7 +43,7 @@ class CheckDetailsController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
                                         connector: TrustConnector,
-                                        extractor: TrusteeExtractor,
+                                        extractor: TrusteeExtractors,
                                         printHelper: TrusteePrintHelper,
                                         mapper: TrusteeMappers,
                                         repository: PlaybackRepository

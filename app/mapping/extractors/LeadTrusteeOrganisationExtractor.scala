@@ -16,6 +16,7 @@
 
 package mapping.extractors
 
+import models.IndividualOrBusiness.Business
 import models._
 import pages.QuestionPage
 import pages.leadtrustee.IndividualOrBusinessPage
@@ -24,17 +25,7 @@ import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-class LeadTrusteeOrganisationExtractor extends OrganisationExtractor {
-
-  def extract(answers: UserAnswers, leadOrganisation: LeadTrusteeOrganisation): Try[UserAnswers] = {
-    super.extract(answers)
-      .flatMap(answers => extractConditionalValue(leadOrganisation.utr, RegisteredInUkYesNoPage, UtrPage, answers))
-      .flatMap(_.set(NamePage, leadOrganisation.name))
-      .flatMap(answers => extractAddress(leadOrganisation.address, answers))
-      .flatMap(answers => extractCountryOfResidence(leadOrganisation.countryOfResidence, answers))
-      .flatMap(answers => extractConditionalValue(leadOrganisation.email, EmailAddressYesNoPage, EmailAddressPage, answers))
-      .flatMap(_.set(TelephoneNumberPage, leadOrganisation.phoneNumber))
-  }
+class LeadTrusteeOrganisationExtractor extends Extractor {
 
   override def basePath: JsPath = pages.leadtrustee.basePath
   override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
@@ -45,5 +36,15 @@ class LeadTrusteeOrganisationExtractor extends OrganisationExtractor {
 
   override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
   override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
+
+  def extract(answers: UserAnswers, leadOrganisation: LeadTrusteeOrganisation): Try[UserAnswers] = {
+    super.extract(answers, Business)
+      .flatMap(answers => extractConditionalValue(leadOrganisation.utr, RegisteredInUkYesNoPage, UtrPage, answers))
+      .flatMap(_.set(NamePage, leadOrganisation.name))
+      .flatMap(answers => extractAddress(leadOrganisation.address, answers))
+      .flatMap(answers => extractCountryOfResidence(leadOrganisation.countryOfResidence, answers))
+      .flatMap(answers => extractConditionalValue(leadOrganisation.email, EmailAddressYesNoPage, EmailAddressPage, answers))
+      .flatMap(_.set(TelephoneNumberPage, leadOrganisation.phoneNumber))
+  }
 
 }

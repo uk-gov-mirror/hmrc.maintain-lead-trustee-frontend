@@ -16,30 +16,65 @@
 
 package mapping.extractors
 
-import models._
+import models.Constant.GB
+import models.{Address, NonUkAddress, UkAddress, UserAnswers}
+import pages.QuestionPage
 
-import javax.inject.Inject
-import scala.util.Try
+import scala.util.{Success, Try}
 
-class TrusteeExtractor @Inject()(trusteeIndividualExtractor: TrusteeIndividualExtractor,
-                                 trusteeOrganisationExtractor: TrusteeOrganisationExtractor,
-                                 leadTrusteeIndividualExtractor: LeadTrusteeIndividualExtractor,
-                                 leadTrusteeOrganisationExtractor: LeadTrusteeOrganisationExtractor) {
+trait TrusteeExtractor extends Extractor {
 
-  def extractTrusteeIndividual(userAnswers: UserAnswers, trustee: TrusteeIndividual, index: Int): Try[UserAnswers] = {
-    trusteeIndividualExtractor.extract(userAnswers, trustee, index)
+  def addressYesNoPage: QuestionPage[Boolean]
+
+  override def extractOptionalAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
+    if (answers.isTaxable || !answers.is5mldEnabled) {
+      address match {
+        case Some(value) => extractAddress(value, answers)
+        case _ => answers.set(addressYesNoPage, false)
+      }
+    } else {
+      Success(answers)
+    }
   }
 
-  def extractTrusteeOrganisation(userAnswers: UserAnswers, trustee: TrusteeOrganisation, index: Int): Try[UserAnswers] = {
-    trusteeOrganisationExtractor.extract(userAnswers, trustee, index)
+  override def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
+    if (answers.isTaxable || !answers.is5mldEnabled) {
+      address match {
+        case uk: UkAddress => answers
+          .set(addressYesNoPage, true)
+          .flatMap(_.set(ukAddressYesNoPage, true))
+          .flatMap(_.set(ukAddressPage, uk))
+        case nonUk: NonUkAddress => answers
+          .set(addressYesNoPage, true)
+          .flatMap(_.set(ukAddressYesNoPage, false))
+          .flatMap(_.set(nonUkAddressPage, nonUk))
+      }
+    } else {
+      Success(answers)
+    }
   }
 
-  def extractLeadTrusteeIndividual(userAnswers: UserAnswers, trustee: LeadTrusteeIndividual): Try[UserAnswers] = {
-    leadTrusteeIndividualExtractor.extract(userAnswers, trustee)
-  }
-
-  def extractLeadTrusteeOrganisation(userAnswers: UserAnswers, trustee: LeadTrusteeOrganisation): Try[UserAnswers] = {
-    leadTrusteeOrganisationExtractor.extract(userAnswers, trustee)
+  override def extractCountryOfResidenceOrNationality(country: Option[String],
+                                                      answers: UserAnswers,
+                                                      yesNoPage: QuestionPage[Boolean],
+                                                      ukYesNoPage: QuestionPage[Boolean],
+                                                      page: QuestionPage[String]): Try[UserAnswers] = {
+    if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
+      country match {
+        case Some(GB) => answers
+          .set(yesNoPage, true)
+          .flatMap(_.set(ukYesNoPage, true))
+          .flatMap(_.set(page, GB))
+        case Some(country) => answers
+          .set(yesNoPage, true)
+          .flatMap(_.set(ukYesNoPage, false))
+          .flatMap(_.set(page, country))
+        case None => answers
+          .set(yesNoPage, false)
+      }
+    } else {
+      Success(answers)
+    }
   }
 
 }

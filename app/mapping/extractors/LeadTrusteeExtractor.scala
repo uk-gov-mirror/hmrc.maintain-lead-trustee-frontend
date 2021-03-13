@@ -16,35 +16,16 @@
 
 package mapping.extractors
 
-import models.IndividualOrBusiness.Individual
-import models._
-import pages.{EmptyPage, QuestionPage}
+import models.{CombinedPassportOrIdCard, IdCard, IndividualIdentification, NationalInsuranceNumber, Passport, UserAnswers}
+import pages.QuestionPage
 
 import scala.util.{Success, Try}
 
-trait IndividualExtractor extends Extractor {
+trait LeadTrusteeExtractor extends Extractor {
 
-  def extract(answers: UserAnswers): Try[UserAnswers] = {
-    super.extract(answers, Individual)
-  }
-
-  def countryOfNationalityYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean]
-  def countryOfNationalityPage: QuestionPage[String]
-
-  def extractCountryOfNationality(countryOfNationality: Option[String], answers: UserAnswers): Try[UserAnswers] = {
-    extractCountryOfResidenceOrNationality(
-      country = countryOfNationality,
-      answers = answers,
-      yesNoPage = countryOfNationalityYesNoPage,
-      ukYesNoPage = ukCountryOfNationalityYesNoPage,
-      page = countryOfNationalityPage
-    )
-  }
-
-  def ninoYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def ninoPage: QuestionPage[String] = new EmptyPage[String]
-  def passportOrIdCardDetailsPage: QuestionPage[CombinedPassportOrIdCard] = new EmptyPage[CombinedPassportOrIdCard]
+  def ninoYesNoPage: QuestionPage[Boolean]
+  def ninoPage: QuestionPage[String]
+  def passportOrIdCardDetailsPage: QuestionPage[CombinedPassportOrIdCard]
 
   def extractIdentification(identification: Option[IndividualIdentification], answers: UserAnswers): Try[UserAnswers] = {
     identification map {
