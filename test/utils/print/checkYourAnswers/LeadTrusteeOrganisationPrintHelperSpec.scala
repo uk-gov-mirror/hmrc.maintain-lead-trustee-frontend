@@ -25,8 +25,8 @@ import viewmodels.{AnswerRow, AnswerSection}
 class LeadTrusteeOrganisationPrintHelperSpec extends SpecBase {
 
   val name: String = "Lead Trustee"
-  val ukAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
-  val nonUkAddress = NonUkAddress("value 1", "value 2", None, "DE")
+  val ukAddress: UkAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
+  val nonUkAddress: NonUkAddress = NonUkAddress("value 1", "value 2", None, "DE")
 
   "LeadTrusteeOrganisationPrintHelper" must {
 
