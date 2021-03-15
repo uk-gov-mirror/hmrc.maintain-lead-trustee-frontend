@@ -16,7 +16,8 @@
 
 package navigation.leadtrustee
 
-import controllers.leadtrustee.organisation.{routes => rts}
+import controllers.leadtrustee.organisation.routes._
+import controllers.leadtrustee.routes._
 import models.UserAnswers
 import pages.leadtrustee.organisation._
 import pages.{Page, QuestionPage}
@@ -24,39 +25,49 @@ import play.api.mvc.Call
 
 object OrganisationLeadTrusteeNavigator {
 
-  private val simpleNavigations : PartialFunction[Page, Call] = {
-    case UtrPage => rts.AddressInTheUkYesNoController.onPageLoad()
-    case UkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
-    case NonUkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
-    case EmailAddressPage => rts.TelephoneNumberController.onPageLoad()
-    case TelephoneNumberPage => controllers.leadtrustee.routes.CheckDetailsController.onPageLoadOrganisationUpdated()
-  }
-
-  private val yesNoNavigations : PartialFunction[Page, UserAnswers => Call] =
-    yesNoNav(RegisteredInUkYesNoPage, rts.NameController.onPageLoad(), rts.NameController.onPageLoad()) orElse
-    yesNoNav(AddressInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad()) orElse
-    yesNoNav(EmailAddressYesNoPage, rts.EmailAddressController.onPageLoad(), rts.TelephoneNumberController.onPageLoad())
-
-  private val conditionalNavigations : PartialFunction[Page, UserAnswers => Call] = {
-    case NamePage => nameNavigation
-  }
-
   val routes: PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigations andThen (c => (_:UserAnswers) => c) orElse
-    yesNoNavigations orElse
-    conditionalNavigations
+    simpleNavigation orElse
+      yesNoNavigation orElse
+      conditionalNavigation
 
-  private def nameNavigation(userAnswers: UserAnswers): Call = {
+  private def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
+    case UtrPage => navigateAwayFromUtrQuestions
+    case CountryOfResidencePage => _ => NonUkAddressController.onPageLoad()
+    case UkAddressPage | NonUkAddressPage => _ => EmailAddressYesNoController.onPageLoad()
+    case EmailAddressPage => _ => TelephoneNumberController.onPageLoad()
+    case TelephoneNumberPage => _ => CheckDetailsController.onPageLoadOrganisationUpdated()
+  }
+
+  private def yesNoNavigation: PartialFunction[Page, UserAnswers => Call] =
+    yesNoNav(RegisteredInUkYesNoPage, NameController.onPageLoad(), NameController.onPageLoad()) orElse
+      yesNoNav(CountryOfResidenceInTheUkYesNoPage, UkAddressController.onPageLoad(), CountryOfResidenceController.onPageLoad()) orElse
+      yesNoNav(AddressInTheUkYesNoPage, UkAddressController.onPageLoad(), NonUkAddressController.onPageLoad()) orElse
+      yesNoNav(EmailAddressYesNoPage, EmailAddressController.onPageLoad(), TelephoneNumberController.onPageLoad())
+
+  private def conditionalNavigation: PartialFunction[Page, UserAnswers => Call] = {
+    case NamePage => navigateToUtrQuestionIfUkRegistered
+  }
+
+  private def navigateToUtrQuestionIfUkRegistered(userAnswers: UserAnswers): Call = {
     userAnswers.get(RegisteredInUkYesNoPage).map {
-      case true => rts.UtrController.onPageLoad()
-      case false => rts.AddressInTheUkYesNoController.onPageLoad()
+      case true => UtrController.onPageLoad()
+      case false => navigateAwayFromUtrQuestions(userAnswers)
     }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  def yesNoNav(fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call) : PartialFunction[Page, UserAnswers => Call] = {
-    case `fromPage` =>
-      ua => ua.get(fromPage)
-              .map(if (_) yesCall else noCall)
-              .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+  private def navigateAwayFromUtrQuestions(ua: UserAnswers): Call = {
+    if (ua.is5mldEnabled) {
+      CountryOfResidenceInTheUkYesNoController.onPageLoad()
+    } else {
+      AddressInTheUkYesNoController.onPageLoad()
+    }
   }
+
+  private def yesNoNav(fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): PartialFunction[Page, UserAnswers => Call] = {
+    case `fromPage` => ua =>
+      ua.get(fromPage)
+        .map(if (_) yesCall else noCall)
+        .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+  }
+
 }

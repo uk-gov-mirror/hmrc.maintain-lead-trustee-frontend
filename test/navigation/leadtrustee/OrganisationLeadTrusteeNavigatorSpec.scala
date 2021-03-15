@@ -17,6 +17,8 @@
 package navigation.leadtrustee
 
 import base.SpecBase
+import controllers.leadtrustee.organisation.routes._
+import controllers.leadtrustee.routes._
 import navigation.Navigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.leadtrustee.organisation._
@@ -25,95 +27,223 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
 
   val navigator = new Navigator
 
-  "Organisation lead trustee navigator" when {
+  "OrganisationLeadTrusteeNavigator" when {
 
-    "Is UK registered business -> Yes -> Name page" in {
-      val answers = emptyUserAnswers
-        .set(RegisteredInUkYesNoPage, true).success.value
+    "4mld" when {
 
-      navigator.nextPage(RegisteredInUkYesNoPage, answers)
-        .mustBe(controllers.leadtrustee.organisation.routes.NameController.onPageLoad())
+      val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
+
+      "UK registered yes/no" when {
+        val page = RegisteredInUkYesNoPage
+
+        "-> YES" must {
+
+          val answers = baseAnswers
+            .set(page, true).success.value
+
+          "-> Name page" in {
+            navigator.nextPage(page, answers)
+              .mustBe(NameController.onPageLoad())
+          }
+
+          "-> Name Page -> UTR page" in {
+            navigator.nextPage(NamePage, answers)
+              .mustBe(UtrController.onPageLoad())
+          }
+        }
+
+        "-> NO" must {
+
+          val answers = baseAnswers
+            .set(page, false).success.value
+
+          "-> Name page" in {
+            navigator.nextPage(page, answers)
+              .mustBe(NameController.onPageLoad())
+          }
+
+          "-> Name page -> UK address yes/no page" in {
+            navigator.nextPage(NamePage, answers)
+              .mustBe(AddressInTheUkYesNoController.onPageLoad())
+          }
+        }
+      }
+
+      "UTR page -> UK address yes/no page" in {
+        navigator.nextPage(UtrPage, emptyUserAnswers)
+          .mustBe(AddressInTheUkYesNoController.onPageLoad())
+      }
+
+      "UK address yes/no page" when {
+        val page = AddressInTheUkYesNoPage
+
+        "-> YES -> UK address page" in {
+          val answers = emptyUserAnswers
+            .set(page, true).success.value
+
+          navigator.nextPage(page, answers)
+            .mustBe(UkAddressController.onPageLoad())
+        }
+
+        "-> NO -> Non-UK address page" in {
+          val answers = emptyUserAnswers
+            .set(page, false).success.value
+
+          navigator.nextPage(page, answers)
+            .mustBe(NonUkAddressController.onPageLoad())
+        }
+      }
+
+      "UK address page -> Email address yes/no page" in {
+        navigator.nextPage(UkAddressPage, emptyUserAnswers)
+          .mustBe(EmailAddressYesNoController.onPageLoad())
+      }
+
+      "Non-UK address page -> Email address yes/no page" in {
+        navigator.nextPage(NonUkAddressPage, emptyUserAnswers)
+          .mustBe(EmailAddressYesNoController.onPageLoad())
+      }
+
+      "Email address yes/no page" when {
+        val page = EmailAddressYesNoPage
+
+        "-> YES -> Email address page" in {
+          val answers = emptyUserAnswers
+            .set(page, true).success.value
+
+          navigator.nextPage(page, answers)
+            .mustBe(EmailAddressController.onPageLoad())
+        }
+
+        "-> NO -> Telephone number page" in {
+          val answers = emptyUserAnswers
+            .set(page, false).success.value
+
+          navigator.nextPage(page, answers)
+            .mustBe(TelephoneNumberController.onPageLoad())
+        }
+      }
+
+      "Email address page -> Telephone number page" in {
+        navigator.nextPage(EmailAddressPage, emptyUserAnswers)
+          .mustBe(TelephoneNumberController.onPageLoad())
+      }
+
+      "Telephone number page -> Check details page" in {
+        navigator.nextPage(TelephoneNumberPage, emptyUserAnswers)
+          .mustBe(CheckDetailsController.onPageLoadOrganisationUpdated())
+      }
     }
 
-    "Is UK registered business -> No -> Name page" in {
-      val answers = emptyUserAnswers
-        .set(RegisteredInUkYesNoPage, false).success.value
+    "5mld" when {
 
-      navigator.nextPage(RegisteredInUkYesNoPage, answers)
-        .mustBe(controllers.leadtrustee.organisation.routes.NameController.onPageLoad())
-    }
+      val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
 
-    "(Is UK registered business -> Yes) -> Name page -> UTR page" in {
-      val answers = emptyUserAnswers
-        .set(RegisteredInUkYesNoPage, true).success.value
+      "UK registered yes/no" when {
+        val page = RegisteredInUkYesNoPage
 
-      navigator.nextPage(NamePage, answers)
-        .mustBe(controllers.leadtrustee.organisation.routes.UtrController.onPageLoad())
-    }
+        "-> YES" must {
 
-    "UTR page -> Is address in UK page" in {
-      navigator.nextPage(UtrPage, emptyUserAnswers)
-        .mustBe(controllers.leadtrustee.organisation.routes.AddressInTheUkYesNoController.onPageLoad())
-    }
+          val answers = baseAnswers
+            .set(page, true).success.value
 
-    "(Is UK registered business -> No) -> Name page -> Is address in UK page" in {
-      val answers = emptyUserAnswers
-        .set(RegisteredInUkYesNoPage, false).success.value
+          "-> Name page" in {
+            navigator.nextPage(page, answers)
+              .mustBe(NameController.onPageLoad())
+          }
 
-      navigator.nextPage(NamePage, answers)
-        .mustBe(controllers.leadtrustee.organisation.routes.AddressInTheUkYesNoController.onPageLoad())
-    }
+          "-> Name Page -> UTR page" in {
+            navigator.nextPage(NamePage, answers)
+              .mustBe(UtrController.onPageLoad())
+          }
+        }
 
-    "Is address in UK page -> Yes -> UK address page" in {
-      val answers = emptyUserAnswers
-        .set(AddressInTheUkYesNoPage, true).success.value
+        "-> NO" must {
 
-      navigator.nextPage(AddressInTheUkYesNoPage, answers)
-        .mustBe(controllers.leadtrustee.organisation.routes.UkAddressController.onPageLoad())
-    }
+          val answers = baseAnswers
+            .set(page, false).success.value
 
-    "UK address page -> Do you know email address page" in {
-      navigator.nextPage(UkAddressPage, emptyUserAnswers)
-        .mustBe(controllers.leadtrustee.organisation.routes.EmailAddressYesNoController.onPageLoad())
-    }
+          "-> Name page" in {
+            navigator.nextPage(page, answers)
+              .mustBe(NameController.onPageLoad())
+          }
 
-    "Is address in UK page -> No -> Non-UK address page" in {
-      val answers = emptyUserAnswers
-        .set(AddressInTheUkYesNoPage, false).success.value
+          "-> Name page -> UK residency yes/no page" in {
+            navigator.nextPage(NamePage, answers)
+              .mustBe(CountryOfResidenceInTheUkYesNoController.onPageLoad())
+          }
+        }
+      }
 
-      navigator.nextPage(AddressInTheUkYesNoPage, answers)
-        .mustBe(controllers.leadtrustee.organisation.routes.NonUkAddressController.onPageLoad())
-    }
+      "UTR page -> UK address yes/no page" in {
+        navigator.nextPage(UtrPage, emptyUserAnswers)
+          .mustBe(AddressInTheUkYesNoController.onPageLoad())
+      }
 
-    "Non-UK address page -> Do you know email address page" in {
-      navigator.nextPage(NonUkAddressPage, emptyUserAnswers)
-        .mustBe(controllers.leadtrustee.organisation.routes.EmailAddressYesNoController.onPageLoad())
-    }
+      "UK residency yes/no page" when {
+        val page = CountryOfResidenceInTheUkYesNoPage
 
-    "Do you know email address page -> Yes -> Email address page" in {
-      val answers = emptyUserAnswers
-        .set(EmailAddressYesNoPage, true).success.value
+        "-> YES -> UK address page" in {
+          val answers = emptyUserAnswers
+            .set(page, true).success.value
 
-      navigator.nextPage(EmailAddressYesNoPage, answers)
-        .mustBe(controllers.leadtrustee.organisation.routes.EmailAddressController.onPageLoad())
-    }
+          navigator.nextPage(page, answers)
+            .mustBe(UkAddressController.onPageLoad())
+        }
 
-    "Email address page -> Telephone number page" in {
-      navigator.nextPage(EmailAddressPage, emptyUserAnswers)
-        .mustBe(controllers.leadtrustee.organisation.routes.TelephoneNumberController.onPageLoad())
-    }
+        "-> NO -> Residency page" in {
+          val answers = emptyUserAnswers
+            .set(page, false).success.value
 
-    "Do you know email address page -> No -> Telephone number page" in {
-      val answers = emptyUserAnswers
-        .set(EmailAddressYesNoPage, false).success.value
+          navigator.nextPage(page, answers)
+            .mustBe(CountryOfResidenceController.onPageLoad())
+        }
+      }
 
-      navigator.nextPage(EmailAddressYesNoPage, answers)
-        .mustBe(controllers.leadtrustee.organisation.routes.TelephoneNumberController.onPageLoad())
-    }
+      "Residency page -> Non-UK address page" in {
+        navigator.nextPage(CountryOfResidencePage, emptyUserAnswers)
+          .mustBe(NonUkAddressController.onPageLoad())
+      }
 
-    "Telephone number page -> Check (updated) details page" in {
-      navigator.nextPage(TelephoneNumberPage, emptyUserAnswers)
-        .mustBe(controllers.leadtrustee.routes.CheckDetailsController.onPageLoadOrganisationUpdated())
+      "UK address page -> Email address yes/no page" in {
+        navigator.nextPage(UkAddressPage, emptyUserAnswers)
+          .mustBe(EmailAddressYesNoController.onPageLoad())
+      }
+
+      "Non-UK address page -> Email address yes/no page" in {
+        navigator.nextPage(NonUkAddressPage, emptyUserAnswers)
+          .mustBe(EmailAddressYesNoController.onPageLoad())
+      }
+
+      "Email address yes/no page" when {
+        val page = EmailAddressYesNoPage
+
+        "-> YES -> Email address page" in {
+          val answers = emptyUserAnswers
+            .set(page, true).success.value
+
+          navigator.nextPage(page, answers)
+            .mustBe(EmailAddressController.onPageLoad())
+        }
+
+        "-> NO -> Telephone number page" in {
+          val answers = emptyUserAnswers
+            .set(page, false).success.value
+
+          navigator.nextPage(page, answers)
+            .mustBe(TelephoneNumberController.onPageLoad())
+        }
+      }
+
+      "Email address page -> Telephone number page" in {
+        navigator.nextPage(EmailAddressPage, emptyUserAnswers)
+          .mustBe(TelephoneNumberController.onPageLoad())
+      }
+
+      "Telephone number page -> Check details page" in {
+        navigator.nextPage(TelephoneNumberPage, emptyUserAnswers)
+          .mustBe(CheckDetailsController.onPageLoadOrganisationUpdated())
+      }
     }
   }
 }

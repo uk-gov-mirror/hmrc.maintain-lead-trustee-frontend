@@ -16,8 +16,8 @@
 
 package navigation.leadtrustee
 
-import controllers.leadtrustee.individual.{routes => rts}
-import controllers.leadtrustee.{routes => leadTrusteeRoutes}
+import controllers.leadtrustee.individual.routes._
+import controllers.leadtrustee.routes._
 import models.UserAnswers
 import pages.leadtrustee.individual._
 import pages.{Page, QuestionPage}
@@ -30,23 +30,22 @@ object IndividualLeadTrusteeNavigator {
       yesNoNavigation
 
   private def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case NamePage => _ => rts.DateOfBirthController.onPageLoad()
-    case DateOfBirthPage => ua => navigateAwayFromDateOfBirthQuestion(ua)
-    case CountryOfNationalityPage => _ => rts.UkCitizenController.onPageLoad()
-    case NationalInsuranceNumberPage | PassportOrIdCardDetailsPage => ua => navigateAwayFromIdentificationQuestions(ua)
-    case CountryOfResidencePage => _ => rts.NonUkAddressController.onPageLoad()
-    case UkAddressPage | NonUkAddressPage => _ => rts.EmailAddressYesNoController.onPageLoad()
-    case EmailAddressPage => _ => rts.TelephoneNumberController.onPageLoad()
-    case TelephoneNumberPage => _ => leadTrusteeRoutes.CheckDetailsController.onPageLoadIndividualUpdated()
+    case NamePage => _ => DateOfBirthController.onPageLoad()
+    case DateOfBirthPage => navigateAwayFromDateOfBirthQuestion
+    case CountryOfNationalityPage => _ => UkCitizenController.onPageLoad()
+    case NationalInsuranceNumberPage | PassportOrIdCardDetailsPage => navigateAwayFromIdentificationQuestions
+    case CountryOfResidencePage => _ => NonUkAddressController.onPageLoad()
+    case UkAddressPage | NonUkAddressPage => _ => EmailAddressYesNoController.onPageLoad()
+    case EmailAddressPage => _ => TelephoneNumberController.onPageLoad()
+    case TelephoneNumberPage => _ => CheckDetailsController.onPageLoadIndividualUpdated()
   }
 
-  private def yesNoNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    yesNoNav(CountryOfNationalityInTheUkYesNoPage, rts.UkCitizenController.onPageLoad(), rts.CountryOfNationalityController.onPageLoad()) orElse
-      yesNoNav(UkCitizenPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.PassportOrIdCardController.onPageLoad()) orElse
-      yesNoNav(CountryOfResidenceInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.CountryOfResidenceController.onPageLoad()) orElse
-      yesNoNav(LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad()) orElse
-      yesNoNav(EmailAddressYesNoPage, rts.EmailAddressController.onPageLoad(), rts.TelephoneNumberController.onPageLoad())
-  }
+  private def yesNoNavigation: PartialFunction[Page, UserAnswers => Call] =
+    yesNoNav(CountryOfNationalityInTheUkYesNoPage, UkCitizenController.onPageLoad(), CountryOfNationalityController.onPageLoad()) orElse
+      yesNoNav(UkCitizenPage, NationalInsuranceNumberController.onPageLoad(), PassportOrIdCardController.onPageLoad()) orElse
+      yesNoNav(CountryOfResidenceInTheUkYesNoPage, UkAddressController.onPageLoad(), CountryOfResidenceController.onPageLoad()) orElse
+      yesNoNav(LiveInTheUkYesNoPage, UkAddressController.onPageLoad(), NonUkAddressController.onPageLoad()) orElse
+      yesNoNav(EmailAddressYesNoPage, EmailAddressController.onPageLoad(), TelephoneNumberController.onPageLoad())
 
   private def yesNoNav(fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): PartialFunction[Page, UserAnswers => Call] = {
     case `fromPage` => ua =>
@@ -57,17 +56,17 @@ object IndividualLeadTrusteeNavigator {
 
   private def navigateAwayFromDateOfBirthQuestion(ua: UserAnswers): Call = {
     if (ua.is5mldEnabled) {
-      rts.CountryOfNationalityInTheUkYesNoController.onPageLoad()
+      CountryOfNationalityInTheUkYesNoController.onPageLoad()
     } else {
-      rts.UkCitizenController.onPageLoad()
+      UkCitizenController.onPageLoad()
     }
   }
 
   private def navigateAwayFromIdentificationQuestions(ua: UserAnswers): Call = {
     if (ua.is5mldEnabled) {
-      rts.CountryOfResidenceInTheUkYesNoController.onPageLoad()
+      CountryOfResidenceInTheUkYesNoController.onPageLoad()
     } else {
-      rts.LiveInTheUkYesNoController.onPageLoad()
+      LiveInTheUkYesNoController.onPageLoad()
     }
   }
 
