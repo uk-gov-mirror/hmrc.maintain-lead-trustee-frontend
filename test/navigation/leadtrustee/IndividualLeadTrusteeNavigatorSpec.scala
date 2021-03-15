@@ -127,6 +127,132 @@ class IndividualLeadTrusteeNavigatorSpec extends SpecBase {
           .mustBe(CheckDetailsController.onPageLoadIndividualUpdated())
       }
     }
-  }
 
+    "5mld" when {
+
+      val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+
+      "Name page -> Date of birth page" in {
+        navigator.nextPage(NamePage, baseAnswers)
+          .mustBe(DateOfBirthController.onPageLoad())
+      }
+
+      "Date of birth page -> UK nationality yes/no page" in {
+        navigator.nextPage(DateOfBirthPage, baseAnswers)
+          .mustBe(CountryOfNationalityInTheUkYesNoController.onPageLoad())
+      }
+
+      "UK nationality yes/no page" when {
+        val page = CountryOfNationalityInTheUkYesNoPage
+
+        "-> YES -> NINO yes/no page" in {
+          val answers = baseAnswers.set(page, true).success.value
+
+          navigator.nextPage(page, answers)
+            .mustBe(UkCitizenController.onPageLoad())
+        }
+
+        "-> NO -> Nationality page" in {
+          val answers = baseAnswers.set(page, false).success.value
+
+          navigator.nextPage(page, answers)
+            .mustBe(CountryOfNationalityController.onPageLoad())
+        }
+      }
+
+      "Nationality page -> NINO yes/no page" in {
+        navigator.nextPage(CountryOfNationalityPage, baseAnswers)
+          .mustBe(UkCitizenController.onPageLoad())
+      }
+
+      "NINO yes/no page" when {
+        val page = UkCitizenPage
+
+        "-> YES -> NINO page" in {
+          val answers = baseAnswers.set(page, true).success.value
+
+          navigator.nextPage(page, answers)
+            .mustBe(NationalInsuranceNumberController.onPageLoad())
+        }
+
+        "-> NO -> Passport/ID card page" in {
+          val answers = baseAnswers.set(page, false).success.value
+
+          navigator.nextPage(page, answers)
+            .mustBe(PassportOrIdCardController.onPageLoad())
+        }
+      }
+
+      "NINO page -> UK residency yes/no page" in {
+        navigator.nextPage(NationalInsuranceNumberPage, baseAnswers)
+          .mustBe(CountryOfResidenceInTheUkYesNoController.onPageLoad())
+      }
+
+      "Passport/ID card page -> UK residency yes/no page" in {
+        navigator.nextPage(PassportOrIdCardDetailsPage, baseAnswers)
+          .mustBe(CountryOfResidenceInTheUkYesNoController.onPageLoad())
+      }
+
+      "UK residency yes/no page" when {
+        val page = CountryOfResidenceInTheUkYesNoPage
+
+        "-> YES -> UK address page" in {
+          val answers = baseAnswers.set(page, true).success.value
+
+          navigator.nextPage(page, answers)
+            .mustBe(UkAddressController.onPageLoad())
+        }
+
+        "-> NO -> Residency page" in {
+          val answers = baseAnswers.set(page, false).success.value
+
+          navigator.nextPage(page, answers)
+            .mustBe(CountryOfResidenceController.onPageLoad())
+        }
+      }
+
+      "Residency page -> Non-UK address page" in {
+        navigator.nextPage(CountryOfResidencePage, baseAnswers)
+          .mustBe(NonUkAddressController.onPageLoad())
+      }
+
+      "UK address page -> Email yes/no page" in {
+        navigator.nextPage(UkAddressPage, baseAnswers)
+          .mustBe(EmailAddressYesNoController.onPageLoad())
+      }
+
+      "Non-UK address page -> Email address yes/no page" in {
+        navigator.nextPage(NonUkAddressPage, baseAnswers)
+          .mustBe(EmailAddressYesNoController.onPageLoad())
+      }
+
+      "Email address yes/no page" when {
+        val page = EmailAddressYesNoPage
+
+        "-> YES -> Email address page" in {
+          val answers = baseAnswers.set(page, true).success.value
+
+          navigator.nextPage(page, answers)
+            .mustBe(EmailAddressController.onPageLoad())
+        }
+
+        "-> NO -> Telephone number page" in {
+          val answers = baseAnswers.set(page, false).success.value
+
+          navigator.nextPage(page, answers)
+            .mustBe(TelephoneNumberController.onPageLoad())
+        }
+      }
+
+      "Email address page -> Telephone number page" in {
+        navigator.nextPage(EmailAddressPage, baseAnswers)
+          .mustBe(TelephoneNumberController.onPageLoad())
+      }
+
+      "Telephone number page -> Check details page" in {
+        navigator.nextPage(TelephoneNumberPage, baseAnswers)
+          .mustBe(CheckDetailsController.onPageLoadIndividualUpdated())
+      }
+    }
+  }
 }
