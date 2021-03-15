@@ -9,15 +9,11 @@ POST       /name                                        controllers.leadtrustee.
 GET        /utr                                         controllers.leadtrustee.organisation.UtrController.onPageLoad()
 POST       /utr                                         controllers.leadtrustee.organisation.UtrController.onSubmit()
 
-GET        /uk-residence                                controllers.leadtrustee.organisation.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode: Mode = NormalMode)
-POST       /uk-residence                                controllers.leadtrustee.organisation.CountryOfResidenceInTheUkYesNoController.onSubmit(mode: Mode = NormalMode)
-GET        /change-uk-residence                         controllers.leadtrustee.organisation.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-uk-residence                         controllers.leadtrustee.organisation.CountryOfResidenceInTheUkYesNoController.onSubmit(mode: Mode = CheckMode)
+GET        /uk-residence                                controllers.leadtrustee.organisation.CountryOfResidenceInTheUkYesNoController.onPageLoad()
+POST       /uk-residence                                controllers.leadtrustee.organisation.CountryOfResidenceInTheUkYesNoController.onSubmit()
 
-GET        /country-of-residence                        controllers.leadtrustee.organisation.CountryOfResidenceController.onPageLoad(mode: Mode = NormalMode)
-POST       /country-of-residence                        controllers.leadtrustee.organisation.CountryOfResidenceController.onSubmit(mode: Mode = NormalMode)
-GET        /change-country-of-residence                 controllers.leadtrustee.organisation.CountryOfResidenceController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-country-of-residence                 controllers.leadtrustee.organisation.CountryOfResidenceController.onSubmit(mode: Mode = CheckMode)
+GET        /country-of-residence                        controllers.leadtrustee.organisation.CountryOfResidenceController.onPageLoad()
+POST       /country-of-residence                        controllers.leadtrustee.organisation.CountryOfResidenceController.onSubmit()
 
 GET        /address-in-uk                               controllers.leadtrustee.organisation.AddressInTheUkYesNoController.onPageLoad()
 POST       /address-in-uk                               controllers.leadtrustee.organisation.AddressInTheUkYesNoController.onSubmit()

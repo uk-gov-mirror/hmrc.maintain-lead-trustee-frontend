@@ -18,7 +18,7 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import forms.YesNoFormProvider
-import models.{Name, NormalMode, UserAnswers}
+import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.leadtrustee.individual.{CountryOfResidenceInTheUkYesNoPage, NamePage}
@@ -32,7 +32,7 @@ import views.html.leadtrustee.individual.CountryOfResidenceInTheUkYesNoView
 class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("leadtrustee.individual.countryOfResidenceInTheUkYesNo")
-  private val onPageLoadRoute: String = routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(NormalMode).url
+  private val onPageLoadRoute: String = routes.CountryOfResidenceInTheUkYesNoController.onPageLoad().url
   private val name: Name = Name("FirstName", None, "LastName")
   private val onwardRoute: Call = Call("GET", "/foo")
 
@@ -55,7 +55,7 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, name.displayName)(request, messages).toString
+        view(form, name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -76,7 +76,7 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode, name.displayName)(request, messages).toString
+        view(form.fill(validAnswer), name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -116,7 +116,7 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, name.displayName)(request, messages).toString
+        view(boundForm, name.displayName)(request, messages).toString
 
       application.stop()
     }

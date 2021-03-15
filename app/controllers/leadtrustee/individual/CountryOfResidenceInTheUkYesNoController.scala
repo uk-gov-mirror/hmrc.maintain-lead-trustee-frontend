@@ -19,7 +19,6 @@ package controllers.leadtrustee.individual
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.actions.NameRequiredAction
 import forms.YesNoFormProvider
-import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.CountryOfResidenceInTheUkYesNoPage
 import play.api.data.Form
@@ -44,7 +43,7 @@ class CountryOfResidenceInTheUkYesNoController @Inject()(
 
   private val form: Form[Boolean] = formProvider.withPrefix("leadtrustee.individual.countryOfResidenceInTheUkYesNo")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(CountryOfResidenceInTheUkYesNoPage) match {
@@ -52,21 +51,21 @@ class CountryOfResidenceInTheUkYesNoController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, request.leadTrusteeName))
+      Ok(view(preparedForm, request.leadTrusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.leadTrusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfResidenceInTheUkYesNoPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, updatedAnswers))
       )
   }
 }

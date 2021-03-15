@@ -18,7 +18,7 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import forms.CountryFormProvider
-import models.{Name, NormalMode, UserAnswers}
+import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.leadtrustee.individual.{CountryOfNationalityPage, NamePage}
 import play.api.data.Form
@@ -33,7 +33,7 @@ import views.html.leadtrustee.individual.CountryOfNationalityView
 class CountryOfNationalityControllerSpec extends SpecBase {
 
   private val form: Form[String] = new CountryFormProvider().withPrefix("leadtrustee.individual.countryOfNationality")
-  private val onPageLoadRoute: String = routes.CountryOfNationalityController.onPageLoad(NormalMode).url
+  private val onPageLoadRoute: String = routes.CountryOfNationalityController.onPageLoad().url
   private val name: Name = Name("FirstName", None, "LastName")
   private val onwardRoute = Call("GET", "/foo")
 
@@ -58,7 +58,7 @@ class CountryOfNationalityControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, name.displayName, countryOptions)(request, messages).toString
+        view(form, name.displayName, countryOptions)(request, messages).toString
 
       application.stop()
     }
@@ -78,7 +78,7 @@ class CountryOfNationalityControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode, name.displayName, countryOptions)(request, messages).toString
+        view(form.fill(validAnswer), name.displayName, countryOptions)(request, messages).toString
 
       application.stop()
     }
@@ -117,7 +117,7 @@ class CountryOfNationalityControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, name.displayName, countryOptions)(request, messages).toString
+        view(boundForm, name.displayName, countryOptions)(request, messages).toString
 
        application.stop()
     }

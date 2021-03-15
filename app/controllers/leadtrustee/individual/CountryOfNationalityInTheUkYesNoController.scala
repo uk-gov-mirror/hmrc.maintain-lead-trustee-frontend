@@ -19,7 +19,6 @@ package controllers.leadtrustee.individual
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.actions.NameRequiredAction
 import forms.YesNoFormProvider
-import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.CountryOfNationalityInTheUkYesNoPage
 import play.api.data.Form
@@ -44,7 +43,7 @@ class CountryOfNationalityInTheUkYesNoController @Inject()(
 
   private val form: Form[Boolean] = formProvider.withPrefix("leadtrustee.individual.countryOfNationalityInTheUkYesNo")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(CountryOfNationalityInTheUkYesNoPage) match {
@@ -52,21 +51,21 @@ class CountryOfNationalityInTheUkYesNoController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, request.leadTrusteeName))
+      Ok(view(preparedForm, request.leadTrusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.leadTrusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfNationalityInTheUkYesNoPage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(CountryOfNationalityInTheUkYesNoPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(CountryOfNationalityInTheUkYesNoPage, updatedAnswers))
       )
   }
 }

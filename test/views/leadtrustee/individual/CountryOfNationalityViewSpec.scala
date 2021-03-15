@@ -17,7 +17,7 @@
 package views.leadtrustee.individual
 
 import forms.CountryFormProvider
-import models.{Name, NormalMode}
+import models.Name
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.InputOption
@@ -39,7 +39,7 @@ class CountryOfNationalityViewSpec extends SelectCountryViewBehaviours {
     val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, name.displayName, countryOptions)(fakeRequest, messages)
+      view.apply(form, name.displayName, countryOptions)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 

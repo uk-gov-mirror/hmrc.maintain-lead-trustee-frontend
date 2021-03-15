@@ -18,7 +18,7 @@ package controllers.leadtrustee.organisation
 
 import base.SpecBase
 import forms.CountryFormProvider
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.leadtrustee.organisation.{CountryOfResidencePage, NamePage}
@@ -34,7 +34,7 @@ import views.html.leadtrustee.organisation.CountryOfResidenceView
 class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
 
   private val form: Form[String] = new CountryFormProvider().withPrefix("trustee.organisation.countryOfResidence")
-  private val onPageLoadRoute: String = routes.CountryOfResidenceController.onPageLoad(NormalMode).url
+  private val onPageLoadRoute: String = routes.CountryOfResidenceController.onPageLoad().url
   private val name = "Company"
   private val onwardRoute: Call = Call("GET", "/foo")
 
@@ -59,7 +59,7 @@ class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, countryOptions, name)(request, messages).toString
+        view(form, countryOptions, name)(request, messages).toString
 
       application.stop()
     }
@@ -80,7 +80,7 @@ class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode, countryOptions, name)(request, messages).toString
+        view(form.fill(validAnswer), countryOptions, name)(request, messages).toString
 
       application.stop()
     }
@@ -120,7 +120,7 @@ class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, countryOptions, name)(request, messages).toString
+        view(boundForm, countryOptions, name)(request, messages).toString
 
       application.stop()
     }

@@ -19,7 +19,6 @@ package controllers.leadtrustee.individual
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.actions.NameRequiredAction
 import forms.CountryFormProvider
-import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.individual.CountryOfNationalityPage
 import play.api.data.Form
@@ -46,7 +45,7 @@ class CountryOfNationalityController @Inject()(
 
   private val form: Form[String] = formProvider.withPrefix("leadtrustee.individual.countryOfNationality")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(CountryOfNationalityPage) match {
@@ -54,21 +53,21 @@ class CountryOfNationalityController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, request.leadTrusteeName, countryOptions.options))
+      Ok(view(preparedForm, request.leadTrusteeName, countryOptions.options))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.leadTrusteeName, countryOptions.options))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, countryOptions.options))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfNationalityPage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(CountryOfNationalityPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(CountryOfNationalityPage, updatedAnswers))
       )
   }
 }

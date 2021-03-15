@@ -18,7 +18,7 @@ package controllers.leadtrustee.organisation
 
 import base.SpecBase
 import forms.YesNoFormProvider
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.leadtrustee.organisation.{CountryOfResidenceInTheUkYesNoPage, NamePage}
@@ -32,7 +32,7 @@ import views.html.leadtrustee.organisation.CountryOfResidenceInTheUkYesNoView
 class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("leadtrustee.organisation.countryOfResidenceInTheUkYesNo")
-  private val onPageLoadRoute: String = routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(NormalMode).url
+  private val onPageLoadRoute: String = routes.CountryOfResidenceInTheUkYesNoController.onPageLoad().url
   private val name = "Company"
   private val onwardRoute: Call = Call("GET", "/foo")
 
@@ -55,7 +55,7 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, name)(request, messages).toString
+        view(form, name)(request, messages).toString
 
       application.stop()
     }
@@ -76,7 +76,7 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode, name)(request, messages).toString
+        view(form.fill(validAnswer), name)(request, messages).toString
 
       application.stop()
     }
@@ -116,7 +116,7 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, name)(request, messages).toString
+        view(boundForm, name)(request, messages).toString
 
       application.stop()
     }

@@ -24,7 +24,7 @@ import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
 object IndividualLeadTrusteeNavigator {
-  private val simpleNavigation : PartialFunction[Page, Call] = {
+  private val simpleNavigation: PartialFunction[Page, Call] = {
     case NamePage => rts.DateOfBirthController.onPageLoad()
     case DateOfBirthPage => rts.UkCitizenController.onPageLoad()
     case PassportOrIdCardDetailsPage => rts.LiveInTheUkYesNoController.onPageLoad()
@@ -35,7 +35,7 @@ object IndividualLeadTrusteeNavigator {
     case TelephoneNumberPage => leadTrusteeRoutes.CheckDetailsController.onPageLoadIndividualUpdated()
   }
 
-  private val yesNoNavigation : PartialFunction[Page, UserAnswers => Call] =
+  private val yesNoNavigation: PartialFunction[Page, UserAnswers => Call] =
     yesNoNav(UkCitizenPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.PassportOrIdCardController.onPageLoad()) orElse
       yesNoNav(LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad()) orElse
       yesNoNav(EmailAddressYesNoPage, rts.EmailAddressController.onPageLoad(), rts.TelephoneNumberController.onPageLoad())
@@ -45,7 +45,7 @@ object IndividualLeadTrusteeNavigator {
     simpleNavigation andThen (c => (_:UserAnswers) => c) orElse
       yesNoNavigation
 
-  def yesNoNav(fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call) : PartialFunction[Page, UserAnswers => Call] = {
+  def yesNoNav(fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): PartialFunction[Page, UserAnswers => Call] = {
     case `fromPage` =>
       ua => ua.get(fromPage)
         .map(if (_) yesCall else noCall)

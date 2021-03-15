@@ -18,7 +18,7 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import forms.YesNoFormProvider
-import models.{Name, NormalMode, UserAnswers}
+import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.leadtrustee.individual.{CountryOfNationalityInTheUkYesNoPage, NamePage}
 import play.api.data.Form
@@ -31,7 +31,7 @@ import views.html.leadtrustee.individual.CountryOfNationalityInTheUkYesNoView
 class CountryOfNationalityInTheUkYesNoControllerSpec extends SpecBase {
 
   private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("leadtrustee.individual.countryOfNationalityInTheUkYesNo")
-  private val onPageLoadRoute: String = routes.CountryOfNationalityInTheUkYesNoController.onPageLoad(NormalMode).url
+  private val onPageLoadRoute: String = routes.CountryOfNationalityInTheUkYesNoController.onPageLoad().url
   private val name: Name = Name("FirstName", None, "LastName")
   private val onwardRoute = Call("GET", "/foo")
 
@@ -54,7 +54,7 @@ class CountryOfNationalityInTheUkYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, name.displayName)(request, messages).toString
+        view(form, name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -74,7 +74,7 @@ class CountryOfNationalityInTheUkYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode, name.displayName)(request, messages).toString
+        view(form.fill(validAnswer), name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -114,7 +114,7 @@ class CountryOfNationalityInTheUkYesNoControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, name.displayName)(request, messages).toString
+        view(boundForm, name.displayName)(request, messages).toString
 
        application.stop()
     }

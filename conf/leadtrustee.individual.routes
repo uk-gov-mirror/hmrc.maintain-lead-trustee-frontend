@@ -6,15 +6,11 @@ POST       /name                                    controllers.leadtrustee.indi
 GET        /date-of-birth                           controllers.leadtrustee.individual.DateOfBirthController.onPageLoad()
 POST       /date-of-birth                           controllers.leadtrustee.individual.DateOfBirthController.onSubmit()
 
-GET        /has-uk-nationality                      controllers.leadtrustee.individual.CountryOfNationalityInTheUkYesNoController.onPageLoad(mode: Mode = NormalMode)
-POST       /has-uk-nationality                      controllers.leadtrustee.individual.CountryOfNationalityInTheUkYesNoController.onSubmit(mode: Mode = NormalMode)
-GET        /change-has-uk-nationality               controllers.leadtrustee.individual.CountryOfNationalityInTheUkYesNoController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-has-uk-nationality               controllers.leadtrustee.individual.CountryOfNationalityInTheUkYesNoController.onSubmit(mode: Mode = CheckMode)
+GET        /has-uk-nationality                      controllers.leadtrustee.individual.CountryOfNationalityInTheUkYesNoController.onPageLoad()
+POST       /has-uk-nationality                      controllers.leadtrustee.individual.CountryOfNationalityInTheUkYesNoController.onSubmit()
 
-GET        /country-of-nationality                  controllers.leadtrustee.individual.CountryOfNationalityController.onPageLoad(mode: Mode = NormalMode)
-POST       /country-of-nationality                  controllers.leadtrustee.individual.CountryOfNationalityController.onSubmit(mode: Mode = NormalMode)
-GET        /change-country-of-nationality           controllers.leadtrustee.individual.CountryOfNationalityController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-country-of-nationality           controllers.leadtrustee.individual.CountryOfNationalityController.onSubmit(mode: Mode = CheckMode)
+GET        /country-of-nationality                  controllers.leadtrustee.individual.CountryOfNationalityController.onPageLoad()
+POST       /country-of-nationality                  controllers.leadtrustee.individual.CountryOfNationalityController.onSubmit()
 
 GET        /uk-citizen                              controllers.leadtrustee.individual.UkCitizenController.onPageLoad()
 POST       /uk-citizen                              controllers.leadtrustee.individual.UkCitizenController.onSubmit()
@@ -25,15 +21,11 @@ POST       /national-insurance-number               controllers.leadtrustee.indi
 GET        /passport-or-id-card                     controllers.leadtrustee.individual.PassportOrIdCardController.onPageLoad()
 POST       /passport-or-id-card                     controllers.leadtrustee.individual.PassportOrIdCardController.onSubmit()
 
-GET        /has-uk-residence                        controllers.leadtrustee.individual.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode: Mode = NormalMode)
-POST       /has-uk-residence                        controllers.leadtrustee.individual.CountryOfResidenceInTheUkYesNoController.onSubmit(mode: Mode = NormalMode)
-GET        /change-has-uk-residence                 controllers.leadtrustee.individual.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-has-uk-residence                 controllers.leadtrustee.individual.CountryOfResidenceInTheUkYesNoController.onSubmit(mode: Mode = CheckMode)
+GET        /has-uk-residence                        controllers.leadtrustee.individual.CountryOfResidenceInTheUkYesNoController.onPageLoad()
+POST       /has-uk-residence                        controllers.leadtrustee.individual.CountryOfResidenceInTheUkYesNoController.onSubmit()
 
-GET        /country-of-residence                    controllers.leadtrustee.individual.CountryOfResidenceController.onPageLoad(mode: Mode = NormalMode)
-POST       /country-of-residence                    controllers.leadtrustee.individual.CountryOfResidenceController.onSubmit(mode: Mode = NormalMode)
-GET        /change-country-of-residence             controllers.leadtrustee.individual.CountryOfResidenceController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-country-of-residence             controllers.leadtrustee.individual.CountryOfResidenceController.onSubmit(mode: Mode = CheckMode)
+GET        /country-of-residence                    controllers.leadtrustee.individual.CountryOfResidenceController.onPageLoad()
+POST       /country-of-residence                    controllers.leadtrustee.individual.CountryOfResidenceController.onSubmit()
 
 GET        /lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoController.onPageLoad()
 POST       /lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoController.onSubmit()

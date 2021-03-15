@@ -19,7 +19,6 @@ package controllers.leadtrustee.organisation
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.actions.NameRequiredAction
 import forms.CountryFormProvider
-import models.Mode
 import navigation.Navigator
 import pages.leadtrustee.organisation.CountryOfResidencePage
 import play.api.data.Form
@@ -47,7 +46,7 @@ class CountryOfResidenceController @Inject()(
 
   private val form: Form[String] = formProvider.withPrefix("leadtrustee.organisation.countryOfResidence")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(CountryOfResidencePage) match {
@@ -55,21 +54,21 @@ class CountryOfResidenceController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, countryOptions.options, request.leadTrusteeName))
+      Ok(view(preparedForm, countryOptions.options, request.leadTrusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, countryOptions.options, request.leadTrusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, request.leadTrusteeName))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfResidencePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(CountryOfResidencePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(CountryOfResidencePage, updatedAnswers))
         }
       )
   }
