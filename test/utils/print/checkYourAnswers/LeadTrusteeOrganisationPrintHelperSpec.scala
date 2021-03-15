@@ -17,6 +17,7 @@
 package utils.print.checkYourAnswers
 
 import base.SpecBase
+import controllers.leadtrustee.organisation.routes._
 import models.{NonUkAddress, UkAddress}
 import pages.leadtrustee.organisation._
 import play.twirl.api.Html
@@ -26,7 +27,8 @@ class LeadTrusteeOrganisationPrintHelperSpec extends SpecBase {
 
   val name: String = "Lead Trustee"
   val ukAddress: UkAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
-  val nonUkAddress: NonUkAddress = NonUkAddress("value 1", "value 2", None, "DE")
+  val country: String = "DE"
+  val nonUkAddress: NonUkAddress = NonUkAddress("value 1", "value 2", None, country)
 
   "LeadTrusteeOrganisationPrintHelper" must {
 
@@ -38,6 +40,8 @@ class LeadTrusteeOrganisationPrintHelperSpec extends SpecBase {
         .set(RegisteredInUkYesNoPage, true).success.value
         .set(NamePage, name).success.value
         .set(UtrPage, "utr").success.value
+        .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
+        .set(CountryOfResidencePage, country).success.value
         .set(AddressInTheUkYesNoPage, true).success.value
         .set(UkAddressPage, ukAddress).success.value
         .set(NonUkAddressPage, nonUkAddress).success.value
@@ -49,15 +53,17 @@ class LeadTrusteeOrganisationPrintHelperSpec extends SpecBase {
       result mustBe AnswerSection(
         headingKey = None,
         rows = Seq(
-          AnswerRow(label = Html(messages("leadtrustee.organisation.registeredInUkYesNo.checkYourAnswersLabel")), answer = Html("Yes"), changeUrl = controllers.leadtrustee.organisation.routes.RegisteredInUkYesNoController.onPageLoad().url),
-          AnswerRow(label = Html(messages("leadtrustee.organisation.name.checkYourAnswersLabel")), answer = Html("Lead Trustee"), changeUrl = controllers.leadtrustee.organisation.routes.NameController.onPageLoad().url),
-          AnswerRow(label = Html(messages("leadtrustee.organisation.utr.checkYourAnswersLabel", name)), answer = Html("utr"), changeUrl = controllers.leadtrustee.organisation.routes.UtrController.onPageLoad().url),
-          AnswerRow(label = Html(messages("leadtrustee.organisation.addressInTheUkYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = controllers.leadtrustee.organisation.routes.AddressInTheUkYesNoController.onPageLoad().url),
-          AnswerRow(label = Html(messages("leadtrustee.organisation.ukAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = controllers.leadtrustee.organisation.routes.UkAddressController.onPageLoad().url),
-          AnswerRow(label = Html(messages("leadtrustee.organisation.nonUkAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = controllers.leadtrustee.organisation.routes.NonUkAddressController.onPageLoad().url),
-          AnswerRow(label = Html(messages("leadtrustee.organisation.emailAddressYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = controllers.leadtrustee.organisation.routes.EmailAddressYesNoController.onPageLoad().url),
-          AnswerRow(label = Html(messages("leadtrustee.organisation.emailAddress.checkYourAnswersLabel", name)), answer = Html("email"), changeUrl = controllers.leadtrustee.organisation.routes.EmailAddressController.onPageLoad().url),
-          AnswerRow(label = Html(messages("leadtrustee.organisation.telephoneNumber.checkYourAnswersLabel", name)), answer = Html("tel"), changeUrl = controllers.leadtrustee.organisation.routes.TelephoneNumberController.onPageLoad().url)
+          AnswerRow(label = Html(messages("leadtrustee.organisation.registeredInUkYesNo.checkYourAnswersLabel")), answer = Html("Yes"), changeUrl = RegisteredInUkYesNoController.onPageLoad().url),
+          AnswerRow(label = Html(messages("leadtrustee.organisation.name.checkYourAnswersLabel")), answer = Html("Lead Trustee"), changeUrl = NameController.onPageLoad().url),
+          AnswerRow(label = Html(messages("leadtrustee.organisation.utr.checkYourAnswersLabel", name)), answer = Html("utr"), changeUrl = UtrController.onPageLoad().url),
+          AnswerRow(label = Html(messages("leadtrustee.organisation.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel", name)), answer = Html("No"), changeUrl = CountryOfResidenceInTheUkYesNoController.onPageLoad().url),
+          AnswerRow(label = Html(messages("leadtrustee.organisation.countryOfResidence.checkYourAnswersLabel", name)), answer = Html("Germany"), changeUrl = CountryOfResidenceController.onPageLoad().url),
+          AnswerRow(label = Html(messages("leadtrustee.organisation.addressInTheUkYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = AddressInTheUkYesNoController.onPageLoad().url),
+          AnswerRow(label = Html(messages("leadtrustee.organisation.ukAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = UkAddressController.onPageLoad().url),
+          AnswerRow(label = Html(messages("leadtrustee.organisation.nonUkAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = NonUkAddressController.onPageLoad().url),
+          AnswerRow(label = Html(messages("leadtrustee.organisation.emailAddressYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = EmailAddressYesNoController.onPageLoad().url),
+          AnswerRow(label = Html(messages("leadtrustee.organisation.emailAddress.checkYourAnswersLabel", name)), answer = Html("email"), changeUrl = EmailAddressController.onPageLoad().url),
+          AnswerRow(label = Html(messages("leadtrustee.organisation.telephoneNumber.checkYourAnswersLabel", name)), answer = Html("tel"), changeUrl = TelephoneNumberController.onPageLoad().url)
         )
       )
     }
