@@ -16,15 +16,17 @@
 
 package mapping.extractors
 
+import mapping.extractors.leadtrustee.{LeadTrusteeIndividualExtractor, LeadTrusteeOrganisationExtractor}
+import mapping.extractors.trustee.{TrusteeIndividualExtractor, TrusteeOrganisationExtractor}
 import models._
 
 import javax.inject.Inject
 import scala.util.Try
 
-class TrusteeExtractor @Inject()(trusteeIndividualExtractor: TrusteeIndividualExtractor,
-                                 trusteeOrganisationExtractor: TrusteeOrganisationExtractor,
-                                 leadTrusteeIndividualExtractor: LeadTrusteeIndividualExtractor,
-                                 leadTrusteeOrganisationExtractor: LeadTrusteeOrganisationExtractor) {
+class TrusteeExtractors @Inject()(trusteeIndividualExtractor: TrusteeIndividualExtractor,
+                                  trusteeOrganisationExtractor: TrusteeOrganisationExtractor,
+                                  leadTrusteeIndividualExtractor: LeadTrusteeIndividualExtractor,
+                                  leadTrusteeOrganisationExtractor: LeadTrusteeOrganisationExtractor) {
 
   def extractTrusteeIndividual(userAnswers: UserAnswers, trustee: TrusteeIndividual, index: Int): Try[UserAnswers] = {
     trusteeIndividualExtractor.extract(userAnswers, trustee, index)

@@ -16,17 +16,19 @@
 
 package mapping.mappers
 
+import mapping.mappers.leadtrustee.{LeadTrusteeIndividualMapper, LeadTrusteeOrganisationMapper}
+import mapping.mappers.trustee.{TrusteeIndividualMapper, TrusteeOrganisationMapper}
 import models._
 
 import javax.inject.Inject
 
-class TrusteeMapper @Inject()(trusteeIndividualMapper: TrusteeIndividualMapper,
-                              trusteeOrganisationMapper: TrusteeOrganisationMapper,
-                              leadTrusteeIndividualMapper: LeadTrusteeIndividualMapper,
-                              leadTrusteeOrganisationMapper: LeadTrusteeOrganisationMapper) {
+class TrusteeMappers @Inject()(trusteeIndividualMapper: TrusteeIndividualMapper,
+                               trusteeOrganisationMapper: TrusteeOrganisationMapper,
+                               leadTrusteeIndividualMapper: LeadTrusteeIndividualMapper,
+                               leadTrusteeOrganisationMapper: LeadTrusteeOrganisationMapper) {
 
-  def mapToTrusteeIndividual(userAnswers: UserAnswers, adding: Boolean): Option[TrusteeIndividual] = {
-    trusteeIndividualMapper.map(userAnswers, adding)
+  def mapToTrusteeIndividual(userAnswers: UserAnswers): Option[TrusteeIndividual] = {
+    trusteeIndividualMapper.map(userAnswers)
   }
 
   def mapToTrusteeOrganisation(userAnswers: UserAnswers): Option[TrusteeOrganisation] = {

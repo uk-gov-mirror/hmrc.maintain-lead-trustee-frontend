@@ -21,8 +21,8 @@ import connectors.TrustConnector
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import handlers.ErrorHandler
-import mapping.extractors.TrusteeExtractor
-import mapping.mappers.TrusteeMapper
+import mapping.extractors.TrusteeExtractors
+import mapping.mappers.TrusteeMappers
 import models.IndividualOrBusiness._
 import models.{Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
 import pages.trustee.IndividualOrBusinessPage
@@ -47,8 +47,8 @@ class CheckDetailsController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
                                         printHelper: TrusteePrintHelper,
-                                        mapper: TrusteeMapper,
-                                        extractor: TrusteeExtractor,
+                                        mapper: TrusteeMappers,
+                                        extractor: TrusteeExtractors,
                                         trustConnector: TrustConnector,
                                         nameAction: NameRequiredAction,
                                         val appConfig: FrontendAppConfig,
@@ -107,7 +107,7 @@ class CheckDetailsController @Inject()(
       val trustee: Option[Trustee] = request.userAnswers.get(IndividualOrBusinessPage) match {
         case Some(Individual) =>
           logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] amending trustee individual")
-          mapper.mapToTrusteeIndividual(request.userAnswers, adding = false)
+          mapper.mapToTrusteeIndividual(request.userAnswers)
         case Some(Business) =>
           logger.info(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] amending trustee organisation")
           mapper.mapToTrusteeOrganisation(request.userAnswers)

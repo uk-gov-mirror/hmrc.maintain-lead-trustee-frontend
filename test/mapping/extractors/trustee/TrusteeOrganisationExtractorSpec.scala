@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package mapping.extractors
+package mapping.extractors.trustee
 
 import base.SpecBase
+import models.Constant.GB
 import models.IndividualOrBusiness.Business
 import models.{NonUkAddress, TrustIdentificationOrgType, TrusteeOrganisation, UkAddress, UserAnswers}
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.amend.organisation._
-import java.time.LocalDate
-
-import models.Constant.GB
 import pages.trustee.organisation.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
+
+import java.time.LocalDate
 
 class TrusteeOrganisationExtractorSpec extends SpecBase {
 
@@ -58,10 +58,10 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
         result.get(NamePage).get mustBe name
         result.get(UtrYesNoPage).get mustBe true
         result.get(UtrPage).get mustBe "utr"
-        result.get(AddressYesNoPage) mustNot be(defined)
-        result.get(AddressInTheUkYesNoPage) mustNot be(defined)
-        result.get(UkAddressPage) mustNot be(defined)
-        result.get(NonUkAddressPage) mustNot be(defined)
+        result.get(AddressYesNoPage)  mustBe None
+        result.get(AddressInTheUkYesNoPage)  mustBe None
+        result.get(UkAddressPage)  mustBe None
+        result.get(NonUkAddressPage)  mustBe None
 
       }
 
@@ -81,11 +81,11 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
         result.get(IndividualOrBusinessPage).get mustBe Business
         result.get(NamePage).get mustBe name
         result.get(UtrYesNoPage).get mustBe false
-        result.get(UtrPage) mustNot be(defined)
+        result.get(UtrPage)  mustBe None
         result.get(AddressYesNoPage).get mustBe true
         result.get(AddressInTheUkYesNoPage).get mustBe true
         result.get(UkAddressPage).get mustBe ukAddress
-        result.get(NonUkAddressPage) mustNot be(defined)
+        result.get(NonUkAddressPage)  mustBe None
 
       }
 
@@ -105,10 +105,10 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
         result.get(IndividualOrBusinessPage).get mustBe Business
         result.get(NamePage).get mustBe name
         result.get(UtrYesNoPage).get mustBe false
-        result.get(UtrPage) mustNot be(defined)
+        result.get(UtrPage)  mustBe None
         result.get(AddressYesNoPage).get mustBe true
         result.get(AddressInTheUkYesNoPage).get mustBe false
-        result.get(UkAddressPage) mustNot be(defined)
+        result.get(UkAddressPage)  mustBe None
         result.get(NonUkAddressPage).get mustBe nonUkAddress
 
       }
@@ -129,11 +129,11 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
         result.get(IndividualOrBusinessPage).get mustBe Business
         result.get(NamePage).get mustBe name
         result.get(UtrYesNoPage).get mustBe false
-        result.get(UtrPage) mustNot be(defined)
+        result.get(UtrPage)  mustBe None
         result.get(AddressYesNoPage).get mustBe false
-        result.get(AddressInTheUkYesNoPage) mustNot be(defined)
-        result.get(UkAddressPage) mustNot be(defined)
-        result.get(NonUkAddressPage) mustNot be(defined)
+        result.get(AddressInTheUkYesNoPage)  mustBe None
+        result.get(UkAddressPage)  mustBe None
+        result.get(NonUkAddressPage)  mustBe None
 
       }
 
@@ -163,11 +163,11 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
             result.get(IndividualOrBusinessPage).get mustBe Business
             result.get(NamePage).get mustBe name
             result.get(UtrYesNoPage).get mustBe false
-            result.get(UtrPage) mustNot be(defined)
+            result.get(UtrPage)  mustBe None
             result.get(AddressYesNoPage).get mustBe false
-            result.get(AddressInTheUkYesNoPage) mustNot be(defined)
-            result.get(UkAddressPage) mustNot be(defined)
-            result.get(NonUkAddressPage) mustNot be(defined)
+            result.get(AddressInTheUkYesNoPage)  mustBe None
+            result.get(UkAddressPage)  mustBe None
+            result.get(NonUkAddressPage)  mustBe None
             result.get(CountryOfResidenceYesNoPage) mustBe None
             result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
             result.get(CountryOfResidencePage) mustBe None
@@ -191,11 +191,11 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
             result.get(IndexPage).get mustBe index
             result.get(NamePage).get mustBe name
             result.get(UtrYesNoPage).get mustBe false
-            result.get(UtrPage) mustNot be(defined)
+            result.get(UtrPage)  mustBe None
             result.get(AddressYesNoPage).get mustBe true
             result.get(AddressInTheUkYesNoPage).get mustBe true
             result.get(UkAddressPage).get mustBe ukAddress
-            result.get(NonUkAddressPage) mustNot be(defined)
+            result.get(NonUkAddressPage)  mustBe None
             result.get(CountryOfResidenceYesNoPage) mustBe None
             result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
             result.get(CountryOfResidencePage) mustBe None
@@ -224,11 +224,11 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
             result.get(IndividualOrBusinessPage).get mustBe Business
             result.get(NamePage).get mustBe name
             result.get(UtrYesNoPage).get mustBe false
-            result.get(UtrPage) mustNot be(defined)
+            result.get(UtrPage)  mustBe None
             result.get(AddressYesNoPage).get mustBe false
-            result.get(AddressInTheUkYesNoPage) mustNot be(defined)
-            result.get(UkAddressPage) mustNot be(defined)
-            result.get(NonUkAddressPage) mustNot be(defined)
+            result.get(AddressInTheUkYesNoPage)  mustBe None
+            result.get(UkAddressPage)  mustBe None
+            result.get(NonUkAddressPage)  mustBe None
             result.get(CountryOfResidenceYesNoPage).get mustBe false
             result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
             result.get(CountryOfResidencePage) mustBe None
@@ -253,11 +253,11 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
             result.get(IndividualOrBusinessPage).get mustBe Business
             result.get(NamePage).get mustBe name
             result.get(UtrYesNoPage).get mustBe false
-            result.get(UtrPage) mustNot be(defined)
+            result.get(UtrPage)  mustBe None
             result.get(AddressYesNoPage).get mustBe true
             result.get(AddressInTheUkYesNoPage).get mustBe true
             result.get(UkAddressPage).get mustBe ukAddress
-            result.get(NonUkAddressPage) mustNot be(defined)
+            result.get(NonUkAddressPage)  mustBe None
             result.get(CountryOfResidenceYesNoPage).get mustBe false
             result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
             result.get(CountryOfResidencePage) mustBe None
@@ -335,12 +335,12 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
           result.get(IndexPage).get mustBe index
           result.get(IndividualOrBusinessPage).get mustBe Business
           result.get(NamePage).get mustBe name
-          result.get(UtrYesNoPage) mustNot be(defined)
-          result.get(UtrPage) mustNot be(defined)
-          result.get(AddressYesNoPage) mustNot be(defined)
-          result.get(AddressInTheUkYesNoPage) mustNot be(defined)
-          result.get(UkAddressPage) mustNot be(defined)
-          result.get(NonUkAddressPage) mustNot be(defined)
+          result.get(UtrYesNoPage)  mustBe None
+          result.get(UtrPage)  mustBe None
+          result.get(AddressYesNoPage)  mustBe None
+          result.get(AddressInTheUkYesNoPage)  mustBe None
+          result.get(UkAddressPage)  mustBe None
+          result.get(NonUkAddressPage)  mustBe None
           result.get(CountryOfResidenceYesNoPage).get mustBe false
           result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
           result.get(CountryOfResidencePage) mustBe None
@@ -364,12 +364,12 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
           result.get(IndexPage).get mustBe index
           result.get(IndividualOrBusinessPage).get mustBe Business
           result.get(NamePage).get mustBe name
-          result.get(UtrYesNoPage) mustNot be(defined)
-          result.get(UtrPage) mustNot be(defined)
-          result.get(AddressYesNoPage) mustNot be(defined)
-          result.get(AddressInTheUkYesNoPage) mustNot be(defined)
-          result.get(UkAddressPage) mustNot be(defined)
-          result.get(NonUkAddressPage) mustNot be(defined)
+          result.get(UtrYesNoPage)  mustBe None
+          result.get(UtrPage)  mustBe None
+          result.get(AddressYesNoPage)  mustBe None
+          result.get(AddressInTheUkYesNoPage)  mustBe None
+          result.get(UkAddressPage)  mustBe None
+          result.get(NonUkAddressPage)  mustBe None
           result.get(CountryOfResidenceYesNoPage).get mustBe true
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
           result.get(CountryOfResidencePage).get mustBe "Spain"

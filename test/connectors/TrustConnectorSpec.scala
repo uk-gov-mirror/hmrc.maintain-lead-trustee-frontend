@@ -395,7 +395,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
         phoneNumber = "+446565657",
         email = None,
         identification = NationalInsuranceNumber("JP121212A"),
-        address = None
+        address = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
       )
 
       val application = applicationBuilder()
@@ -435,7 +435,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
         phoneNumber = "+446565657",
         email = None,
         identification = NationalInsuranceNumber("JP121212A"),
-        address = None
+        address = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
       )
 
       val application = applicationBuilder()

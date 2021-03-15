@@ -16,28 +16,361 @@
 
 package models
 
-import generators.ModelGenerators
-import org.scalatest.{FreeSpec, MustMatchers}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.Json
+import base.SpecBase
+import models.Constant.GB
+import play.api.libs.json.{JsString, Json, __}
 
-class LeadTrusteeSpec extends FreeSpec with ModelGenerators with MustMatchers with ScalaCheckPropertyChecks{
-  "JSON roundtrips with individual except Passports & Id cards will be unified into CombinedPassportOrId" in {
-    forAll(arbitraryLeadTrusteeIndividual.arbitrary) { lti =>
-      val expectedId = lti.identification match {
-        case p:Passport => p.asCombined
-        case id:IdCard => id.asCombined
-        case x => x
+import java.time.LocalDate
+
+class LeadTrusteeSpec extends SpecBase {
+
+  private val addressLine: String = "Line"
+  private val postcode: String = "AB1 1AB"
+
+  private val tel: String = "tel"
+  private val email: String = "email@example.com"
+
+  private val country: String = "FR"
+
+  "LeadTrustee" when {
+
+    "individual" when {
+
+      val firstName = "First"
+      val lastName = "Last"
+      val name = Name(firstName, None, lastName)
+      val dateOfBirth = "2008-02-01"
+      val nino = "nino"
+      val idDate: String = "2028-02-01"
+      val idNumber: String = "1234567890"
+
+      "4mld" when {
+
+        "NINO and UK address" in {
+
+          val jsonStr =
+            s"""
+               |{
+               |  "name": {
+               |    "firstName": "$firstName",
+               |    "lastName": "$lastName"
+               |  },
+               |  "dateOfBirth": "$dateOfBirth",
+               |  "phoneNumber": "$tel",
+               |  "identification": {
+               |    "nino": "$nino",
+               |    "address": {
+               |      "line1": "$addressLine",
+               |      "line2": "$addressLine",
+               |      "postCode": "$postcode"
+               |    }
+               |  }
+               |}""".stripMargin
+
+          val json = Json.parse(jsonStr)
+
+          val result = json.as[LeadTrustee]
+
+          result mustBe LeadTrusteeIndividual(
+            name = name,
+            dateOfBirth = LocalDate.parse(dateOfBirth),
+            phoneNumber = tel,
+            email = None,
+            identification = NationalInsuranceNumber(nino),
+            address = UkAddress(addressLine, addressLine, None, None, postcode)
+          )
+
+          Json.toJson(result) mustBe json.transform(
+            __.json.update((__ \ "identification" \ "address" \ "country").json.put(JsString("GB"))) andThen
+              __.json.pick
+          ).get
+        }
+
+        "passport/id card and UK address" in {
+
+          val jsonStr =
+            s"""
+               |{
+               |  "name": {
+               |    "firstName": "$firstName",
+               |    "lastName": "$lastName"
+               |  },
+               |  "dateOfBirth": "$dateOfBirth",
+               |  "phoneNumber": "$tel",
+               |  "email": "$email",
+               |  "identification": {
+               |    "passport": {
+               |      "countryOfIssue": "$country",
+               |      "number": "$idNumber",
+               |      "expirationDate": "$idDate"
+               |    },
+               |    "address": {
+               |      "line1": "$addressLine",
+               |      "line2": "$addressLine",
+               |      "country": "$country"
+               |    }
+               |  }
+               |}""".stripMargin
+
+          val json = Json.parse(jsonStr)
+
+          val result = json.as[LeadTrustee]
+
+          result mustBe LeadTrusteeIndividual(
+            name = name,
+            dateOfBirth = LocalDate.parse(dateOfBirth),
+            phoneNumber = tel,
+            email = Some(email),
+            identification = CombinedPassportOrIdCard(country, idNumber, LocalDate.parse(idDate)),
+            address = NonUkAddress(addressLine, addressLine, None, country)
+          )
+
+          Json.toJson(result) mustBe json
+        }
       }
 
-      Json.toJson(lti.asInstanceOf[LeadTrustee])(LeadTrustee.writes).as[LeadTrustee](LeadTrustee.reads) mustBe lti.copy(identification = expectedId)
+      "5mld" when {
+
+        "UK nationality/residency" in {
+
+          val jsonStr =
+            s"""
+               |{
+               |  "name": {
+               |    "firstName": "$firstName",
+               |    "lastName": "$lastName"
+               |  },
+               |  "dateOfBirth": "$dateOfBirth",
+               |  "phoneNumber": "$tel",
+               |  "identification": {
+               |    "nino": "$nino",
+               |    "address": {
+               |      "line1": "$addressLine",
+               |      "line2": "$addressLine",
+               |      "postCode": "$postcode"
+               |    }
+               |  },
+               |  "nationality": "$GB",
+               |  "countryOfResidence": "$GB"
+               |}""".stripMargin
+
+          val json = Json.parse(jsonStr)
+
+          val result = json.as[LeadTrustee]
+
+          result mustBe LeadTrusteeIndividual(
+            name = name,
+            dateOfBirth = LocalDate.parse(dateOfBirth),
+            phoneNumber = tel,
+            email = None,
+            identification = NationalInsuranceNumber(nino),
+            address = UkAddress(addressLine, addressLine, None, None, postcode),
+            countryOfResidence = Some(GB),
+            nationality = Some(GB)
+          )
+
+          Json.toJson(result) mustBe json.transform(
+            __.json.update((__ \ "identification" \ "address" \ "country").json.put(JsString("GB"))) andThen
+              __.json.pick
+          ).get
+        }
+
+        "non-UK nationality/residency and legally incapable" in {
+
+          val jsonStr =
+            s"""
+               |{
+               |  "name": {
+               |    "firstName": "$firstName",
+               |    "lastName": "$lastName"
+               |  },
+               |  "dateOfBirth": "$dateOfBirth",
+               |  "phoneNumber": "$tel",
+               |  "email": "$email",
+               |  "identification": {
+               |    "passport": {
+               |      "countryOfIssue": "$country",
+               |      "number": "$idNumber",
+               |      "expirationDate": "$idDate"
+               |    },
+               |    "address": {
+               |      "line1": "$addressLine",
+               |      "line2": "$addressLine",
+               |      "country": "$country"
+               |    }
+               |  },
+               |  "nationality": "$country",
+               |  "countryOfResidence": "$country"
+               |}""".stripMargin
+
+          val json = Json.parse(jsonStr)
+
+          val result = json.as[LeadTrustee]
+
+          result mustBe LeadTrusteeIndividual(
+            name = name,
+            dateOfBirth = LocalDate.parse(dateOfBirth),
+            phoneNumber = tel,
+            email = Some(email),
+            identification = CombinedPassportOrIdCard(country, idNumber, LocalDate.parse(idDate)),
+            address = NonUkAddress(addressLine, addressLine, None, country),
+            countryOfResidence = Some(country),
+            nationality = Some(country)
+          )
+
+          Json.toJson(result) mustBe json
+        }
+      }
     }
-  }
 
-  "JSON roundtrips with organisation" in {
-    forAll(arbitraryLeadTrusteeOrganisation.arbitrary) { lto =>
+    "organisation" when {
 
-      Json.toJson(lto.asInstanceOf[LeadTrustee])(LeadTrustee.writes).as[LeadTrustee](LeadTrustee.reads) mustBe lto
+      val name = "Amazon"
+      val utr = "utr"
+
+      "4mld" when {
+
+        "UTR and UK address" in {
+
+          val jsonStr =
+            s"""
+               |{
+               |  "name": "$name",
+               |  "phoneNumber": "$tel",
+               |  "identification": {
+               |    "utr": "$utr",
+               |    "address": {
+               |      "line1": "$addressLine",
+               |      "line2": "$addressLine",
+               |      "postCode": "$postcode"
+               |    }
+               |  }
+               |}""".stripMargin
+
+          val json = Json.parse(jsonStr)
+
+          val result = json.as[LeadTrustee]
+
+          result mustBe LeadTrusteeOrganisation(
+            name = name,
+            phoneNumber = tel,
+            email = None,
+            utr = Some(utr),
+            address = UkAddress(addressLine, addressLine, None, None, postcode)
+          )
+
+          Json.toJson(result) mustBe json.transform(
+            __.json.update((__ \ "identification" \ "address" \ "country").json.put(JsString("GB"))) andThen
+              __.json.pick
+          ).get
+        }
+
+        "non-UK address and email" in {
+
+          val jsonStr =
+            s"""
+               |{
+               |  "name": "$name",
+               |  "phoneNumber": "$tel",
+               |  "identification": {
+               |    "address": {
+               |      "line1": "$addressLine",
+               |      "line2": "$addressLine",
+               |      "country": "$country"
+               |    }
+               |  },
+               |  "email": "$email"
+               |}""".stripMargin
+
+          val json = Json.parse(jsonStr)
+
+          val result = json.as[LeadTrustee]
+
+          result mustBe LeadTrusteeOrganisation(
+            name = name,
+            phoneNumber = tel,
+            email = Some(email),
+            utr = None,
+            address = NonUkAddress(addressLine, addressLine, None, country)
+          )
+
+          Json.toJson(result) mustBe json
+        }
+      }
+
+      "5mld" when {
+
+        "UK country of residence" in {
+
+          val jsonStr =
+            s"""
+               |{
+               |  "name": "$name",
+               |  "phoneNumber": "$tel",
+               |  "identification": {
+               |    "utr": "$utr",
+               |    "address": {
+               |      "line1": "$addressLine",
+               |      "line2": "$addressLine",
+               |      "postCode": "$postcode"
+               |    }
+               |  },
+               |  "countryOfResidence": "$GB"
+               |}""".stripMargin
+
+          val json = Json.parse(jsonStr)
+
+          val result = json.as[LeadTrustee]
+
+          result mustBe LeadTrusteeOrganisation(
+            name = name,
+            phoneNumber = tel,
+            email = None,
+            utr = Some(utr),
+            address = UkAddress(addressLine, addressLine, None, None, postcode),
+            countryOfResidence = Some(GB)
+          )
+
+          Json.toJson(result) mustBe json.transform(
+            __.json.update((__ \ "identification" \ "address" \ "country").json.put(JsString("GB"))) andThen
+              __.json.pick
+          ).get
+        }
+
+        "non-UK country of residence" in {
+
+          val jsonStr =
+            s"""
+               |{
+               |  "name": "$name",
+               |  "phoneNumber": "$tel",
+               |  "identification": {
+               |    "address": {
+               |      "line1": "$addressLine",
+               |      "line2": "$addressLine",
+               |      "country": "$country"
+               |    }
+               |  },
+               |  "countryOfResidence": "$country",
+               |  "email": "$email"
+               |}""".stripMargin
+
+          val json = Json.parse(jsonStr)
+
+          val result = json.as[LeadTrustee]
+
+          result mustBe LeadTrusteeOrganisation(
+            name = name,
+            phoneNumber = tel,
+            email = Some(email),
+            utr = None,
+            address = NonUkAddress(addressLine, addressLine, None, country),
+            countryOfResidence = Some(country)
+          )
+
+          Json.toJson(result) mustBe json
+        }
+      }
     }
   }
 }

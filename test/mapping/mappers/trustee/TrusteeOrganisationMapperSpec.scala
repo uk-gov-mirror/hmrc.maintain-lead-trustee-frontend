@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package mapping.mappers
+package mapping.mappers.trustee
 
 import base.SpecBase
+import models.Constant.GB
 import models._
 import pages.trustee.WhenAddedPage
 import pages.trustee.organisation._
-import models.Constant.GB
 
 import java.time.LocalDate
 

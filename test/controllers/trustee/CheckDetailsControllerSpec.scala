@@ -18,7 +18,7 @@ package controllers.trustee
 
 import base.SpecBase
 import connectors.TrustConnector
-import mapping.mappers.{TrusteeIndividualMapper, TrusteeOrganisationMapper}
+import mapping.mappers.trustee.{TrusteeIndividualMapper, TrusteeOrganisationMapper}
 import models.IndividualOrBusiness.{Business, Individual}
 import models.{Name, TrusteeIndividual, TrusteeOrganisation}
 import org.mockito.Matchers.{any, eq => eqTo}
@@ -141,7 +141,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
         when(connector.addTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
-        when(mapper.map(any(), any()))
+        when(mapper.map(any()))
           .thenReturn(Some(TrusteeIndividual(indName, None, None, None, None, None, None, None, date, provisional = true)))
 
         val request = FakeRequest(POST, submitDetailsRoute)
@@ -154,7 +154,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
         application.stop()
 
-        verify(mapper).map(userAnswers, adding = true)
+        verify(mapper).map(userAnswers)
       }
 
       "business" in {
@@ -205,7 +205,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
             .overrides(bind[TrusteeIndividualMapper].toInstance(mapper))
             .build()
 
-          when(mapper.map(any(), any())).thenReturn(None)
+          when(mapper.map(any())).thenReturn(None)
 
           val request = FakeRequest(POST, submitDetailsRoute)
 
@@ -213,7 +213,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           status(result) mustEqual INTERNAL_SERVER_ERROR
 
-          verify(mapper).map(userAnswers, adding = true)
+          verify(mapper).map(userAnswers)
         }
 
         "business" in {

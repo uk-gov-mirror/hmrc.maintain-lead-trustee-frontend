@@ -25,36 +25,16 @@ import scala.util.Try
 
 object IndividualOrBusinessPage extends QuestionPage[IndividualOrBusiness] {
 
-  override def path: JsPath = basePath \  toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "individualOrBusiness"
 
   override def cleanup(value: Option[IndividualOrBusiness], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
       case Some(Business) =>
-        userAnswers.remove(individual.IndexPage)
-          .flatMap(_.remove(individual.NamePage))
-          .flatMap(_.remove(individual.DateOfBirthPage))
-          .flatMap(_.remove(individual.UkCitizenPage))
-          .flatMap(_.remove(individual.NationalInsuranceNumberPage))
-          .flatMap(_.remove(individual.PassportOrIdCardDetailsPage))
-          .flatMap(_.remove(individual.LiveInTheUkYesNoPage))
-          .flatMap(_.remove(individual.UkAddressPage))
-          .flatMap(_.remove(individual.NonUkAddressPage))
-          .flatMap(_.remove(individual.EmailAddressYesNoPage))
-          .flatMap(_.remove(individual.EmailAddressPage))
-          .flatMap(_.remove(individual.TelephoneNumberPage))
+        userAnswers.deleteAtPath(pages.leadtrustee.individual.basePath)
       case Some(Individual) =>
-        userAnswers.remove(organisation.IndexPage)
-          .flatMap(_.remove(organisation.RegisteredInUkYesNoPage))
-          .flatMap(_.remove(organisation.NamePage))
-          .flatMap(_.remove(organisation.UtrPage))
-          .flatMap(_.remove(organisation.AddressInTheUkYesNoPage))
-          .flatMap(_.remove(organisation.UkAddressPage))
-          .flatMap(_.remove(organisation.NonUkAddressPage))
-          .flatMap(_.remove(organisation.EmailAddressYesNoPage))
-          .flatMap(_.remove(organisation.EmailAddressPage))
-          .flatMap(_.remove(organisation.TelephoneNumberPage))
+        userAnswers.deleteAtPath(pages.leadtrustee.organisation.basePath)
       case _ =>
         super.cleanup(value, userAnswers)
     }
