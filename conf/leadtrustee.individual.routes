@@ -6,29 +6,41 @@ POST       /name                                    controllers.leadtrustee.indi
 GET        /date-of-birth                           controllers.leadtrustee.individual.DateOfBirthController.onPageLoad()
 POST       /date-of-birth                           controllers.leadtrustee.individual.DateOfBirthController.onSubmit()
 
-GET        /lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoController.onPageLoad()
-POST       /lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoController.onSubmit()
+GET        /has-uk-nationality                      controllers.leadtrustee.individual.CountryOfNationalityInTheUkYesNoController.onPageLoad()
+POST       /has-uk-nationality                      controllers.leadtrustee.individual.CountryOfNationalityInTheUkYesNoController.onSubmit()
 
-GET        /national-insurance-number               controllers.leadtrustee.individual.NationalInsuranceNumberController.onPageLoad()
-POST       /national-insurance-number               controllers.leadtrustee.individual.NationalInsuranceNumberController.onSubmit()
-
-GET        /international-address                   controllers.leadtrustee.individual.NonUkAddressController.onPageLoad()
-POST       /international-address                   controllers.leadtrustee.individual.NonUkAddressController.onSubmit()
-
-GET        /passport-or-id-card                     controllers.leadtrustee.individual.PassportOrIdCardController.onPageLoad()
-POST       /passport-or-id-card                     controllers.leadtrustee.individual.PassportOrIdCardController.onSubmit()
-
-GET        /uk-address                              controllers.leadtrustee.individual.UkAddressController.onPageLoad()
-POST       /uk-address                              controllers.leadtrustee.individual.UkAddressController.onSubmit()
+GET        /country-of-nationality                  controllers.leadtrustee.individual.CountryOfNationalityController.onPageLoad()
+POST       /country-of-nationality                  controllers.leadtrustee.individual.CountryOfNationalityController.onSubmit()
 
 GET        /uk-citizen                              controllers.leadtrustee.individual.UkCitizenController.onPageLoad()
 POST       /uk-citizen                              controllers.leadtrustee.individual.UkCitizenController.onSubmit()
 
-GET        /email                                   controllers.leadtrustee.individual.EmailAddressController.onPageLoad()
-POST       /email                                   controllers.leadtrustee.individual.EmailAddressController.onSubmit()
+GET        /national-insurance-number               controllers.leadtrustee.individual.NationalInsuranceNumberController.onPageLoad()
+POST       /national-insurance-number               controllers.leadtrustee.individual.NationalInsuranceNumberController.onSubmit()
+
+GET        /passport-or-id-card                     controllers.leadtrustee.individual.PassportOrIdCardController.onPageLoad()
+POST       /passport-or-id-card                     controllers.leadtrustee.individual.PassportOrIdCardController.onSubmit()
+
+GET        /has-uk-residence                        controllers.leadtrustee.individual.CountryOfResidenceInTheUkYesNoController.onPageLoad()
+POST       /has-uk-residence                        controllers.leadtrustee.individual.CountryOfResidenceInTheUkYesNoController.onSubmit()
+
+GET        /country-of-residence                    controllers.leadtrustee.individual.CountryOfResidenceController.onPageLoad()
+POST       /country-of-residence                    controllers.leadtrustee.individual.CountryOfResidenceController.onSubmit()
+
+GET        /lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoController.onPageLoad()
+POST       /lives-in-uk                             controllers.leadtrustee.individual.LiveInTheUkYesNoController.onSubmit()
+
+GET        /uk-address                              controllers.leadtrustee.individual.UkAddressController.onPageLoad()
+POST       /uk-address                              controllers.leadtrustee.individual.UkAddressController.onSubmit()
+
+GET        /international-address                   controllers.leadtrustee.individual.NonUkAddressController.onPageLoad()
+POST       /international-address                   controllers.leadtrustee.individual.NonUkAddressController.onSubmit()
 
 GET        /has-email                               controllers.leadtrustee.individual.EmailAddressYesNoController.onPageLoad()
 POST       /has-email                               controllers.leadtrustee.individual.EmailAddressYesNoController.onSubmit()
+
+GET        /email                                   controllers.leadtrustee.individual.EmailAddressController.onPageLoad()
+POST       /email                                   controllers.leadtrustee.individual.EmailAddressController.onSubmit()
 
 GET        /telephone-number                        controllers.leadtrustee.individual.TelephoneNumberController.onPageLoad()
 POST       /telephone-number                        controllers.leadtrustee.individual.TelephoneNumberController.onSubmit()

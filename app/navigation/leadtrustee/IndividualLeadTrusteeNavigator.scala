@@ -16,40 +16,58 @@
 
 package navigation.leadtrustee
 
-import controllers.leadtrustee.individual.{routes => rts}
-import controllers.leadtrustee.{routes => leadTrusteeRoutes}
+import controllers.leadtrustee.individual.routes._
+import controllers.leadtrustee.routes._
 import models.UserAnswers
 import pages.leadtrustee.individual._
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
 object IndividualLeadTrusteeNavigator {
-  private val simpleNavigations : PartialFunction[Page, Call] = {
-    case NamePage => rts.DateOfBirthController.onPageLoad()
-    case DateOfBirthPage => rts.UkCitizenController.onPageLoad()
-    case PassportOrIdCardDetailsPage => rts.LiveInTheUkYesNoController.onPageLoad()
-    case NationalInsuranceNumberPage => rts.LiveInTheUkYesNoController.onPageLoad()
-    case UkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
-    case NonUkAddressPage => rts.EmailAddressYesNoController.onPageLoad()
-    case EmailAddressPage => rts.TelephoneNumberController.onPageLoad()
-    case TelephoneNumberPage => leadTrusteeRoutes.CheckDetailsController.onPageLoadIndividualUpdated()
-  }
-
-  private val yesNoNavigations : PartialFunction[Page, UserAnswers => Call] =
-    yesNoNav(UkCitizenPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.PassportOrIdCardController.onPageLoad()) orElse
-    yesNoNav(LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad()) orElse
-    yesNoNav(EmailAddressYesNoPage, rts.EmailAddressController.onPageLoad(), rts.TelephoneNumberController.onPageLoad())
-
 
   val routes: PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigations andThen (c => (_:UserAnswers) => c) orElse
-    yesNoNavigations
+    simpleNavigation orElse
+      yesNoNavigation
 
-  def yesNoNav(fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call) : PartialFunction[Page, UserAnswers => Call] = {
-    case `fromPage` =>
-      ua => ua.get(fromPage)
-              .map(if (_) yesCall else noCall)
-              .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+  private def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
+    case NamePage => _ => DateOfBirthController.onPageLoad()
+    case DateOfBirthPage => navigateAwayFromDateOfBirthQuestion
+    case CountryOfNationalityPage => _ => UkCitizenController.onPageLoad()
+    case NationalInsuranceNumberPage | PassportOrIdCardDetailsPage => navigateAwayFromIdentificationQuestions
+    case CountryOfResidencePage => _ => NonUkAddressController.onPageLoad()
+    case UkAddressPage | NonUkAddressPage => _ => EmailAddressYesNoController.onPageLoad()
+    case EmailAddressPage => _ => TelephoneNumberController.onPageLoad()
+    case TelephoneNumberPage => _ => CheckDetailsController.onPageLoadIndividualUpdated()
+  }
+
+  private def yesNoNavigation: PartialFunction[Page, UserAnswers => Call] =
+    yesNoNav(CountryOfNationalityInTheUkYesNoPage, UkCitizenController.onPageLoad(), CountryOfNationalityController.onPageLoad()) orElse
+      yesNoNav(UkCitizenPage, NationalInsuranceNumberController.onPageLoad(), PassportOrIdCardController.onPageLoad()) orElse
+      yesNoNav(CountryOfResidenceInTheUkYesNoPage, UkAddressController.onPageLoad(), CountryOfResidenceController.onPageLoad()) orElse
+      yesNoNav(LiveInTheUkYesNoPage, UkAddressController.onPageLoad(), NonUkAddressController.onPageLoad()) orElse
+      yesNoNav(EmailAddressYesNoPage, EmailAddressController.onPageLoad(), TelephoneNumberController.onPageLoad())
+
+  private def yesNoNav(fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): PartialFunction[Page, UserAnswers => Call] = {
+    case `fromPage` => ua =>
+      ua.get(fromPage)
+        .map(if (_) yesCall else noCall)
+        .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+  }
+
+  private def navigateAwayFromDateOfBirthQuestion(ua: UserAnswers): Call = {
+    if (ua.is5mldEnabled) {
+      CountryOfNationalityInTheUkYesNoController.onPageLoad()
+    } else {
+      UkCitizenController.onPageLoad()
+    }
+  }
+
+  private def navigateAwayFromIdentificationQuestions(ua: UserAnswers): Call = {
+    if (ua.is5mldEnabled) {
+      CountryOfResidenceInTheUkYesNoController.onPageLoad()
+    } else {
+      LiveInTheUkYesNoController.onPageLoad()
+    }
   }
 
 }

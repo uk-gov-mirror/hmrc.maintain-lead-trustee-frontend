@@ -17,11 +17,12 @@
 package utils.print.checkYourAnswers
 
 import com.google.inject.Inject
+import controllers.leadtrustee.organisation.routes._
 import models.UserAnswers
 import pages.leadtrustee.organisation._
 import play.api.i18n.Messages
 import utils.print.AnswerRowConverter
-import viewmodels.AnswerSection
+import viewmodels.{AnswerRow, AnswerSection}
 
 class LeadTrusteeOrganisationPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
@@ -29,19 +30,22 @@ class LeadTrusteeOrganisationPrintHelper @Inject()(answerRowConverter: AnswerRow
 
     val bound = answerRowConverter.bind(userAnswers, trusteeName)
 
-    AnswerSection(
-      None,
-      Seq(
-        bound.yesNoQuestion(RegisteredInUkYesNoPage, "leadtrustee.organisation.registeredInUkYesNo", controllers.leadtrustee.organisation.routes.RegisteredInUkYesNoController.onPageLoad().url),
-        bound.stringQuestion(NamePage, "leadtrustee.organisation.name", controllers.leadtrustee.organisation.routes.NameController.onPageLoad().url),
-        bound.stringQuestion(UtrPage, "leadtrustee.organisation.utr", controllers.leadtrustee.organisation.routes.UtrController.onPageLoad().url),
-        bound.yesNoQuestion(AddressInTheUkYesNoPage, "leadtrustee.organisation.addressInTheUkYesNo", controllers.leadtrustee.organisation.routes.AddressInTheUkYesNoController.onPageLoad().url),
-        bound.addressQuestion(UkAddressPage, "leadtrustee.organisation.ukAddress", controllers.leadtrustee.organisation.routes.UkAddressController.onPageLoad().url),
-        bound.addressQuestion(NonUkAddressPage, "leadtrustee.organisation.nonUkAddress", controllers.leadtrustee.organisation.routes.NonUkAddressController.onPageLoad().url),
-        bound.yesNoQuestion(EmailAddressYesNoPage, "leadtrustee.organisation.emailAddressYesNo", controllers.leadtrustee.organisation.routes.EmailAddressYesNoController.onPageLoad().url),
-        bound.stringQuestion(EmailAddressPage, "leadtrustee.organisation.emailAddress", controllers.leadtrustee.organisation.routes.EmailAddressController.onPageLoad().url),
-        bound.stringQuestion(TelephoneNumberPage, "leadtrustee.organisation.telephoneNumber", controllers.leadtrustee.organisation.routes.TelephoneNumberController.onPageLoad().url)
-      ).flatten
-    )
+    val prefix: String = "leadtrustee.organisation"
+
+    def answerRows: Seq[AnswerRow] = Seq(
+      bound.yesNoQuestion(RegisteredInUkYesNoPage, s"$prefix.registeredInUkYesNo", RegisteredInUkYesNoController.onPageLoad().url),
+      bound.stringQuestion(NamePage, s"$prefix.name", NameController.onPageLoad().url),
+      bound.stringQuestion(UtrPage, s"$prefix.utr", UtrController.onPageLoad().url),
+      bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage, s"$prefix.countryOfResidenceInTheUkYesNo", CountryOfResidenceInTheUkYesNoController.onPageLoad().url),
+      bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, s"$prefix.countryOfResidence", CountryOfResidenceController.onPageLoad().url),
+      bound.yesNoQuestion(AddressInTheUkYesNoPage, s"$prefix.addressInTheUkYesNo", AddressInTheUkYesNoController.onPageLoad().url),
+      bound.addressQuestion(UkAddressPage, s"$prefix.ukAddress", UkAddressController.onPageLoad().url),
+      bound.addressQuestion(NonUkAddressPage, s"$prefix.nonUkAddress", NonUkAddressController.onPageLoad().url),
+      bound.yesNoQuestion(EmailAddressYesNoPage, s"$prefix.emailAddressYesNo", EmailAddressYesNoController.onPageLoad().url),
+      bound.stringQuestion(EmailAddressPage, s"$prefix.emailAddress", EmailAddressController.onPageLoad().url),
+      bound.stringQuestion(TelephoneNumberPage, s"$prefix.telephoneNumber", TelephoneNumberController.onPageLoad().url)
+    ).flatten
+
+    AnswerSection(headingKey = None, rows = answerRows)
   }
 }

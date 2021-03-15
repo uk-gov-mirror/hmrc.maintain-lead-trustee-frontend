@@ -9,6 +9,12 @@ POST       /name                                        controllers.leadtrustee.
 GET        /utr                                         controllers.leadtrustee.organisation.UtrController.onPageLoad()
 POST       /utr                                         controllers.leadtrustee.organisation.UtrController.onSubmit()
 
+GET        /uk-residence                                controllers.leadtrustee.organisation.CountryOfResidenceInTheUkYesNoController.onPageLoad()
+POST       /uk-residence                                controllers.leadtrustee.organisation.CountryOfResidenceInTheUkYesNoController.onSubmit()
+
+GET        /country-of-residence                        controllers.leadtrustee.organisation.CountryOfResidenceController.onPageLoad()
+POST       /country-of-residence                        controllers.leadtrustee.organisation.CountryOfResidenceController.onSubmit()
+
 GET        /address-in-uk                               controllers.leadtrustee.organisation.AddressInTheUkYesNoController.onPageLoad()
 POST       /address-in-uk                               controllers.leadtrustee.organisation.AddressInTheUkYesNoController.onSubmit()
 
