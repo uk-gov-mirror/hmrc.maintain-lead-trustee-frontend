@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.trustee.amend
+package controllers.trustee
 
 import base.SpecBase
 import connectors.TrustConnector
@@ -27,8 +27,7 @@ import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import pages.trustee.IndividualOrBusinessPage
-import pages.trustee.{individual => ind, organisation => org}
+import pages.trustee.{IndividualOrBusinessPage, individual => ind, organisation => org}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
@@ -38,22 +37,22 @@ import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.print.checkYourAnswers.{TrusteeIndividualPrintHelper, TrusteeOrganisationPrintHelper}
 import viewmodels.AnswerSection
-import views.html.trustee.amend.CheckDetailsView
+import views.html.trustee.CheckUpdatedDetailsView
 
 import java.time.LocalDate
 import scala.concurrent.Future
 import scala.util.Success
 
-class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class CheckUpdatedDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
   private val indName: Name = Name("Joe", None, "Bloggs")
   private val orgName: String = "Name"
   private val date: LocalDate = LocalDate.parse("1996-02-03")
   private val index = 0
 
-  private lazy val onPageLoadRoute = routes.CheckDetailsController.onPageLoad(index).url
-  private lazy val onPageLoadUpdatedRoute = routes.CheckDetailsController.onPageLoadUpdated(index).url
-  private lazy val onSubmitRoute = routes.CheckDetailsController.onSubmit(index).url
+  private lazy val onPageLoadRoute = routes.CheckUpdatedDetailsController.onPageLoad(index).url
+  private lazy val onPageLoadUpdatedRoute = routes.CheckUpdatedDetailsController.onPageLoadUpdated(index).url
+  private lazy val onSubmitRoute = routes.CheckUpdatedDetailsController.onSubmit(index).url
   private lazy val onwardRoute = controllers.routes.AddATrusteeController.onPageLoad().url
 
   private val answerSection: AnswerSection = AnswerSection(None, Nil)
@@ -88,7 +87,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[CheckDetailsView]
+          val view = application.injector.instanceOf[CheckUpdatedDetailsView]
 
           status(result) mustEqual OK
 
@@ -124,7 +123,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[CheckDetailsView]
+          val view = application.injector.instanceOf[CheckUpdatedDetailsView]
 
           status(result) mustEqual OK
 
@@ -160,7 +159,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[CheckDetailsView]
+          val view = application.injector.instanceOf[CheckUpdatedDetailsView]
 
           status(result) mustEqual OK
 
@@ -188,7 +187,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[CheckDetailsView]
+          val view = application.injector.instanceOf[CheckUpdatedDetailsView]
 
           status(result) mustEqual OK
 

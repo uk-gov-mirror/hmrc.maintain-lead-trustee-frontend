@@ -262,7 +262,7 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
             .set(NationalInsuranceNumberPage, nino).success.value
 
           navigator.nextPage(NationalInsuranceNumberPage, mode, answers)
-            .mustBe(controllers.trustee.amend.routes.CheckDetailsController.onPageLoadUpdated(index))
+            .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
         }
 
         "Do you know address page" when {
@@ -281,7 +281,7 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
               .set(page, false).success.value
 
             navigator.nextPage(page, mode, answers)
-              .mustBe(controllers.trustee.amend.routes.CheckDetailsController.onPageLoadUpdated(index))
+              .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
           }
         }
 
@@ -331,13 +331,13 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
               .set(page, false).success.value
 
             navigator.nextPage(page, mode, answers)
-              .mustBe(controllers.trustee.amend.routes.CheckDetailsController.onPageLoadUpdated(index))
+              .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
           }
         }
 
         "Passport or ID card details page -> Check details page" in {
           navigator.nextPage(PassportOrIdCardDetailsPage, mode, baseAnswers)
-            .mustBe(controllers.trustee.amend.routes.CheckDetailsController.onPageLoadUpdated(index))
+            .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
         }
       }
     }

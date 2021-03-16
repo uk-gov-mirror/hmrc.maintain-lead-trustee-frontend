@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.trustee.amend
+package views.trustee
 
 /*
  * Copyright 2020 HM Revenue & Customs
@@ -35,16 +35,16 @@ package views.trustee.amend
 import play.twirl.api.HtmlFormat
 import viewmodels.AnswerSection
 import views.behaviours.ViewBehaviours
-import views.html.trustee.amend.CheckDetailsView
+import views.html.trustee.CheckUpdatedDetailsView
 
-class CheckDetailsViewSpec extends ViewBehaviours {
+class CheckUpdatedDetailsViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "trustee.checkDetails"
   val index = 0
 
   "CheckDetails view" must {
 
-    val view = viewFor[CheckDetailsView](Some(emptyUserAnswers))
+    val view = viewFor[CheckUpdatedDetailsView](Some(emptyUserAnswers))
 
     def applyView(): HtmlFormat.Appendable =
       view.apply(AnswerSection(None, Seq()), index)(fakeRequest, messages)

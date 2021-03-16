@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.trustee.amend
+package controllers.trustee
 
 import config.FrontendAppConfig
 import connectors.TrustConnector
@@ -34,26 +34,26 @@ import services.TrustService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.checkYourAnswers.TrusteePrintHelper
-import views.html.trustee.amend.CheckDetailsView
+import views.html.trustee.CheckUpdatedDetailsView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckDetailsController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: PlaybackRepository,
-                                        trustService: TrustService,
-                                        standardActionSets: StandardActionSets,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: CheckDetailsView,
-                                        printHelper: TrusteePrintHelper,
-                                        mapper: TrusteeMappers,
-                                        extractor: TrusteeExtractors,
-                                        trustConnector: TrustConnector,
-                                        nameAction: NameRequiredAction,
-                                        val appConfig: FrontendAppConfig,
-                                        errorHandler: ErrorHandler
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class CheckUpdatedDetailsController @Inject()(
+                                               override val messagesApi: MessagesApi,
+                                               sessionRepository: PlaybackRepository,
+                                               trustService: TrustService,
+                                               standardActionSets: StandardActionSets,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               view: CheckUpdatedDetailsView,
+                                               printHelper: TrusteePrintHelper,
+                                               mapper: TrusteeMappers,
+                                               extractor: TrusteeExtractors,
+                                               trustConnector: TrustConnector,
+                                               nameAction: NameRequiredAction,
+                                               val appConfig: FrontendAppConfig,
+                                               errorHandler: ErrorHandler
+                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>

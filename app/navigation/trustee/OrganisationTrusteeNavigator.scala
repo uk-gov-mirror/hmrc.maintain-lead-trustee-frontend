@@ -48,7 +48,7 @@ object OrganisationTrusteeNavigator {
       controllers.trustee.routes.WhenAddedController.onPageLoad()
     } else {
       userAnswers.get(IndexPage) match {
-        case Some(index) => controllers.trustee.amend.routes.CheckDetailsController.onPageLoadUpdated(index)
+        case Some(index) => controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index)
         case _ => controllers.routes.SessionExpiredController.onPageLoad()
       }
     }

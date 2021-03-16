@@ -50,10 +50,10 @@ POST       /trustee/when-was-trustee-added                                  cont
 GET        /trustee/check-details                                           controllers.trustee.CheckDetailsController.onPageLoad()
 POST       /trustee/check-details                                           controllers.trustee.CheckDetailsController.onSubmit()
 
-GET        /trustee/:index/check-details                                    controllers.trustee.amend.CheckDetailsController.onPageLoad(index: Int)
+GET        /trustee/:index/check-details                                    controllers.trustee.CheckUpdatedDetailsController.onPageLoad(index: Int)
 
-GET        /trustee/:index/check-updated-details                            controllers.trustee.amend.CheckDetailsController.onPageLoadUpdated(index: Int)
-POST       /trustee/:index/check-updated-details                            controllers.trustee.amend.CheckDetailsController.onSubmit(index: Int)
+GET        /trustee/:index/check-updated-details                            controllers.trustee.CheckUpdatedDetailsController.onPageLoadUpdated(index: Int)
+POST       /trustee/:index/check-updated-details                            controllers.trustee.CheckUpdatedDetailsController.onSubmit(index: Int)
 
 GET        /trustee/:index/when-was-trustee-removed                         controllers.trustee.WhenRemovedController.onPageLoad(index: Int)
 POST       /trustee/:index/when-was-trustee-removed                         controllers.trustee.WhenRemovedController.onSubmit(index: Int)

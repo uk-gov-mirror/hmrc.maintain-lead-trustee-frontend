@@ -14,31 +14,43 @@
  * limitations under the License.
  */
 
-package pages.trustee.individual
+package pages.trustee.individual.add
 
-import java.time.LocalDate
 import models.Passport
 import pages.behaviours.PageBehaviours
-import pages.trustee.individual.add.{IdCardDetailsPage, IdCardDetailsYesNoPage, PassportDetailsPage}
 
-class IdCardDetailsYesNoPageSpec extends PageBehaviours {
+import java.time.LocalDate
+
+class PassportDetailsYesNoPageSpec extends PageBehaviours {
+
+  val index = 0
 
   val data: Passport = Passport("country", "number", LocalDate.of(2020, 1, 1))
 
-  "IdCardDetailsYesNo page" must {
+  "PassportDetailsYesNo page" must {
 
-    beRetrievable[Boolean](IdCardDetailsYesNoPage)
+    beRetrievable[Boolean](PassportDetailsYesNoPage)
 
-    beSettable[Boolean](IdCardDetailsYesNoPage)
+    beSettable[Boolean](PassportDetailsYesNoPage)
 
-    beRemovable[Boolean](IdCardDetailsYesNoPage)
+    beRemovable[Boolean](PassportDetailsYesNoPage)
+
+    "implement cleanup logic when YES selected" in {
+      val userAnswers = emptyUserAnswers
+        .set(IdCardDetailsYesNoPage, true)
+        .flatMap(_.set(PassportDetailsPage, data))
+        .flatMap(_.set(PassportDetailsYesNoPage, true))
+
+      userAnswers.get.get(IdCardDetailsYesNoPage) mustNot be(defined)
+      userAnswers.get.get(IdCardDetailsPage) mustNot be(defined)
+    }
 
     "implement cleanup logic when NO selected" in {
       val userAnswers = emptyUserAnswers
         .set(PassportDetailsPage, data)
-        .flatMap(_.set(IdCardDetailsYesNoPage, false))
+        .flatMap(_.set(PassportDetailsYesNoPage, false))
 
-      userAnswers.get.get(IdCardDetailsPage) mustNot be(defined)
+      userAnswers.get.get(PassportDetailsPage) mustNot be(defined)
     }
   }
 }

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,30 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import viewmodels.AnswerSection
-@import controllers.trustee.amend.routes._
+package pages.trustee.individual
 
-@this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
-)
+import models.UkAddress
+import pages.behaviours.PageBehaviours
 
-@(answerSection: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
+class UkAddressPageSpec extends PageBehaviours {
 
-@main_template(
-    title = messages("trustee.checkDetails.title")
-    ) {
+  "UkAddressPage" must {
 
-    @formHelper(action = CheckDetailsController.onSubmit(index), 'autoComplete -> "off") {
+    beRetrievable[UkAddress](UkAddressPage)
 
-        @components.back_link()
+    beSettable[UkAddress](UkAddressPage)
 
-        @components.heading("trustee.checkDetails.heading")
-
-        @components.answer_section(answerSection)
-
-        @components.submit_button()
-    }
+    beRemovable[UkAddress](UkAddressPage)
+  }
 }

@@ -189,7 +189,7 @@ object IndividualTrusteeNavigator {
 
   private def checkDetailsNavigation(userAnswers: UserAnswers): Call = {
     userAnswers.get(IndexPage) match {
-      case Some(index) => controllers.trustee.amend.routes.CheckDetailsController.onPageLoadUpdated(index)
+      case Some(index) => controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index)
       case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
