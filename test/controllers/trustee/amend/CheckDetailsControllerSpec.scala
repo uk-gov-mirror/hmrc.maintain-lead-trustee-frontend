@@ -28,7 +28,7 @@ import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.IndividualOrBusinessPage
-import pages.trustee.amend.{individual => ind, organisation => org}
+import pages.trustee.{individual => ind, organisation => org}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
@@ -36,6 +36,7 @@ import play.api.test.Helpers._
 import services.TrustService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
+import utils.print.checkYourAnswers.{TrusteeIndividualPrintHelper, TrusteeOrganisationPrintHelper}
 import viewmodels.AnswerSection
 import views.html.trustee.amend.CheckDetailsView
 
@@ -71,16 +72,16 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val trustService = mock[TrustService]
           val extractor: TrusteeIndividualExtractor = mock[TrusteeIndividualExtractor]
-          val printHelper: AmendTrusteeIndividualPrintHelper = mock[AmendTrusteeIndividualPrintHelper]
+          val printHelper: TrusteeIndividualPrintHelper = mock[TrusteeIndividualPrintHelper]
 
           when(trustService.getTrustee(any(), any())(any(), any())).thenReturn(Future.successful(trustee))
           when(extractor.extract(any(), any(), any())).thenReturn(Success(userAnswers))
-          when(printHelper.print(any(), any())(any())).thenReturn(answerSection)
+          when(printHelper.print(any(), any(), any())(any())).thenReturn(answerSection)
 
           val application = applicationBuilder(userAnswers = Some(userAnswers))
             .overrides(bind[TrustService].toInstance(trustService))
             .overrides(bind[TrusteeIndividualExtractor].toInstance(extractor))
-            .overrides(bind[AmendTrusteeIndividualPrintHelper].toInstance(printHelper))
+            .overrides(bind[TrusteeIndividualPrintHelper].toInstance(printHelper))
             .build()
 
           val request = FakeRequest(GET, onPageLoadRoute)
@@ -96,7 +97,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           verify(trustService).getTrustee(eqTo(userAnswers.identifier), eqTo(index))(any(), any())
           verify(extractor).extract(eqTo(userAnswers), eqTo(trustee), eqTo(index))
-          verify(printHelper).print(eqTo(userAnswers), eqTo(indName.displayName))(any())
+          verify(printHelper).print(eqTo(userAnswers), eqTo(false), eqTo(indName.displayName))(any())
         }
 
         "business" in {
@@ -107,16 +108,16 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val trustService = mock[TrustService]
           val extractor: TrusteeOrganisationExtractor = mock[TrusteeOrganisationExtractor]
-          val printHelper: AmendTrusteeOrganisationPrintHelper = mock[AmendTrusteeOrganisationPrintHelper]
+          val printHelper: TrusteeOrganisationPrintHelper = mock[TrusteeOrganisationPrintHelper]
 
           when(trustService.getTrustee(any(), any())(any(), any())).thenReturn(Future.successful(trustee))
           when(extractor.extract(any(), any(), any())).thenReturn(Success(userAnswers))
-          when(printHelper.print(any(), any())(any())).thenReturn(answerSection)
+          when(printHelper.print(any(), any(), any())(any())).thenReturn(answerSection)
 
           val application = applicationBuilder(userAnswers = Some(userAnswers))
             .overrides(bind[TrustService].toInstance(trustService))
             .overrides(bind[TrusteeOrganisationExtractor].toInstance(extractor))
-            .overrides(bind[AmendTrusteeOrganisationPrintHelper].toInstance(printHelper))
+            .overrides(bind[TrusteeOrganisationPrintHelper].toInstance(printHelper))
             .build()
 
           val request = FakeRequest(GET, onPageLoadRoute)
@@ -132,7 +133,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           verify(trustService).getTrustee(eqTo(userAnswers.identifier), eqTo(index))(any(), any())
           verify(extractor).extract(eqTo(userAnswers), eqTo(trustee), eqTo(index))
-          verify(printHelper).print(eqTo(userAnswers), eqTo(orgName))(any())
+          verify(printHelper).print(eqTo(userAnswers), eqTo(false), eqTo(orgName))(any())
         }
       }
     }
@@ -147,12 +148,12 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
             .set(IndividualOrBusinessPage, Individual).success.value
             .set(ind.NamePage, indName).success.value
 
-          val printHelper: AmendTrusteeIndividualPrintHelper = mock[AmendTrusteeIndividualPrintHelper]
+          val printHelper: TrusteeIndividualPrintHelper = mock[TrusteeIndividualPrintHelper]
 
-          when(printHelper.print(any(), any())(any())).thenReturn(answerSection)
+          when(printHelper.print(any(), any(), any())(any())).thenReturn(answerSection)
 
           val application = applicationBuilder(userAnswers = Some(userAnswers))
-            .overrides(bind[AmendTrusteeIndividualPrintHelper].toInstance(printHelper))
+            .overrides(bind[TrusteeIndividualPrintHelper].toInstance(printHelper))
             .build()
 
           val request = FakeRequest(GET, onPageLoadUpdatedRoute)
@@ -166,7 +167,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           contentAsString(result) mustEqual
             view(answerSection, index)(request, messages).toString
 
-          verify(printHelper).print(eqTo(userAnswers), eqTo(indName.displayName))(any())
+          verify(printHelper).print(eqTo(userAnswers), eqTo(false), eqTo(indName.displayName))(any())
         }
 
         "business" in {
@@ -175,12 +176,12 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
             .set(IndividualOrBusinessPage, Business).success.value
             .set(org.NamePage, orgName).success.value
 
-          val printHelper: AmendTrusteeOrganisationPrintHelper = mock[AmendTrusteeOrganisationPrintHelper]
+          val printHelper: TrusteeOrganisationPrintHelper = mock[TrusteeOrganisationPrintHelper]
 
-          when(printHelper.print(any(), any())(any())).thenReturn(answerSection)
+          when(printHelper.print(any(), any(), any())(any())).thenReturn(answerSection)
 
           val application = applicationBuilder(userAnswers = Some(userAnswers))
-            .overrides(bind[AmendTrusteeOrganisationPrintHelper].toInstance(printHelper))
+            .overrides(bind[TrusteeOrganisationPrintHelper].toInstance(printHelper))
             .build()
 
           val request = FakeRequest(GET, onPageLoadUpdatedRoute)
@@ -194,7 +195,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           contentAsString(result) mustEqual
             view(answerSection, index)(request, messages).toString
 
-          verify(printHelper).print(eqTo(userAnswers), eqTo(orgName))(any())
+          verify(printHelper).print(eqTo(userAnswers), eqTo(false), eqTo(orgName))(any())
         }
       }
 

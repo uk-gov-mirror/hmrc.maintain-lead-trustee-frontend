@@ -17,6 +17,7 @@
 package navigation.trustee
 
 import base.SpecBase
+import models.NormalMode
 import navigation.Navigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.trustee.organisation._
@@ -26,22 +27,24 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
   val navigator = new Navigator
 
   "Organisation trustee navigator" when {
+    
+    val mode = NormalMode
 
     "Name page -> Do you know UTR page" in {
-      navigator.nextPage(NamePage, emptyUserAnswers)
-        .mustBe(controllers.trustee.organisation.routes.UtrYesNoController.onPageLoad())
+      navigator.nextPage(NamePage, mode, emptyUserAnswers)
+        .mustBe(controllers.trustee.organisation.routes.UtrYesNoController.onPageLoad(mode))
     }
 
     "Do you know UTR page -> Yes -> UTR page" in {
       val answers = emptyUserAnswers
         .set(UtrYesNoPage, true).success.value
 
-      navigator.nextPage(UtrYesNoPage, answers)
-        .mustBe(controllers.trustee.organisation.routes.UtrController.onPageLoad())
+      navigator.nextPage(UtrYesNoPage, mode, answers)
+        .mustBe(controllers.trustee.organisation.routes.UtrController.onPageLoad(mode))
     }
 
     "UTR page -> When added as trustee page" in {
-      navigator.nextPage(UtrPage, emptyUserAnswers)
+      navigator.nextPage(UtrPage, mode, emptyUserAnswers)
         .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad())
     }
 
@@ -49,23 +52,23 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
       val answers = emptyUserAnswers
         .set(UtrYesNoPage, false).success.value
 
-      navigator.nextPage(UtrYesNoPage, answers)
-        .mustBe(controllers.trustee.organisation.routes.AddressYesNoController.onPageLoad())
+      navigator.nextPage(UtrYesNoPage, mode, answers)
+        .mustBe(controllers.trustee.organisation.routes.AddressYesNoController.onPageLoad(mode))
     }
 
     "Do you know address page -> Yes -> Is address in UK page" in {
       val answers = emptyUserAnswers
         .set(AddressYesNoPage, true).success.value
 
-      navigator.nextPage(AddressYesNoPage, answers)
-        .mustBe(controllers.trustee.organisation.routes.AddressInTheUkYesNoController.onPageLoad())
+      navigator.nextPage(AddressYesNoPage, mode, answers)
+        .mustBe(controllers.trustee.organisation.routes.AddressInTheUkYesNoController.onPageLoad(mode))
     }
 
     "Do you know address page -> No -> When added as trustee page" in {
       val answers = emptyUserAnswers
         .set(AddressYesNoPage, false).success.value
 
-      navigator.nextPage(AddressYesNoPage, answers)
+      navigator.nextPage(AddressYesNoPage, mode, answers)
         .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad())
     }
 
@@ -73,16 +76,16 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
       val answers = emptyUserAnswers
         .set(AddressInTheUkYesNoPage, true).success.value
 
-      navigator.nextPage(AddressInTheUkYesNoPage, answers)
-        .mustBe(controllers.trustee.organisation.routes.UkAddressController.onPageLoad())
+      navigator.nextPage(AddressInTheUkYesNoPage, mode, answers)
+        .mustBe(controllers.trustee.organisation.routes.UkAddressController.onPageLoad(mode))
     }
 
     "Is address in UK page -> No -> Non-UK address page" in {
       val answers = emptyUserAnswers
         .set(AddressInTheUkYesNoPage, false).success.value
 
-      navigator.nextPage(AddressInTheUkYesNoPage, answers)
-        .mustBe(controllers.trustee.organisation.routes.NonUkAddressController.onPageLoad())
+      navigator.nextPage(AddressInTheUkYesNoPage, mode, answers)
+        .mustBe(controllers.trustee.organisation.routes.NonUkAddressController.onPageLoad(mode))
     }
 
     "UK address page -> When added as trustee page" in {

@@ -16,12 +16,13 @@
 
 package views.trustee.individual.amend
 
-import controllers.trustee.amend.individual.routes
+import controllers.trustee.individual.amend.routes
 import forms.YesNoFormProvider
 import models.Name
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
+import views.html.trustee.individual.amend.PassportOrIdCardDetailsYesNoView
 
 class PassportOrIdCardDetailsYesNoViewSpec extends YesNoViewBehaviours {
 

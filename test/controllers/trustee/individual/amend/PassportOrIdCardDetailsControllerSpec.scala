@@ -23,14 +23,15 @@ import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.trustee.amend.individual.PassportOrIdCardDetailsPage
 import pages.trustee.individual.NamePage
+import pages.trustee.individual.amend.PassportOrIdCardDetailsPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
 import utils.InputOption
 import utils.countryOptions.CountryOptions
+import views.html.trustee.individual.amend.PassportOrIdCardDetailsView
 
 import java.time.LocalDate
 import scala.concurrent.Future

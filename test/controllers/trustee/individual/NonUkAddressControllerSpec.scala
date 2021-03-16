@@ -17,10 +17,9 @@
 package controllers.trustee.individual
 
 import java.time.LocalDate
-
 import base.SpecBase
 import forms.NonUkAddressFormProvider
-import models.{Name, NonUkAddress, UserAnswers}
+import models.{Name, NonUkAddress, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -47,7 +46,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
   override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
     .set(NamePage, name).success.value
 
-  val nonUkAddressRoute: String = routes.NonUkAddressController.onPageLoad().url
+  val nonUkAddressRoute: String = routes.NonUkAddressController.onPageLoad(NormalMode).url
 
   val getRequest = FakeRequest(GET, nonUkAddressRoute)
 
@@ -68,7 +67,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, name.displayName)(getRequest, messages).toString
+        view(form, NormalMode, countryOptions, name.displayName)(getRequest, messages).toString
 
       application.stop()
     }
@@ -88,7 +87,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validData), countryOptions, name.displayName)(getRequest, messages).toString
+        view(form.fill(validData), NormalMode, countryOptions, name.displayName)(getRequest, messages).toString
 
       application.stop()
     }
@@ -136,7 +135,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, name.displayName)(request, messages).toString
+        view(boundForm, NormalMode, countryOptions, name.displayName)(request, messages).toString
 
       application.stop()
     }

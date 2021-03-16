@@ -16,7 +16,7 @@
 
 package views.trustee.individual.add
 
-import controllers.trustee.individual.routes
+import controllers.trustee.individual.add.routes
 import forms.PassportDetailsFormProvider
 import models.{Name, Passport}
 import play.api.data.Form
@@ -24,6 +24,7 @@ import play.twirl.api.HtmlFormat
 import utils.InputOption
 import utils.countryOptions.CountryOptions
 import views.behaviours.QuestionViewBehaviours
+import views.html.trustee.individual.add.PassportDetailsView
 
 class PassportDetailsViewSpec extends QuestionViewBehaviours[Passport] {
 

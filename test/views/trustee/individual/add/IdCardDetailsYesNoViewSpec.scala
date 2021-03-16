@@ -16,12 +16,13 @@
 
 package views.trustee.individual.add
 
-import controllers.trustee.individual.routes
+import controllers.trustee.individual.add.routes
 import forms.YesNoFormProvider
 import models.Name
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
+import views.html.trustee.individual.add.IdCardDetailsYesNoView
 
 class IdCardDetailsYesNoViewSpec extends YesNoViewBehaviours {
 

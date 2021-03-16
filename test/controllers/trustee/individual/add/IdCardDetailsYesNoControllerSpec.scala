@@ -30,6 +30,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
+import views.html.trustee.individual.add.IdCardDetailsYesNoView
 
 import java.time.LocalDate
 import scala.concurrent.Future

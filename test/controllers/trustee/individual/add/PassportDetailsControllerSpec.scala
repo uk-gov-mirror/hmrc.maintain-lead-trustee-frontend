@@ -32,6 +32,7 @@ import play.api.test.Helpers._
 import repositories.PlaybackRepository
 import utils.InputOption
 import utils.countryOptions.CountryOptions
+import views.html.trustee.individual.add.PassportDetailsView
 
 import java.time.LocalDate
 import scala.concurrent.Future

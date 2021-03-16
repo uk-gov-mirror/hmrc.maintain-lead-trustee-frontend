@@ -17,10 +17,9 @@
 package controllers.trustee.individual
 
 import java.time.LocalDate
-
 import base.SpecBase
 import forms.YesNoFormProvider
-import models.{Name, UserAnswers}
+import models.{Name, NormalMode, UserAnswers}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -44,7 +43,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
   override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
     .set(NamePage, name).success.value
   
-  lazy val nationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad().url
+  lazy val nationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode).url
 
   "NationalInsuranceNumberYesNo Controller" must {
 
@@ -61,7 +60,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, trusteeName)(request, messages).toString
+        view(form, NormalMode, trusteeName)(request, messages).toString
 
       application.stop()
     }
@@ -81,7 +80,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), trusteeName)(request, messages).toString
+        view(form.fill(true), NormalMode, trusteeName)(request, messages).toString
 
       application.stop()
     }
@@ -126,7 +125,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, trusteeName)(request, messages).toString
+        view(boundForm, NormalMode, trusteeName)(request, messages).toString
 
       application.stop()
     }

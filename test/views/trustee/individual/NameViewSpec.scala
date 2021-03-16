@@ -18,7 +18,7 @@ package views.trustee.individual
 
 import controllers.trustee.individual.routes
 import forms.IndividualNameFormProvider
-import models.Name
+import models.{Name, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
@@ -36,7 +36,7 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
     val view = viewFor[NameView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form)(fakeRequest, messages)
+      view.apply(form, NormalMode)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
@@ -49,7 +49,7 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
         applyView,
         messageKeyPrefix,
         None,
-        routes.PassportDetailsController.onSubmit().url,
+        routes.NameController.onSubmit(NormalMode).url,
         "firstName",
         "middleName",
         "lastName"

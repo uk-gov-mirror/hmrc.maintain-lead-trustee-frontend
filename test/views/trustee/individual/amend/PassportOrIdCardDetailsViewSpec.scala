@@ -16,7 +16,7 @@
 
 package views.trustee.individual.amend
 
-import controllers.trustee.individual.routes
+import controllers.trustee.individual.amend.routes
 import forms.CombinedPassportOrIdCardDetailsFormProvider
 import models.{CombinedPassportOrIdCard, Name}
 import play.api.data.Form
@@ -24,6 +24,7 @@ import play.twirl.api.HtmlFormat
 import utils.InputOption
 import utils.countryOptions.CountryOptions
 import views.behaviours.QuestionViewBehaviours
+import views.html.trustee.individual.amend.PassportOrIdCardDetailsView
 
 class PassportOrIdCardDetailsViewSpec extends QuestionViewBehaviours[CombinedPassportOrIdCard] {
 
@@ -51,7 +52,7 @@ class PassportOrIdCardDetailsViewSpec extends QuestionViewBehaviours[CombinedPas
         form,
         applyView,
         messageKeyPrefix,
-        routes.PassportDetailsController.onSubmit().url,
+        routes.PassportOrIdCardDetailsController.onSubmit().url,
         Seq(("country", None), ("number", None)),
         "expiryDate",
         name.displayName

@@ -16,7 +16,9 @@
 
 package views.trustee.organisation
 
+import controllers.trustee.individual.routes
 import forms.BusinessNameFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours
@@ -32,7 +34,7 @@ class NameViewSpec extends StringViewBehaviours {
   "Name view" must {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form)(fakeRequest, messages)
+      view.apply(form, NormalMode)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
@@ -43,7 +45,7 @@ class NameViewSpec extends StringViewBehaviours {
       applyView,
       messageKeyPrefix,
       None,
-      controllers.leadtrustee.organisation.routes.NameController.onSubmit().url,
+      routes.NameController.onSubmit(NormalMode).url,
       "value"
     )
 

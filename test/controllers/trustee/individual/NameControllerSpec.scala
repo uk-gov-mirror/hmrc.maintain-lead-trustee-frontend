@@ -18,7 +18,7 @@ package controllers.trustee.individual
 
 import base.SpecBase
 import forms.IndividualNameFormProvider
-import models.Name
+import models.{Name, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -41,7 +41,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
   val form = formProvider.withPrefix("trustee.individual.name")
   val trusteeName = Name("FirstName", None, "LastName")
 
-  lazy val nameRoute = routes.NameController.onPageLoad().url
+  lazy val nameRoute = routes.NameController.onPageLoad(NormalMode).url
 
   "Name Controller" must {
 
@@ -58,7 +58,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(request, messages).toString
+        view(form, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -76,7 +76,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Name("FirstName", None, "LastName")))(request, messages).toString
+        view(form.fill(Name("FirstName", None, "LastName")), NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -125,7 +125,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(request, messages).toString
+        view(boundForm, NormalMode)(request, messages).toString
 
       application.stop()
     }

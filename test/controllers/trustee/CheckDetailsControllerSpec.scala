@@ -62,7 +62,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           .set(IndividualOrBusinessPage, Individual).success.value
           .set(ind.NamePage, indName).success.value
 
-        when(printHelper.print(any(), any())(any())).thenReturn(answerSection)
+        when(printHelper.print(any(), any(), any())(any())).thenReturn(answerSection)
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[TrusteeIndividualPrintHelper].toInstance(printHelper))
@@ -79,7 +79,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
         contentAsString(result) mustEqual
           view(answerSection)(request, messages).toString
 
-        verify(printHelper).print(eqTo(userAnswers), eqTo(indName.displayName))(any())
+        verify(printHelper).print(eqTo(userAnswers), eqTo(true), eqTo(indName.displayName))(any())
       }
 
       "business" in {
@@ -90,7 +90,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           .set(IndividualOrBusinessPage, Business).success.value
           .set(org.NamePage, orgName).success.value
 
-        when(printHelper.print(any(), any())(any())).thenReturn(answerSection)
+        when(printHelper.print(any(), any(), any())(any())).thenReturn(answerSection)
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[TrusteeOrganisationPrintHelper].toInstance(printHelper))
@@ -107,7 +107,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
         contentAsString(result) mustEqual
           view(answerSection)(request, messages).toString
 
-        verify(printHelper).print(eqTo(userAnswers), eqTo(orgName))(any())
+        verify(printHelper).print(eqTo(userAnswers), eqTo(true), eqTo(orgName))(any())
       }
     }
 
