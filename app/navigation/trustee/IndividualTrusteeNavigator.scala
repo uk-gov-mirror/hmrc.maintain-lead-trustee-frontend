@@ -30,20 +30,22 @@ object IndividualTrusteeNavigator {
 
   def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
     simpleNavigation(mode) orElse
-      conditionalNavigation(mode)
+      yesNoNavigation(mode) orElse
+      addNavigation(mode) orElse
+      amendNavigation(mode)
 
   private def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case NamePage => _ => DateOfBirthYesNoController.onPageLoad(mode)
     case DateOfBirthPage => navigateAwayFromDateOfBirthPages(_, mode)
     case CountryOfNationalityPage => navigateAwayFromCountryOfNationalityPages(_, mode)
     case NationalInsuranceNumberPage => navigateAwayFromNinoPages(_, mode)
-    case CountryOfResidencePage => navigateAwayFromCountryOfResidencePages(_, mode)
+    case CountryOfResidencePage => navigateToOrBypassAddressPages(_, mode)
     case UkAddressPage | NonUkAddressPage => _ => navigateToIdQuestions(mode)
     case PassportDetailsPage | IdCardDetailsPage | PassportOrIdCardDetailsPage => navigateToMentalCapacityOrWhenAddedPage(_, mode)
-    case MentalCapacityYesNoPage => navigateAwayFromMentalCapacityPage(_, mode)
+    case MentalCapacityYesNoPage => navigateToWhenAddedOrCheckDetails(_, mode)
   }
 
-  private def conditionalNavigation(mode: Mode) : PartialFunction[Page, UserAnswers => Call] = {
+  private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case DateOfBirthYesNoPage => ua =>
       yesNoNav(
         ua = ua,
@@ -77,13 +79,13 @@ object IndividualTrusteeNavigator {
         ua = ua,
         fromPage = CountryOfResidenceYesNoPage,
         yesCall = CountryOfResidenceInTheUkYesNoController.onPageLoad(mode),
-        noCall = navigateAwayFromCountryOfResidencePages(ua, mode)
+        noCall = navigateToOrBypassAddressPages(ua, mode)
       )
     case CountryOfResidenceInTheUkYesNoPage => ua =>
       yesNoNav(
         ua = ua,
         fromPage = CountryOfResidenceInTheUkYesNoPage,
-        yesCall = navigateAwayFromCountryOfResidencePages(ua, mode),
+        yesCall = navigateToOrBypassAddressPages(ua, mode),
         noCall = CountryOfResidenceController.onPageLoad(mode)
       )
     case AddressYesNoPage => ua =>
@@ -91,7 +93,7 @@ object IndividualTrusteeNavigator {
         ua = ua,
         fromPage = AddressYesNoPage,
         yesCall = LiveInTheUkYesNoController.onPageLoad(mode),
-        noCall = navigateAwayFromNoAddressPage(ua, mode)
+        noCall = navigateToMentalCapacityOrWhenAddedPage(ua, mode)
       )
     case LiveInTheUkYesNoPage => ua =>
       yesNoNav(
@@ -100,6 +102,9 @@ object IndividualTrusteeNavigator {
         yesCall = UkAddressController.onPageLoad(mode),
         noCall = NonUkAddressController.onPageLoad(mode)
       )
+  }
+
+  private def addNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case PassportDetailsYesNoPage => ua =>
       yesNoNav(
         ua = ua,
@@ -114,13 +119,32 @@ object IndividualTrusteeNavigator {
         yesCall = IdCardDetailsController.onPageLoad(),
         noCall = navigateToMentalCapacityOrWhenAddedPage(ua, mode)
       )
+  }
+
+  private def amendNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case PassportOrIdCardDetailsYesNoPage => ua =>
       yesNoNav(
-        ua,
-        PassportOrIdCardDetailsYesNoPage,
-        PassportOrIdCardDetailsController.onPageLoad(),
-        navigateToMentalCapacityOrWhenAddedPage(ua, mode)
+        ua = ua,
+        fromPage = PassportOrIdCardDetailsYesNoPage,
+        yesCall = PassportOrIdCardDetailsController.onPageLoad(),
+        noCall = navigateToMentalCapacityOrWhenAddedPage(ua, mode)
       )
+  }
+
+  private def navigateAwayFromNinoPages(ua: UserAnswers, mode: Mode): Call = {
+    if (ua.is5mldEnabled) {
+      CountryOfResidenceYesNoController.onPageLoad(mode)
+    } else {
+      navigateToOrBypassAddressPages(ua, mode)
+    }
+  }
+
+  private def navigateToOrBypassAddressPages(ua: UserAnswers, mode: Mode): Call = {
+    if (ua.get(NationalInsuranceNumberPage).isDefined || !ua.isTaxable) {
+      navigateToMentalCapacityOrWhenAddedPage(ua, mode)
+    } else {
+      AddressYesNoController.onPageLoad(mode)
+    }
   }
 
   private def navigateAwayFromDateOfBirthPages(userAnswers: UserAnswers, mode: Mode): Call = {
@@ -128,14 +152,6 @@ object IndividualTrusteeNavigator {
       CountryOfNationalityYesNoController.onPageLoad(mode)
     } else {
       NationalInsuranceNumberYesNoController.onPageLoad(mode)
-    }
-  }
-
-  private def navigateAwayFromNinoPages(userAnswers: UserAnswers, mode: Mode): Call  = {
-    if (userAnswers.is5mldEnabled) {
-      CountryOfResidenceYesNoController.onPageLoad(mode)
-    } else {
-      navigateAwayFromCountryOfResidencePages(userAnswers, mode)
     }
   }
 
@@ -147,34 +163,11 @@ object IndividualTrusteeNavigator {
     }
   }
 
-  private def navigateAwayFromNoAddressPage(userAnswers: UserAnswers, mode: Mode): Call = {
-    if (userAnswers.is5mldEnabled) {
-      PassportDetailsYesNoController.onPageLoad()
-    } else {
-      navigateToMentalCapacityOrWhenAddedPage(userAnswers, mode)
-    }
-  }
-
-  private def navigateAwayFromCountryOfResidencePages(userAnswers: UserAnswers, mode: Mode): Call = {
-    (userAnswers.get(NationalInsuranceNumberYesNoPage), userAnswers.isTaxable) match {
-      case (Some(true), _) | (_, false) => MentalCapacityYesNoController.onPageLoad(mode)
-      case (_, true) => AddressYesNoController.onPageLoad(mode)
-    }
-  }
-
   private def navigateToIdQuestions(mode: Mode): Call = {
     if (mode == NormalMode) {
-      controllers.trustee.individual.add.routes.PassportDetailsYesNoController.onPageLoad()
+      PassportDetailsYesNoController.onPageLoad()
     } else {
-      controllers.trustee.individual.amend.routes.PassportOrIdCardDetailsYesNoController.onPageLoad()
-    }
-  }
-
-  private def navigateAwayFromMentalCapacityPage(userAnswers: UserAnswers, mode: Mode): Call = {
-    if (mode == NormalMode) {
-      controllers.trustee.routes.WhenAddedController.onPageLoad()
-    } else {
-      checkDetailsNavigation(userAnswers)
+      PassportOrIdCardDetailsYesNoController.onPageLoad()
     }
   }
 
@@ -182,7 +175,15 @@ object IndividualTrusteeNavigator {
     if (userAnswers.is5mldEnabled) {
       MentalCapacityYesNoController.onPageLoad(mode)
     } else {
-      navigateAwayFromMentalCapacityPage(userAnswers, mode)
+      navigateToWhenAddedOrCheckDetails(userAnswers, mode)
+    }
+  }
+
+  private def navigateToWhenAddedOrCheckDetails(userAnswers: UserAnswers, mode: Mode): Call = {
+    if (mode == NormalMode) {
+      controllers.trustee.routes.WhenAddedController.onPageLoad()
+    } else {
+      checkDetailsNavigation(userAnswers)
     }
   }
 

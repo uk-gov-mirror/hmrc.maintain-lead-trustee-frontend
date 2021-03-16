@@ -92,7 +92,7 @@ class CheckDetailsController @Inject()(
           val section = printHelper.printIndividualTrustee(request.userAnswers, provisional = false, request.trusteeName)
           Ok(view(section, index))
         case Business =>
-          val section = printHelper.printIndividualTrustee(request.userAnswers, provisional = false, request.trusteeName)
+          val section = printHelper.printOrganisationTrustee(request.userAnswers, provisional = false, request.trusteeName)
           Ok(view(section, index))
       } getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] " +
