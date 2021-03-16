@@ -19,8 +19,10 @@ package pages.trustee
 import models.IndividualOrBusiness._
 import models.{IndividualOrBusiness, UserAnswers}
 import pages.QuestionPage
+import pages.trustee.individual.add.{IdCardDetailsPage, IdCardDetailsYesNoPage, PassportDetailsPage, PassportDetailsYesNoPage}
 import pages.trustee.{individual => ind, organisation => org}
 import play.api.libs.json.JsPath
+
 import scala.util.Try
 
 case object IndividualOrBusinessPage extends QuestionPage[IndividualOrBusiness] {
@@ -45,10 +47,10 @@ case object IndividualOrBusinessPage extends QuestionPage[IndividualOrBusiness] 
       .flatMap(_.remove(ind.LiveInTheUkYesNoPage))
       .flatMap(_.remove(ind.UkAddressPage))
       .flatMap(_.remove(ind.NonUkAddressPage))
-      .flatMap(_.remove(ind.PassportDetailsYesNoPage))
-      .flatMap(_.remove(ind.PassportDetailsPage))
-      .flatMap(_.remove(ind.IdCardDetailsYesNoPage))
-      .flatMap(_.remove(ind.IdCardDetailsPage))
+      .flatMap(_.remove(PassportDetailsYesNoPage))
+      .flatMap(_.remove(PassportDetailsPage))
+      .flatMap(_.remove(IdCardDetailsYesNoPage))
+      .flatMap(_.remove(IdCardDetailsPage))
       .flatMap(_.remove(ind.MentalCapacityYesNoPage))
       .flatMap(_.remove(WhenAddedPage))
   }

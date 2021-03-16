@@ -16,10 +16,11 @@
 
 package pages.trustee.individual
 
-import java.time.LocalDate
-import pages.trustee.basePath
 import pages.QuestionPage
+import pages.trustee.basePath
 import play.api.libs.json.JsPath
+
+import java.time.LocalDate
 
 case object DateOfBirthPage extends QuestionPage[LocalDate] {
 

@@ -22,6 +22,7 @@ import navigation.Navigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.trustee.individual._
 import controllers.trustee.individual.{routes => rts}
+import pages.trustee.individual.add.{IdCardDetailsPage, IdCardDetailsYesNoPage, PassportDetailsPage, PassportDetailsYesNoPage}
 
 class AddIndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks  {
 

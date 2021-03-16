@@ -16,94 +16,173 @@
 
 package navigation.trustee
 
-import controllers.trustee.individual.{routes => rts}
-import controllers.trustee.amend.individual.{routes => amendRts}
+import controllers.trustee.individual.add.routes._
+import controllers.trustee.individual.amend.routes._
+import controllers.trustee.individual.routes._
 import models.{Mode, NormalMode, UserAnswers}
-import pages.trustee.amend.individual.IndexPage
-import pages.trustee.amend.individual.{NationalInsuranceNumberYesNoPage => AmendNinoYesNoPage}
 import pages.trustee.individual._
+import pages.trustee.individual.add._
+import pages.trustee.individual.amend._
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
 object IndividualTrusteeNavigator {
 
-  def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case CountryOfNationalityPage => ua => navigateAwayFromCountryOfNationalityPages(mode, ua)
-    case CountryOfResidencePage => ua => navigateAwayFromCountryOfResidencePages(mode, ua)
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation(mode) orElse
+      conditionalNavigation(mode)
+
+  private def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case NamePage => _ => DateOfBirthYesNoController.onPageLoad(mode)
+    case DateOfBirthPage => navigateAwayFromDateOfBirthPages(_, mode)
+    case CountryOfNationalityPage => navigateAwayFromCountryOfNationalityPages(_, mode)
+    case NationalInsuranceNumberPage => navigateAwayFromNinoPages(_, mode)
+    case CountryOfResidencePage => navigateAwayFromCountryOfResidencePages(_, mode)
+    case UkAddressPage | NonUkAddressPage => _ => navigateToIdQuestions(mode)
+    case PassportDetailsPage | IdCardDetailsPage | PassportOrIdCardDetailsPage => navigateToMentalCapacityOrWhenAddedPage(_, mode)
+    case MentalCapacityYesNoPage => navigateAwayFromMentalCapacityPage(_, mode)
   }
 
-  def conditionalNavigation(mode: Mode) : PartialFunction[Page, UserAnswers => Call] = {
+  private def conditionalNavigation(mode: Mode) : PartialFunction[Page, UserAnswers => Call] = {
+    case DateOfBirthYesNoPage => ua =>
+      yesNoNav(
+        ua = ua,
+        fromPage = DateOfBirthYesNoPage,
+        yesCall = DateOfBirthController.onPageLoad(mode),
+        noCall = navigateAwayFromDateOfBirthPages(ua, mode)
+      )
     case CountryOfNationalityYesNoPage => ua =>
-      yesNoNav(ua,
-        CountryOfNationalityYesNoPage,
-        rts.CountryOfNationalityInTheUkYesNoController.onPageLoad(mode),
-        navigateAwayFromCountryOfNationalityPages(mode, ua)
+      yesNoNav(
+        ua = ua,
+        fromPage = CountryOfNationalityYesNoPage,
+        yesCall = CountryOfNationalityInTheUkYesNoController.onPageLoad(mode),
+        noCall = navigateAwayFromCountryOfNationalityPages(ua, mode)
       )
     case CountryOfNationalityInTheUkYesNoPage => ua =>
-      yesNoNav(ua,
-        CountryOfNationalityInTheUkYesNoPage,
-        navigateAwayFromCountryOfNationalityPages(mode, ua),
-        rts.CountryOfNationalityController.onPageLoad(mode)
+      yesNoNav(
+        ua = ua,
+        fromPage = CountryOfNationalityInTheUkYesNoPage,
+        yesCall = navigateAwayFromCountryOfNationalityPages(ua, mode),
+        noCall = CountryOfNationalityController.onPageLoad(mode)
+      )
+    case NationalInsuranceNumberYesNoPage => ua =>
+      yesNoNav(
+        ua = ua,
+        fromPage = NationalInsuranceNumberYesNoPage,
+        yesCall = NationalInsuranceNumberController.onPageLoad(mode),
+        noCall = navigateAwayFromNinoPages(ua, mode)
       )
     case CountryOfResidenceYesNoPage => ua =>
-      yesNoNav(ua,
-        CountryOfResidenceYesNoPage,
-        rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode),
-        navigateAwayFromCountryOfResidencePages(mode, ua)
+      yesNoNav(
+        ua = ua,
+        fromPage = CountryOfResidenceYesNoPage,
+        yesCall = CountryOfResidenceInTheUkYesNoController.onPageLoad(mode),
+        noCall = navigateAwayFromCountryOfResidencePages(ua, mode)
       )
     case CountryOfResidenceInTheUkYesNoPage => ua =>
-      yesNoNav(ua,
-        CountryOfResidenceInTheUkYesNoPage,
-        navigateAwayFromCountryOfResidencePages(mode, ua),
-        rts.CountryOfResidenceController.onPageLoad(mode)
+      yesNoNav(
+        ua = ua,
+        fromPage = CountryOfResidenceInTheUkYesNoPage,
+        yesCall = navigateAwayFromCountryOfResidencePages(ua, mode),
+        noCall = CountryOfResidenceController.onPageLoad(mode)
       )
-    case MentalCapacityYesNoPage => ua =>
-      yesNoNav(ua,
-        MentalCapacityYesNoPage,
-        navigateAwayFromMentalCapacityPage(mode, ua),
-        navigateAwayFromMentalCapacityPage(mode, ua)
+    case AddressYesNoPage => ua =>
+      yesNoNav(
+        ua = ua,
+        fromPage = AddressYesNoPage,
+        yesCall = LiveInTheUkYesNoController.onPageLoad(mode),
+        noCall = navigateAwayFromNoAddressPage(ua, mode)
+      )
+    case LiveInTheUkYesNoPage => ua =>
+      yesNoNav(
+        ua = ua,
+        fromPage = LiveInTheUkYesNoPage,
+        yesCall = UkAddressController.onPageLoad(mode),
+        noCall = NonUkAddressController.onPageLoad(mode)
+      )
+    case PassportDetailsYesNoPage => ua =>
+      yesNoNav(
+        ua = ua,
+        fromPage = PassportDetailsYesNoPage,
+        yesCall = PassportDetailsController.onPageLoad(),
+        noCall = IdCardDetailsYesNoController.onPageLoad()
+      )
+    case IdCardDetailsYesNoPage => ua =>
+      yesNoNav(
+        ua = ua,
+        fromPage = IdCardDetailsYesNoPage,
+        yesCall = IdCardDetailsController.onPageLoad(),
+        noCall = navigateToMentalCapacityOrWhenAddedPage(ua, mode)
+      )
+    case PassportOrIdCardDetailsYesNoPage => ua =>
+      yesNoNav(
+        ua,
+        PassportOrIdCardDetailsYesNoPage,
+        PassportOrIdCardDetailsController.onPageLoad(),
+        navigateToMentalCapacityOrWhenAddedPage(ua, mode)
       )
   }
 
-  private def navigateAwayFromCountryOfNationalityPages(mode: Mode, userAnswers: UserAnswers)  = {
-    (userAnswers.isTaxable, mode) match {
-      case (false, _) =>
-        rts.CountryOfResidenceYesNoController.onPageLoad(mode)
-      case (true, NormalMode) =>
-        rts.NationalInsuranceNumberYesNoController.onPageLoad()
-      case (true, _) =>
-        amendRts.NationalInsuranceNumberYesNoController.onPageLoad()
+  private def navigateAwayFromDateOfBirthPages(userAnswers: UserAnswers, mode: Mode): Call = {
+    if (userAnswers.is5mldEnabled) {
+      CountryOfNationalityYesNoController.onPageLoad(mode)
+    } else {
+      NationalInsuranceNumberYesNoController.onPageLoad(mode)
     }
   }
 
-  private def navigateAwayFromCountryOfResidencePages(mode: Mode, userAnswers: UserAnswers)  = {
-    lazy val navigateToAdd = if (userAnswers.get(NationalInsuranceNumberYesNoPage).getOrElse(false)) {
-      rts.MentalCapacityYesNoController.onPageLoad(mode)
+  private def navigateAwayFromNinoPages(userAnswers: UserAnswers, mode: Mode): Call  = {
+    if (userAnswers.is5mldEnabled) {
+      CountryOfResidenceYesNoController.onPageLoad(mode)
     } else {
-      rts.AddressYesNoController.onPageLoad()
-    }
-
-    lazy val navigateToAmend = if (userAnswers.get(AmendNinoYesNoPage).getOrElse(false)) {
-      rts.MentalCapacityYesNoController.onPageLoad(mode)
-    } else {
-      amendRts.AddressYesNoController.onPageLoad()
-    }
-
-    (userAnswers.isTaxable, mode) match {
-      case (false, _) =>
-        rts.MentalCapacityYesNoController.onPageLoad(mode)
-      case (true, NormalMode) =>
-        navigateToAdd
-      case (true, _) =>
-        navigateToAmend
+      navigateAwayFromCountryOfResidencePages(userAnswers, mode)
     }
   }
 
-  private def navigateAwayFromMentalCapacityPage(mode: Mode, userAnswers: UserAnswers)  = {
+  private def navigateAwayFromCountryOfNationalityPages(userAnswers: UserAnswers, mode: Mode): Call = {
+    if (userAnswers.isTaxable) {
+      NationalInsuranceNumberYesNoController.onPageLoad(mode)
+    } else {
+      CountryOfResidenceYesNoController.onPageLoad(mode)
+    }
+  }
+
+  private def navigateAwayFromNoAddressPage(userAnswers: UserAnswers, mode: Mode): Call = {
+    if (userAnswers.is5mldEnabled) {
+      PassportDetailsYesNoController.onPageLoad()
+    } else {
+      navigateToMentalCapacityOrWhenAddedPage(userAnswers, mode)
+    }
+  }
+
+  private def navigateAwayFromCountryOfResidencePages(userAnswers: UserAnswers, mode: Mode): Call = {
+    (userAnswers.get(NationalInsuranceNumberYesNoPage), userAnswers.isTaxable) match {
+      case (Some(true), _) | (_, false) => MentalCapacityYesNoController.onPageLoad(mode)
+      case (_, true) => AddressYesNoController.onPageLoad(mode)
+    }
+  }
+
+  private def navigateToIdQuestions(mode: Mode): Call = {
+    if (mode == NormalMode) {
+      controllers.trustee.individual.add.routes.PassportDetailsYesNoController.onPageLoad()
+    } else {
+      controllers.trustee.individual.amend.routes.PassportOrIdCardDetailsYesNoController.onPageLoad()
+    }
+  }
+
+  private def navigateAwayFromMentalCapacityPage(userAnswers: UserAnswers, mode: Mode): Call = {
     if (mode == NormalMode) {
       controllers.trustee.routes.WhenAddedController.onPageLoad()
     } else {
       checkDetailsNavigation(userAnswers)
+    }
+  }
+
+  private def navigateToMentalCapacityOrWhenAddedPage(userAnswers: UserAnswers, mode: Mode): Call  = {
+    if (userAnswers.is5mldEnabled) {
+      MentalCapacityYesNoController.onPageLoad(mode)
+    } else {
+      navigateAwayFromMentalCapacityPage(userAnswers, mode)
     }
   }
 
@@ -114,11 +193,7 @@ object IndividualTrusteeNavigator {
     }
   }
 
-  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation(mode) orElse
-      conditionalNavigation(mode)
-
-  def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
+  private def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
     ua.get(fromPage)
       .map(if (_) yesCall else noCall)
       .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())

@@ -17,11 +17,11 @@
 package utils.print.checkYourAnswers
 
 import java.time.LocalDate
-
 import base.SpecBase
 import models.IndividualOrBusiness.Individual
 import models.{IdCard, Name, NonUkAddress, NormalMode, Passport, UkAddress}
 import pages.trustee.individual._
+import pages.trustee.individual.add.{IdCardDetailsPage, IdCardDetailsYesNoPage, PassportDetailsPage, PassportDetailsYesNoPage}
 import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}

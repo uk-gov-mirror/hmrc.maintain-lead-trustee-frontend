@@ -17,51 +17,55 @@
 package utils.print.checkYourAnswers
 
 import com.google.inject.Inject
-import models.{NormalMode, UserAnswers}
+import controllers.trustee.individual.add.routes._
+import controllers.trustee.individual.amend.routes._
+import controllers.trustee.individual.routes._
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.trustee.WhenAddedPage
 import pages.trustee.individual._
+import pages.trustee.individual.add._
+import pages.trustee.individual.amend._
 import play.api.i18n.Messages
 import utils.print.AnswerRowConverter
-import viewmodels.AnswerSection
+import viewmodels.{AnswerRow, AnswerSection}
 
 class TrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  def print(userAnswers: UserAnswers, trusteeName: String)(implicit messages: Messages): AnswerSection = {
+  def print(userAnswers: UserAnswers, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
 
-    val bound = answerRowConverter.bind(userAnswers, trusteeName)
-    val mode = NormalMode
+    val bound = answerRowConverter.bind(userAnswers, name)
 
-    AnswerSection(
-      None,
+    val prefix: String = "trustee.individual"
+
+    def answerRows: Seq[AnswerRow] = {
+      val mode: Mode = if (provisional) NormalMode else CheckMode
       Seq(
-        bound.nameQuestion(NamePage, "trustee.individual.name", controllers.trustee.individual.routes.NameController.onPageLoad().url),
-        bound.yesNoQuestion(DateOfBirthYesNoPage, "trustee.individual.dateOfBirthYesNo", controllers.trustee.individual.routes.DateOfBirthYesNoController.onPageLoad().url),
-        bound.dateQuestion(DateOfBirthPage, "trustee.individual.dateOfBirth", controllers.trustee.individual.routes.DateOfBirthController.onPageLoad().url),
-
-        bound.yesNoQuestion(CountryOfNationalityYesNoPage, "trustee.individual.countryOfNationalityYesNo", controllers.trustee.individual.routes.CountryOfNationalityYesNoController.onPageLoad(mode).url),
-        bound.yesNoQuestion(CountryOfNationalityInTheUkYesNoPage, "trustee.individual.countryOfNationalityInTheUkYesNo", controllers.trustee.individual.routes.CountryOfNationalityInTheUkYesNoController.onPageLoad(mode).url),
-        bound.countryQuestion(CountryOfNationalityInTheUkYesNoPage, CountryOfNationalityPage, "trustee.individual.countryOfNationality", controllers.trustee.individual.routes.CountryOfNationalityController.onPageLoad(mode).url),
-
-        bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "trustee.individual.nationalInsuranceNumberYesNo", controllers.trustee.individual.routes.NationalInsuranceNumberYesNoController.onPageLoad().url),
-        bound.ninoQuestion(NationalInsuranceNumberPage, "trustee.individual.nationalInsuranceNumber", controllers.trustee.individual.routes.NationalInsuranceNumberController.onPageLoad().url),
-
-        bound.yesNoQuestion(CountryOfResidenceYesNoPage, "trustee.individual.countryOfResidenceYesNo", controllers.trustee.individual.routes.CountryOfResidenceYesNoController.onPageLoad(mode).url),
-        bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage, "trustee.individual.countryOfResidenceInTheUkYesNo", controllers.trustee.individual.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode).url),
-        bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, "trustee.individual.countryOfResidence", controllers.trustee.individual.routes.CountryOfResidenceController.onPageLoad(mode).url),
-
-        bound.yesNoQuestion(AddressYesNoPage, "trustee.individual.addressYesNo", controllers.trustee.individual.routes.AddressYesNoController.onPageLoad().url),
-        bound.yesNoQuestion(LiveInTheUkYesNoPage, "trustee.individual.liveInTheUkYesNo", controllers.trustee.individual.routes.LiveInTheUkYesNoController.onPageLoad().url),
-        bound.addressQuestion(UkAddressPage, "trustee.individual.ukAddress", controllers.trustee.individual.routes.UkAddressController.onPageLoad().url),
-        bound.addressQuestion(NonUkAddressPage, "trustee.individual.nonUkAddress", controllers.trustee.individual.routes.NonUkAddressController.onPageLoad().url),
-        bound.yesNoQuestion(PassportDetailsYesNoPage, "trustee.individual.passportDetailsYesNo", controllers.trustee.individual.routes.PassportDetailsYesNoController.onPageLoad().url),
-        bound.passportDetailsQuestion(PassportDetailsPage, "trustee.individual.passportDetails", controllers.trustee.individual.routes.PassportDetailsController.onPageLoad().url),
-        bound.yesNoQuestion(IdCardDetailsYesNoPage, "trustee.individual.idCardDetailsYesNo", controllers.trustee.individual.routes.IdCardDetailsYesNoController.onPageLoad().url),
-        bound.idCardDetailsQuestion(IdCardDetailsPage, "trustee.individual.idCardDetails", controllers.trustee.individual.routes.IdCardDetailsController.onPageLoad().url),
-
-        bound.yesNoQuestion(MentalCapacityYesNoPage, "trustee.individual.mentalCapacityYesNo", controllers.trustee.individual.routes.MentalCapacityYesNoController.onPageLoad(mode).url),
-
-        bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", controllers.trustee.routes.WhenAddedController.onPageLoad().url)
+        bound.nameQuestion(NamePage, s"$prefix.name", NameController.onPageLoad(mode).url),
+        bound.yesNoQuestion(DateOfBirthYesNoPage, s"$prefix.dateOfBirthYesNo", DateOfBirthYesNoController.onPageLoad(mode).url),
+        bound.dateQuestion(DateOfBirthPage, s"$prefix.dateOfBirth", DateOfBirthController.onPageLoad(mode).url),
+        bound.yesNoQuestion(CountryOfNationalityYesNoPage, s"$prefix.countryOfNationalityYesNo", CountryOfNationalityYesNoController.onPageLoad(mode).url),
+        bound.yesNoQuestion(CountryOfNationalityInTheUkYesNoPage, s"$prefix.countryOfNationalityInTheUkYesNo", CountryOfNationalityInTheUkYesNoController.onPageLoad(mode).url),
+        bound.countryQuestion(CountryOfNationalityInTheUkYesNoPage, CountryOfNationalityPage, s"$prefix.countryOfNationality", CountryOfNationalityController.onPageLoad(mode).url),
+        bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, s"$prefix.nationalInsuranceNumberYesNo", NationalInsuranceNumberYesNoController.onPageLoad(mode).url),
+        bound.ninoQuestion(NationalInsuranceNumberPage, s"$prefix.nationalInsuranceNumber", NationalInsuranceNumberController.onPageLoad(mode).url),
+        bound.yesNoQuestion(CountryOfResidenceYesNoPage, s"$prefix.countryOfResidenceYesNo", CountryOfResidenceYesNoController.onPageLoad(mode).url),
+        bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage, s"$prefix.countryOfResidenceInTheUkYesNo", CountryOfResidenceInTheUkYesNoController.onPageLoad(mode).url),
+        bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, s"$prefix.countryOfResidence", CountryOfResidenceController.onPageLoad(mode).url),
+        bound.yesNoQuestion(AddressYesNoPage, s"$prefix.addressYesNo", AddressYesNoController.onPageLoad(mode).url),
+        bound.yesNoQuestion(LiveInTheUkYesNoPage, s"$prefix.liveInTheUkYesNo", LiveInTheUkYesNoController.onPageLoad(mode).url),
+        bound.addressQuestion(UkAddressPage, s"$prefix.ukAddress", UkAddressController.onPageLoad(mode).url),
+        bound.addressQuestion(NonUkAddressPage, s"$prefix.nonUkAddress", NonUkAddressController.onPageLoad(mode).url),
+        if (mode == NormalMode) bound.yesNoQuestion(PassportDetailsYesNoPage, s"$prefix.passportDetailsYesNo", PassportDetailsYesNoController.onPageLoad().url) else None,
+        if (mode == NormalMode) bound.passportDetailsQuestion(PassportDetailsPage, s"$prefix.passportDetails", PassportDetailsController.onPageLoad().url) else None,
+        if (mode == NormalMode) bound.yesNoQuestion(IdCardDetailsYesNoPage, s"$prefix.idCardDetailsYesNo", IdCardDetailsYesNoController.onPageLoad().url) else None,
+        if (mode == NormalMode) bound.idCardDetailsQuestion(IdCardDetailsPage, s"$prefix.idCardDetails", IdCardDetailsController.onPageLoad().url) else None,
+        if (mode == CheckMode) bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, s"$prefix.passportOrIdCardDetailsYesNo", PassportOrIdCardDetailsYesNoController.onPageLoad().url) else None,
+        if (mode == CheckMode) bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, s"$prefix.passportOrIdCardDetails", PassportOrIdCardDetailsController.onPageLoad().url) else None,
+        bound.yesNoQuestion(MentalCapacityYesNoPage, s"$prefix.mentalCapacityYesNo", MentalCapacityYesNoController.onPageLoad(mode).url),
+        if (mode == NormalMode) bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", controllers.trustee.routes.WhenAddedController.onPageLoad().url) else None
       ).flatten
-    )
+    }
+
+    AnswerSection(headingKey = None, rows = answerRows)
   }
 }

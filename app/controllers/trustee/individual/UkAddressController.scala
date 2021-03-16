@@ -19,9 +19,12 @@ package controllers.trustee.individual
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import forms.UkAddressFormProvider
+import models.{Mode, UkAddress}
+
 import javax.inject.Inject
 import navigation.Navigator
 import pages.trustee.individual.UkAddressPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -31,19 +34,19 @@ import views.html.trustee.individual.UkAddressView
 import scala.concurrent.{ExecutionContext, Future}
 
 class UkAddressController @Inject()(
-                                                   override val messagesApi: MessagesApi,
-                                                   sessionRepository: PlaybackRepository,
-                                                   navigator: Navigator,
-                                                   standardActionSets: StandardActionSets,
-                                                   nameAction: NameRequiredAction,
-                                                   formProvider: UkAddressFormProvider,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: UkAddressView
-                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     override val messagesApi: MessagesApi,
+                                     sessionRepository: PlaybackRepository,
+                                     navigator: Navigator,
+                                     standardActionSets: StandardActionSets,
+                                     nameAction: NameRequiredAction,
+                                     formProvider: UkAddressFormProvider,
+                                     val controllerComponents: MessagesControllerComponents,
+                                     view: UkAddressView
+                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  private val form: Form[UkAddress] = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(UkAddressPage) match {
@@ -51,21 +54,21 @@ class UkAddressController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.trusteeName))
+      Ok(view(preparedForm, mode, request.trusteeName))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UkAddressPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(UkAddressPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(UkAddressPage, mode, updatedAnswers))
       )
   }
 }

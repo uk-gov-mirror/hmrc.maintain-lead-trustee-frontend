@@ -17,9 +17,9 @@
 package pages.trustee.individual
 
 import java.time.LocalDate
-
 import models.Passport
 import pages.behaviours.PageBehaviours
+import pages.trustee.individual.add.{IdCardDetailsPage, IdCardDetailsYesNoPage, PassportDetailsPage, PassportDetailsYesNoPage}
 
 class PassportDetailsYesNoPageSpec extends PageBehaviours {
 

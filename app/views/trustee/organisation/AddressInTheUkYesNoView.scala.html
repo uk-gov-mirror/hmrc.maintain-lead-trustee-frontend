@@ -17,17 +17,17 @@
 @import controllers.trustee.organisation.routes._
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
 )
 
-@(form: Form[_], trusteeName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("trustee.organisation.addressInTheUkYesNo.title")}"
 ) {
 
-    @formHelper(action = AddressInTheUkYesNoController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = AddressInTheUkYesNoController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
@@ -35,7 +35,7 @@
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("trustee.organisation.addressInTheUkYesNo.heading", trusteeName)
+            label = messages("trustee.organisation.addressInTheUkYesNo.heading", name)
         )
 
         @components.submit_button()

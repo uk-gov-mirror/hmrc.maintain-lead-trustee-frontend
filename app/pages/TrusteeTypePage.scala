@@ -19,6 +19,7 @@ package pages
 import models.TrusteeType._
 import models.{TrusteeType, UserAnswers}
 import pages.leadtrustee.{individual => lind, organisation => lorg}
+import pages.trustee.individual.add.{IdCardDetailsPage, IdCardDetailsYesNoPage, PassportDetailsPage, PassportDetailsYesNoPage}
 import pages.trustee.{WhenAddedPage, individual => ind}
 import play.api.libs.json.JsPath
 
@@ -43,10 +44,10 @@ object TrusteeTypePage extends QuestionPage[TrusteeType] {
           .flatMap(_.remove(ind.LiveInTheUkYesNoPage))
           .flatMap(_.remove(ind.UkAddressPage))
           .flatMap(_.remove(ind.NonUkAddressPage))
-          .flatMap(_.remove(ind.PassportDetailsYesNoPage))
-          .flatMap(_.remove(ind.PassportDetailsPage))
-          .flatMap(_.remove(ind.IdCardDetailsYesNoPage))
-          .flatMap(_.remove(ind.IdCardDetailsPage))
+          .flatMap(_.remove(PassportDetailsYesNoPage))
+          .flatMap(_.remove(PassportDetailsPage))
+          .flatMap(_.remove(IdCardDetailsYesNoPage))
+          .flatMap(_.remove(IdCardDetailsPage))
           .flatMap(_.remove(WhenAddedPage))
       case Some(Trustee) =>
         userAnswers.remove(pages.leadtrustee.IndividualOrBusinessPage)

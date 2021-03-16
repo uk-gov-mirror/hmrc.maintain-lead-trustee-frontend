@@ -32,14 +32,14 @@ import views.html.trustee.individual.CountryOfNationalityYesNoView
 import scala.concurrent.{ExecutionContext, Future}
 
 class CountryOfNationalityYesNoController @Inject()(
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   standardActionSets: StandardActionSets,
-                                                   formProvider: YesNoFormProvider,
-                                                   view: CountryOfNationalityYesNoView,
-                                                   repository: PlaybackRepository,
-                                                   navigator: Navigator,
-                                                   nameAction: NameRequiredAction
-                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     standardActionSets: StandardActionSets,
+                                                     formProvider: YesNoFormProvider,
+                                                     view: CountryOfNationalityYesNoView,
+                                                     repository: PlaybackRepository,
+                                                     navigator: Navigator,
+                                                     nameAction: NameRequiredAction
+                                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider.withPrefix("trustee.individual.countryOfNationalityYesNo")
 

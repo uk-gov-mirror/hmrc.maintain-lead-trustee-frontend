@@ -17,35 +17,47 @@
 package navigation.trustee
 
 import controllers.trustee.organisation.{routes => rts}
-import models.UserAnswers
+import models.{Mode, NormalMode, UserAnswers}
 import pages.trustee.organisation._
+import pages.trustee.organisation.amend.IndexPage
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
 object OrganisationTrusteeNavigator {
-  private val simpleNavigation: PartialFunction[Page, Call] = {
-    case NamePage => rts.UtrYesNoController.onPageLoad()
-    case UtrPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
-    case UkAddressPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
-    case NonUkAddressPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
+
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation(mode) orElse
+      yesNoNavigation(mode)
+
+  private def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case NamePage => _ => rts.UtrYesNoController.onPageLoad(mode)
+    case UtrPage | UkAddressPage | NonUkAddressPage => navigateToStartDateOrCheckDetails(_, mode)
   }
 
-  private val yesNoNavigation : PartialFunction[Page, UserAnswers => Call] = {
+  private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case UtrYesNoPage => ua =>
-      yesNoNav(ua, UtrYesNoPage, rts.UtrController.onPageLoad(), rts.AddressYesNoController.onPageLoad())
+      yesNoNav(ua, UtrYesNoPage, rts.UtrController.onPageLoad(mode), rts.AddressYesNoController.onPageLoad(mode))
     case AddressYesNoPage => ua =>
-      yesNoNav(ua, AddressYesNoPage, rts.AddressInTheUkYesNoController.onPageLoad(), controllers.trustee.routes.WhenAddedController.onPageLoad())
+      yesNoNav(ua, AddressYesNoPage, rts.AddressInTheUkYesNoController.onPageLoad(mode), controllers.trustee.routes.WhenAddedController.onPageLoad())
     case AddressInTheUkYesNoPage => ua =>
-      yesNoNav(ua, AddressInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
+      yesNoNav(ua, AddressInTheUkYesNoPage, rts.UkAddressController.onPageLoad(mode), rts.NonUkAddressController.onPageLoad(mode))
   }
 
-  val routes: PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation andThen (c => (_:UserAnswers) => c) orElse
-    yesNoNavigation
+  private def navigateToStartDateOrCheckDetails(userAnswers: UserAnswers, mode: Mode): Call = {
+    if (mode == NormalMode) {
+      controllers.trustee.routes.WhenAddedController.onPageLoad()
+    } else {
+      userAnswers.get(IndexPage) match {
+        case Some(index) => controllers.trustee.amend.routes.CheckDetailsController.onPageLoadUpdated(index)
+        case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      }
+    }
+  }
 
-  def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
+  private def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
     ua.get(fromPage)
       .map(if (_) yesCall else noCall)
       .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
+
 }

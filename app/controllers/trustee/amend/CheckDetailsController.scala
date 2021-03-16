@@ -65,7 +65,7 @@ class CheckDetailsController @Inject()(
             updatedAnswers <- Future.fromTry(answers)
             _ <- sessionRepository.set(updatedAnswers)
           } yield {
-            val section = printHelper.printAmendedIndividualTrustee(updatedAnswers, ind.name.displayName)
+            val section = printHelper.printIndividualTrustee(updatedAnswers, provisional = false, ind.name.displayName)
             Ok(view(section, index))
           }
 
@@ -75,7 +75,7 @@ class CheckDetailsController @Inject()(
             updatedAnswers <- Future.fromTry(answers)
             _ <- sessionRepository.set(updatedAnswers)
           } yield {
-            val section = printHelper.printAmendedOrganisationTrustee(updatedAnswers, org.name)
+            val section = printHelper.printOrganisationTrustee(updatedAnswers, provisional = false, org.name)
             Ok(view(section, index))
           }
         case _ =>
@@ -89,10 +89,10 @@ class CheckDetailsController @Inject()(
 
       request.userAnswers.get(IndividualOrBusinessPage) map {
         case Individual =>
-          val section = printHelper.printAmendedIndividualTrustee(request.userAnswers, request.trusteeName)
+          val section = printHelper.printIndividualTrustee(request.userAnswers, provisional = false, request.trusteeName)
           Ok(view(section, index))
         case Business =>
-          val section = printHelper.printAmendedOrganisationTrustee(request.userAnswers, request.trusteeName)
+          val section = printHelper.printIndividualTrustee(request.userAnswers, provisional = false, request.trusteeName)
           Ok(view(section, index))
       } getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] " +

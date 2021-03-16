@@ -18,8 +18,9 @@ package pages.trustee.individual
 
 import models.UserAnswers
 import pages.QuestionPage
-import play.api.libs.json.JsPath
 import pages.trustee.basePath
+import play.api.libs.json.JsPath
+
 import scala.util.Try
 
 case object CountryOfNationalityInTheUkYesNoPage extends QuestionPage[Boolean] {

@@ -17,8 +17,8 @@
 package pages.trustee.organisation
 
 import pages.QuestionPage
-import play.api.libs.json.JsPath
 import pages.trustee.basePath
+import play.api.libs.json.JsPath
 
 case object NamePage extends QuestionPage[String] {
 
