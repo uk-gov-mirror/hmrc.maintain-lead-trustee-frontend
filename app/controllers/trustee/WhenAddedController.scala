@@ -39,7 +39,7 @@ class WhenAddedController @Inject()(
                                      formProvider: DateAddedToTrustFormProvider,
                                      val controllerComponents: MessagesControllerComponents,
                                      view: WhenAddedView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>

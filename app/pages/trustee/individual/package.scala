@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package pages.trustee.individual.amend
+package pages.trustee
 
-import models.CombinedPassportOrIdCard
-import pages.QuestionPage
-import pages.trustee.individual.basePath
 import play.api.libs.json.JsPath
 
-case object PassportOrIdCardDetailsPage extends QuestionPage[CombinedPassportOrIdCard] {
-
-  override def path: JsPath = basePath \ toString
-
-  override def toString: String = "passportOrIdCardDetails"
+package object individual {
+  val basePath: JsPath = JsPath \ 'trustee \ 'individual
 }

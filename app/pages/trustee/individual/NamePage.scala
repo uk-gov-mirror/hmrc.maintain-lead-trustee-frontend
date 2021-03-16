@@ -18,7 +18,6 @@ package pages.trustee.individual
 
 import models.Name
 import pages.QuestionPage
-import pages.trustee.basePath
 import play.api.libs.json.JsPath
 
 case object NamePage extends QuestionPage[Name] {

@@ -19,7 +19,6 @@ package controllers.trustee
 import controllers.actions.StandardActionSets
 import forms.RemoveIndexFormProvider
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.{RemoveTrustee, TrusteeIndividual, TrusteeOrganisation}
 import play.api.Logging
 import play.api.data.Form
@@ -29,6 +28,7 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.RemoveIndexView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveTrusteeController @Inject()(
@@ -65,7 +65,8 @@ class RemoveTrusteeController @Inject()(
 
           Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad()))
         case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] user cannot remove trustee as trustee was not found")
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" user cannot remove trustee as trustee was not found")
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
   }
@@ -98,7 +99,8 @@ class RemoveTrusteeController @Inject()(
                 }
             } recoverWith {
               case _ =>
-                logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] user cannot remove trustee as trustee was not found")
+                logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+                  s" user cannot remove trustee as trustee was not found")
                 Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
             }
           } else {

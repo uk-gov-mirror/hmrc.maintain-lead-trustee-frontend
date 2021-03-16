@@ -17,7 +17,6 @@
 package pages.trustee.individual
 
 import pages.QuestionPage
-import pages.trustee.basePath
 import play.api.libs.json.JsPath
 
 case object CountryOfNationalityPage extends QuestionPage[String] {

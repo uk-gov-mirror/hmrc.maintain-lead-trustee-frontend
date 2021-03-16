@@ -18,7 +18,6 @@ package pages.trustee.individual
 
 import models.UserAnswers
 import pages.QuestionPage
-import pages.trustee.basePath
 import play.api.libs.json.JsPath
 
 import scala.util.Try

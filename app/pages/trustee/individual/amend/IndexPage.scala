@@ -17,7 +17,7 @@
 package pages.trustee.individual.amend
 
 import pages.QuestionPage
-import pages.trustee.basePath
+import pages.trustee.individual.basePath
 import play.api.libs.json.JsPath
 
 object IndexPage extends QuestionPage[Int] {

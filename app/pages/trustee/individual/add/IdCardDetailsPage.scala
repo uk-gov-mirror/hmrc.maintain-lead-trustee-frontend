@@ -18,7 +18,7 @@ package pages.trustee.individual.add
 
 import models.IdCard
 import pages.QuestionPage
-import pages.trustee.basePath
+import pages.trustee.individual.basePath
 import play.api.libs.json.JsPath
 
 case object IdCardDetailsPage extends QuestionPage[IdCard] {

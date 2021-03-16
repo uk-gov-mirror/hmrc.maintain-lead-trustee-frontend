@@ -18,7 +18,7 @@ package pages.trustee.individual.add
 
 import models.Passport
 import pages.QuestionPage
-import pages.trustee.basePath
+import pages.trustee.individual.basePath
 import play.api.libs.json.JsPath
 
 case object PassportDetailsPage extends QuestionPage[Passport] {
