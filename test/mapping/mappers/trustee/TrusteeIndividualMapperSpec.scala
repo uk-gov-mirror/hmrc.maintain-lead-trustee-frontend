@@ -299,7 +299,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             identification = None,
             countryOfResidence = None,
             nationality = None,
-            mentalCapacityYesNo = Some(false),
+            mentalCapacityYesNo = Some(true),
             address = None,
             entityStart = startDate,
             provisional = true
@@ -326,7 +326,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             identification = None,
             countryOfResidence = None,
             nationality = None,
-            mentalCapacityYesNo = Some(true),
+            mentalCapacityYesNo = Some(false),
             address = None,
             entityStart = startDate,
             provisional = true
@@ -364,7 +364,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             address = Some(nonUkAddress),
             countryOfResidence = Some("Spain"),
             nationality = Some("Spain"),
-            mentalCapacityYesNo = Some(false),
+            mentalCapacityYesNo = Some(true),
             entityStart = startDate,
             provisional = true
           )

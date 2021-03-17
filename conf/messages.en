@@ -205,10 +205,10 @@ leadtrustee.individual.dateOfBirth.error.invalid = Enter a real date of birth
 leadtrustee.individual.dateOfBirth.error.future = Date of birth must be today or in the past
 leadtrustee.individual.dateOfBirth.error.past = Date of birth must be after 31 December 1499
 
-leadtrustee.individual.countryOfNationalityUkYesNo.title = Does the lead trustee have UK nationality?
-leadtrustee.individual.countryOfNationalityUkYesNo.heading = Does {0} have UK nationality?
-leadtrustee.individual.countryOfNationalityUkYesNo.checkYourAnswersLabel = Does {0} have UK nationality?
-leadtrustee.individual.countryOfNationalityUkYesNo.error.required = Select yes if the lead trustee has UK nationality
+leadtrustee.individual.countryOfNationalityInTheUkYesNo.title = Does the lead trustee have UK nationality?
+leadtrustee.individual.countryOfNationalityInTheUkYesNo.heading = Does {0} have UK nationality?
+leadtrustee.individual.countryOfNationalityInTheUkYesNo.checkYourAnswersLabel = Does {0} have UK nationality?
+leadtrustee.individual.countryOfNationalityInTheUkYesNo.error.required = Select yes if the lead trustee has UK nationality
 
 leadtrustee.individual.countryOfNationality.title = What is the lead trustee’s country of nationality?
 leadtrustee.individual.countryOfNationality.heading = What is {0}’s country of nationality?
