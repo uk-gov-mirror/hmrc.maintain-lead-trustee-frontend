@@ -16,9 +16,9 @@
 
 package views.trustee.organisation
 
-import controllers.trustee.individual.routes
+import controllers.trustee.organisation.routes
 import forms.NonUkAddressFormProvider
-import models.NonUkAddress
+import models.{NonUkAddress, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.InputOption
@@ -30,6 +30,7 @@ class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
 
   val messageKeyPrefix = "trustee.organisation.nonUkAddress"
   val name: String = "Trustee Name"
+  val mode = NormalMode
 
   override val form: Form[NonUkAddress] = new NonUkAddressFormProvider().apply()
 
@@ -40,7 +41,7 @@ class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
     val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, countryOptions, name)(fakeRequest, messages)
+      view.apply(form, countryOptions, name, mode)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 
@@ -49,7 +50,7 @@ class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
     behave like nonUkAddressPage(
       applyView,
       Some(messageKeyPrefix),
-      routes.NonUkAddressController.onSubmit().url,
+      routes.NonUkAddressController.onSubmit(mode).url,
       name
     )
 

@@ -18,6 +18,7 @@ package controllers.trustee.organisation
 
 import base.SpecBase
 import forms.YesNoFormProvider
+import models.NormalMode
 import navigation.Navigator
 import pages.trustee.organisation.{NamePage, UtrYesNoPage}
 import play.api.inject.bind
@@ -30,7 +31,7 @@ class UtrYesNoControllerSpec extends SpecBase {
   val formProvider = new YesNoFormProvider()
   val form = formProvider.withPrefix("trustee.organisation.utrYesNo")
 
-  val onwardRoute = routes.UtrYesNoController.onPageLoad().url
+  val onwardRoute = routes.UtrYesNoController.onPageLoad(NormalMode).url
 
   val name: String = "Trustee Name"
 
@@ -52,7 +53,7 @@ class UtrYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name)(request, messages).toString
+        view(form, name, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -74,7 +75,7 @@ class UtrYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), name)(request, messages).toString
+        view(form.fill(true), name, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -121,7 +122,7 @@ class UtrYesNoControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name)(request, messages).toString
+        view(boundForm, name, NormalMode)(request, messages).toString
 
       application.stop()
     }

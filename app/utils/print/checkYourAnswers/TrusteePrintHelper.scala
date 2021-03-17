@@ -16,16 +16,14 @@
 
 package utils.print.checkYourAnswers
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import viewmodels.AnswerSection
-
 import javax.inject.Inject
 
 class TrusteePrintHelper @Inject()(trusteeIndividualPrintHelper: TrusteeIndividualPrintHelper,
                                    trusteeOrganisationPrintHelper: TrusteeOrganisationPrintHelper,
                                    amendTrusteeIndividualPrintHelper: AmendTrusteeIndividualPrintHelper,
-                                   amendTrusteeOrganisationPrintHelper: AmendTrusteeOrganisationPrintHelper,
                                    leadTrusteeIndividualPrintHelper: LeadTrusteeIndividualPrintHelper,
                                    leadTrusteeOrganisationPrintHelper: LeadTrusteeOrganisationPrintHelper) {
 
@@ -33,16 +31,12 @@ class TrusteePrintHelper @Inject()(trusteeIndividualPrintHelper: TrusteeIndividu
     trusteeIndividualPrintHelper.print(userAnswers, name)
   }
 
-  def printOrganisationTrustee(userAnswers: UserAnswers, name: String)(implicit messages: Messages): AnswerSection = {
-    trusteeOrganisationPrintHelper.print(userAnswers, name)
+  def printOrganisationTrustee(userAnswers: UserAnswers, provisional: Boolean, name: String, mode: Mode)(implicit messages: Messages): AnswerSection = {
+    trusteeOrganisationPrintHelper.print(userAnswers, provisional, name, mode)
   }
 
   def printAmendedIndividualTrustee(userAnswers: UserAnswers, name: String)(implicit messages: Messages): AnswerSection = {
     amendTrusteeIndividualPrintHelper.print(userAnswers, name)
-  }
-
-  def printAmendedOrganisationTrustee(userAnswers: UserAnswers, name: String)(implicit messages: Messages): AnswerSection = {
-    amendTrusteeOrganisationPrintHelper.print(userAnswers, name)
   }
 
   def printLeadIndividualTrustee(userAnswers: UserAnswers, name: String)(implicit messages: Messages): AnswerSection = {

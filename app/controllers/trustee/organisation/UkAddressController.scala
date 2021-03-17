@@ -20,6 +20,7 @@ import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import forms.UkAddressFormProvider
 import javax.inject.Inject
+import models.Mode
 import navigation.Navigator
 import pages.trustee.organisation.UkAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -43,7 +44,7 @@ class UkAddressController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(UkAddressPage) match {
@@ -51,21 +52,21 @@ class UkAddressController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.trusteeName))
+      Ok(view(preparedForm, request.trusteeName, mode))
   }
 
-  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, request.trusteeName, mode))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UkAddressPage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(UkAddressPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(UkAddressPage, mode, updatedAnswers))
       )
   }
 }

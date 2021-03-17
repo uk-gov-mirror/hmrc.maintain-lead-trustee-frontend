@@ -17,7 +17,7 @@
 package views.trustee.organisation
 
 import forms.UkAddressFormProvider
-import models.UkAddress
+import models.{NormalMode, UkAddress}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.UkAddressViewBehaviours
@@ -27,6 +27,7 @@ class UkAddressViewSpec extends UkAddressViewBehaviours {
 
   val messageKeyPrefix = "trustee.organisation.ukAddress"
   val name: String = "Trustee Name"
+  val mode = NormalMode
 
   override val form: Form[UkAddress] = new UkAddressFormProvider().apply()
 
@@ -35,7 +36,7 @@ class UkAddressViewSpec extends UkAddressViewBehaviours {
     val view = viewFor[UkAddressView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name)(fakeRequest, messages)
+      view.apply(form, name, mode)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 

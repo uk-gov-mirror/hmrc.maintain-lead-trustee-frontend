@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.TrustConnector
 import mapping.mappers.trustee.{TrusteeIndividualMapper, TrusteeOrganisationMapper}
 import models.IndividualOrBusiness.{Business, Individual}
-import models.{Name, TrusteeIndividual, TrusteeOrganisation}
+import models.{Name, NormalMode, TrusteeIndividual, TrusteeOrganisation}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
@@ -34,8 +34,8 @@ import uk.gov.hmrc.http.HttpResponse
 import utils.print.checkYourAnswers.{TrusteeIndividualPrintHelper, TrusteeOrganisationPrintHelper}
 import viewmodels.AnswerSection
 import views.html.trustee.CheckDetailsView
-
 import java.time.LocalDate
+
 import scala.concurrent.Future
 
 class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
@@ -84,13 +84,15 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       "business" in {
 
+        val mode = NormalMode
+
         val printHelper: TrusteeOrganisationPrintHelper = mock[TrusteeOrganisationPrintHelper]
 
         val userAnswers = emptyUserAnswers
           .set(IndividualOrBusinessPage, Business).success.value
           .set(org.NamePage, orgName).success.value
 
-        when(printHelper.print(any(), any())(any())).thenReturn(answerSection)
+        when(printHelper.print(any(), any(), any(), any())(any())).thenReturn(answerSection)
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[TrusteeOrganisationPrintHelper].toInstance(printHelper))
@@ -107,7 +109,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
         contentAsString(result) mustEqual
           view(answerSection)(request, messages).toString
 
-        verify(printHelper).print(eqTo(userAnswers), eqTo(orgName))(any())
+        verify(printHelper).print(eqTo(userAnswers), eqTo(true), eqTo(orgName), eqTo(mode))(any())
       }
     }
 

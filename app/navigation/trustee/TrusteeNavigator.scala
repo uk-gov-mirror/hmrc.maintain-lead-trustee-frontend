@@ -28,23 +28,22 @@ object TrusteeNavigator {
     case WhenAddedPage => controllers.trustee.routes.CheckDetailsController.onPageLoad()
   }
 
-  val parameterisedNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case IndividualOrBusinessPage => individualOrBusinessNavigation()
+  def parameterisedNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case IndividualOrBusinessPage => individualOrBusinessNavigation(mode)
   }
 
   def routes(mode:Mode): PartialFunction[Page, UserAnswers => Call] =
     simpleNavigation andThen (c => (_:UserAnswers) => c) orElse
-    parameterisedNavigation orElse
+    parameterisedNavigation(mode) orElse
     IndividualTrusteeNavigator.routes(mode) orElse
     AddIndividualTrusteeNavigator.routes orElse
-    OrganisationTrusteeNavigator.routes orElse
-    AmendIndividualTrusteeNavigator.routes orElse
-    AmendOrganisationTrusteeNavigator.routes
+    OrganisationTrusteeNavigator.routes(mode) orElse
+    AmendIndividualTrusteeNavigator.routes
 
-  private def individualOrBusinessNavigation()(userAnswers: UserAnswers): Call = {
+  private def individualOrBusinessNavigation(mode: Mode)(userAnswers: UserAnswers): Call = {
     userAnswers.get(IndividualOrBusinessPage).map {
       case Individual => controllers.trustee.individual.routes.NameController.onPageLoad()
-      case Business => controllers.trustee.organisation.routes.NameController.onPageLoad()
+      case Business => controllers.trustee.organisation.routes.NameController.onPageLoad(mode)
     }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
 }

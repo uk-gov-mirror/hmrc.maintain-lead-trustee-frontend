@@ -18,6 +18,7 @@ package controllers.trustee.organisation
 
 import base.SpecBase
 import forms.UtrFormProvider
+import models.NormalMode
 import navigation.Navigator
 import pages.trustee.organisation.{NamePage, UtrPage}
 import play.api.inject.bind
@@ -30,7 +31,7 @@ class UtrControllerSpec extends SpecBase {
   val formProvider = new UtrFormProvider()
   val form = formProvider.withPrefix("trustee.organisation.utr")
 
-  val onwardRoute = routes.UtrController.onPageLoad().url
+  val onwardRoute = routes.UtrController.onPageLoad(NormalMode).url
 
   val name: String = "Trustee Name"
   val fakeUtr: String = "1234567890"
@@ -53,7 +54,7 @@ class UtrControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name)(request, messages).toString
+        view(form, name, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -75,7 +76,7 @@ class UtrControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(fakeUtr), name)(request, messages).toString
+        view(form.fill(fakeUtr), name, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -122,7 +123,7 @@ class UtrControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name)(request, messages).toString
+        view(boundForm, name, NormalMode)(request, messages).toString
 
       application.stop()
     }

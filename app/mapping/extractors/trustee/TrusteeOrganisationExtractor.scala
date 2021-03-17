@@ -19,18 +19,17 @@ package mapping.extractors.trustee
 import models.IndividualOrBusiness.Business
 import models.{NonUkAddress, TrustIdentificationOrgType, TrusteeOrganisation, UkAddress, UserAnswers}
 import pages.QuestionPage
-import pages.trustee.WhenAddedPage
-import pages.trustee.amend.{organisation => org}
-import pages.trustee.organisation.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
+import pages.trustee.{WhenAddedPage, organisation}
+import pages.trustee.organisation._
 
 import scala.util.{Success, Try}
 
 class TrusteeOrganisationExtractor extends TrusteeExtractor {
 
-  override def addressYesNoPage: QuestionPage[Boolean] = org.AddressYesNoPage
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = org.AddressInTheUkYesNoPage
-  override def ukAddressPage: QuestionPage[UkAddress] = org.UkAddressPage
-  override def nonUkAddressPage: QuestionPage[NonUkAddress] = org.NonUkAddressPage
+  override def addressYesNoPage: QuestionPage[Boolean] = AddressYesNoPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean] = AddressInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
   override def countryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceYesNoPage
   override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
@@ -38,8 +37,8 @@ class TrusteeOrganisationExtractor extends TrusteeExtractor {
 
   def extract(answers: UserAnswers, trustee: TrusteeOrganisation, index: Int): Try[UserAnswers] = {
     super.extract(answers, Business)
-      .flatMap(_.set(org.IndexPage, index))
-      .flatMap(_.set(org.NamePage, trustee.name))
+      .flatMap(_.set(organisation.IndexPage, index))
+      .flatMap(_.set(NamePage, trustee.name))
       .flatMap(answers => extractIdentification(trustee.identification, answers))
       .flatMap(answers => extractCountryOfResidence(trustee.countryOfResidence, answers))
       .flatMap(_.set(WhenAddedPage, trustee.entityStart))
@@ -49,14 +48,14 @@ class TrusteeOrganisationExtractor extends TrusteeExtractor {
     if (answers.isTaxable || !answers.is5mldEnabled) {
       identification match {
         case Some(TrustIdentificationOrgType(_, Some(utr), None)) => answers
-          .set(org.UtrYesNoPage, true)
-          .flatMap(_.set(org.UtrPage, utr))
+          .set(UtrYesNoPage, true)
+          .flatMap(_.set(UtrPage, utr))
         case Some(TrustIdentificationOrgType(_, None, Some(address))) => answers
-          .set(org.UtrYesNoPage, false)
+          .set(UtrYesNoPage, false)
           .flatMap(answers => extractAddress(address, answers))
         case _ => answers
-          .set(org.UtrYesNoPage, false)
-          .flatMap(_.set(org.AddressYesNoPage, false))
+          .set(UtrYesNoPage, false)
+          .flatMap(_.set(AddressYesNoPage, false))
       }
     } else {
       Success(answers)

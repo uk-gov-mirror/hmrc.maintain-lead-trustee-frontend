@@ -20,6 +20,7 @@ import controllers.actions.StandardActionSets
 import controllers.trustee.actions.NameRequiredAction
 import forms.UtrFormProvider
 import javax.inject.Inject
+import models.Mode
 import navigation.Navigator
 import pages.trustee.organisation.UtrPage
 import play.api.data.Form
@@ -44,7 +45,7 @@ class UtrController @Inject()(
 
   val form = formProvider.withPrefix("trustee.organisation.utr")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(UtrPage) match {
@@ -52,22 +53,22 @@ class UtrController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.trusteeName))
+      Ok(view(preparedForm, request.trusteeName, mode))
 
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, request.trusteeName, mode))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrPage, value))
             _              <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(UtrPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(UtrPage, mode, updatedAnswers))
         }
       )
   }

@@ -7,7 +7,6 @@
 ->         /trustee/organisation            trustee.organisation.Routes
 
 ->         /trustee/amend/individual        trustee.amend.individual.Routes
-->         /trustee/amend/organisation      trustee.amend.organisation.Routes
 
 GET        /assets/*file                                                    controllers.Assets.versioned(path="/public", file: Asset)
 

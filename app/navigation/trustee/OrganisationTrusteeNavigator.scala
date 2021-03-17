@@ -17,35 +17,83 @@
 package navigation.trustee
 
 import controllers.trustee.organisation.{routes => rts}
-import models.UserAnswers
-import pages.trustee.organisation._
+import models.{Mode, NormalMode, UserAnswers}
+import pages.trustee.organisation.{IndexPage, _}
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
 object OrganisationTrusteeNavigator {
-  private val simpleNavigation: PartialFunction[Page, Call] = {
-    case NamePage => rts.UtrYesNoController.onPageLoad()
-    case UtrPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
-    case UkAddressPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
-    case NonUkAddressPage => controllers.trustee.routes.WhenAddedController.onPageLoad()
-  }
 
-  private val yesNoNavigation : PartialFunction[Page, UserAnswers => Call] = {
+  private def conditionalNavigation(mode: Mode) : PartialFunction[Page, UserAnswers => Call] = {
+    case NamePage => ua => navigateAwayFromNamePage(mode, ua)
     case UtrYesNoPage => ua =>
-      yesNoNav(ua, UtrYesNoPage, rts.UtrController.onPageLoad(), rts.AddressYesNoController.onPageLoad())
+      yesNoNav(ua, UtrYesNoPage, rts.UtrController.onPageLoad(mode), navigateAwayFromUtrPages(mode, ua))
+    case UtrPage => ua =>
+      navigateAwayFromUtrPages(mode, ua)
+    case CountryOfResidenceYesNoPage => ua =>
+      yesNoNav(ua, CountryOfResidenceYesNoPage, rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode), navigateAwayFromResidencePages(mode, ua))
+    case CountryOfResidenceInTheUkYesNoPage => ua =>
+      yesNoNav(ua, CountryOfResidenceInTheUkYesNoPage, navigateAwayFromResidencePages(mode, ua), rts.CountryOfResidenceController.onPageLoad(mode))
+    case CountryOfResidencePage => ua =>
+      navigateAwayFromResidencePages(mode, ua)
     case AddressYesNoPage => ua =>
-      yesNoNav(ua, AddressYesNoPage, rts.AddressInTheUkYesNoController.onPageLoad(), controllers.trustee.routes.WhenAddedController.onPageLoad())
+      yesNoNav(ua, AddressYesNoPage, rts.AddressInTheUkYesNoController.onPageLoad(mode), navigateToStartDateOrCheckDetails(mode, ua))
     case AddressInTheUkYesNoPage => ua =>
-      yesNoNav(ua, AddressInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
+      yesNoNav(ua, AddressInTheUkYesNoPage, rts.UkAddressController.onPageLoad(mode), rts.NonUkAddressController.onPageLoad(mode))
+    case UkAddressPage | NonUkAddressPage => ua =>
+      navigateToStartDateOrCheckDetails(mode, ua)
   }
 
-  val routes: PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation andThen (c => (_:UserAnswers) => c) orElse
-    yesNoNavigation
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
+      conditionalNavigation(mode)
 
   def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
     ua.get(fromPage)
       .map(if (_) yesCall else noCall)
       .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
+
+  private def navigateAwayFromNamePage(mode: Mode, answers: UserAnswers): Call = {
+    if (answers.is5mldEnabled && !answers.isTaxable) {
+      rts.CountryOfResidenceYesNoController.onPageLoad(mode)
+    } else {
+      rts.UtrYesNoController.onPageLoad(mode)
+    }
+  }
+
+  private def navigateAwayFromResidencePages(mode: Mode, answers: UserAnswers): Call = {
+    val isNonTaxable5mld = answers.is5mldEnabled && !answers.isTaxable
+
+    if (isNonTaxable5mld || isUtrDefined(answers)){
+      navigateToStartDateOrCheckDetails(mode, answers)
+    } else {
+      rts.AddressYesNoController.onPageLoad(mode)
+    }
+  }
+
+  private def navigateToStartDateOrCheckDetails(mode: Mode, answers: UserAnswers) = {
+    if (mode == NormalMode) {
+      controllers.trustee.routes.WhenAddedController.onPageLoad()
+    } else {
+      checkDetailsRoute(answers)
+    }
+  }
+
+  private def checkDetailsRoute(answers: UserAnswers): Call = {
+    answers.get(IndexPage) match {
+      case Some(index) => controllers.trustee.amend.routes.CheckDetailsController.onPageLoadUpdated(index)
+      case None => controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
+
+  private def navigateAwayFromUtrPages(mode: Mode, answers: UserAnswers): Call = {
+    (answers.is5mldEnabled, isUtrDefined(answers)) match {
+      case (true, _) => rts.CountryOfResidenceYesNoController.onPageLoad(mode)
+      case (false, true) => navigateToStartDateOrCheckDetails(mode, answers)
+      case (false, _) => rts.AddressYesNoController.onPageLoad(mode)
+    }
+  }
+
+  private def isUtrDefined(answers: UserAnswers): Boolean = answers.get(UtrYesNoPage).getOrElse(false)
+
 }

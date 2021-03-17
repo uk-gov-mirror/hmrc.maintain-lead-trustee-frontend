@@ -18,6 +18,7 @@ package views.trustee.organisation
 
 import controllers.trustee.organisation.routes
 import forms.YesNoFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -28,18 +29,19 @@ class AddressInTheUkYesNoViewSpec extends YesNoViewBehaviours {
   val messageKeyPrefix = "trustee.organisation.addressInTheUkYesNo"
   val form = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
   val name = "Trustee Name"
+  val mode = NormalMode
 
   "AddressInTheUkYesNoPage view" must {
 
     val view = viewFor[AddressInTheUkYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name)(fakeRequest, messages)
+      view.apply(form, name, mode)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), routes.AddressInTheUkYesNoController.onSubmit().url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), routes.AddressInTheUkYesNoController.onSubmit(mode).url)
   }
 }

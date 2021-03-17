@@ -21,8 +21,7 @@ import models.Constant.GB
 import models.IndividualOrBusiness.Business
 import models.{NonUkAddress, TrustIdentificationOrgType, TrusteeOrganisation, UkAddress, UserAnswers}
 import pages.trustee.IndividualOrBusinessPage
-import pages.trustee.amend.organisation._
-import pages.trustee.organisation.{CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, CountryOfResidenceYesNoPage}
+import pages.trustee.organisation._
 
 import java.time.LocalDate
 

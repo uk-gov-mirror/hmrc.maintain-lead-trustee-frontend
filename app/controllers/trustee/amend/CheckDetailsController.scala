@@ -24,7 +24,7 @@ import handlers.ErrorHandler
 import mapping.extractors.TrusteeExtractors
 import mapping.mappers.TrusteeMappers
 import models.IndividualOrBusiness._
-import models.{Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
+import models.{CheckMode, Trustee, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
 import pages.trustee.IndividualOrBusinessPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,8 +35,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.checkYourAnswers.TrusteePrintHelper
 import views.html.trustee.amend.CheckDetailsView
-
 import javax.inject.Inject
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckDetailsController @Inject()(
@@ -75,7 +75,7 @@ class CheckDetailsController @Inject()(
             updatedAnswers <- Future.fromTry(answers)
             _ <- sessionRepository.set(updatedAnswers)
           } yield {
-            val section = printHelper.printAmendedOrganisationTrustee(updatedAnswers, org.name)
+            val section = printHelper.printOrganisationTrustee(updatedAnswers, provisional = false, org.name, CheckMode)
             Ok(view(section, index))
           }
         case _ =>
@@ -92,7 +92,7 @@ class CheckDetailsController @Inject()(
           val section = printHelper.printAmendedIndividualTrustee(request.userAnswers, request.trusteeName)
           Ok(view(section, index))
         case Business =>
-          val section = printHelper.printAmendedOrganisationTrustee(request.userAnswers, request.trusteeName)
+          val section = printHelper.printOrganisationTrustee(request.userAnswers, provisional = false, request.trusteeName, CheckMode)
           Ok(view(section, index))
       } getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] " +

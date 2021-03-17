@@ -23,7 +23,7 @@ import controllers.trustee.actions.NameRequiredAction
 import handlers.ErrorHandler
 import mapping.mappers.TrusteeMappers
 import models.IndividualOrBusiness._
-import models.Trustee
+import models.{NormalMode, Trustee}
 import pages.trustee.IndividualOrBusinessPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -31,8 +31,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.checkYourAnswers.TrusteePrintHelper
 import views.html.trustee.CheckDetailsView
-
 import javax.inject.Inject
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckDetailsController @Inject()(
@@ -54,7 +54,7 @@ class CheckDetailsController @Inject()(
         case Some(Individual) =>
           Ok(view(printHelper.printIndividualTrustee(request.userAnswers, request.trusteeName)))
         case Some(Business) =>
-          Ok(view(printHelper.printOrganisationTrustee(request.userAnswers, request.trusteeName)))
+          Ok(view(printHelper.printOrganisationTrustee(request.userAnswers, provisional = true, request.trusteeName, NormalMode)))
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] unable to display trustee on check your answers")
           InternalServerError(errorHandler.internalServerErrorTemplate)

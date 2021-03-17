@@ -18,7 +18,7 @@ package controllers.trustee.organisation
 
 import base.SpecBase
 import forms.NonUkAddressFormProvider
-import models.NonUkAddress
+import models.{NonUkAddress, NormalMode}
 import navigation.Navigator
 import pages.trustee.organisation.{NamePage, NonUkAddressPage}
 import play.api.inject.bind
@@ -32,7 +32,7 @@ class NonUkAddressControllerSpec extends SpecBase {
 
   val form = new NonUkAddressFormProvider()()
 
-  val onwardRoute = routes.NonUkAddressController.onPageLoad().url
+  val onwardRoute = routes.NonUkAddressController.onPageLoad(NormalMode).url
 
   val name: String = "Trustee Name"
   val fakeAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "DE")
@@ -56,7 +56,7 @@ class NonUkAddressControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, name)(request, messages).toString
+        view(form, countryOptions, name, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -78,7 +78,7 @@ class NonUkAddressControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(fakeAddress), countryOptions, name)(request, messages).toString
+        view(form.fill(fakeAddress), countryOptions, name, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -125,7 +125,7 @@ class NonUkAddressControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, name)(request, messages).toString
+        view(boundForm, countryOptions, name, NormalMode)(request, messages).toString
 
       application.stop()
     }
