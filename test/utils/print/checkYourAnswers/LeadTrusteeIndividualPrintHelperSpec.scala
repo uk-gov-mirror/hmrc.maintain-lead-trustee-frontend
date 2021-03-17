@@ -62,7 +62,7 @@ class LeadTrusteeIndividualPrintHelperSpec extends SpecBase {
           rows = Seq(
             AnswerRow(label = Html(messages("leadtrustee.individual.name.checkYourAnswersLabel")), answer = Html("Lead Trustee"), changeUrl = NameController.onPageLoad().url),
             AnswerRow(label = Html(messages("leadtrustee.individual.dateOfBirth.checkYourAnswersLabel", name.displayName)), answer = Html("3 February 1996"), changeUrl = DateOfBirthController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.countryOfNationalityUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("No"), changeUrl = CountryOfNationalityInTheUkYesNoController.onPageLoad().url),
+            AnswerRow(label = Html(messages("leadtrustee.individual.countryOfNationalityInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("No"), changeUrl = CountryOfNationalityInTheUkYesNoController.onPageLoad().url),
             AnswerRow(label = Html(messages("leadtrustee.individual.countryOfNationality.checkYourAnswersLabel", name.displayName)), answer = Html("Germany"), changeUrl = CountryOfNationalityController.onPageLoad().url),
             AnswerRow(label = Html(messages("leadtrustee.individual.ukCitizen.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = UkCitizenController.onPageLoad().url),
             AnswerRow(label = Html(messages("leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName)), answer = Html("AA 00 00 00 A"), changeUrl = NationalInsuranceNumberController.onPageLoad().url),
