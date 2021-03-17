@@ -19,7 +19,7 @@ package controllers.trustee.individual.add
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import forms.IdCardDetailsFormProvider
-import models.IdCard
+import models.{IdCard, NormalMode}
 import navigation.Navigator
 import pages.trustee.individual.add.IdCardDetailsPage
 import play.api.data.Form
@@ -69,7 +69,7 @@ class IdCardDetailsController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IdCardDetailsPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IdCardDetailsPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(IdCardDetailsPage, NormalMode, updatedAnswers))
       )
   }
 }
