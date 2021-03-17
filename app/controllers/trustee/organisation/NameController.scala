@@ -21,6 +21,7 @@ import forms.BusinessNameFormProvider
 import models.Mode
 
 import javax.inject.Inject
+import models.Mode
 import navigation.Navigator
 import pages.trustee.organisation.NamePage
 import play.api.data.Form

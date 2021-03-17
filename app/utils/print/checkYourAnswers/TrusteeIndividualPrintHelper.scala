@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import controllers.trustee.individual.add.routes._
 import controllers.trustee.individual.amend.routes._
 import controllers.trustee.individual.routes._
+import controllers.trustee.routes.WhenAddedController
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.trustee.WhenAddedPage
 import pages.trustee.individual._
@@ -62,7 +63,7 @@ class TrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowConver
         if (mode == CheckMode) bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, s"$prefix.passportOrIdCardDetailsYesNo", PassportOrIdCardDetailsYesNoController.onPageLoad().url) else None,
         if (mode == CheckMode) bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, s"$prefix.passportOrIdCardDetails", PassportOrIdCardDetailsController.onPageLoad().url) else None,
         bound.yesNoQuestion(MentalCapacityYesNoPage, s"$prefix.mentalCapacityYesNo", MentalCapacityYesNoController.onPageLoad(mode).url),
-        if (mode == NormalMode) bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", controllers.trustee.routes.WhenAddedController.onPageLoad().url) else None
+        if (mode == NormalMode) bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", WhenAddedController.onPageLoad().url) else None
       ).flatten
     }
 

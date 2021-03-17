@@ -28,6 +28,7 @@ class CountryOfResidenceInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "trustee.organisation.countryOfResidenceInTheUkYesNo"
   val name = "Name"
+  val mode = NormalMode
 
   val form = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
@@ -36,12 +37,12 @@ class CountryOfResidenceInTheUkYesNoViewSpec extends YesNoViewBehaviours {
     val view = viewFor[CountryOfResidenceInTheUkYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, name)(fakeRequest, messages)
+      view.apply(form, mode, name)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), routes.CountryOfResidenceInTheUkYesNoController.onSubmit(NormalMode).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), routes.CountryOfResidenceInTheUkYesNoController.onSubmit(mode).url)
   }
 }

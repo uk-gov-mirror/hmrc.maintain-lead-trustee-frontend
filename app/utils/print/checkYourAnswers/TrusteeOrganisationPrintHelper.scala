@@ -18,6 +18,7 @@ package utils.print.checkYourAnswers
 
 import com.google.inject.Inject
 import controllers.trustee.organisation.routes._
+import controllers.trustee.routes.WhenAddedController
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.trustee.WhenAddedPage
 import pages.trustee.organisation._
@@ -27,26 +28,28 @@ import viewmodels.{AnswerRow, AnswerSection}
 
 class TrusteeOrganisationPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  def print(userAnswers: UserAnswers, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+  def print(userAnswers: UserAnswers, provisional: Boolean, trusteeName: String)(implicit messages: Messages): AnswerSection = {
 
-    val bound = answerRowConverter.bind(userAnswers, name)
-
-    val prefix: String = "trustee.organisation"
+    val bound = answerRowConverter.bind(userAnswers, trusteeName)
 
     def answerRows: Seq[AnswerRow] = {
       val mode: Mode = if (provisional) NormalMode else CheckMode
       Seq(
-        bound.stringQuestion(NamePage, s"$prefix.name", NameController.onPageLoad(mode).url),
-        bound.yesNoQuestion(UtrYesNoPage, s"$prefix.utrYesNo", UtrYesNoController.onPageLoad(mode).url),
-        bound.stringQuestion(UtrPage, s"$prefix.utr", UtrController.onPageLoad(mode).url),
-        bound.yesNoQuestion(AddressYesNoPage, s"$prefix.addressYesNo", AddressYesNoController.onPageLoad(mode).url),
-        bound.yesNoQuestion(AddressInTheUkYesNoPage, s"$prefix.addressInTheUkYesNo", AddressInTheUkYesNoController.onPageLoad(mode).url),
-        bound.addressQuestion(UkAddressPage, s"$prefix.ukAddress", UkAddressController.onPageLoad(mode).url),
-        bound.addressQuestion(NonUkAddressPage, s"$prefix.nonUkAddress", NonUkAddressController.onPageLoad(mode).url),
-        if (mode == NormalMode) bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", controllers.trustee.routes.WhenAddedController.onPageLoad().url) else None
+        bound.stringQuestion(NamePage, "trustee.organisation.name", NameController.onPageLoad(mode).url),
+        bound.yesNoQuestion(UtrYesNoPage, "trustee.organisation.utrYesNo", UtrYesNoController.onPageLoad(mode).url),
+        bound.stringQuestion(UtrPage, "trustee.organisation.utr", UtrController.onPageLoad(mode).url),
+        bound.yesNoQuestion(CountryOfResidenceYesNoPage, "trustee.organisation.countryOfResidenceYesNo", CountryOfResidenceYesNoController.onPageLoad(mode).url),
+        bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage, "trustee.organisation.countryOfResidenceInTheUkYesNo", CountryOfResidenceInTheUkYesNoController.onPageLoad(mode).url),
+        bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, "trustee.organisation.countryOfResidence", CountryOfResidenceController.onPageLoad(mode).url),
+        bound.yesNoQuestion(AddressYesNoPage, "trustee.organisation.addressYesNo", AddressYesNoController.onPageLoad(mode).url),
+        bound.yesNoQuestion(AddressInTheUkYesNoPage, "trustee.organisation.addressInTheUkYesNo", AddressInTheUkYesNoController.onPageLoad(mode).url),
+        bound.addressQuestion(UkAddressPage, "trustee.organisation.ukAddress", UkAddressController.onPageLoad(mode).url),
+        bound.addressQuestion(NonUkAddressPage, "trustee.organisation.nonUkAddress", NonUkAddressController.onPageLoad(mode).url),
+        if (mode == NormalMode) bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", WhenAddedController.onPageLoad().url) else None
       ).flatten
     }
 
     AnswerSection(headingKey = None, rows = answerRows)
+
   }
 }
