@@ -19,6 +19,7 @@ package controllers.trustee.individual.amend
 import controllers.actions.StandardActionSets
 import controllers.trustee.actions.NameRequiredAction
 import forms.YesNoFormProvider
+import models.CheckMode
 import navigation.Navigator
 import pages.trustee.individual.amend.PassportOrIdCardDetailsYesNoPage
 import play.api.data.Form
@@ -66,7 +67,7 @@ class PassportOrIdCardDetailsYesNoController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportOrIdCardDetailsYesNoPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PassportOrIdCardDetailsYesNoPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(PassportOrIdCardDetailsYesNoPage, CheckMode, updatedAnswers))
       )
   }
 }

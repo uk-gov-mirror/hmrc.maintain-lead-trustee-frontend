@@ -19,7 +19,7 @@ package controllers.trustee.individual.add
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import forms.PassportDetailsFormProvider
-import models.Passport
+import models.{NormalMode, Passport}
 import navigation.Navigator
 import pages.trustee.individual.add.PassportDetailsPage
 import play.api.data.Form
@@ -69,7 +69,7 @@ class PassportDetailsController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportDetailsPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PassportDetailsPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(PassportDetailsPage, NormalMode, updatedAnswers))
       )
   }
 }

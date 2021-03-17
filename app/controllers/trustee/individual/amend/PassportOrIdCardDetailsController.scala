@@ -19,7 +19,7 @@ package controllers.trustee.individual.amend
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import forms.CombinedPassportOrIdCardDetailsFormProvider
-import models.CombinedPassportOrIdCard
+import models.{CheckMode, CombinedPassportOrIdCard}
 import navigation.Navigator
 import pages.trustee.individual.amend.PassportOrIdCardDetailsPage
 import play.api.data.Form
@@ -69,7 +69,7 @@ class PassportOrIdCardDetailsController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportOrIdCardDetailsPage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PassportOrIdCardDetailsPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(PassportOrIdCardDetailsPage, CheckMode, updatedAnswers))
       )
   }
 }

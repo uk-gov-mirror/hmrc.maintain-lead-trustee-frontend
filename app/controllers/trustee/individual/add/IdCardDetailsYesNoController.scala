@@ -19,6 +19,7 @@ package controllers.trustee.individual.add
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import forms.YesNoFormProvider
+import models.NormalMode
 import navigation.Navigator
 import pages.trustee.individual.add.IdCardDetailsYesNoPage
 import play.api.data.Form
@@ -66,7 +67,7 @@ class IdCardDetailsYesNoController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IdCardDetailsYesNoPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IdCardDetailsYesNoPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(IdCardDetailsYesNoPage, NormalMode, updatedAnswers))
       )
   }
 }
