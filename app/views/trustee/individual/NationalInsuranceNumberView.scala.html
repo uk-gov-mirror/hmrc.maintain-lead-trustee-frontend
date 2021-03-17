@@ -21,13 +21,13 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], trusteeName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("trustee.individual.nationalInsuranceNumber.title")}"
     ) {
 
-    @formHelper(action = NationalInsuranceNumberController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = NationalInsuranceNumberController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
@@ -35,7 +35,7 @@
 
         @components.input_nino(
             field = form("value"),
-            label = messages("trustee.individual.nationalInsuranceNumber.heading", trusteeName),
+            label = messages("trustee.individual.nationalInsuranceNumber.heading", name),
             headingIsLabel = true,
             hint = Some(messages("trustee.individual.nationalInsuranceNumber.hint"))
         )

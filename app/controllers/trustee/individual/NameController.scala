@@ -18,9 +18,12 @@ package controllers.trustee.individual
 
 import controllers.actions._
 import forms.IndividualNameFormProvider
+import models.{Mode, Name}
+
 import javax.inject.Inject
 import navigation.Navigator
 import pages.trustee.individual.NamePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -39,9 +42,9 @@ class NameController @Inject()(
                                 view: NameView
                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("trustee.individual.name")
+  private val form: Form[Name] = formProvider.withPrefix("trustee.individual.name")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(NamePage) match {
@@ -49,21 +52,21 @@ class NameController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NamePage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NamePage, mode, updatedAnswers))
       )
   }
 }

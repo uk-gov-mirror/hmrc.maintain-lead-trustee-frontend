@@ -20,8 +20,8 @@ import models.IndividualOrBusiness.Individual
 import models._
 import pages.QuestionPage
 import pages.trustee.WhenAddedPage
-import pages.trustee.amend.{individual => ind}
 import pages.trustee.individual._
+import pages.trustee.individual.amend._
 
 import scala.util.{Success, Try}
 
@@ -42,8 +42,8 @@ class TrusteeIndividualExtractor extends TrusteeExtractor {
 
   def extract(answers: UserAnswers, trustee: TrusteeIndividual, index: Int): Try[UserAnswers] = {
     super.extract(answers, Individual)
-      .flatMap(_.set(ind.IndexPage, index))
-      .flatMap(_.set(ind.NamePage, trustee.name))
+      .flatMap(_.set(IndexPage, index))
+      .flatMap(_.set(NamePage, trustee.name))
       .flatMap(answers => extractConditionalValue(trustee.dateOfBirth, DateOfBirthYesNoPage, DateOfBirthPage, answers))
       .flatMap(answers => extractOptionalAddress(trustee.address, answers))
       .flatMap(answers => extractCountryOfResidence(trustee.countryOfResidence, answers))
@@ -65,22 +65,22 @@ class TrusteeIndividualExtractor extends TrusteeExtractor {
     if (answers.isTaxable || !answers.is5mldEnabled) {
       identification match {
         case Some(NationalInsuranceNumber(nino)) =>
-          answers.set(ind.NationalInsuranceNumberYesNoPage, true)
-            .flatMap(_.set(ind.NationalInsuranceNumberPage, nino))
+          answers.set(NationalInsuranceNumberYesNoPage, true)
+            .flatMap(_.set(NationalInsuranceNumberPage, nino))
         case Some(p: Passport) =>
-          answers.set(ind.NationalInsuranceNumberYesNoPage, false)
-            .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, true))
-            .flatMap(_.set(ind.PassportOrIdCardDetailsPage, p.asCombined))
+          answers.set(NationalInsuranceNumberYesNoPage, false)
+            .flatMap(_.set(PassportOrIdCardDetailsYesNoPage, true))
+            .flatMap(_.set(PassportOrIdCardDetailsPage, p.asCombined))
         case Some(id: IdCard) =>
-          answers.set(ind.NationalInsuranceNumberYesNoPage, false)
-            .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, true))
-            .flatMap(_.set(ind.PassportOrIdCardDetailsPage, id.asCombined))
+          answers.set(NationalInsuranceNumberYesNoPage, false)
+            .flatMap(_.set(PassportOrIdCardDetailsYesNoPage, true))
+            .flatMap(_.set(PassportOrIdCardDetailsPage, id.asCombined))
         case Some(c: CombinedPassportOrIdCard) =>
-          answers.set(ind.NationalInsuranceNumberYesNoPage, false)
-            .flatMap(_.set(ind.PassportOrIdCardDetailsYesNoPage, true))
-            .flatMap(_.set(ind.PassportOrIdCardDetailsPage, c))
+          answers.set(NationalInsuranceNumberYesNoPage, false)
+            .flatMap(_.set(PassportOrIdCardDetailsYesNoPage, true))
+            .flatMap(_.set(PassportOrIdCardDetailsPage, c))
         case _ =>
-          answers.set(ind.NationalInsuranceNumberYesNoPage, false)
+          answers.set(NationalInsuranceNumberYesNoPage, false)
       }
     } else {
       Success(answers)

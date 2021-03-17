@@ -52,9 +52,9 @@ class CheckDetailsController @Inject()(
     implicit request =>
       request.userAnswers.get(IndividualOrBusinessPage) match {
         case Some(Individual) =>
-          Ok(view(printHelper.printIndividualTrustee(request.userAnswers, request.trusteeName)))
+          Ok(view(printHelper.printIndividualTrustee(request.userAnswers, provisional = true, request.trusteeName)))
         case Some(Business) =>
-          Ok(view(printHelper.printOrganisationTrustee(request.userAnswers, request.trusteeName)))
+          Ok(view(printHelper.printOrganisationTrustee(request.userAnswers, provisional = true, request.trusteeName)))
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] unable to display trustee on check your answers")
           InternalServerError(errorHandler.internalServerErrorTemplate)

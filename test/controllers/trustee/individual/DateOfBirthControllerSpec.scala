@@ -17,10 +17,9 @@
 package controllers.trustee.individual
 
 import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import forms.DateOfBirthFormProvider
-import models.Name
+import models.{Name, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -46,7 +45,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
   val trusteeName = "FirstName LastName"
   val name = Name("FirstName", None, "LastName")
 
-  lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad().url
+  lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad(NormalMode).url
 
   val userAnswersWithName = emptyUserAnswers.set(NamePage, name)
     .success.value
@@ -75,7 +74,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, messages("trusteeName.defaultText"))(getRequest, messages).toString
+        view(form, NormalMode, messages("trusteeName.defaultText"))(getRequest, messages).toString
 
       application.stop()
     }
@@ -95,7 +94,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), name.displayName)(getRequest(), messages).toString
+        view(form.fill(validAnswer), NormalMode, name.displayName)(getRequest(), messages).toString
 
       application.stop()
     }
@@ -139,7 +138,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(request, messages).toString
+        view(boundForm, NormalMode, name.displayName)(request, messages).toString
 
       application.stop()
     }

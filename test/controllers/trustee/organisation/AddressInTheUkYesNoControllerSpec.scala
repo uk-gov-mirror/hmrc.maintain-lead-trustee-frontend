@@ -18,6 +18,7 @@ package controllers.trustee.organisation
 
 import base.SpecBase
 import forms.YesNoFormProvider
+import models.NormalMode
 import navigation.Navigator
 import pages.trustee.organisation.{AddressInTheUkYesNoPage, NamePage}
 import play.api.inject.bind
@@ -30,7 +31,7 @@ class AddressInTheUkYesNoControllerSpec extends SpecBase {
   val formProvider = new YesNoFormProvider()
   val form = formProvider.withPrefix("trustee.organisation.addressInTheUkYesNo")
 
-  val onwardRoute = routes.AddressInTheUkYesNoController.onPageLoad().url
+  val onwardRoute = routes.AddressInTheUkYesNoController.onPageLoad(NormalMode).url
 
   val name: String = "Trustee Name"
 
@@ -52,7 +53,7 @@ class AddressInTheUkYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name)(request, messages).toString
+        view(form, NormalMode, name)(request, messages).toString
 
       application.stop()
     }
@@ -74,7 +75,7 @@ class AddressInTheUkYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), name)(request, messages).toString
+        view(form.fill(true), NormalMode, name)(request, messages).toString
 
       application.stop()
     }
@@ -121,7 +122,7 @@ class AddressInTheUkYesNoControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name)(request, messages).toString
+        view(boundForm, NormalMode, name)(request, messages).toString
 
       application.stop()
     }

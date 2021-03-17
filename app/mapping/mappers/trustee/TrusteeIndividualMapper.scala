@@ -19,8 +19,9 @@ package mapping.mappers.trustee
 import models._
 import pages.QuestionPage
 import pages.trustee.WhenAddedPage
-import pages.trustee.amend.individual.{PassportOrIdCardDetailsPage, PassportOrIdCardDetailsYesNoPage}
 import pages.trustee.individual._
+import pages.trustee.individual.add._
+import pages.trustee.individual.amend._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsSuccess, Reads}
 

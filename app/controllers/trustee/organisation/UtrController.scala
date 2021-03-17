@@ -19,6 +19,8 @@ package controllers.trustee.organisation
 import controllers.actions.StandardActionSets
 import controllers.trustee.actions.NameRequiredAction
 import forms.UtrFormProvider
+import models.Mode
+
 import javax.inject.Inject
 import navigation.Navigator
 import pages.trustee.organisation.UtrPage
@@ -32,19 +34,19 @@ import views.html.trustee.organisation.UtrView
 import scala.concurrent.{ExecutionContext, Future}
 
 class UtrController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        registrationsRepository: PlaybackRepository,
-                                        navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                        nameAction: NameRequiredAction,
-                                        formProvider: UtrFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: UtrView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                               override val messagesApi: MessagesApi,
+                               registrationsRepository: PlaybackRepository,
+                               navigator: Navigator,
+                               standardActionSets: StandardActionSets,
+                               nameAction: NameRequiredAction,
+                               formProvider: UtrFormProvider,
+                               val controllerComponents: MessagesControllerComponents,
+                               view: UtrView
+                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("trustee.organisation.utr")
+  private val form: Form[String] = formProvider.withPrefix("trustee.organisation.utr")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(UtrPage) match {
@@ -52,22 +54,22 @@ class UtrController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.trusteeName))
+      Ok(view(preparedForm, mode, request.trusteeName))
 
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrPage, value))
             _              <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(UtrPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(UtrPage, mode, updatedAnswers))
         }
       )
   }

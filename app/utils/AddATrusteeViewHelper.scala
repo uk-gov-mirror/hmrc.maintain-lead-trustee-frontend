@@ -22,7 +22,7 @@ import viewmodels.addAnother.{AddRow, AddToRows}
 
 class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) {
 
-  private def render(trustee : (Trustee, Int)) : AddRow = {
+  private def render(trustee: (Trustee, Int)): AddRow = {
 
     trustee match {
       case (trusteeInd: TrusteeIndividual, index) =>
@@ -30,23 +30,23 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
           name = trusteeInd.name.displayName,
           typeLabel = messages(s"entities.trustee.individual"),
           changeLabel = messages("site.change.details"),
-          changeUrl = controllers.trustee.amend.routes.CheckDetailsController.onPageLoad(index).url,
+          changeUrl = controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoad(index).url,
           removeLabel =  Some(messages("site.delete")),
           removeUrl = Some(controllers.trustee.routes.RemoveTrusteeController.onPageLoad(index).url)
         )
-      case (trusteeOrg : TrusteeOrganisation, index) =>
+      case (trusteeOrg: TrusteeOrganisation, index) =>
         AddRow(
           name = trusteeOrg.name,
           typeLabel = messages(s"entities.trustee.organisation"),
           changeLabel = messages("site.change.details"),
-          changeUrl = controllers.trustee.amend.routes.CheckDetailsController.onPageLoad(index).url,
+          changeUrl = controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoad(index).url,
           removeLabel =  Some(messages("site.delete")),
           removeUrl = Some(controllers.trustee.routes.RemoveTrusteeController.onPageLoad(index).url)
         )
     }
   }
 
-  private def renderLead(lead : Option[LeadTrustee]) : List[AddRow] = {
+  private def renderLead(lead: Option[LeadTrustee]): List[AddRow] = {
 
     lead match {
       case Some(leadInd: LeadTrusteeIndividual) =>
@@ -71,7 +71,7 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
     }
   }
 
-  def rows : AddToRows = {
+  def rows: AddToRows = {
 
     val complete = renderLead(trustees.lead) ++ trustees.trustees.zipWithIndex.map(render)
 

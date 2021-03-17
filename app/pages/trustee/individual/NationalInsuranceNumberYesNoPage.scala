@@ -18,8 +18,10 @@ package pages.trustee.individual
 
 import models.UserAnswers
 import pages.QuestionPage
+import pages.trustee.individual.add._
+import pages.trustee.individual.amend._
 import play.api.libs.json.JsPath
-import pages.trustee.basePath
+
 import scala.util.Try
 
 case object NationalInsuranceNumberYesNoPage extends QuestionPage[Boolean] {
@@ -39,6 +41,8 @@ case object NationalInsuranceNumberYesNoPage extends QuestionPage[Boolean] {
           .flatMap(_.remove(PassportDetailsPage))
           .flatMap(_.remove(IdCardDetailsYesNoPage))
           .flatMap(_.remove(IdCardDetailsPage))
+          .flatMap(_.remove(PassportOrIdCardDetailsYesNoPage))
+          .flatMap(_.remove(PassportOrIdCardDetailsPage))
       case Some(false) =>
         userAnswers.remove(NationalInsuranceNumberPage)
       case _ =>

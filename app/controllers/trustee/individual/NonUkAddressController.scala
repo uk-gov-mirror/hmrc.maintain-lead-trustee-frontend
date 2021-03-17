@@ -19,9 +19,12 @@ package controllers.trustee.individual
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import forms.NonUkAddressFormProvider
+import models.{Mode, NonUkAddress}
+
 import javax.inject.Inject
 import navigation.Navigator
 import pages.trustee.individual.NonUkAddressPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -32,20 +35,20 @@ import views.html.trustee.individual.NonUkAddressView
 import scala.concurrent.{ExecutionContext, Future}
 
 class NonUkAddressController @Inject()(
-                                      override val messagesApi: MessagesApi,
-                                      sessionRepository: PlaybackRepository,
-                                      navigator: Navigator,
-                                      standardActionSets: StandardActionSets,
-                                      nameAction: NameRequiredAction,
-                                      formProvider: NonUkAddressFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      view: NonUkAddressView,
-                                      val countryOptions: CountryOptionsNonUK
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                        override val messagesApi: MessagesApi,
+                                        sessionRepository: PlaybackRepository,
+                                        navigator: Navigator,
+                                        standardActionSets: StandardActionSets,
+                                        nameAction: NameRequiredAction,
+                                        formProvider: NonUkAddressFormProvider,
+                                        val controllerComponents: MessagesControllerComponents,
+                                        view: NonUkAddressView,
+                                        val countryOptions: CountryOptionsNonUK
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  private val form: Form[NonUkAddress] = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(NonUkAddressPage) match {
@@ -53,21 +56,21 @@ class NonUkAddressController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options, request.trusteeName))
+      Ok(view(preparedForm, mode, countryOptions.options, request.trusteeName))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, mode, countryOptions.options, request.trusteeName))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NonUkAddressPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NonUkAddressPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NonUkAddressPage, mode, updatedAnswers))
       )
   }
 }

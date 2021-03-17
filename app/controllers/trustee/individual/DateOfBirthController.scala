@@ -19,15 +19,19 @@ package controllers.trustee.individual
 import controllers.actions.StandardActionSets
 import controllers.trustee.actions.NameRequiredAction
 import forms.DateOfBirthFormProvider
+import models.Mode
+
 import javax.inject.Inject
 import navigation.Navigator
 import pages.trustee.individual.DateOfBirthPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.trustee.individual.DateOfBirthView
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class DateOfBirthController @Inject()(
@@ -39,11 +43,11 @@ class DateOfBirthController @Inject()(
                                        formProvider: DateOfBirthFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: DateOfBirthView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("trustee.individual.dateOfBirth")
+  private val form: Form[LocalDate] = formProvider.withPrefix("trustee.individual.dateOfBirth")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(DateOfBirthPage) match {
@@ -51,21 +55,21 @@ class DateOfBirthController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.trusteeName))
+      Ok(view(preparedForm, mode, request.trusteeName))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfBirthPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DateOfBirthPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(DateOfBirthPage, mode, updatedAnswers))
       )
   }
 }

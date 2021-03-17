@@ -18,8 +18,6 @@ package pages
 
 import models.TrusteeType._
 import models.{TrusteeType, UserAnswers}
-import pages.leadtrustee.{individual => lind, organisation => lorg}
-import pages.trustee.{WhenAddedPage, individual => ind}
 import play.api.libs.json.JsPath
 
 import scala.util.Try
@@ -33,44 +31,9 @@ object TrusteeTypePage extends QuestionPage[TrusteeType] {
   override def cleanup(value: Option[TrusteeType], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
       case Some(LeadTrustee) =>
-        userAnswers.remove(pages.trustee.IndividualOrBusinessPage)
-          .flatMap(_.remove(ind.NamePage))
-          .flatMap(_.remove(ind.DateOfBirthYesNoPage))
-          .flatMap(_.remove(ind.DateOfBirthPage))
-          .flatMap(_.remove(ind.NationalInsuranceNumberYesNoPage))
-          .flatMap(_.remove(ind.NationalInsuranceNumberPage))
-          .flatMap(_.remove(ind.AddressYesNoPage))
-          .flatMap(_.remove(ind.LiveInTheUkYesNoPage))
-          .flatMap(_.remove(ind.UkAddressPage))
-          .flatMap(_.remove(ind.NonUkAddressPage))
-          .flatMap(_.remove(ind.PassportDetailsYesNoPage))
-          .flatMap(_.remove(ind.PassportDetailsPage))
-          .flatMap(_.remove(ind.IdCardDetailsYesNoPage))
-          .flatMap(_.remove(ind.IdCardDetailsPage))
-          .flatMap(_.remove(WhenAddedPage))
+        userAnswers.deleteAtPath(pages.trustee.basePath)
       case Some(Trustee) =>
-        userAnswers.remove(pages.leadtrustee.IndividualOrBusinessPage)
-          .flatMap(_.remove(lind.NamePage))
-          .flatMap(_.remove(lind.DateOfBirthPage))
-          .flatMap(_.remove(lind.UkCitizenPage))
-          .flatMap(_.remove(lind.NationalInsuranceNumberPage))
-          .flatMap(_.remove(lind.PassportOrIdCardDetailsPage))
-          .flatMap(_.remove(lind.LiveInTheUkYesNoPage))
-          .flatMap(_.remove(lind.UkAddressPage))
-          .flatMap(_.remove(lind.NonUkAddressPage))
-          .flatMap(_.remove(lind.EmailAddressYesNoPage))
-          .flatMap(_.remove(lind.EmailAddressPage))
-          .flatMap(_.remove(lind.TelephoneNumberPage))
-          
-          .flatMap(_.remove(lorg.RegisteredInUkYesNoPage))
-          .flatMap(_.remove(lorg.NamePage))
-          .flatMap(_.remove(lorg.UtrPage))
-          .flatMap(_.remove(lorg.AddressInTheUkYesNoPage))
-          .flatMap(_.remove(lorg.UkAddressPage))
-          .flatMap(_.remove(lorg.NonUkAddressPage))
-          .flatMap(_.remove(lorg.EmailAddressYesNoPage))
-          .flatMap(_.remove(lorg.EmailAddressPage))
-          .flatMap(_.remove(lorg.TelephoneNumberPage))
+        userAnswers.deleteAtPath(pages.leadtrustee.basePath)
       case _ =>
         super.cleanup(value, userAnswers)
     }

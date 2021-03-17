@@ -17,17 +17,17 @@
 @import controllers.trustee.individual.routes._
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
 )
 
-@(form: Form[_], trusteeName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("trustee.individual.dateOfBirth.title")}"
 ) {
 
-    @formHelper(action = DateOfBirthController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = DateOfBirthController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
@@ -35,7 +35,7 @@
 
         @components.input_date(
             field = form("value"),
-            legend = messages("trustee.individual.dateOfBirth.heading", trusteeName),
+            legend = messages("trustee.individual.dateOfBirth.heading", name),
             legendClass = "heading-large",
             headingIsLegend = true,
             hint = Some(messages("trustee.individual.dateOfBirth.hint"))

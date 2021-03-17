@@ -17,23 +17,23 @@
 @import controllers.trustee.individual.routes._
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
 )
 
-@(form: Form[_], trusteeName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("trustee.individual.ukAddress.title")}"
 ) {
 
-    @formHelper(action = UkAddressController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = UkAddressController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.heading("trustee.individual.ukAddress.heading", Some(trusteeName))
+        @components.heading("trustee.individual.ukAddress.heading", Some(name))
 
         @components.uk_address(form)
 

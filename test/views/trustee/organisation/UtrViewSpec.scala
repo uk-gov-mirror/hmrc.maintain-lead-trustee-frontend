@@ -16,8 +16,9 @@
 
 package views.trustee.organisation
 
-import controllers.leadtrustee.organisation.routes
+import controllers.trustee.organisation.routes
 import forms.UtrFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours
@@ -35,11 +36,11 @@ class UtrViewSpec extends StringViewBehaviours {
     val view = viewFor[UtrView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name)(fakeRequest, messages)
+      view.apply(form, NormalMode, name)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 
-    behave like stringPage(form, applyView, messageKeyPrefix, Some(name), routes.UtrController.onSubmit().url)
+    behave like stringPage(form, applyView, messageKeyPrefix, Some(name), routes.UtrController.onSubmit(NormalMode).url)
 
     behave like pageWithBackLink(applyView(form))
   }

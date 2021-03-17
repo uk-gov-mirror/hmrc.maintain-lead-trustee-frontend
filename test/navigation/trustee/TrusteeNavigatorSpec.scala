@@ -18,6 +18,7 @@ package navigation.trustee
 
 import base.SpecBase
 import models.IndividualOrBusiness._
+import models.NormalMode
 import navigation.Navigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.trustee._
@@ -25,6 +26,7 @@ import pages.trustee._
 class TrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks  {
 
   val navigator = new Navigator
+  val mode = NormalMode
 
   "Trustee navigator" when {
 
@@ -32,16 +34,16 @@ class TrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks  {
       val answers = emptyUserAnswers
         .set(IndividualOrBusinessPage, Individual).success.value
 
-      navigator.nextPage(IndividualOrBusinessPage, answers)
-        .mustBe(controllers.trustee.individual.routes.NameController.onPageLoad())
+      navigator.nextPage(IndividualOrBusinessPage, mode, answers)
+        .mustBe(controllers.trustee.individual.routes.NameController.onPageLoad(mode))
     }
 
     "Individual or business page -> Business -> Business name page" in {
       val answers = emptyUserAnswers
         .set(IndividualOrBusinessPage, Business).success.value
 
-      navigator.nextPage(IndividualOrBusinessPage, answers)
-        .mustBe(controllers.trustee.organisation.routes.NameController.onPageLoad())
+      navigator.nextPage(IndividualOrBusinessPage, mode, answers)
+        .mustBe(controllers.trustee.organisation.routes.NameController.onPageLoad(mode))
     }
 
     "When added page -> Check your answers page" in {

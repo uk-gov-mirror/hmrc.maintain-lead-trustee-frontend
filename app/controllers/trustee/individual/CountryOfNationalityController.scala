@@ -34,15 +34,15 @@ import views.html.trustee.individual.CountryOfNationalityView
 import scala.concurrent.{ExecutionContext, Future}
 
 class CountryOfNationalityController @Inject()(
-                                              val controllerComponents: MessagesControllerComponents,
-                                              standardActionSets: StandardActionSets,
-                                              formProvider: CountryFormProvider,
-                                              view: CountryOfNationalityView,
-                                              repository: PlaybackRepository,
-                                              navigator: Navigator,
-                                              nameAction: NameRequiredAction,
-                                              val countryOptions: CountryOptionsNonUK
-                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                val controllerComponents: MessagesControllerComponents,
+                                                standardActionSets: StandardActionSets,
+                                                formProvider: CountryFormProvider,
+                                                view: CountryOfNationalityView,
+                                                repository: PlaybackRepository,
+                                                navigator: Navigator,
+                                                nameAction: NameRequiredAction,
+                                                val countryOptions: CountryOptionsNonUK
+                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[String] = formProvider.withPrefix("trustee.individual.countryOfNationality")
 

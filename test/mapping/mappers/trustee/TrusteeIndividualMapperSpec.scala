@@ -20,8 +20,9 @@ import base.SpecBase
 import models.Constant.GB
 import models._
 import pages.trustee.WhenAddedPage
-import pages.trustee.amend.individual.{PassportOrIdCardDetailsPage, PassportOrIdCardDetailsYesNoPage}
 import pages.trustee.individual._
+import pages.trustee.individual.add._
+import pages.trustee.individual.amend._
 
 import java.time.LocalDate
 

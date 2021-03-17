@@ -18,7 +18,7 @@ package controllers.trustee.individual
 
 import base.SpecBase
 import forms.NationalInsuranceNumberFormProvider
-import models.Name
+import models.{Name, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -42,7 +42,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
   val trusteeName = Name("FirstName", None, "LastName")
 
-  lazy val nationalInsuranceNumberRoute = routes.NationalInsuranceNumberController.onPageLoad().url
+  lazy val nationalInsuranceNumberRoute = routes.NationalInsuranceNumberController.onPageLoad(NormalMode).url
 
   "NationalInsuranceNumber Controller" must {
 
@@ -61,7 +61,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, trusteeName.displayName)(request, messages).toString
+        view(form, NormalMode, trusteeName.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -83,7 +83,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), trusteeName.displayName)(request, messages).toString
+        view(form.fill("answer"), NormalMode, trusteeName.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -132,7 +132,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, trusteeName.displayName)(request, messages).toString
+        view(boundForm, NormalMode, trusteeName.displayName)(request, messages).toString
 
       application.stop()
     }

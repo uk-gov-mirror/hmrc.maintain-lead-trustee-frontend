@@ -32,40 +32,40 @@ import views.html.trustee.individual.MentalCapacityYesNoView
 import scala.concurrent.{ExecutionContext, Future}
 
 class MentalCapacityYesNoController @Inject()(
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   repository: PlaybackRepository,
-                                                   navigator: Navigator,
-                                                   standardActionSets: StandardActionSets,
-                                                   nameAction: NameRequiredAction,
-                                                   formProvider: YesNoFormProvider,
-                                                   view: MentalCapacityYesNoView
-                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                               val controllerComponents: MessagesControllerComponents,
+                                               repository: PlaybackRepository,
+                                               navigator: Navigator,
+                                               standardActionSets: StandardActionSets,
+                                               nameAction: NameRequiredAction,
+                                               formProvider: YesNoFormProvider,
+                                               view: MentalCapacityYesNoView
+                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider.withPrefix("trustee.individual.mentalCapacityYesNo")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
-      implicit request =>
+    implicit request =>
 
-        val preparedForm = request.userAnswers.get(MentalCapacityYesNoPage) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
+      val preparedForm = request.userAnswers.get(MentalCapacityYesNoPage) match {
+        case None => form
+        case Some(value) => form.fill(value)
+      }
 
-        Ok(view(preparedForm, mode, request.trusteeName))
-    }
+      Ok(view(preparedForm, mode, request.trusteeName))
+  }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-      implicit request =>
+    implicit request =>
 
-        form.bindFromRequest().fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
+      form.bindFromRequest().fold(
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
 
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(MentalCapacityYesNoPage, value))
-              _              <- repository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(MentalCapacityYesNoPage, mode, updatedAnswers))
-        )
-    }
+        value =>
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(MentalCapacityYesNoPage, value))
+            _              <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(MentalCapacityYesNoPage, mode, updatedAnswers))
+      )
+  }
 }

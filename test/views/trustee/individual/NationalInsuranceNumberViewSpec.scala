@@ -17,7 +17,7 @@
 package views.trustee.individual
 
 import forms.NationalInsuranceNumberFormProvider
-import models.Name
+import models.{Name, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
@@ -35,7 +35,7 @@ class NationalInsuranceNumberViewSpec extends QuestionViewBehaviours[String] {
     val view = viewFor[NationalInsuranceNumberView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name.displayName)(fakeRequest, messages)
+      view.apply(form, NormalMode, name.displayName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 

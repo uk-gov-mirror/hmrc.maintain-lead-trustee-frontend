@@ -18,7 +18,7 @@ package views.trustee.individual
 
 import controllers.trustee.individual.routes
 import forms.YesNoFormProvider
-import models.Name
+import models.{Name, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -36,13 +36,13 @@ class DateOfBirthYesNoViewSpec extends YesNoViewBehaviours {
     val view = viewFor[DateOfBirthYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name.displayName)(fakeRequest, messages)
+      view.apply(form, NormalMode, name.displayName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.DateOfBirthYesNoController.onSubmit().url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.DateOfBirthYesNoController.onSubmit(NormalMode).url)
 
     behave like pageWithASubmitButton(applyView(form))
   }

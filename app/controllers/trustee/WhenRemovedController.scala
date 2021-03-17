@@ -18,28 +18,24 @@ package controllers.trustee
 
 import controllers.actions.StandardActionSets
 import forms.DateRemovedFromTrustFormProvider
-import javax.inject.Inject
 import models.{RemoveTrustee, TrusteeIndividual, TrusteeOrganisation}
-import navigation.Navigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.trustee.WhenRemovedView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class WhenRemovedController @Inject()(
-                                     override val messagesApi: MessagesApi,
-                                     sessionRepository: PlaybackRepository,
-                                     navigator: Navigator,
-                                     standardActionSets: StandardActionSets,
-                                     formProvider: DateRemovedFromTrustFormProvider,
-                                     trust: TrustService,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     view: WhenRemovedView,
-                                     trustService: TrustService
+                                       override val messagesApi: MessagesApi,
+                                       standardActionSets: StandardActionSets,
+                                       formProvider: DateRemovedFromTrustFormProvider,
+                                       trust: TrustService,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       view: WhenRemovedView,
+                                       trustService: TrustService
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {

@@ -18,10 +18,12 @@ package controllers
 
 import controllers.actions.StandardActionSets
 import forms.TrusteeTypeFormProvider
+
 import javax.inject.Inject
 import models.TrusteeType
 import navigation.Navigator
 import pages.TrusteeTypePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -38,9 +40,9 @@ class LeadTrusteeOrTrusteeController @Inject()(
                                                 formProvider: TrusteeTypeFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: LeadTrusteeOrTrusteeView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("leadTrusteeOrTrustee")
+  private val form: Form[TrusteeType] = formProvider.withPrefix("leadTrusteeOrTrustee")
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>

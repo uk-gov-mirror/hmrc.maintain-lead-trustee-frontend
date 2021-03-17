@@ -18,7 +18,7 @@ package controllers.trustee.individual
 
 import base.SpecBase
 import forms.UkAddressFormProvider
-import models.{Name, UkAddress}
+import models.{Name, NormalMode, UkAddress}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -42,7 +42,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
   val trusteeName = Name("FirstName", None, "LastName")
   val validAnswer = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
 
-  lazy val ukAddressControllerRoute = routes.UkAddressController.onPageLoad().url
+  lazy val ukAddressControllerRoute = routes.UkAddressController.onPageLoad(NormalMode).url
 
   "UkAddress Controller" must {
 
@@ -61,7 +61,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, trusteeName.displayName)(request, messages).toString
+        view(form, NormalMode, trusteeName.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -83,7 +83,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), trusteeName.displayName)(request, messages).toString
+        view(form.fill(validAnswer), NormalMode, trusteeName.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -134,7 +134,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, trusteeName.displayName)(request, messages).toString
+        view(boundForm, NormalMode, trusteeName.displayName)(request, messages).toString
 
       application.stop()
     }

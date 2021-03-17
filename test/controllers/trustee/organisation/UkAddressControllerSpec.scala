@@ -18,7 +18,7 @@ package controllers.trustee.organisation
 
 import base.SpecBase
 import forms.UkAddressFormProvider
-import models.UkAddress
+import models.{NormalMode, UkAddress}
 import navigation.Navigator
 import pages.trustee.organisation.{NamePage, UkAddressPage}
 import play.api.inject.bind
@@ -30,7 +30,7 @@ class UkAddressControllerSpec extends SpecBase {
 
   val form = new UkAddressFormProvider()()
 
-  val onwardRoute = routes.UkAddressController.onPageLoad().url
+  val onwardRoute = routes.UkAddressController.onPageLoad(NormalMode).url
 
   val name: String = "Trustee Name"
   val fakeAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "AB11AB")
@@ -53,7 +53,7 @@ class UkAddressControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name)(request, messages).toString
+        view(form, NormalMode, name)(request, messages).toString
 
       application.stop()
     }
@@ -75,7 +75,7 @@ class UkAddressControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(fakeAddress), name)(request, messages).toString
+        view(form.fill(fakeAddress), NormalMode, name)(request, messages).toString
 
       application.stop()
     }
@@ -122,7 +122,7 @@ class UkAddressControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name)(request, messages).toString
+        view(boundForm, NormalMode, name)(request, messages).toString
 
       application.stop()
     }

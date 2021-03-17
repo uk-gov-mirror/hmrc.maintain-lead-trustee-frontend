@@ -17,10 +17,9 @@
 package controllers.trustee.individual
 
 import java.time.LocalDate
-
 import base.SpecBase
 import forms.YesNoFormProvider
-import models.{Name, UserAnswers}
+import models.{Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -47,7 +46,7 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
   override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
     .set(NamePage, name).success.value
   
-  lazy val addressYesNoControllerRoute = routes.AddressYesNoController.onPageLoad().url
+  lazy val addressYesNoControllerRoute = routes.AddressYesNoController.onPageLoad(NormalMode).url
 
   "AddressYesNo Controller" must {
 
@@ -64,7 +63,7 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, trusteeName)(request, messages).toString
+        view(form, NormalMode, trusteeName)(request, messages).toString
 
       application.stop()
     }
@@ -84,7 +83,7 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), trusteeName)(request, messages).toString
+        view(form.fill(true), NormalMode, trusteeName)(request, messages).toString
 
       application.stop()
     }
@@ -132,7 +131,7 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, trusteeName)(request, messages).toString
+        view(boundForm, NormalMode, trusteeName)(request, messages).toString
 
       application.stop()
     }
