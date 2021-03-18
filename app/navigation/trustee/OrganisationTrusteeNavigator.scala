@@ -20,13 +20,13 @@ import controllers.trustee.organisation.add.{routes => addRts}
 import controllers.trustee.organisation.amend.{routes => amendRts}
 import controllers.trustee.organisation.{routes => rts}
 import models.{Mode, NormalMode, UserAnswers}
+import pages.Page
 import pages.trustee.organisation._
 import pages.trustee.organisation.add.WhenAddedPage
 import pages.trustee.organisation.amend.IndexPage
-import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
-object OrganisationTrusteeNavigator {
+object OrganisationTrusteeNavigator extends TrusteeNavigator {
 
   def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     linearNavigation(mode) orElse
@@ -117,11 +117,5 @@ object OrganisationTrusteeNavigator {
   }
 
   private def isUtrDefined(answers: UserAnswers): Boolean = answers.get(UtrYesNoPage).getOrElse(false)
-
-  private def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
-    ua.get(fromPage)
-      .map(if (_) yesCall else noCall)
-      .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
-  }
 
 }

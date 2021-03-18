@@ -18,11 +18,11 @@ package navigation.leadtrustee
 
 import controllers.leadtrustee.organisation.routes._
 import models.UserAnswers
+import pages.Page
 import pages.leadtrustee.organisation._
-import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
-object OrganisationLeadTrusteeNavigator {
+object OrganisationLeadTrusteeNavigator extends LeadTrusteeNavigator {
 
   val routes: PartialFunction[Page, UserAnswers => Call] =
     simpleNavigation orElse
@@ -60,13 +60,6 @@ object OrganisationLeadTrusteeNavigator {
     } else {
       AddressInTheUkYesNoController.onPageLoad()
     }
-  }
-
-  private def yesNoNav(fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): PartialFunction[Page, UserAnswers => Call] = {
-    case `fromPage` => ua =>
-      ua.get(fromPage)
-        .map(if (_) yesCall else noCall)
-        .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
 }

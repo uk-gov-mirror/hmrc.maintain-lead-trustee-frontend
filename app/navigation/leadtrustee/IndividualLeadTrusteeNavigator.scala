@@ -18,11 +18,11 @@ package navigation.leadtrustee
 
 import controllers.leadtrustee.individual.routes._
 import models.UserAnswers
+import pages.Page
 import pages.leadtrustee.individual._
-import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
-object IndividualLeadTrusteeNavigator {
+object IndividualLeadTrusteeNavigator extends LeadTrusteeNavigator {
 
   val routes: PartialFunction[Page, UserAnswers => Call] =
     simpleNavigation orElse
@@ -45,13 +45,6 @@ object IndividualLeadTrusteeNavigator {
       yesNoNav(CountryOfResidenceInTheUkYesNoPage, UkAddressController.onPageLoad(), CountryOfResidenceController.onPageLoad()) orElse
       yesNoNav(LiveInTheUkYesNoPage, UkAddressController.onPageLoad(), NonUkAddressController.onPageLoad()) orElse
       yesNoNav(EmailAddressYesNoPage, EmailAddressController.onPageLoad(), TelephoneNumberController.onPageLoad())
-
-  private def yesNoNav(fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): PartialFunction[Page, UserAnswers => Call] = {
-    case `fromPage` => ua =>
-      ua.get(fromPage)
-        .map(if (_) yesCall else noCall)
-        .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
-  }
 
   private def navigateAwayFromDateOfBirthQuestion(ua: UserAnswers): Call = {
     if (ua.is5mldEnabled) {

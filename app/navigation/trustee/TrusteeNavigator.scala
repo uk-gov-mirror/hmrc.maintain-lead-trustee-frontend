@@ -18,20 +18,29 @@ package navigation.trustee
 
 import models.IndividualOrBusiness.{Business, Individual}
 import models.{Mode, UserAnswers}
-import pages.Page
+import pages.{Page, QuestionPage}
 import pages.trustee.IndividualOrBusinessPage
 import play.api.mvc.Call
 
+trait TrusteeNavigator {
+
+  def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
+    ua.get(fromPage)
+      .map(if (_) yesCall else noCall)
+      .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+  }
+}
+
 object TrusteeNavigator {
 
-  def parameterisedNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case IndividualOrBusinessPage => individualOrBusinessNavigation(_, mode)
-  }
-
-  def routes(mode:Mode): PartialFunction[Page, UserAnswers => Call] =
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
     parameterisedNavigation(mode) orElse
       IndividualTrusteeNavigator.routes(mode) orElse
       OrganisationTrusteeNavigator.routes(mode)
+
+  private def parameterisedNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case IndividualOrBusinessPage => individualOrBusinessNavigation(_, mode)
+  }
 
   private def individualOrBusinessNavigation(userAnswers: UserAnswers, mode: Mode): Call = {
     userAnswers.get(IndividualOrBusinessPage).map {

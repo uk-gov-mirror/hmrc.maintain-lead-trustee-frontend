@@ -20,13 +20,13 @@ import controllers.trustee.individual.add.{routes => addRts}
 import controllers.trustee.individual.amend.{routes => amendRts}
 import controllers.trustee.individual.{routes => rts}
 import models.{Mode, NormalMode, UserAnswers}
+import pages.Page
 import pages.trustee.individual._
 import pages.trustee.individual.add._
 import pages.trustee.individual.amend._
-import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
-object IndividualTrusteeNavigator {
+object IndividualTrusteeNavigator extends TrusteeNavigator {
 
   def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
     linearNavigation(mode) orElse
@@ -47,89 +47,78 @@ object IndividualTrusteeNavigator {
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case DateOfBirthYesNoPage => ua =>
-      yesNoNav(
-        ua = ua,
-        fromPage = DateOfBirthYesNoPage,
-        yesCall = rts.DateOfBirthController.onPageLoad(mode),
-        noCall = navigateAwayFromDateOfBirthPages(ua, mode)
-      )
-    case CountryOfNationalityYesNoPage => ua =>
-      yesNoNav(
-        ua = ua,
-        fromPage = CountryOfNationalityYesNoPage,
-        yesCall = rts.CountryOfNationalityInTheUkYesNoController.onPageLoad(mode),
-        noCall = navigateAwayFromCountryOfNationalityPages(ua, mode)
-      )
-    case CountryOfNationalityInTheUkYesNoPage => ua =>
-      yesNoNav(
-        ua = ua,
-        fromPage = CountryOfNationalityInTheUkYesNoPage,
-        yesCall = navigateAwayFromCountryOfNationalityPages(ua, mode),
-        noCall = rts.CountryOfNationalityController.onPageLoad(mode)
-      )
-    case NationalInsuranceNumberYesNoPage => ua =>
-      yesNoNav(
-        ua = ua,
-        fromPage = NationalInsuranceNumberYesNoPage,
-        yesCall = rts.NationalInsuranceNumberController.onPageLoad(mode),
-        noCall = navigateAwayFromNinoPages(ua, mode)
-      )
-    case CountryOfResidenceYesNoPage => ua =>
-      yesNoNav(
-        ua = ua,
-        fromPage = CountryOfResidenceYesNoPage,
-        yesCall = rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode),
-        noCall = navigateToOrBypassAddressPages(ua, mode)
-      )
-    case CountryOfResidenceInTheUkYesNoPage => ua =>
-      yesNoNav(
-        ua = ua,
-        fromPage = CountryOfResidenceInTheUkYesNoPage,
-        yesCall = navigateToOrBypassAddressPages(ua, mode),
-        noCall = rts.CountryOfResidenceController.onPageLoad(mode)
-      )
-    case AddressYesNoPage => ua =>
-      yesNoNav(
-        ua = ua,
-        fromPage = AddressYesNoPage,
-        yesCall = rts.LiveInTheUkYesNoController.onPageLoad(mode),
-        noCall = navigateToMentalCapacityOrWhenAddedPage(ua, mode)
-      )
-    case LiveInTheUkYesNoPage => ua =>
-      yesNoNav(
-        ua = ua,
-        fromPage = LiveInTheUkYesNoPage,
-        yesCall = rts.UkAddressController.onPageLoad(mode),
-        noCall = rts.NonUkAddressController.onPageLoad(mode)
-      )
+    case DateOfBirthYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = DateOfBirthYesNoPage,
+      yesCall = rts.DateOfBirthController.onPageLoad(mode),
+      noCall = navigateAwayFromDateOfBirthPages(ua, mode)
+    )
+    case CountryOfNationalityYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = CountryOfNationalityYesNoPage,
+      yesCall = rts.CountryOfNationalityInTheUkYesNoController.onPageLoad(mode),
+      noCall = navigateAwayFromCountryOfNationalityPages(ua, mode)
+    )
+    case CountryOfNationalityInTheUkYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = CountryOfNationalityInTheUkYesNoPage,
+      yesCall = navigateAwayFromCountryOfNationalityPages(ua, mode),
+      noCall = rts.CountryOfNationalityController.onPageLoad(mode)
+    )
+    case NationalInsuranceNumberYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = NationalInsuranceNumberYesNoPage,
+      yesCall = rts.NationalInsuranceNumberController.onPageLoad(mode),
+      noCall = navigateAwayFromNinoPages(ua, mode)
+    )
+    case CountryOfResidenceYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = CountryOfResidenceYesNoPage,
+      yesCall = rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode),
+      noCall = navigateToOrBypassAddressPages(ua, mode)
+    )
+    case CountryOfResidenceInTheUkYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = CountryOfResidenceInTheUkYesNoPage,
+      yesCall = navigateToOrBypassAddressPages(ua, mode),
+      noCall = rts.CountryOfResidenceController.onPageLoad(mode)
+    )
+    case AddressYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = AddressYesNoPage,
+      yesCall = rts.LiveInTheUkYesNoController.onPageLoad(mode),
+      noCall = navigateToMentalCapacityOrWhenAddedPage(ua, mode)
+    )
+    case LiveInTheUkYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = LiveInTheUkYesNoPage,
+      yesCall = rts.UkAddressController.onPageLoad(mode),
+      noCall = rts.NonUkAddressController.onPageLoad(mode)
+    )
   }
 
   private def addNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case PassportDetailsYesNoPage => ua =>
-      yesNoNav(
-        ua = ua,
-        fromPage = PassportDetailsYesNoPage,
-        yesCall = addRts.PassportDetailsController.onPageLoad(),
-        noCall = addRts.IdCardDetailsYesNoController.onPageLoad()
-      )
-    case IdCardDetailsYesNoPage => ua =>
-      yesNoNav(
-        ua = ua,
-        fromPage = IdCardDetailsYesNoPage,
-        yesCall = addRts.IdCardDetailsController.onPageLoad(),
-        noCall = navigateToMentalCapacityOrWhenAddedPage(ua, mode)
-      )
+    case PassportDetailsYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = PassportDetailsYesNoPage,
+      yesCall = addRts.PassportDetailsController.onPageLoad(),
+      noCall = addRts.IdCardDetailsYesNoController.onPageLoad()
+    )
+    case IdCardDetailsYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = IdCardDetailsYesNoPage,
+      yesCall = addRts.IdCardDetailsController.onPageLoad(),
+      noCall = navigateToMentalCapacityOrWhenAddedPage(ua, mode)
+    )
   }
 
   private def amendNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case PassportOrIdCardDetailsYesNoPage => ua =>
-      yesNoNav(
-        ua = ua,
-        fromPage = PassportOrIdCardDetailsYesNoPage,
-        yesCall = amendRts.PassportOrIdCardDetailsController.onPageLoad(),
-        noCall = navigateToMentalCapacityOrWhenAddedPage(ua, mode)
-      )
+    case PassportOrIdCardDetailsYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = PassportOrIdCardDetailsYesNoPage,
+      yesCall = amendRts.PassportOrIdCardDetailsController.onPageLoad(),
+      noCall = navigateToMentalCapacityOrWhenAddedPage(ua, mode)
+    )
   }
 
   private def navigateAwayFromNinoPages(ua: UserAnswers, mode: Mode): Call = {
@@ -193,12 +182,6 @@ object IndividualTrusteeNavigator {
       case Some(index) => amendRts.CheckDetailsController.onPageLoadUpdated(index)
       case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
-  }
-
-  private def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
-    ua.get(fromPage)
-      .map(if (_) yesCall else noCall)
-      .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
 }
