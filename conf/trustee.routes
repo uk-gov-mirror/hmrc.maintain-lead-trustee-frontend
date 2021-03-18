@@ -1,0 +1,11 @@
+->          /individual                             trustee.individual.Routes
+->          /organisation                           trustee.organisation.Routes
+
+GET         /individual-or-business                 controllers.trustee.IndividualOrBusinessController.onPageLoad()
+POST        /individual-or-business                 controllers.trustee.IndividualOrBusinessController.onSubmit()
+
+GET         /:index/remove                          controllers.trustee.RemoveTrusteeController.onPageLoad(index: Int)
+POST        /:index/remove                          controllers.trustee.RemoveTrusteeController.onSubmit(index: Int)
+
+GET         /:index/when-was-trustee-removed        controllers.trustee.WhenRemovedController.onPageLoad(index: Int)
+POST        /:index/when-was-trustee-removed        controllers.trustee.WhenRemovedController.onSubmit(index: Int)

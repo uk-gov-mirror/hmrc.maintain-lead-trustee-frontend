@@ -1,10 +1,7 @@
 # microservice specific routes
 
-->         /lead-trustee/individual         leadtrustee.individual.Routes
-->         /lead-trustee/organisation       leadtrustee.organisation.Routes
-
-->         /trustee/individual              trustee.individual.Routes
-->         /trustee/organisation            trustee.organisation.Routes
+->         /lead-trustee                    leadtrustee.Routes
+->         /trustee                         trustee.Routes
 
 GET        /assets/*file                                                    controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -26,22 +23,8 @@ POST       /add                                                             cont
 POST       /add-another                                                     controllers.AddATrusteeController.submitAnother()
 POST       /complete                                                        controllers.AddATrusteeController.submitComplete()
 
-GET        /trustee/:index/remove                                           controllers.trustee.RemoveTrusteeController.onPageLoad(index: Int)
-POST       /trustee/:index/remove                                           controllers.trustee.RemoveTrusteeController.onSubmit(index: Int)
-
 GET        /is-this-lead-trustee                                            controllers.LeadTrusteeOrTrusteeController.onPageLoad()
 POST       /is-this-lead-trustee                                            controllers.LeadTrusteeOrTrusteeController.onSubmit()
-
-GET        /lead-trustee/individual-or-business                             controllers.leadtrustee.IndividualOrBusinessController.onPageLoad()
-POST       /lead-trustee/individual-or-business                             controllers.leadtrustee.IndividualOrBusinessController.onSubmit()
-
-GET        /trustee/individual-or-business                                  controllers.trustee.IndividualOrBusinessController.onPageLoad()
-POST       /trustee/individual-or-business                                  controllers.trustee.IndividualOrBusinessController.onSubmit()
-
-GET        /trustee/:index/when-was-trustee-removed                         controllers.trustee.WhenRemovedController.onPageLoad(index: Int)
-POST       /trustee/:index/when-was-trustee-removed                         controllers.trustee.WhenRemovedController.onSubmit(index: Int)
-
-GET        /lead-trustee/unable-to-remove                                   controllers.leadtrustee.UnableToRemoveController.onPageLoad()
 
 GET        /replace-lead-trustee                                            controllers.ReplacingLeadTrusteeController.onPageLoad()
 POST       /replace-lead-trustee                                            controllers.ReplacingLeadTrusteeController.onSubmit()
