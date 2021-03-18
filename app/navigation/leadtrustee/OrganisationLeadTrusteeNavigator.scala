@@ -17,7 +17,6 @@
 package navigation.leadtrustee
 
 import controllers.leadtrustee.organisation.routes._
-import controllers.leadtrustee.routes._
 import models.UserAnswers
 import pages.leadtrustee.organisation._
 import pages.{Page, QuestionPage}
@@ -35,7 +34,7 @@ object OrganisationLeadTrusteeNavigator {
     case CountryOfResidencePage => _ => NonUkAddressController.onPageLoad()
     case UkAddressPage | NonUkAddressPage => _ => EmailAddressYesNoController.onPageLoad()
     case EmailAddressPage => _ => TelephoneNumberController.onPageLoad()
-    case TelephoneNumberPage => _ => CheckDetailsController.onPageLoadOrganisationUpdated()
+    case TelephoneNumberPage => _ => CheckDetailsController.onPageLoadUpdated()
   }
 
   private def yesNoNavigation: PartialFunction[Page, UserAnswers => Call] =

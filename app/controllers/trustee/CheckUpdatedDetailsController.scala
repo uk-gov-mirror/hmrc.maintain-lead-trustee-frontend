@@ -33,7 +33,7 @@ import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.print.checkYourAnswers.TrusteePrintHelper
+import utils.print.checkYourAnswers.TrusteePrintHelpers
 import views.html.trustee.CheckUpdatedDetailsView
 
 import javax.inject.Inject
@@ -46,7 +46,7 @@ class CheckUpdatedDetailsController @Inject()(
                                                standardActionSets: StandardActionSets,
                                                val controllerComponents: MessagesControllerComponents,
                                                view: CheckUpdatedDetailsView,
-                                               printHelper: TrusteePrintHelper,
+                                               printHelper: TrusteePrintHelpers,
                                                mapper: TrusteeMappers,
                                                extractor: TrusteeExtractors,
                                                trustConnector: TrustConnector,

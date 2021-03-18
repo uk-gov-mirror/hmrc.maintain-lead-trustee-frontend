@@ -18,7 +18,6 @@ package navigation.leadtrustee
 
 import base.SpecBase
 import controllers.leadtrustee.organisation.routes._
-import controllers.leadtrustee.routes._
 import navigation.Navigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.leadtrustee.organisation._
@@ -131,7 +130,7 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
 
       "Telephone number page -> Check details page" in {
         navigator.nextPage(TelephoneNumberPage, emptyUserAnswers)
-          .mustBe(CheckDetailsController.onPageLoadOrganisationUpdated())
+          .mustBe(CheckDetailsController.onPageLoadUpdated())
       }
     }
 
@@ -242,7 +241,7 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
 
       "Telephone number page -> Check details page" in {
         navigator.nextPage(TelephoneNumberPage, emptyUserAnswers)
-          .mustBe(CheckDetailsController.onPageLoadOrganisationUpdated())
+          .mustBe(CheckDetailsController.onPageLoadUpdated())
       }
     }
   }

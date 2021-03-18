@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,18 +12,30 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models
+@import controllers.leadtrustee.organisation.routes._
+@import viewmodels.AnswerSection
 
-import play.api.i18n.{Messages, MessagesProvider}
+@this(
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
+)
 
-case class AllTrustees(lead: Option[LeadTrustee], trustees: List[Trustee]) {
+@(answerSection: AnswerSection)(implicit request: Request[_], messages: Messages)
 
-  val size: Int = lead.size + trustees.size
+@main_template(
+    title = messages("leadTrusteeDetails.title")
+) {
 
-  def addToHeading(implicit mp: MessagesProvider): String = size match {
-    case x if x > 1 => Messages("addATrustee.count.heading", x)
-    case _ => Messages("addATrustee.heading")
-  }
+    @formHelper(action = CheckDetailsController.onSubmit(), 'autoComplete -> "off") {
+
+        @components.back_link()
+
+        @components.heading("leadTrusteeDetails.heading")
+
+        @components.answer_section(answerSection)
+
+        @components.submit_button()
+    }
 }

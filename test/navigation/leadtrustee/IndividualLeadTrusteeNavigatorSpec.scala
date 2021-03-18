@@ -18,7 +18,6 @@ package navigation.leadtrustee
 
 import base.SpecBase
 import controllers.leadtrustee.individual.routes._
-import controllers.leadtrustee.routes._
 import models.UserAnswers
 import navigation.Navigator
 import pages.leadtrustee.individual._
@@ -124,7 +123,7 @@ class IndividualLeadTrusteeNavigatorSpec extends SpecBase {
 
       "Telephone number page -> Check details page" in {
         navigator.nextPage(TelephoneNumberPage, baseAnswers)
-          .mustBe(CheckDetailsController.onPageLoadIndividualUpdated())
+          .mustBe(CheckDetailsController.onPageLoadUpdated())
       }
     }
 
@@ -251,7 +250,7 @@ class IndividualLeadTrusteeNavigatorSpec extends SpecBase {
 
       "Telephone number page -> Check details page" in {
         navigator.nextPage(TelephoneNumberPage, baseAnswers)
-          .mustBe(CheckDetailsController.onPageLoadIndividualUpdated())
+          .mustBe(CheckDetailsController.onPageLoadUpdated())
       }
     }
   }

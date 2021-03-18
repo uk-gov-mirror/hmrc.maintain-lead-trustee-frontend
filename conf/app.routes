@@ -26,20 +26,14 @@ POST       /add                                                             cont
 POST       /add-another                                                     controllers.AddATrusteeController.submitAnother()
 POST       /complete                                                        controllers.AddATrusteeController.submitComplete()
 
-GET        /trustee/:index/remove                                           controllers.trustee.RemoveTrusteeController.onPageLoad(index : Int)
-POST       /trustee/:index/remove                                           controllers.trustee.RemoveTrusteeController.onSubmit(index : Int)
+GET        /trustee/:index/remove                                           controllers.trustee.RemoveTrusteeController.onPageLoad(index: Int)
+POST       /trustee/:index/remove                                           controllers.trustee.RemoveTrusteeController.onSubmit(index: Int)
 
 GET        /is-this-lead-trustee                                            controllers.LeadTrusteeOrTrusteeController.onPageLoad()
 POST       /is-this-lead-trustee                                            controllers.LeadTrusteeOrTrusteeController.onSubmit()
 
 GET        /lead-trustee/individual-or-business                             controllers.leadtrustee.IndividualOrBusinessController.onPageLoad()
 POST       /lead-trustee/individual-or-business                             controllers.leadtrustee.IndividualOrBusinessController.onSubmit()
-
-GET        /lead-trustee/details                                            controllers.leadtrustee.CheckDetailsController.onPageLoad()
-GET        /lead-trustee/details/individual-updated                         controllers.leadtrustee.CheckDetailsController.onPageLoadIndividualUpdated()
-GET        /lead-trustee/details/organisation-updated                       controllers.leadtrustee.CheckDetailsController.onPageLoadOrganisationUpdated()
-POST       /lead-trustee/details/individual-updated                         controllers.leadtrustee.CheckDetailsController.onSubmitIndividual()
-POST       /lead-trustee/details/organisation-updated                       controllers.leadtrustee.CheckDetailsController.onSubmitOrganisation()
 
 GET        /trustee/individual-or-business                                  controllers.trustee.IndividualOrBusinessController.onPageLoad()
 POST       /trustee/individual-or-business                                  controllers.trustee.IndividualOrBusinessController.onSubmit()

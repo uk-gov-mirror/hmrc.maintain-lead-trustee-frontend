@@ -22,10 +22,10 @@ import viewmodels.AnswerSection
 
 import javax.inject.Inject
 
-class TrusteePrintHelper @Inject()(trusteeIndividualPrintHelper: TrusteeIndividualPrintHelper,
-                                   trusteeOrganisationPrintHelper: TrusteeOrganisationPrintHelper,
-                                   leadTrusteeIndividualPrintHelper: LeadTrusteeIndividualPrintHelper,
-                                   leadTrusteeOrganisationPrintHelper: LeadTrusteeOrganisationPrintHelper) {
+class TrusteePrintHelpers @Inject()(trusteeIndividualPrintHelper: TrusteeIndividualPrintHelper,
+                                    trusteeOrganisationPrintHelper: TrusteeOrganisationPrintHelper,
+                                    leadTrusteeIndividualPrintHelper: LeadTrusteeIndividualPrintHelper,
+                                    leadTrusteeOrganisationPrintHelper: LeadTrusteeOrganisationPrintHelper) {
 
   def printIndividualTrustee(userAnswers: UserAnswers, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
     trusteeIndividualPrintHelper.print(userAnswers, provisional, name)

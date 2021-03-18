@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.leadtrustee
+package views.leadtrustee.organisation
 
 /*
  * Copyright 2020 HM Revenue & Customs
@@ -35,25 +35,21 @@ package views.leadtrustee
 import play.twirl.api.HtmlFormat
 import viewmodels.AnswerSection
 import views.behaviours.ViewBehaviours
-import views.html.leadtrustee.CheckDetailsView
-import controllers.leadtrustee.routes
+import views.html.leadtrustee.organisation.CheckDetailsView
 
 class CheckDetailsViewSpec extends ViewBehaviours {
 
-  val messageKeyPrefix = "leadTrusteeDetails"
-
-  "CheckDetails view" must {
+  "CheckDetailsView" must {
 
     val view = viewFor[CheckDetailsView](Some(emptyUserAnswers))
 
     def applyView(): HtmlFormat.Appendable =
-      view.apply(AnswerSection(None, Seq()), routes.CheckDetailsController.onSubmitIndividual())(fakeRequest, messages)
+      view.apply(AnswerSection(None, Seq()))(fakeRequest, messages)
 
-    behave like normalPage(applyView(), messageKeyPrefix)
+    behave like normalPage(applyView(), "leadTrusteeDetails")
 
     behave like pageWithBackLink(applyView())
 
     behave like pageWithASubmitButton(applyView())
   }
 }
-

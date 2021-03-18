@@ -44,3 +44,7 @@ POST       /email                                   controllers.leadtrustee.indi
 
 GET        /telephone-number                        controllers.leadtrustee.individual.TelephoneNumberController.onPageLoad()
 POST       /telephone-number                        controllers.leadtrustee.individual.TelephoneNumberController.onSubmit()
+
+GET        /check-details                           controllers.leadtrustee.individual.CheckDetailsController.onPageLoad()
+GET        /check-updated-details                   controllers.leadtrustee.individual.CheckDetailsController.onPageLoadUpdated()
+POST       /check-details                           controllers.leadtrustee.individual.CheckDetailsController.onSubmit()
