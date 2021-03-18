@@ -47,3 +47,13 @@ GET        /non-uk-address                          controllers.trustee.organisa
 POST       /non-uk-address                          controllers.trustee.organisation.NonUkAddressController.onSubmit(mode: Mode = NormalMode)
 GET        /change-non-uk-address                   controllers.trustee.organisation.NonUkAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-non-uk-address                   controllers.trustee.organisation.NonUkAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET        /when-was-trustee-added                  controllers.trustee.organisation.add.WhenAddedController.onPageLoad()
+POST       /when-was-trustee-added                  controllers.trustee.organisation.add.WhenAddedController.onSubmit()
+
+GET        /check-details                           controllers.trustee.organisation.add.CheckDetailsController.onPageLoad()
+POST       /check-details                           controllers.trustee.organisation.add.CheckDetailsController.onSubmit()
+
+GET        /:index/check-details                    controllers.trustee.organisation.amend.CheckDetailsController.onPageLoad(index: Int)
+GET        /:index/check-updated-details            controllers.trustee.organisation.amend.CheckDetailsController.onPageLoadUpdated(index: Int)
+POST       /:index/check-details                    controllers.trustee.organisation.amend.CheckDetailsController.onSubmit(index: Int)

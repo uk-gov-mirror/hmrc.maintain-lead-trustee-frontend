@@ -17,11 +17,14 @@
 package navigation.trustee
 
 import base.SpecBase
+import controllers.trustee.organisation.add.{routes => addRts}
+import controllers.trustee.organisation.amend.{routes => amendRts}
+import controllers.trustee.organisation.{routes => rts}
 import models.{CheckMode, NormalMode}
 import navigation.Navigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.trustee.WhenAddedPage
 import pages.trustee.organisation._
+import pages.trustee.organisation.add.WhenAddedPage
 import pages.trustee.organisation.amend.IndexPage
 
 class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks  {
@@ -39,7 +42,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
         "Name page -> Do you know UTR page" in {
           navigator.nextPage(NamePage, mode, baseAnswers)
-            .mustBe(controllers.trustee.organisation.routes.UtrYesNoController.onPageLoad(mode))
+            .mustBe(rts.UtrYesNoController.onPageLoad(mode))
         }
 
         "Do you know UTR page -> Yes -> UTR page" in {
@@ -47,7 +50,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             .set(UtrYesNoPage, true).success.value
 
           navigator.nextPage(UtrYesNoPage, mode, answers)
-            .mustBe(controllers.trustee.organisation.routes.UtrController.onPageLoad(mode))
+            .mustBe(rts.UtrController.onPageLoad(mode))
         }
 
         "UTR page -> When added as trustee page" in {
@@ -55,7 +58,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             .set(UtrYesNoPage, true).success.value
 
           navigator.nextPage(UtrPage, mode, answers)
-            .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad())
+            .mustBe(addRts.WhenAddedController.onPageLoad())
         }
 
         "Do you know UTR page -> No -> Do you know address page" in {
@@ -63,7 +66,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             .set(UtrYesNoPage, false).success.value
 
           navigator.nextPage(UtrYesNoPage, mode, answers)
-            .mustBe(controllers.trustee.organisation.routes.AddressYesNoController.onPageLoad(mode))
+            .mustBe(rts.AddressYesNoController.onPageLoad(mode))
         }
 
         "Do you know address page -> Yes -> Is address in UK page" in {
@@ -71,7 +74,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             .set(AddressYesNoPage, true).success.value
 
           navigator.nextPage(AddressYesNoPage, mode, answers)
-            .mustBe(controllers.trustee.organisation.routes.AddressInTheUkYesNoController.onPageLoad(mode))
+            .mustBe(rts.AddressInTheUkYesNoController.onPageLoad(mode))
         }
 
         "Do you know address page -> No -> When added as trustee page" in {
@@ -79,7 +82,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             .set(AddressYesNoPage, false).success.value
 
           navigator.nextPage(AddressYesNoPage, mode, answers)
-            .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad())
+            .mustBe(addRts.WhenAddedController.onPageLoad())
         }
 
         "Is address in UK page -> Yes -> UK address page" in {
@@ -87,7 +90,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             .set(AddressInTheUkYesNoPage, true).success.value
 
           navigator.nextPage(AddressInTheUkYesNoPage, mode, answers)
-            .mustBe(controllers.trustee.organisation.routes.UkAddressController.onPageLoad(mode))
+            .mustBe(rts.UkAddressController.onPageLoad(mode))
         }
 
         "Is address in UK page -> No -> Non-UK address page" in {
@@ -95,24 +98,23 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             .set(AddressInTheUkYesNoPage, false).success.value
 
           navigator.nextPage(AddressInTheUkYesNoPage, mode, answers)
-            .mustBe(controllers.trustee.organisation.routes.NonUkAddressController.onPageLoad(mode))
+            .mustBe(rts.NonUkAddressController.onPageLoad(mode))
         }
 
         "UK address page -> When added as trustee page" in {
           navigator.nextPage(UkAddressPage, mode, baseAnswers)
-            .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad())
+            .mustBe(addRts.WhenAddedController.onPageLoad())
         }
 
         "Non-UK address page -> When added as trustee page" in {
           navigator.nextPage(NonUkAddressPage, mode, baseAnswers)
-            .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad())
+            .mustBe(addRts.WhenAddedController.onPageLoad())
         }
 
-        "wWhen Added page -> Check details page" in {
+        "When Added page -> Check details page" in {
           navigator.nextPage(WhenAddedPage, mode, baseAnswers)
-            .mustBe(controllers.trustee.routes.CheckDetailsController.onPageLoad())
+            .mustBe(addRts.CheckDetailsController.onPageLoad())
         }
-
       }
 
       "amend journey navigation" must {
@@ -124,7 +126,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
         "Name page -> Do you know UTR page" in {
           navigator.nextPage(NamePage, mode, baseAnswers)
-            .mustBe(controllers.trustee.organisation.routes.UtrYesNoController.onPageLoad(mode))
+            .mustBe(rts.UtrYesNoController.onPageLoad(mode))
         }
 
         "Do you know UTR page -> Yes -> UTR page" in {
@@ -132,7 +134,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             .set(UtrYesNoPage, true).success.value
 
           navigator.nextPage(UtrYesNoPage, mode, answers)
-            .mustBe(controllers.trustee.organisation.routes.UtrController.onPageLoad(mode))
+            .mustBe(rts.UtrController.onPageLoad(mode))
         }
 
         "UTR page -> Check details page" in {
@@ -140,7 +142,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             .set(UtrYesNoPage, true).success.value
 
           navigator.nextPage(UtrPage, mode, answers)
-            .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
+            .mustBe(amendRts.CheckDetailsController.onPageLoadUpdated(index))
         }
 
         "Do you know UTR page -> No -> Do you know address page" in {
@@ -148,7 +150,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             .set(UtrYesNoPage, false).success.value
 
           navigator.nextPage(UtrYesNoPage, mode, answers)
-            .mustBe(controllers.trustee.organisation.routes.AddressYesNoController.onPageLoad(mode))
+            .mustBe(rts.AddressYesNoController.onPageLoad(mode))
         }
 
         "Do you know address page -> Yes -> Is address in UK page" in {
@@ -156,7 +158,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             .set(AddressYesNoPage, true).success.value
 
           navigator.nextPage(AddressYesNoPage, mode, answers)
-            .mustBe(controllers.trustee.organisation.routes.AddressInTheUkYesNoController.onPageLoad(mode))
+            .mustBe(rts.AddressInTheUkYesNoController.onPageLoad(mode))
         }
 
         "Do you know address page -> No -> Check details page" in {
@@ -164,7 +166,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             .set(AddressYesNoPage, false).success.value
 
           navigator.nextPage(AddressYesNoPage, mode, answers)
-            .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
+            .mustBe(amendRts.CheckDetailsController.onPageLoadUpdated(index))
         }
 
         "Is address in UK page -> Yes -> UK address page" in {
@@ -172,7 +174,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             .set(AddressInTheUkYesNoPage, true).success.value
 
           navigator.nextPage(AddressInTheUkYesNoPage, mode, answers)
-            .mustBe(controllers.trustee.organisation.routes.UkAddressController.onPageLoad(mode))
+            .mustBe(rts.UkAddressController.onPageLoad(mode))
         }
 
         "Is address in UK page -> No -> Non-UK address page" in {
@@ -180,23 +182,19 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             .set(AddressInTheUkYesNoPage, false).success.value
 
           navigator.nextPage(AddressInTheUkYesNoPage, mode, answers)
-            .mustBe(controllers.trustee.organisation.routes.NonUkAddressController.onPageLoad(mode))
+            .mustBe(rts.NonUkAddressController.onPageLoad(mode))
         }
 
         "UK address page -> Check details page" in {
           navigator.nextPage(UkAddressPage, mode, baseAnswers)
-            .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
+            .mustBe(amendRts.CheckDetailsController.onPageLoadUpdated(index))
         }
 
         "Non-UK address page -> Check details page" in {
           navigator.nextPage(NonUkAddressPage, mode, baseAnswers)
-            .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
+            .mustBe(amendRts.CheckDetailsController.onPageLoadUpdated(index))
         }
-
-
       }
-
-
     }
 
     "5mld" must {
@@ -210,7 +208,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
           "Name page -> Do you know UTR page" in {
             navigator.nextPage(NamePage, mode, emptyUserAnswers)
-              .mustBe(controllers.trustee.organisation.routes.UtrYesNoController.onPageLoad(mode))
+              .mustBe(rts.UtrYesNoController.onPageLoad(mode))
           }
 
           "Do you know UTR page -> Yes -> UTR page" in {
@@ -218,7 +216,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
               .set(UtrYesNoPage, true).success.value
 
             navigator.nextPage(UtrYesNoPage, mode, answers)
-              .mustBe(controllers.trustee.organisation.routes.UtrController.onPageLoad(mode))
+              .mustBe(rts.UtrController.onPageLoad(mode))
           }
 
           "UTR page -> When added as trustee page" in {
@@ -226,7 +224,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
               .set(UtrYesNoPage, true).success.value
 
             navigator.nextPage(UtrPage, mode, answers)
-              .mustBe(controllers.trustee.organisation.routes.CountryOfResidenceYesNoController.onPageLoad(mode))
+              .mustBe(rts.CountryOfResidenceYesNoController.onPageLoad(mode))
           }
 
           "Country of Residence Pages" must {
@@ -236,7 +234,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceYesNoPage, true).success.value
 
               navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.organisation.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
+                .mustBe(rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
             }
 
             "Yes No page -> No (with UTR) -> When Added Page" in {
@@ -245,7 +243,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceYesNoPage, false).success.value
 
               navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad())
+                .mustBe(addRts.WhenAddedController.onPageLoad())
             }
 
             "Yes No page -> No (without UTR) -> Address Page" in {
@@ -254,7 +252,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceYesNoPage, false).success.value
 
               navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.organisation.routes.AddressYesNoController.onPageLoad(mode))
+                .mustBe(rts.AddressYesNoController.onPageLoad(mode))
             }
 
             "In The Uk page -> Yes (with UTR) -> When Added Page" in {
@@ -264,7 +262,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
 
               navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad())
+                .mustBe(addRts.WhenAddedController.onPageLoad())
             }
 
             "In The Uk page -> Yes (without UTR) -> Address Page" in {
@@ -274,7 +272,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
 
               navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.organisation.routes.AddressYesNoController.onPageLoad(mode))
+                .mustBe(rts.AddressYesNoController.onPageLoad(mode))
             }
 
             "In The Uk page -> No -> Country of Residence page" in {
@@ -283,7 +281,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
 
               navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.organisation.routes.CountryOfResidenceController.onPageLoad(mode))
+                .mustBe(rts.CountryOfResidenceController.onPageLoad(mode))
             }
 
             "page (with UTR) -> When Added Page" in {
@@ -292,7 +290,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidencePage, "ES").success.value
 
               navigator.nextPage(CountryOfResidencePage, mode, answers)
-                .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad())
+                .mustBe(addRts.WhenAddedController.onPageLoad())
             }
 
             "page (without UTR) -> Address Page" in {
@@ -301,7 +299,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidencePage, "ES").success.value
 
               navigator.nextPage(CountryOfResidencePage, mode, answers)
-                .mustBe(controllers.trustee.organisation.routes.AddressYesNoController.onPageLoad(mode))
+                .mustBe(rts.AddressYesNoController.onPageLoad(mode))
             }
           }
 
@@ -311,23 +309,25 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(AddressYesNoPage, false).success.value
 
               navigator.nextPage(AddressYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad())
+                .mustBe(addRts.WhenAddedController.onPageLoad())
             }
 
             "UK address page -> When Added page" in {
               navigator.nextPage(UkAddressPage, mode, baseAnswers)
-                .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad())
+                .mustBe(addRts.WhenAddedController.onPageLoad())
             }
 
             "Non-UK address page -> When Added page" in {
               navigator.nextPage(NonUkAddressPage, mode, baseAnswers)
-                .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad())
+                .mustBe(addRts.WhenAddedController.onPageLoad())
+            }
+
+            "When added page -> Check your answers page" in {
+              navigator.nextPage(WhenAddedPage, mode, baseAnswers)
+                .mustBe(addRts.CheckDetailsController.onPageLoad())
             }
           }
-
-
         }
-
 
         "amend journey navigation" must {
 
@@ -338,7 +338,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
           "Name page -> Do you know UTR page" in {
             navigator.nextPage(NamePage, mode, emptyUserAnswers)
-              .mustBe(controllers.trustee.organisation.routes.UtrYesNoController.onPageLoad(mode))
+              .mustBe(rts.UtrYesNoController.onPageLoad(mode))
           }
 
           "Do you know UTR page -> Yes -> UTR page" in {
@@ -346,7 +346,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
               .set(UtrYesNoPage, true).success.value
 
             navigator.nextPage(UtrYesNoPage, mode, answers)
-              .mustBe(controllers.trustee.organisation.routes.UtrController.onPageLoad(mode))
+              .mustBe(rts.UtrController.onPageLoad(mode))
           }
 
           "UTR page -> When added as trustee page" in {
@@ -354,7 +354,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
               .set(UtrYesNoPage, true).success.value
 
             navigator.nextPage(UtrPage, mode, answers)
-              .mustBe(controllers.trustee.organisation.routes.CountryOfResidenceYesNoController.onPageLoad(mode))
+              .mustBe(rts.CountryOfResidenceYesNoController.onPageLoad(mode))
           }
 
           "Country of Residence Pages" must {
@@ -364,7 +364,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceYesNoPage, true).success.value
 
               navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.organisation.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
+                .mustBe(rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
             }
 
             "Yes No page -> No (with UTR) -> check details Page" in {
@@ -373,7 +373,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceYesNoPage, false).success.value
 
               navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
+                .mustBe(amendRts.CheckDetailsController.onPageLoadUpdated(index))
             }
 
             "Yes No page -> No (without UTR) -> Address Page" in {
@@ -382,7 +382,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceYesNoPage, false).success.value
 
               navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.organisation.routes.AddressYesNoController.onPageLoad(mode))
+                .mustBe(rts.AddressYesNoController.onPageLoad(mode))
             }
 
             "In The Uk page -> Yes (with UTR) -> check details Page" in {
@@ -392,7 +392,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
 
               navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
+                .mustBe(amendRts.CheckDetailsController.onPageLoadUpdated(index))
             }
 
             "In The Uk page -> Yes (without UTR) -> Address Page" in {
@@ -402,7 +402,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
 
               navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.organisation.routes.AddressYesNoController.onPageLoad(mode))
+                .mustBe(rts.AddressYesNoController.onPageLoad(mode))
             }
 
             "In The Uk page -> No -> Country of Residence page" in {
@@ -411,7 +411,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
 
               navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.organisation.routes.CountryOfResidenceController.onPageLoad(mode))
+                .mustBe(rts.CountryOfResidenceController.onPageLoad(mode))
             }
 
             "page (with UTR) -> Check details Page" in {
@@ -420,7 +420,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidencePage, "ES").success.value
 
               navigator.nextPage(CountryOfResidencePage, mode, answers)
-                .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
+                .mustBe(amendRts.CheckDetailsController.onPageLoadUpdated(index))
             }
 
             "page (without UTR) -> Address Page" in {
@@ -429,7 +429,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidencePage, "ES").success.value
 
               navigator.nextPage(CountryOfResidencePage, mode, answers)
-                .mustBe(controllers.trustee.organisation.routes.AddressYesNoController.onPageLoad(mode))
+                .mustBe(rts.AddressYesNoController.onPageLoad(mode))
             }
           }
 
@@ -439,29 +439,21 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(AddressYesNoPage, false).success.value
 
               navigator.nextPage(AddressYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
+                .mustBe(amendRts.CheckDetailsController.onPageLoadUpdated(index))
             }
 
             "UK address page -> check details page" in {
               navigator.nextPage(UkAddressPage, mode, baseAnswers)
-                .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
+                .mustBe(amendRts.CheckDetailsController.onPageLoadUpdated(index))
             }
 
             "Non-UK address page -> check details page" in {
               navigator.nextPage(NonUkAddressPage, mode, baseAnswers)
-                .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
+                .mustBe(amendRts.CheckDetailsController.onPageLoadUpdated(index))
             }
           }
-
-
         }
-
-
       }
-
-
-
-
 
       "non-taxable" must {
 
@@ -472,7 +464,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
           "Name page -> Country of Residence Yes No page" in {
             navigator.nextPage(NamePage, mode, baseAnswers)
-              .mustBe(controllers.trustee.organisation.routes.CountryOfResidenceYesNoController.onPageLoad(mode))
+              .mustBe(rts.CountryOfResidenceYesNoController.onPageLoad(mode))
           }
 
           "Country of Residence Pages" must {
@@ -482,7 +474,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceYesNoPage, true).success.value
 
               navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.organisation.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
+                .mustBe(rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
             }
 
             "Yes No page -> No -> When Added Page" in {
@@ -490,7 +482,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceYesNoPage, false).success.value
 
               navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad())
+                .mustBe(addRts.WhenAddedController.onPageLoad())
             }
 
             "In The Uk page -> Yes -> When Added Page" in {
@@ -499,7 +491,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
 
               navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad())
+                .mustBe(addRts.WhenAddedController.onPageLoad())
             }
 
             "In The Uk page -> No -> Country of Residence page" in {
@@ -508,7 +500,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
 
               navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.organisation.routes.CountryOfResidenceController.onPageLoad(mode))
+                .mustBe(rts.CountryOfResidenceController.onPageLoad(mode))
             }
 
             "page -> When Added Page" in {
@@ -516,13 +508,15 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidencePage, "ES").success.value
 
               navigator.nextPage(CountryOfResidencePage, mode, answers)
-                .mustBe(controllers.trustee.routes.WhenAddedController.onPageLoad())
+                .mustBe(addRts.WhenAddedController.onPageLoad())
             }
 
+            "When added page -> Check your answers page" in {
+              navigator.nextPage(WhenAddedPage, mode, baseAnswers)
+                .mustBe(addRts.CheckDetailsController.onPageLoad())
+            }
           }
-
         }
-
 
         "amend journey navigation" must {
 
@@ -533,7 +527,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
           "Name page -> Country of Residence Yes No page" in {
             navigator.nextPage(NamePage, mode, baseAnswers)
-              .mustBe(controllers.trustee.organisation.routes.CountryOfResidenceYesNoController.onPageLoad(mode))
+              .mustBe(rts.CountryOfResidenceYesNoController.onPageLoad(mode))
           }
 
           "Country of Residence Pages" must {
@@ -543,7 +537,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceYesNoPage, true).success.value
 
               navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.organisation.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
+                .mustBe(rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
             }
 
             "Yes No page -> No -> check details Page" in {
@@ -551,7 +545,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceYesNoPage, false).success.value
 
               navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
+                .mustBe(amendRts.CheckDetailsController.onPageLoadUpdated(index))
             }
 
             "In The Uk page -> Yes -> check details Page" in {
@@ -560,7 +554,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
 
               navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
+                .mustBe(amendRts.CheckDetailsController.onPageLoadUpdated(index))
             }
 
             "In The Uk page -> No -> Country of Residence page" in {
@@ -569,7 +563,7 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
 
               navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, answers)
-                .mustBe(controllers.trustee.organisation.routes.CountryOfResidenceController.onPageLoad(mode))
+                .mustBe(rts.CountryOfResidenceController.onPageLoad(mode))
             }
 
             "page -> check details Page" in {
@@ -577,18 +571,11 @@ class OrganisationTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                 .set(CountryOfResidencePage, "ES").success.value
 
               navigator.nextPage(CountryOfResidencePage, mode, answers)
-                .mustBe(controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index))
+                .mustBe(amendRts.CheckDetailsController.onPageLoadUpdated(index))
             }
-
           }
-
-
         }
-
-
       }
-
     }
-
   }
 }

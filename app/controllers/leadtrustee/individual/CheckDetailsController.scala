@@ -19,10 +19,11 @@ package controllers.leadtrustee.individual
 import com.google.inject.Inject
 import connectors.TrustConnector
 import controllers.actions.StandardActionSets
+import controllers.leadtrustee.actions.NameRequiredAction
 import mapping.extractors.TrusteeExtractors
 import mapping.mappers.TrusteeMappers
 import models.requests.DataRequest
-import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, UserAnswers}
+import models.{LeadTrusteeIndividual, UserAnswers}
 import pages.leadtrustee.individual.IndexPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -45,7 +46,8 @@ class CheckDetailsController @Inject()(
                                         extractor: TrusteeExtractors,
                                         printHelper: TrusteePrintHelpers,
                                         mapper: TrusteeMappers,
-                                        repository: PlaybackRepository
+                                        repository: PlaybackRepository,
+                                        nameAction: NameRequiredAction
                                       )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport with Logging {
 
@@ -62,9 +64,9 @@ class CheckDetailsController @Inject()(
             updatedAnswers <- Future.fromTry(answers)
             _ <- repository.set(updatedAnswers)
           } yield {
-            renderLeadTrustee(updatedAnswers)
+            renderLeadTrustee(updatedAnswers, ind.name.displayName)
           }
-        case _: LeadTrusteeOrganisation =>
+        case _ =>
           logger.error(s"$logInfo Expected lead trustee to be of type LeadTrusteeIndividual")
           Future.successful(BadRequest)
       } recover {
@@ -74,18 +76,15 @@ class CheckDetailsController @Inject()(
       }
   }
 
-  def onPageLoadUpdated(): Action[AnyContent] = standardActionSets.verifiedForUtr {
+  def onPageLoadUpdated(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
-      renderLeadTrustee(request.userAnswers)
+      renderLeadTrustee(request.userAnswers, request.leadTrusteeName)(request.request)
   }
 
-  private def renderLeadTrustee(updatedAnswers: UserAnswers)(implicit request: DataRequest[AnyContent]): Result = {
+  private def renderLeadTrustee(userAnswers: UserAnswers, name: String)(implicit request: DataRequest[AnyContent]): Result = {
     val section = printHelper.printLeadIndividualTrustee(
-      userAnswers = updatedAnswers,
-      name = updatedAnswers
-        .get(pages.leadtrustee.individual.NamePage)
-        .map(_.displayName)
-        .getOrElse(request.messages(messagesApi)("leadTrusteeName.defaultText"))
+      userAnswers = userAnswers,
+      name = name
     )
 
     Ok(view(section))

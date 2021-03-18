@@ -59,7 +59,7 @@ class AddATrusteeControllerSpec extends SpecBase {
       name = "First Last",
       typeLabel = "Trustee Individual",
       changeLabel = "Change details",
-      changeUrl = "/maintain-a-trust/trustees/trustee/0/check-details",
+      changeUrl = "/maintain-a-trust/trustees/trustee/individual/0/check-details",
       removeLabel = Some("Remove"),
       removeUrl = Some("/maintain-a-trust/trustees/trustee/0/remove")
     ),
@@ -67,7 +67,7 @@ class AddATrusteeControllerSpec extends SpecBase {
       name = "First Last",
       typeLabel = "Trustee Individual",
       changeLabel = "Change details",
-      changeUrl = "/maintain-a-trust/trustees/trustee/1/check-details",
+      changeUrl = "/maintain-a-trust/trustees/trustee/individual/1/check-details",
       removeLabel = Some("Remove"),
       removeUrl = Some("/maintain-a-trust/trustees/trustee/1/remove")
     )

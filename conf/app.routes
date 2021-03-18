@@ -38,17 +38,6 @@ POST       /lead-trustee/individual-or-business                             cont
 GET        /trustee/individual-or-business                                  controllers.trustee.IndividualOrBusinessController.onPageLoad()
 POST       /trustee/individual-or-business                                  controllers.trustee.IndividualOrBusinessController.onSubmit()
 
-GET        /trustee/when-was-trustee-added                                  controllers.trustee.WhenAddedController.onPageLoad()
-POST       /trustee/when-was-trustee-added                                  controllers.trustee.WhenAddedController.onSubmit()
-
-GET        /trustee/check-details                                           controllers.trustee.CheckDetailsController.onPageLoad()
-POST       /trustee/check-details                                           controllers.trustee.CheckDetailsController.onSubmit()
-
-GET        /trustee/:index/check-details                                    controllers.trustee.CheckUpdatedDetailsController.onPageLoad(index: Int)
-
-GET        /trustee/:index/check-updated-details                            controllers.trustee.CheckUpdatedDetailsController.onPageLoadUpdated(index: Int)
-POST       /trustee/:index/check-updated-details                            controllers.trustee.CheckUpdatedDetailsController.onSubmit(index: Int)
-
 GET        /trustee/:index/when-was-trustee-removed                         controllers.trustee.WhenRemovedController.onPageLoad(index: Int)
 POST       /trustee/:index/when-was-trustee-removed                         controllers.trustee.WhenRemovedController.onSubmit(index: Int)
 

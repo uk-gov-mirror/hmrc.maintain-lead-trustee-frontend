@@ -19,24 +19,19 @@ package navigation.trustee
 import models.IndividualOrBusiness.{Business, Individual}
 import models.{Mode, UserAnswers}
 import pages.Page
-import pages.trustee.{IndividualOrBusinessPage, WhenAddedPage}
+import pages.trustee.IndividualOrBusinessPage
 import play.api.mvc.Call
 
 object TrusteeNavigator {
-
-  val simpleNavigation: PartialFunction[Page, Call] = {
-    case WhenAddedPage => controllers.trustee.routes.CheckDetailsController.onPageLoad()
-  }
 
   def parameterisedNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case IndividualOrBusinessPage => individualOrBusinessNavigation(_, mode)
   }
 
   def routes(mode:Mode): PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation andThen (c => (_:UserAnswers) => c) orElse
     parameterisedNavigation(mode) orElse
-    IndividualTrusteeNavigator.routes(mode) orElse
-    OrganisationTrusteeNavigator.routes(mode)
+      IndividualTrusteeNavigator.routes(mode) orElse
+      OrganisationTrusteeNavigator.routes(mode)
 
   private def individualOrBusinessNavigation(userAnswers: UserAnswers, mode: Mode): Call = {
     userAnswers.get(IndividualOrBusinessPage).map {

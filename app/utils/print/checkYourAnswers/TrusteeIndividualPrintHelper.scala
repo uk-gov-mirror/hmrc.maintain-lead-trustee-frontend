@@ -20,9 +20,7 @@ import com.google.inject.Inject
 import controllers.trustee.individual.add.routes._
 import controllers.trustee.individual.amend.routes._
 import controllers.trustee.individual.routes._
-import controllers.trustee.routes.WhenAddedController
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
-import pages.trustee.WhenAddedPage
 import pages.trustee.individual._
 import pages.trustee.individual.add._
 import pages.trustee.individual.amend._

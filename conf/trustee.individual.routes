@@ -13,6 +13,21 @@ POST       /date-of-birth                               controllers.trustee.indi
 GET        /change-date-of-birth                        controllers.trustee.individual.DateOfBirthController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-date-of-birth                        controllers.trustee.individual.DateOfBirthController.onSubmit(mode: Mode = CheckMode)
 
+GET        /do-you-know-country-of-nationality          controllers.trustee.individual.CountryOfNationalityYesNoController.onPageLoad(mode: Mode = NormalMode)
+POST       /do-you-know-country-of-nationality          controllers.trustee.individual.CountryOfNationalityYesNoController.onSubmit(mode: Mode = NormalMode)
+GET        /change-do-you-know-country-of-nationality   controllers.trustee.individual.CountryOfNationalityYesNoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-do-you-know-country-of-nationality   controllers.trustee.individual.CountryOfNationalityYesNoController.onSubmit(mode: Mode = CheckMode)
+
+GET        /has-uk-country-of-nationality               controllers.trustee.individual.CountryOfNationalityInTheUkYesNoController.onPageLoad(mode: Mode = NormalMode)
+POST       /has-uk-country-of-nationality               controllers.trustee.individual.CountryOfNationalityInTheUkYesNoController.onSubmit(mode: Mode = NormalMode)
+GET        /change-has-uk-country-of-nationality        controllers.trustee.individual.CountryOfNationalityInTheUkYesNoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-has-uk-country-of-nationality        controllers.trustee.individual.CountryOfNationalityInTheUkYesNoController.onSubmit(mode: Mode = CheckMode)
+
+GET        /country-of-nationality                      controllers.trustee.individual.CountryOfNationalityController.onPageLoad(mode: Mode = NormalMode)
+POST       /country-of-nationality                      controllers.trustee.individual.CountryOfNationalityController.onSubmit(mode: Mode = NormalMode)
+GET        /change-country-of-nationality               controllers.trustee.individual.CountryOfNationalityController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-country-of-nationality               controllers.trustee.individual.CountryOfNationalityController.onSubmit(mode: Mode = CheckMode)
+
 GET        /has-national-insurance-number               controllers.trustee.individual.NationalInsuranceNumberYesNoController.onPageLoad(mode: Mode = NormalMode)
 POST       /has-national-insurance-number               controllers.trustee.individual.NationalInsuranceNumberYesNoController.onSubmit(mode: Mode = NormalMode)
 GET        /change-has-national-insurance-number        controllers.trustee.individual.NationalInsuranceNumberYesNoController.onPageLoad(mode: Mode = CheckMode)
@@ -81,17 +96,12 @@ POST       /legally-capable                             controllers.trustee.indi
 GET        /change-legally-capable                      controllers.trustee.individual.MentalCapacityYesNoController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-legally-capable                      controllers.trustee.individual.MentalCapacityYesNoController.onSubmit(mode: Mode = CheckMode)
 
-GET        /do-you-know-country-of-nationality          controllers.trustee.individual.CountryOfNationalityYesNoController.onPageLoad(mode: Mode = NormalMode)
-POST       /do-you-know-country-of-nationality          controllers.trustee.individual.CountryOfNationalityYesNoController.onSubmit(mode: Mode = NormalMode)
-GET        /change-do-you-know-country-of-nationality   controllers.trustee.individual.CountryOfNationalityYesNoController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-do-you-know-country-of-nationality   controllers.trustee.individual.CountryOfNationalityYesNoController.onSubmit(mode: Mode = CheckMode)
+GET        /when-was-trustee-added                      controllers.trustee.individual.add.WhenAddedController.onPageLoad()
+POST       /when-was-trustee-added                      controllers.trustee.individual.add.WhenAddedController.onSubmit()
 
-GET        /has-uk-country-of-nationality               controllers.trustee.individual.CountryOfNationalityInTheUkYesNoController.onPageLoad(mode: Mode = NormalMode)
-POST       /has-uk-country-of-nationality               controllers.trustee.individual.CountryOfNationalityInTheUkYesNoController.onSubmit(mode: Mode = NormalMode)
-GET        /change-has-uk-country-of-nationality        controllers.trustee.individual.CountryOfNationalityInTheUkYesNoController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-has-uk-country-of-nationality        controllers.trustee.individual.CountryOfNationalityInTheUkYesNoController.onSubmit(mode: Mode = CheckMode)
+GET        /check-details                               controllers.trustee.individual.add.CheckDetailsController.onPageLoad()
+POST       /check-details                               controllers.trustee.individual.add.CheckDetailsController.onSubmit()
 
-GET        /country-of-nationality                      controllers.trustee.individual.CountryOfNationalityController.onPageLoad(mode: Mode = NormalMode)
-POST       /country-of-nationality                      controllers.trustee.individual.CountryOfNationalityController.onSubmit(mode: Mode = NormalMode)
-GET        /change-country-of-nationality               controllers.trustee.individual.CountryOfNationalityController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-country-of-nationality               controllers.trustee.individual.CountryOfNationalityController.onSubmit(mode: Mode = CheckMode)
+GET        /:index/check-details                        controllers.trustee.individual.amend.CheckDetailsController.onPageLoad(index: Int)
+GET        /:index/check-updated-details                controllers.trustee.individual.amend.CheckDetailsController.onPageLoadUpdated(index: Int)
+POST       /:index/check-details                        controllers.trustee.individual.amend.CheckDetailsController.onSubmit(index: Int)

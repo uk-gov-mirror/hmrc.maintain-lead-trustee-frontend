@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.trustee
+package controllers.trustee.organisation.add
 
 import controllers.actions.StandardActionSets
 import controllers.trustee.actions.NameRequiredAction
 import forms.DateAddedToTrustFormProvider
-import javax.inject.Inject
+import models.NormalMode
 import navigation.Navigator
-import pages.trustee.WhenAddedPage
+import pages.trustee.organisation.add.WhenAddedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.trustee.WhenAddedView
+import views.html.trustee.organisation.add.WhenAddedView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class WhenAddedController @Inject()(
@@ -67,7 +68,7 @@ class WhenAddedController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(WhenAddedPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(WhenAddedPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(WhenAddedPage, NormalMode, updatedAnswers))
       )
   }
 }

@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package views.trustee
-
-import java.time.LocalDate
+package views.trustee.organisation.add
 
 import forms.DateAddedToTrustFormProvider
-import models.Name
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
-import views.html.trustee.WhenAddedView
+import views.html.trustee.organisation.add.WhenAddedView
+
+import java.time.LocalDate
 
 class WhenAddedViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   val messageKeyPrefix = "trustee.whenAdded"
-  val name: Name = Name("First", Some("Middle"), "Last")
+  val name: String = "Amazon"
 
   override val form: Form[LocalDate] = new DateAddedToTrustFormProvider().withPrefixAndTrustStartDate(messageKeyPrefix, LocalDate.now())
 
@@ -37,9 +36,9 @@ class WhenAddedViewSpec extends QuestionViewBehaviours[LocalDate] {
     val view = viewFor[WhenAddedView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name.displayName)(fakeRequest, messages)
+      view.apply(form, name)(fakeRequest, messages)
     
-    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
+    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 
     behave like pageWithBackLink(applyView(form))
 
@@ -52,7 +51,7 @@ class WhenAddedViewSpec extends QuestionViewBehaviours[LocalDate] {
         applyView,
         messageKeyPrefix,
         "value",
-        name.displayName
+        name
       )
     }
 

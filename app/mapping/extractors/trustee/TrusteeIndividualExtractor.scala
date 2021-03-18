@@ -19,8 +19,8 @@ package mapping.extractors.trustee
 import models.IndividualOrBusiness.Individual
 import models._
 import pages.QuestionPage
-import pages.trustee.WhenAddedPage
 import pages.trustee.individual._
+import pages.trustee.individual.add.WhenAddedPage
 import pages.trustee.individual.amend._
 
 import scala.util.{Success, Try}

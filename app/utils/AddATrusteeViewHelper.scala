@@ -30,7 +30,7 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
           name = trusteeInd.name.displayName,
           typeLabel = messages(s"entities.trustee.individual"),
           changeLabel = messages("site.change.details"),
-          changeUrl = controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoad(index).url,
+          changeUrl = controllers.trustee.individual.amend.routes.CheckDetailsController.onPageLoad(index).url,
           removeLabel =  Some(messages("site.delete")),
           removeUrl = Some(controllers.trustee.routes.RemoveTrusteeController.onPageLoad(index).url)
         )
@@ -39,7 +39,7 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
           name = trusteeOrg.name,
           typeLabel = messages(s"entities.trustee.organisation"),
           changeLabel = messages("site.change.details"),
-          changeUrl = controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoad(index).url,
+          changeUrl = controllers.trustee.organisation.amend.routes.CheckDetailsController.onPageLoad(index).url,
           removeLabel =  Some(messages("site.delete")),
           removeUrl = Some(controllers.trustee.routes.RemoveTrusteeController.onPageLoad(index).url)
         )
