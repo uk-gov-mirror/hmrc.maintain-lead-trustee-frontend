@@ -18,12 +18,11 @@ package connectors
 
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
-import javax.inject.Inject
 import models.{TrustAuthInternalServerError, TrustAuthResponse}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[TrustAuthConnectorImpl])
@@ -35,11 +34,11 @@ trait TrustAuthConnector {
 class TrustAuthConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
   extends TrustAuthConnector {
 
-  val baseUrl: String = config.trustAuthUrl + "/trusts-auth"
+  private val baseUrl: String = config.trustAuthUrl + "/trusts-auth"
 
   override def agentIsAuthorised()
-                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse] = {
-    http.GET[TrustAuthResponse](s"$baseUrl/agent-authorised")recoverWith {
+                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse] = {
+    http.GET[TrustAuthResponse](s"$baseUrl/agent-authorised").recoverWith {
       case _ => Future.successful(TrustAuthInternalServerError)
     }
   }
