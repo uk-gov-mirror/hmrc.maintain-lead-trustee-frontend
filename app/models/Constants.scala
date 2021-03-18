@@ -16,7 +16,6 @@
 
 package models
 
-object Constant {
-  final val dateTimePattern = "yyyy-MM-dd"
+object Constants {
   final val GB = "GB"
 }
