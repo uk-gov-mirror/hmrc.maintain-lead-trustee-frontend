@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import connectors.TrustConnector
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.actions.NameRequiredAction
+import handlers.ErrorHandler
 import mapping.extractors.TrusteeExtractors
 import mapping.mappers.TrusteeMappers
 import models.requests.DataRequest
@@ -47,7 +48,8 @@ class CheckDetailsController @Inject()(
                                         printHelper: TrusteePrintHelpers,
                                         mapper: TrusteeMappers,
                                         repository: PlaybackRepository,
-                                        nameAction: NameRequiredAction
+                                        nameAction: NameRequiredAction,
+                                        errorHandler: ErrorHandler
                                       )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport with Logging {
 
@@ -68,11 +70,11 @@ class CheckDetailsController @Inject()(
           }
         case _ =>
           logger.error(s"$logInfo Expected lead trustee to be of type LeadTrusteeOrganisation")
-          Future.successful(BadRequest)
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       } recover {
         case e =>
           logger.error(s"$logInfo Unable to retrieve Lead Trustee from trusts: ${e.getMessage}")
-          InternalServerError
+          InternalServerError(errorHandler.internalServerErrorTemplate)
       }
   }
 
@@ -106,7 +108,7 @@ class CheckDetailsController @Inject()(
           submitTransform(transform, userAnswers)
         case _ =>
           logger.error(s"$logInfo Unable to build lead trustee organisation from user answers. Cannot continue with submitting transform.")
-          Future.successful(InternalServerError)
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
   }
 

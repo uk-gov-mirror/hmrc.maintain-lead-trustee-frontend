@@ -96,7 +96,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
           view(answerSection, index)(request, messages).toString
       }
 
-      "return BAD_REQUEST" when {
+      "return INTERNAL_SERVER_ERROR" when {
         "trustee is of type organisation" in {
 
           val mockTrustService = mock[TrustService]
@@ -121,11 +121,9 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
           val result = route(application, request).value
 
-          status(result) mustEqual BAD_REQUEST
+          status(result) mustEqual INTERNAL_SERVER_ERROR
         }
-      }
 
-      "return INTERNAL_SERVER_ERROR" when {
         "error getting trustee" in {
 
           val mockTrustService = mock[TrustService]

@@ -67,11 +67,11 @@ class CheckDetailsController @Inject()(
             updatedAnswers <- Future.fromTry(answers)
             _ <- sessionRepository.set(updatedAnswers)
           } yield {
-            renderTrustee(request.userAnswers, index, org.name)
+            renderTrustee(updatedAnswers, index, org.name)
           }
         case _ =>
           logger.error(s"$logInfo Expected trustee to be of type TrusteeOrganisation")
-          Future.successful(BadRequest)
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       } recover {
         case e =>
           logger.error(s"$logInfo Unable to retrieve trustee from trusts: ${e.getMessage}")
