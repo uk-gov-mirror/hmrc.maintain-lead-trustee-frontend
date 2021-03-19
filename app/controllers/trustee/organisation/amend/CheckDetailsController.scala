@@ -67,7 +67,7 @@ class CheckDetailsController @Inject()(
             updatedAnswers <- Future.fromTry(answers)
             _ <- sessionRepository.set(updatedAnswers)
           } yield {
-            renderTrustee(request.userAnswers, index, org.name)
+            renderTrustee(updatedAnswers, index, org.name)
           }
         case _ =>
           logger.error(s"$logInfo Expected trustee to be of type TrusteeOrganisation")
