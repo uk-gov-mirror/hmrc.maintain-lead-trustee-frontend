@@ -109,7 +109,7 @@ class CheckDetailsController @Inject()(
           submitTransform(transform, userAnswers)
         case _ =>
           logger.error(s"$logInfo Unable to build lead trustee individual from user answers. Cannot continue with submitting transform.")
-          Future.successful(InternalServerError)
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
   }
 
