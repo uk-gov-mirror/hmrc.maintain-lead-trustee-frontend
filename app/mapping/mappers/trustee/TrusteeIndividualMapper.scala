@@ -18,7 +18,6 @@ package mapping.mappers.trustee
 
 import models._
 import pages.QuestionPage
-import pages.trustee.WhenAddedPage
 import pages.trustee.individual._
 import pages.trustee.individual.add._
 import pages.trustee.individual.amend._

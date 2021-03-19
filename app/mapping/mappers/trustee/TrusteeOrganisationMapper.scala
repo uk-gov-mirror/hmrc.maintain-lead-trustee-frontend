@@ -18,8 +18,8 @@ package mapping.mappers.trustee
 
 import models._
 import pages.QuestionPage
-import pages.trustee.WhenAddedPage
 import pages.trustee.organisation._
+import pages.trustee.organisation.add._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsSuccess, Reads}
 
@@ -41,8 +41,7 @@ class TrusteeOrganisationMapper extends TrusteeMapper[TrusteeOrganisation] {
     Reads(_ => JsSuccess(None)) and
       UtrPage.path.readNullable[String] and
       readAddress
-    )
-    .tupled
+    ).tupled
     .map {
       case (None, None, None) => None
       case (safeId, utr, address) => Some(TrustIdentificationOrgType(safeId, utr, address))

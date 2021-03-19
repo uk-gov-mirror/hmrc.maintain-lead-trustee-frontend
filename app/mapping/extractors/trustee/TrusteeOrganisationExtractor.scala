@@ -19,8 +19,8 @@ package mapping.extractors.trustee
 import models.IndividualOrBusiness.Business
 import models.{NonUkAddress, TrustIdentificationOrgType, TrusteeOrganisation, UkAddress, UserAnswers}
 import pages.QuestionPage
-import pages.trustee.WhenAddedPage
 import pages.trustee.organisation._
+import pages.trustee.organisation.add.WhenAddedPage
 import pages.trustee.organisation.amend._
 
 import scala.util.{Success, Try}

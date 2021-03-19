@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,30 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package utils
+@import controllers.trustee.organisation.add.routes._
+@import viewmodels.AnswerSection
 
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+@this(
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
+)
 
-import com.google.inject.Inject
-import config.FrontendAppConfig
+@(answerSection: AnswerSection)(implicit request: Request[_], messages: Messages)
 
-class DateFormatter @Inject()(config: FrontendAppConfig) {
+@main_template(
+    title = messages("trustee.checkDetails.title")
+) {
 
-  private val format = "d MMMM yyyy"
+    @formHelper(action = CheckDetailsController.onSubmit(), 'autoComplete -> "off") {
 
-  def formatDate(dateTime: LocalDateTime): String = {
-    val dateFormatter = DateTimeFormatter.ofPattern(format)
-    dateTime.format(dateFormatter)
-  }
+        @components.back_link()
 
+        @components.heading("trustee.checkDetails.heading")
+
+        @components.answer_section(answerSection)
+
+        @components.submit_button()
+    }
 }

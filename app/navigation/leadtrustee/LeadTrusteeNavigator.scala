@@ -18,22 +18,32 @@ package navigation.leadtrustee
 
 import models.IndividualOrBusiness.{Business, Individual}
 import models.UserAnswers
-import pages.Page
+import pages.{Page, QuestionPage}
 import pages.leadtrustee.IndividualOrBusinessPage
 import play.api.mvc.Call
 
-object LeadTrusteeNavigator {
+trait LeadTrusteeNavigator {
 
-  private val parameterisedNavigation : PartialFunction[Page, UserAnswers => Call] = {
-    case IndividualOrBusinessPage => individualOrBusinessNavigation()
+  def yesNoNav(fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): PartialFunction[Page, UserAnswers => Call] = {
+    case `fromPage` => ua =>
+      ua.get(fromPage)
+        .map(if (_) yesCall else noCall)
+        .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
+}
+
+object LeadTrusteeNavigator {
 
   val routes: PartialFunction[Page, UserAnswers => Call] =
     parameterisedNavigation orElse
-    IndividualLeadTrusteeNavigator.routes orElse
-    OrganisationLeadTrusteeNavigator.routes
+      IndividualLeadTrusteeNavigator.routes orElse
+      OrganisationLeadTrusteeNavigator.routes
 
-  private def individualOrBusinessNavigation()(userAnswers: UserAnswers): Call = {
+  private def parameterisedNavigation: PartialFunction[Page, UserAnswers => Call] = {
+    case IndividualOrBusinessPage => individualOrBusinessNavigation
+  }
+
+  private def individualOrBusinessNavigation(userAnswers: UserAnswers): Call = {
     userAnswers.get(IndividualOrBusinessPage).map {
       case Individual => controllers.leadtrustee.individual.routes.NameController.onPageLoad()
       case Business => controllers.leadtrustee.organisation.routes.RegisteredInUkYesNoController.onPageLoad()

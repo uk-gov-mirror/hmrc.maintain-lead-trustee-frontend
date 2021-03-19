@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package pages.trustee
-
-import java.time.LocalDate
+package pages.trustee.individual.add
 
 import pages.QuestionPage
+import pages.trustee.individual.basePath
 import play.api.libs.json.JsPath
+
+import java.time.LocalDate
 
 case object WhenAddedPage extends QuestionPage[LocalDate] {
 

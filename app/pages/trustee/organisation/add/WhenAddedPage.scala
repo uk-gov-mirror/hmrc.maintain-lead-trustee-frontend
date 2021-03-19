@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,30 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import viewmodels.AnswerSection
-@import controllers.trustee.routes._
+package pages.trustee.organisation.add
 
-@this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
-)
+import pages.QuestionPage
+import pages.trustee.organisation.basePath
+import play.api.libs.json.JsPath
 
-@(answerSection: AnswerSection)(implicit request: Request[_], messages: Messages)
+import java.time.LocalDate
 
-@main_template(
-    title = messages("trustee.checkDetails.title")
-    ) {
+case object WhenAddedPage extends QuestionPage[LocalDate] {
 
-    @formHelper(action = CheckDetailsController.onSubmit(), 'autoComplete -> "off") {
+  override def path: JsPath = basePath \ toString
 
-        @components.back_link()
-
-        @components.heading("trustee.checkDetails.heading")
-
-        @components.answer_section(answerSection)
-
-        @components.submit_button()
-    }
+  override def toString: String = "dateAddedToTrust"
 }

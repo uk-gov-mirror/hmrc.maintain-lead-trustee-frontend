@@ -33,10 +33,8 @@ case object IndividualOrBusinessPage extends QuestionPage[IndividualOrBusiness] 
     value match {
       case Some(Business) =>
         userAnswers.deleteAtPath(pages.trustee.individual.basePath)
-          .flatMap(_.remove(WhenAddedPage))
       case Some(Individual) =>
         userAnswers.deleteAtPath(pages.trustee.organisation.basePath)
-          .flatMap(_.remove(WhenAddedPage))
       case _ =>
         super.cleanup(value, userAnswers)
     }

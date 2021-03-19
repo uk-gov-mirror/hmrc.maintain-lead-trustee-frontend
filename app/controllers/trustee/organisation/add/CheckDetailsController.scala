@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.trustee
+package controllers.trustee.organisation.add
 
 import config.FrontendAppConfig
 import connectors.TrustConnector
@@ -22,15 +22,12 @@ import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import handlers.ErrorHandler
 import mapping.mappers.TrusteeMappers
-import models.IndividualOrBusiness._
-import models.Trustee
-import pages.trustee.IndividualOrBusinessPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.print.checkYourAnswers.TrusteePrintHelper
-import views.html.trustee.CheckDetailsView
+import utils.print.checkYourAnswers.TrusteePrintHelpers
+import views.html.trustee.organisation.add.CheckDetailsView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +38,7 @@ class CheckDetailsController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
                                         nameAction: NameRequiredAction,
-                                        printHelper: TrusteePrintHelper,
+                                        printHelper: TrusteePrintHelpers,
                                         mapper: TrusteeMappers,
                                         trustConnector: TrustConnector,
                                         val appConfig: FrontendAppConfig,
@@ -50,34 +47,17 @@ class CheckDetailsController @Inject()(
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
-      request.userAnswers.get(IndividualOrBusinessPage) match {
-        case Some(Individual) =>
-          Ok(view(printHelper.printIndividualTrustee(request.userAnswers, provisional = true, request.trusteeName)))
-        case Some(Business) =>
-          Ok(view(printHelper.printOrganisationTrustee(request.userAnswers, provisional = true, request.trusteeName)))
-        case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] unable to display trustee on check your answers")
-          InternalServerError(errorHandler.internalServerErrorTemplate)
-      }
+      Ok(view(printHelper.printOrganisationTrustee(request.userAnswers, provisional = true, request.trusteeName)))
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
-      val trustee: Option[Trustee] = request.userAnswers.get(IndividualOrBusinessPage) match {
-        case Some(Individual) =>
-          mapper.mapToTrusteeIndividual(request.userAnswers)
-        case Some(Business) =>
-          mapper.mapToTrusteeOrganisation(request.userAnswers)
-        case _ =>
-          None
-      }
-
-      trustee match {
+      mapper.mapToTrusteeOrganisation(request.userAnswers) match {
         case Some(t) =>
-          trustConnector.addTrustee(request.userAnswers.identifier, t).map(_ =>
+          trustConnector.addTrustee(request.userAnswers.identifier, t) map { _ =>
             Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-          )
+          }
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] unable to submit trustee on check your answers")
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))

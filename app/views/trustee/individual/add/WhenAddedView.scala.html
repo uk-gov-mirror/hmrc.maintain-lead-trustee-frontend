@@ -14,11 +14,11 @@
  * limitations under the License.
  *@
 
-@import controllers.trustee.routes._
+@import controllers.trustee.individual.add.routes._
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
 )
 
 @(form: Form[_], trusteeName: String)(implicit request: Request[_], messages: Messages)

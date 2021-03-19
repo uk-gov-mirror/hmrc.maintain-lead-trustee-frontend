@@ -16,42 +16,63 @@
 
 package navigation.trustee
 
+import controllers.trustee.organisation.add.{routes => addRts}
+import controllers.trustee.organisation.amend.{routes => amendRts}
 import controllers.trustee.organisation.{routes => rts}
 import models.{Mode, NormalMode, UserAnswers}
+import pages.Page
 import pages.trustee.organisation._
+import pages.trustee.organisation.add.WhenAddedPage
 import pages.trustee.organisation.amend.IndexPage
-import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
-object OrganisationTrusteeNavigator {
+object OrganisationTrusteeNavigator extends TrusteeNavigator {
 
-  private def conditionalNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case NamePage => ua => navigateAwayFromNamePage(mode, ua)
-    case UtrYesNoPage => ua =>
-      yesNoNav(ua, UtrYesNoPage, rts.UtrController.onPageLoad(mode), navigateAwayFromUtrPages(mode, ua))
-    case UtrPage => ua =>
-      navigateAwayFromUtrPages(mode, ua)
-    case CountryOfResidenceYesNoPage => ua =>
-      yesNoNav(ua, CountryOfResidenceYesNoPage, rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode), navigateAwayFromResidencePages(mode, ua))
-    case CountryOfResidenceInTheUkYesNoPage => ua =>
-      yesNoNav(ua, CountryOfResidenceInTheUkYesNoPage, navigateAwayFromResidencePages(mode, ua), rts.CountryOfResidenceController.onPageLoad(mode))
-    case CountryOfResidencePage => ua =>
-      navigateAwayFromResidencePages(mode, ua)
-    case AddressYesNoPage => ua =>
-      yesNoNav(ua, AddressYesNoPage, rts.AddressInTheUkYesNoController.onPageLoad(mode), navigateToStartDateOrCheckDetails(mode, ua))
-    case AddressInTheUkYesNoPage => ua =>
-      yesNoNav(ua, AddressInTheUkYesNoPage, rts.UkAddressController.onPageLoad(mode), rts.NonUkAddressController.onPageLoad(mode))
-    case UkAddressPage | NonUkAddressPage => ua =>
-      navigateToStartDateOrCheckDetails(mode, ua)
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    linearNavigation(mode) orElse
+      yesNoNavigation(mode)
   }
 
-  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
-      conditionalNavigation(mode)
+  private def linearNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case NamePage => ua => navigateAwayFromNamePage(mode, ua)
+    case UtrPage => ua =>navigateAwayFromUtrPages(mode, ua)
+    case CountryOfResidencePage => ua => navigateAwayFromResidencePages(mode, ua)
+    case UkAddressPage | NonUkAddressPage => ua => navigateToStartDateOrCheckDetails(mode, ua)
+    case WhenAddedPage => _ => addRts.CheckDetailsController.onPageLoad()
+  }
 
-  def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
-    ua.get(fromPage)
-      .map(if (_) yesCall else noCall)
-      .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+  private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+
+    case UtrYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = UtrYesNoPage,
+      yesCall = rts.UtrController.onPageLoad(mode),
+      noCall = navigateAwayFromUtrPages(mode, ua)
+    )
+    case CountryOfResidenceYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = CountryOfResidenceYesNoPage,
+      yesCall = rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode),
+      noCall = navigateAwayFromResidencePages(mode, ua)
+    )
+    case CountryOfResidenceInTheUkYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = CountryOfResidenceInTheUkYesNoPage,
+      yesCall = navigateAwayFromResidencePages(mode, ua),
+      noCall = rts.CountryOfResidenceController.onPageLoad(mode)
+    )
+    case AddressYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = AddressYesNoPage,
+      yesCall = rts.AddressInTheUkYesNoController.onPageLoad(mode),
+      noCall = navigateToStartDateOrCheckDetails(mode, ua)
+    )
+    case AddressInTheUkYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = AddressInTheUkYesNoPage,
+      yesCall = rts.UkAddressController.onPageLoad(mode),
+      noCall = rts.NonUkAddressController.onPageLoad(mode)
+    )
   }
 
   private def navigateAwayFromNamePage(mode: Mode, answers: UserAnswers): Call = {
@@ -74,7 +95,7 @@ object OrganisationTrusteeNavigator {
 
   private def navigateToStartDateOrCheckDetails(mode: Mode, answers: UserAnswers): Call = {
     if (mode == NormalMode) {
-      controllers.trustee.routes.WhenAddedController.onPageLoad()
+      addRts.WhenAddedController.onPageLoad()
     } else {
       checkDetailsRoute(answers)
     }
@@ -82,7 +103,7 @@ object OrganisationTrusteeNavigator {
 
   private def checkDetailsRoute(answers: UserAnswers): Call = {
     answers.get(IndexPage) match {
-      case Some(index) => controllers.trustee.routes.CheckUpdatedDetailsController.onPageLoadUpdated(index)
+      case Some(index) => amendRts.CheckDetailsController.onPageLoadUpdated(index)
       case None => controllers.routes.SessionExpiredController.onPageLoad()
     }
   }

@@ -1,0 +1,7 @@
+->          /individual                     leadtrustee.individual.Routes
+->          /organisation                   leadtrustee.organisation.Routes
+
+GET         /individual-or-business         controllers.leadtrustee.IndividualOrBusinessController.onPageLoad()
+POST        /individual-or-business         controllers.leadtrustee.IndividualOrBusinessController.onSubmit()
+
+GET         /unable-to-remove               controllers.leadtrustee.UnableToRemoveController.onPageLoad()

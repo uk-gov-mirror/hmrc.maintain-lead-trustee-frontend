@@ -17,10 +17,10 @@
 package mapping.mappers.trustee
 
 import base.SpecBase
-import models.Constant.GB
+import models.Constants.GB
 import models._
-import pages.trustee.WhenAddedPage
 import pages.trustee.organisation._
+import pages.trustee.organisation.add._
 
 import java.time.LocalDate
 

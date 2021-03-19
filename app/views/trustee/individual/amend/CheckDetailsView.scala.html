@@ -14,27 +14,28 @@
  * limitations under the License.
  *@
 
-@import controllers.leadtrustee.routes.CheckDetailsController
-@import viewmodels.{AnswerSection, RepeaterAnswerSection, Section}
+@import controllers.trustee.individual.amend.routes._
+@import viewmodels.AnswerSection
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(answerSection: AnswerSection, submissionCall: Call)(implicit request: Request[_], messages: Messages)
+@(answerSection: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("leadTrusteeDetails.title")
-    ) {
+    title = messages("trustee.checkDetails.title")
+) {
 
-    @components.back_link()
+    @formHelper(action = CheckDetailsController.onSubmit(index), 'autoComplete -> "off") {
 
-    @components.heading("leadTrusteeDetails.heading")
+        @components.back_link()
 
-    @components.answer_section(answerSection)
+        @components.heading("trustee.checkDetails.heading")
 
-    @formHelper(action = submissionCall, 'autoComplete -> "off") {
+        @components.answer_section(answerSection)
+
         @components.submit_button()
     }
 }
