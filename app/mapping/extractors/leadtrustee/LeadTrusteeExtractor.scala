@@ -39,7 +39,7 @@ trait LeadTrusteeExtractor extends Extractor {
 
   override def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
 
-    def setUkAddressYesNoIf4mld(value: Boolean):Try[UserAnswers] = {
+    def setUkAddressYesNoIf4mld(value: Boolean): Try[UserAnswers] = {
       if (answers.is5mldEnabled) Success(answers) else answers.set(ukAddressYesNoPage, value)
     }
 
