@@ -38,12 +38,15 @@ trait LeadTrusteeExtractor extends Extractor {
   }
 
   override def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
+
+    def setUkAddressYesNoIf4mld(value: Boolean):Try[UserAnswers] = {
+      if (answers.is5mldEnabled) Success(answers) else answers.set(ukAddressYesNoPage, value)
+    }
+
     address match {
-      case uk: UkAddress => answers
-        .set(ukAddressYesNoPage, true)
+      case uk: UkAddress => setUkAddressYesNoIf4mld(true)
         .flatMap(_.set(ukAddressPage, uk))
-      case nonUk: NonUkAddress => answers
-        .set(ukAddressYesNoPage, false)
+      case nonUk: NonUkAddress => setUkAddressYesNoIf4mld(false)
         .flatMap(_.set(nonUkAddressPage, nonUk))
     }
   }

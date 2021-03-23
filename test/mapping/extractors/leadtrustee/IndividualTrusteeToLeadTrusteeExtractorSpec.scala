@@ -211,7 +211,7 @@ class IndividualTrusteeToLeadTrusteeExtractorSpec extends SpecBase {
             dateOfBirth = None,
             phoneNumber = None,
             identification = None,
-            address = None,
+            address = Some(ukAddress),
             countryOfResidence = Some(GB),
             nationality = Some(GB),
             entityStart = date,
@@ -231,7 +231,7 @@ class IndividualTrusteeToLeadTrusteeExtractorSpec extends SpecBase {
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
           result.get(CountryOfResidencePage).get mustBe GB
           result.get(LiveInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage) mustBe None
+          result.get(UkAddressPage).get mustBe ukAddress
           result.get(NonUkAddressPage) mustBe None
           result.get(EmailAddressYesNoPage) mustBe None
           result.get(EmailAddressPage) mustBe None
@@ -246,7 +246,7 @@ class IndividualTrusteeToLeadTrusteeExtractorSpec extends SpecBase {
             dateOfBirth = None,
             phoneNumber = None,
             identification = None,
-            address = None,
+            address = Some(nonUkAddress),
             countryOfResidence = Some(country),
             nationality = Some(country),
             entityStart = date,
@@ -267,7 +267,7 @@ class IndividualTrusteeToLeadTrusteeExtractorSpec extends SpecBase {
           result.get(CountryOfResidencePage).get mustBe country
           result.get(LiveInTheUkYesNoPage) mustBe None
           result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage) mustBe None
+          result.get(NonUkAddressPage).get mustBe nonUkAddress
           result.get(EmailAddressYesNoPage) mustBe None
           result.get(EmailAddressPage) mustBe None
           result.get(TelephoneNumberPage) mustBe None

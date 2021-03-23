@@ -191,7 +191,7 @@ class OrganisationTrusteeToLeadTrusteeExtractorSpec extends SpecBase {
             name = name,
             phoneNumber = None,
             email = None,
-            identification = None,
+            identification = Some(TrustIdentificationOrgType(None, None, Some(ukAddress))),
             countryOfResidence = Some(GB),
             entityStart = date,
             provisional = true
@@ -200,13 +200,13 @@ class OrganisationTrusteeToLeadTrusteeExtractorSpec extends SpecBase {
           val result = extractor.extract(baseAnswers, trustee, index).get
 
           result.get(IndividualOrBusinessPage).get mustBe Business
-          result.get(RegisteredInUkYesNoPage) mustBe None
+          result.get(RegisteredInUkYesNoPage).get mustBe false
           result.get(NamePage).get mustBe name
           result.get(UtrPage) mustBe None
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
           result.get(CountryOfResidencePage).get mustBe GB
           result.get(AddressInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage) mustBe None
+          result.get(UkAddressPage).get mustBe ukAddress
           result.get(NonUkAddressPage) mustBe None
           result.get(EmailAddressYesNoPage) mustBe None
           result.get(EmailAddressPage) mustBe None
@@ -219,7 +219,7 @@ class OrganisationTrusteeToLeadTrusteeExtractorSpec extends SpecBase {
             name = name,
             phoneNumber = None,
             email = None,
-            identification = None,
+            identification = Some(TrustIdentificationOrgType(None, None, Some(nonUkAddress))),
             countryOfResidence = Some(country),
             entityStart = date,
             provisional = true
@@ -228,14 +228,14 @@ class OrganisationTrusteeToLeadTrusteeExtractorSpec extends SpecBase {
           val result = extractor.extract(baseAnswers, trustee, index).get
 
           result.get(IndividualOrBusinessPage).get mustBe Business
-          result.get(RegisteredInUkYesNoPage) mustBe None
+          result.get(RegisteredInUkYesNoPage).get mustBe false
           result.get(NamePage).get mustBe name
           result.get(UtrPage) mustBe None
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
           result.get(CountryOfResidencePage).get mustBe country
           result.get(AddressInTheUkYesNoPage) mustBe None
           result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage) mustBe None
+          result.get(NonUkAddressPage).get mustBe nonUkAddress
           result.get(EmailAddressYesNoPage) mustBe None
           result.get(EmailAddressPage) mustBe None
           result.get(TelephoneNumberPage) mustBe None
