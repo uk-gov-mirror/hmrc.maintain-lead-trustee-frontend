@@ -30,13 +30,6 @@ trait LeadTrusteeMapper[T] extends Mapper[T] {
 
   def nonUkAddressPage: QuestionPage[NonUkAddress]
 
-//  def readAddress: Reads[Address] = {
-//    (ukAddressYesNoPage.path.read[Boolean] orElse ukCountryOfResidenceYesNoPage.path.read[Boolean] ).flatMap {
-//      case true => ukAddressPage.path.read[UkAddress].widen[Address]
-//      case false => nonUkAddressPage.path.read[Address].widen[Address]
-//    }
-//  }
-
   def readAddress: Reads[Address] = {
     lazy val ukAddressYesNo: Reads[Option[Boolean]] = ukAddressYesNoPage.path.readNullable[Boolean]
     lazy val ukResidencyYesNo: Reads[Option[Boolean]] = ukCountryOfResidenceYesNoPage.path.readNullable[Boolean]
