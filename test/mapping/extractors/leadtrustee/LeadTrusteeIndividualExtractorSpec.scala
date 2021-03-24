@@ -137,7 +137,7 @@ class LeadTrusteeIndividualExtractorSpec extends SpecBase {
           result.get(PassportOrIdCardDetailsPage) mustBe None
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
           result.get(CountryOfResidencePage).get mustBe GB
-          result.get(LiveInTheUkYesNoPage).get mustBe true
+          result.get(LiveInTheUkYesNoPage) mustBe None
           result.get(UkAddressPage).get mustBe ukAddress
           result.get(NonUkAddressPage) mustBe None
           result.get(EmailAddressYesNoPage).get mustBe false
@@ -173,7 +173,7 @@ class LeadTrusteeIndividualExtractorSpec extends SpecBase {
           result.get(PassportOrIdCardDetailsPage).get mustBe combined
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
           result.get(CountryOfResidencePage).get mustBe country
-          result.get(LiveInTheUkYesNoPage).get mustBe false
+          result.get(LiveInTheUkYesNoPage) mustBe None
           result.get(UkAddressPage) mustBe None
           result.get(NonUkAddressPage).get mustBe nonUkAddress
           result.get(EmailAddressYesNoPage).get mustBe true

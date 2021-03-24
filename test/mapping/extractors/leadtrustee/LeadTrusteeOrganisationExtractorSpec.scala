@@ -110,7 +110,7 @@ class LeadTrusteeOrganisationExtractorSpec extends SpecBase {
           result.get(UtrPage).get mustBe utr
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
           result.get(CountryOfResidencePage).get mustBe GB
-          result.get(AddressInTheUkYesNoPage).get mustBe true
+          result.get(AddressInTheUkYesNoPage) mustBe None
           result.get(UkAddressPage).get mustBe ukAddress
           result.get(NonUkAddressPage) mustBe None
           result.get(EmailAddressYesNoPage).get mustBe false
@@ -136,7 +136,7 @@ class LeadTrusteeOrganisationExtractorSpec extends SpecBase {
           result.get(UtrPage) mustBe None
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
           result.get(CountryOfResidencePage).get mustBe country
-          result.get(AddressInTheUkYesNoPage).get mustBe false
+          result.get(AddressInTheUkYesNoPage) mustBe None
           result.get(UkAddressPage) mustBe None
           result.get(NonUkAddressPage).get mustBe nonUkAddress
           result.get(EmailAddressYesNoPage).get mustBe true
