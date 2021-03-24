@@ -84,6 +84,49 @@ class LeadTrusteeOrganisationMapperSpec extends SpecBase {
       }
 
       "5mld" when {
+        "transition from 4mld" when {
+          "trustee has UTR, no residencyYesNo question, and no AddressYesNo question but a UK Address" in {
+            val userAnswers = baseAnswers
+              .set(RegisteredInUkYesNoPage, true).success.value
+              .set(UtrPage, utr).success.value
+              .set(UkAddressPage, ukAddress).success.value
+              .set(EmailAddressYesNoPage, true).success.value
+              .set(EmailAddressPage, email).success.value
+              .set(TelephoneNumberPage, phone).success.value
+
+            val result = mapper.map(userAnswers).get
+
+            result mustBe LeadTrusteeOrganisation(
+              name = name,
+              phoneNumber = phone,
+              email = Some(email),
+              utr = Some(utr),
+              address = ukAddress,
+              countryOfResidence = None
+            )
+          }
+
+          "trustee has UTR, no residencyYesNo question, and no AddressYesNo question but a None UK Address" in {
+            val userAnswers = baseAnswers
+              .set(RegisteredInUkYesNoPage, true).success.value
+              .set(UtrPage, utr).success.value
+              .set(NonUkAddressPage, nonUkAddress).success.value
+              .set(EmailAddressYesNoPage, true).success.value
+              .set(EmailAddressPage, email).success.value
+              .set(TelephoneNumberPage, phone).success.value
+
+            val result = mapper.map(userAnswers).get
+
+            result mustBe LeadTrusteeOrganisation(
+              name = name,
+              phoneNumber = phone,
+              email = Some(email),
+              utr = Some(utr),
+              address = nonUkAddress,
+              countryOfResidence = None
+            )
+          }
+        }
 
         "trustee has UTR, UK residency/address and email" in {
           val userAnswers = baseAnswers

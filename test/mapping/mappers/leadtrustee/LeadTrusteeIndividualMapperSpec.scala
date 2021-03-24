@@ -92,7 +92,53 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
       }
 
       "5mld" when {
+        "transition from 4mld" when {
+          "trustee has no 5mld questions UK nationality, and uk address" in {
+            val userAnswers = baseAnswers
+              .set(UkCitizenPage, true).success.value
+              .set(NationalInsuranceNumberPage, nino).success.value
+              .set(UkAddressPage, ukAddress).success.value
+              .set(EmailAddressYesNoPage, true).success.value
+              .set(EmailAddressPage, email).success.value
+              .set(TelephoneNumberPage, phone).success.value
 
+            val result = mapper.map(userAnswers).get
+
+            result mustBe LeadTrusteeIndividual(
+              name = name,
+              dateOfBirth = dateOfBirth,
+              phoneNumber = phone,
+              email = Some(email),
+              identification = NationalInsuranceNumber(nino),
+              address = ukAddress,
+              countryOfResidence = None,
+              nationality = None
+            )
+          }
+
+          "trustee has no 5mld questions UK nationality, and none uk address" in {
+            val userAnswers = baseAnswers
+              .set(UkCitizenPage, true).success.value
+              .set(NationalInsuranceNumberPage, nino).success.value
+              .set(NonUkAddressPage, nonUkAddress).success.value
+              .set(EmailAddressYesNoPage, true).success.value
+              .set(EmailAddressPage, email).success.value
+              .set(TelephoneNumberPage, phone).success.value
+
+            val result = mapper.map(userAnswers).get
+
+            result mustBe LeadTrusteeIndividual(
+              name = name,
+              dateOfBirth = dateOfBirth,
+              phoneNumber = phone,
+              email = Some(email),
+              identification = NationalInsuranceNumber(nino),
+              address = nonUkAddress,
+              countryOfResidence = None,
+              nationality = None
+            )
+          }
+        }
         "trustee has UK nationality, NINO, and UK residency/address" in {
           val userAnswers = baseAnswers
             .set(CountryOfNationalityInTheUkYesNoPage, true).success.value
