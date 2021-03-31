@@ -79,6 +79,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val minDate: LocalDate = getDate("minimum")
   lazy val minLeadTrusteeDob: LocalDate = getDate("minLeadTrusteeDob")
+
+  lazy val trustsIndividualCheckUrl: String = configuration.get[Service]("microservice.services.trusts-individual-check").baseUrl
   // TRUS-3881: update end
 
   def languageMap: Map[String, Lang] = Map(
