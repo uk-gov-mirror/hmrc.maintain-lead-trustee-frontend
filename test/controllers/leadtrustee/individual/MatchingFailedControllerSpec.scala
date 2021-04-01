@@ -29,8 +29,6 @@ import scala.concurrent.Future
 
 class MatchingFailedControllerSpec extends SpecBase {
 
-  private val index: Int = 0
-
   private lazy val matchingFailedRoute: String =
     routes.MatchingFailedController.onPageLoad().url
 

@@ -24,6 +24,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import services.TrustsIndividualCheckService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.leadtrustee.individual.MatchingFailedView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,6 +33,7 @@ class MatchingFailedController @Inject()(
                                           val controllerComponents: MessagesControllerComponents,
                                           implicit val frontendAppConfig: FrontendAppConfig,
                                           standardActionSets: StandardActionSets,
+                                          view: MatchingFailedView,
                                           errorHandler: ErrorHandler,
                                           service: TrustsIndividualCheckService
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
@@ -43,11 +45,10 @@ class MatchingFailedController @Inject()(
     implicit request =>
 
       service.failedAttempts("") map {
-//        case x if x < frontendAppConfig.maxMatchingAttempts =>
-//          Ok(view(draftId, index, x, frontendAppConfig.maxMatchingAttempts - x))
+        case x if x < frontendAppConfig.maxMatchingAttempts =>
+          Ok(view(x, frontendAppConfig.maxMatchingAttempts - x))
         case _ =>
-          Ok
-//          Redirect(routes.MatchingLockedController.onPageLoad(index, draftId))
+          Redirect(routes.MatchingLockedController.onPageLoad())
       } recoverWith {
         case e =>
           logger.error(s"Failed to retrieve number of failed matching attempts: ${e.getMessage}")

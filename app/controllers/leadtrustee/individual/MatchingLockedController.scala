@@ -17,6 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions.StandardActionSets
+import controllers.leadtrustee.actions.NameRequiredAction
 import models.DetailsChoice
 import models.DetailsChoice.{IdCard, Passport}
 import pages.leadtrustee.individual.{NinoYesNoPage, TrusteeDetailsChoicePage}
@@ -24,6 +25,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.leadtrustee.individual.MatchingLockedView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,17 +33,18 @@ import scala.concurrent.{ExecutionContext, Future}
 class MatchingLockedController @Inject()(
                                           val controllerComponents: MessagesControllerComponents,
                                           playbackRepository: PlaybackRepository,
+                                          view: MatchingLockedView,
+                                          nameRequiredAction: NameRequiredAction,
                                           standardActionSets: StandardActionSets
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private def actions() =
-    standardActionSets.identifiedUserWithData
+    standardActionSets.identifiedUserWithData andThen nameRequiredAction
 
   def onPageLoad(): Action[AnyContent] = actions() {
     implicit request =>
-      Ok
+      Ok(view(request.leadTrusteeName))
   }
-
 
   def continueWithPassport(): Action[AnyContent] =
     amendUserAnswersAndRedirect(Passport, routes.PassportOrIdCardController.onPageLoad())
@@ -50,9 +53,7 @@ class MatchingLockedController @Inject()(
     amendUserAnswersAndRedirect(IdCard, routes.PassportOrIdCardController.onPageLoad())
 
   private def amendUserAnswersAndRedirect(detailsChoice: DetailsChoice,
-                                          call: Call): Action[AnyContent] = actions().async {
-    implicit request =>
-
+                                          call: Call): Action[AnyContent] = actions().async { implicit request =>
       for {
         ninoYesNoSet <- Future.fromTry(request.userAnswers.set(NinoYesNoPage, false))
         detailsChoiceSet <- Future.fromTry(ninoYesNoSet.set(TrusteeDetailsChoicePage, detailsChoice))

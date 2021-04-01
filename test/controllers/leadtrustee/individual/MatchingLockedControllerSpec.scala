@@ -57,7 +57,7 @@ class MatchingLockedControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(name.toString)(request, messages).toString
+            view(name.displayFullName)(request, messages).toString
 
           application.stop()
         }
