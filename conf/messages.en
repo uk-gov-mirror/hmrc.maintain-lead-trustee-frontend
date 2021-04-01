@@ -657,3 +657,13 @@ leadTrustee.individual.matching.locked.link1 = Passport and address
 leadTrustee.individual.matching.locked.link2 = ID and address
 leadTrustee.individual.matching.locked.paragraph4 = If you do not have these details to hand, you can return to the registration progress page, to complete the other details for the trust until you have provided alternative information for your existing lead trustee, or have information for a new lead trustee.
 leadTrustee.individual.matching.locked.paragraph5 = When you have confirmed the accurate information, you’ll need to sign out and sign back in. You can complete the other sections in this registration without signing out and these details will be saved for 28 days.
+
+leadTrustee.individual.trusteeDetailsChoice.title = Which of the lead trustees’s details can you provide?
+leadTrustee.individual.trusteeDetailsChoice.heading = Which of {0}’s details can you provide?
+leadTrustee.individual.trusteeDetailsChoice.checkYourAnswersLabel = Which of {0}’s details can you provide?
+leadTrustee.individual.5mld.trusteeDetailsChoice.paragraph1 = If you do not have these details to hand, you can return to this page to complete these details at another stage. These details will be saved for 28 days.
+leadTrustee.individual.trusteeDetailsChoice.passport = Passport
+leadTrustee.individual.trusteeDetailsChoice.idCard = ID card
+leadTrustee.individual.5mld.trusteeDetailsChoice.passport = Passport and address
+leadTrustee.individual.5mld.trusteeDetailsChoice.idCard = ID card and address
+leadTrustee.individual.trusteeDetailsChoice.error.required = Select which details you can provide

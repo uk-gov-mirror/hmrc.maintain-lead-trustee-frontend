@@ -49,6 +49,9 @@ GET        /check-details                           controllers.leadtrustee.indi
 GET        /check-updated-details                   controllers.leadtrustee.individual.CheckDetailsController.onPageLoadUpdated()
 POST       /check-details                           controllers.leadtrustee.individual.CheckDetailsController.onSubmit()
 
+GET        /details-choice                          controllers.leadtrustee.individual.TrusteeDetailsChoiceController.onPageLoad()
+POST       /details-choice                          controllers.leadtrustee.individual.TrusteeDetailsChoiceController.onSubmit()
+
 GET        /matching-failed                         controllers.leadtrustee.individual.MatchingFailedController.onPageLoad()
 POST       /matching-failed                         controllers.leadtrustee.individual.MatchingFailedController.onSubmit()
 
