@@ -18,7 +18,7 @@ package services
 
 import connectors.TrustsIndividualCheckConnector
 import models._
-import pages.leadtrustee.individual.{TrusteesDateOfBirthPage, TrusteesNamePage, TrusteesNinoPage}
+import pages.leadtrustee.individual.{NamePage, NationalInsuranceNumberPage, TrusteesDateOfBirthPage}
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -33,8 +33,8 @@ class TrustsIndividualCheckService @Inject()(connector: TrustsIndividualCheckCon
     if (userAnswers.is5mldEnabled) {
       val body: Option[IdMatchRequest] = for {
         id <- generateId(userAnswers.identifier)
-        nino <- userAnswers.get(TrusteesNinoPage(index))
-        name <- userAnswers.get(TrusteesNamePage(index))
+        nino <- userAnswers.get(NationalInsuranceNumberPage)
+        name <- userAnswers.get(NamePage)
         dob <- userAnswers.get(TrusteesDateOfBirthPage(index))
       } yield {
         IdMatchRequest(id, nino, name.firstName.capitalize, name.lastName.capitalize, dob.toString)

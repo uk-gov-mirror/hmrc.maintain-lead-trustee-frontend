@@ -107,6 +107,7 @@ package object models {
         case oldValue: JsObject =>
           JsSuccess(oldValue + (key -> newValue))
         case _ =>
+          println("??" + key)
           JsError(s"cannot set a key on $oldValue")
       }
     }

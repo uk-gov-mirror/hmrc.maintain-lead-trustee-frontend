@@ -16,7 +16,7 @@
 
 package pages.leadtrustee.individual
 
-import models.{DetailsChoice, UserAnswers}
+import models.DetailsChoice
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 

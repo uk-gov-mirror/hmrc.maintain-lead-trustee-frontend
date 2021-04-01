@@ -22,7 +22,7 @@ import models.{Name, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import pages.leadtrustee.individual.{TrusteeDetailsChoicePage, TrusteesNamePage, TrusteesNinoPage}
+import pages.leadtrustee.individual.{NamePage, NationalInsuranceNumberPage, TrusteeDetailsChoicePage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.leadtrustee.individual.MatchingLockedView
@@ -31,13 +31,11 @@ import scala.concurrent.Future
 
 class MatchingLockedControllerSpec extends SpecBase {
 
-  private val index: Int = 0
-
   private val name: Name = Name("Joe", None, "Bloggs")
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(TrusteesNamePage(index), name).success.value
-    .set(TrusteesNinoPage(index), "AA000000A").success.value
+    .set(NamePage, name).success.value
+    .set(NationalInsuranceNumberPage, "AA000000A").success.value
 
   "MatchingLockedController" when {
 
@@ -90,8 +88,8 @@ class MatchingLockedControllerSpec extends SpecBase {
 
         "amend user answers and redirect to passport page" in {
 
-//          reset(registrationsRepository)
-//          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+          reset(playbackRepository)
+          when(playbackRepository.set(any())).thenReturn(Future.successful(true))
 
           val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
@@ -104,9 +102,9 @@ class MatchingLockedControllerSpec extends SpecBase {
           redirectLocation(result).value mustEqual routes.PassportOrIdCardController.onPageLoad().url
 
           val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-//          verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+          verify(playbackRepository).set(uaCaptor.capture)
 
-          uaCaptor.getValue.get(TrusteesNinoPage(index)) mustBe None
+          uaCaptor.getValue.get(NationalInsuranceNumberPage) mustBe None
           uaCaptor.getValue.get(TrusteeDetailsChoicePage).get mustBe Passport
 
           application.stop()
@@ -138,8 +136,8 @@ class MatchingLockedControllerSpec extends SpecBase {
 
         "amend user answers and redirect to id card page" in {
 
-//          reset(registrationsRepository)
-//          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+          reset(playbackRepository)
+          when(playbackRepository.set(any())).thenReturn(Future.successful(true))
 
           val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
@@ -152,9 +150,9 @@ class MatchingLockedControllerSpec extends SpecBase {
           redirectLocation(result).value mustEqual routes.PassportOrIdCardController.onPageLoad().url
 
           val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-//          verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+          verify(playbackRepository).set(uaCaptor.capture)
 
-          uaCaptor.getValue.get(TrusteesNinoPage(index)) mustBe None
+          uaCaptor.getValue.get(NationalInsuranceNumberPage) mustBe None
           uaCaptor.getValue.get(TrusteeDetailsChoicePage).get mustBe IdCard
 
           application.stop()

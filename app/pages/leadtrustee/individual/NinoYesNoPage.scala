@@ -16,13 +16,27 @@
 
 package pages.leadtrustee.individual
 
-import models.Name
+import models.UserAnswers
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-final case class TrusteesNamePage(index : Int) extends QuestionPage[Name] {
+import scala.util.Try
 
-  override def path: JsPath = basePath \ index \ toString
+case object NinoYesNoPage extends QuestionPage[Boolean] {
 
-  override def toString: String = "name"
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "ninoYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(true) =>
+        userAnswers.remove(TrusteeDetailsChoicePage)
+          .flatMap(_.remove(PassportOrIdCardDetailsPage))
+      case Some(false) =>
+        userAnswers.remove(NationalInsuranceNumberPage)
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
+  }
 }

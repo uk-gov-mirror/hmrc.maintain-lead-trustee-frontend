@@ -17,8 +17,12 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions.StandardActionSets
+import models.DetailsChoice
+import models.DetailsChoice.{IdCard, Passport}
+import pages.leadtrustee.individual.{NinoYesNoPage, TrusteeDetailsChoicePage}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -26,6 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MatchingLockedController @Inject()(
                                           val controllerComponents: MessagesControllerComponents,
+                                          playbackRepository: PlaybackRepository,
                                           standardActionSets: StandardActionSets
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -37,12 +42,23 @@ class MatchingLockedController @Inject()(
       Ok
   }
 
-  def continueWithPassport(): Action[AnyContent] = actions() { request =>
-    Ok
-  }
 
-  def continueWithIdCard(): Action[AnyContent] = actions() { request =>
-    Ok
-  }
+  def continueWithPassport(): Action[AnyContent] =
+    amendUserAnswersAndRedirect(Passport, routes.PassportOrIdCardController.onPageLoad())
 
+  def continueWithIdCard(): Action[AnyContent] =
+    amendUserAnswersAndRedirect(IdCard, routes.PassportOrIdCardController.onPageLoad())
+
+  private def amendUserAnswersAndRedirect(detailsChoice: DetailsChoice,
+                                          call: Call): Action[AnyContent] = actions().async {
+    implicit request =>
+
+      for {
+        ninoYesNoSet <- Future.fromTry(request.userAnswers.set(NinoYesNoPage, false))
+        detailsChoiceSet <- Future.fromTry(ninoYesNoSet.set(TrusteeDetailsChoicePage, detailsChoice))
+        _ <- playbackRepository.set(detailsChoiceSet)
+      } yield {
+        Redirect(call)
+      }
+  }
 }
