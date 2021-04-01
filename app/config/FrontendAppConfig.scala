@@ -81,6 +81,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val minLeadTrusteeDob: LocalDate = getDate("minLeadTrusteeDob")
 
   lazy val trustsIndividualCheckUrl: String = configuration.get[Service]("microservice.services.trusts-individual-check").baseUrl
+
   // TRUS-3881: update end
 
   def languageMap: Map[String, Lang] = Map(
@@ -97,4 +98,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     val userAction = URLEncoder.encode(new URI(request.uri).getPath, "UTF-8")
     s"$accessibilityBaseLinkUrl?userAction=$userAction"
   }
+
+  val maxMatchingAttempts: Int = getInt("individual-match.max-attempts")
+
 }

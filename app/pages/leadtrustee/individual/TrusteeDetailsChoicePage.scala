@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-package viewmodels
+package pages.leadtrustee.individual
 
-case class Link(text: String, url: String){
-  def cssText: String = text.toLowerCase.replaceAll(" ", "-")
+import models.{DetailsChoice, UserAnswers}
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+
+case object TrusteeDetailsChoicePage extends QuestionPage[DetailsChoice] {
+
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "trusteeDetailsChoice"
+
 }
