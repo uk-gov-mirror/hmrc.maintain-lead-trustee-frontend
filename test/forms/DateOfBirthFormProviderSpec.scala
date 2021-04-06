@@ -24,32 +24,67 @@ import play.api.data.FormError
 
 class DateOfBirthFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 
-  //  TODO: need separate test cases for 4MLD and 5MLD
-  val form = new DateOfBirthFormProvider(frontendAppConfig).withConfig("leadtrustee.individual.dateOfBirth")
+  "DateOfBirthFormProviderSpec" when {
+    "4MLD" must {
 
-  private val min = LocalDate.of(1500, 1, 1)
-  private val max = LocalDate.now(ZoneOffset.UTC)
+      val min = LocalDate.of(1500, 1, 1)
+      val max = LocalDate.now(ZoneOffset.UTC)
 
-  ".value" should {
+      val form = new DateOfBirthFormProvider(frontendAppConfig).withConfig("leadtrustee.individual.dateOfBirth", false)
 
-    val validData = datesBetween(
-      min = min,
-      max = max
-    )
+      ".value" should {
 
-    behave like dateField(form, "value", validData)
+        val validData = datesBetween(
+          min = min,
+          max = max
+        )
 
-    behave like mandatoryDateField(form, "value", "leadtrustee.individual.dateOfBirth.error.required.all")
+        behave like dateField(form, "value", validData)
 
-    behave like dateFieldWithMax(form, "value",
-      max = max,
-      FormError("value", "leadtrustee.individual.dateOfBirth.error.future", List("day", "month", "year"))
-    )
+        behave like mandatoryDateField(form, "value", "leadtrustee.individual.dateOfBirth.error.required.all")
 
-    behave like dateFieldWithMin(form, "value",
-      min = min,
-      FormError("value", "leadtrustee.individual.dateOfBirth.error.past", List("day", "month", "year"))
-    )
+        behave like dateFieldWithMax(form, "value",
+          max = max,
+          FormError("value", "leadtrustee.individual.dateOfBirth.error.future", List("day", "month", "year"))
+        )
 
+        behave like dateFieldWithMin(form, "value",
+          min = min,
+          FormError("value", "leadtrustee.individual.dateOfBirth.error.past", List("day", "month", "year"))
+        )
+
+      }
+    }
+
+    "5MLD" must {
+
+      val min = LocalDate.of(1900, 1, 1)
+      val max = LocalDate.now(ZoneOffset.UTC)
+
+      val form = new DateOfBirthFormProvider(frontendAppConfig).withConfig("leadtrustee.individual.dateOfBirth", true)
+
+      ".value" should {
+
+        val validData = datesBetween(
+          min = min,
+          max = max
+        )
+
+        behave like dateField(form, "value", validData)
+
+        behave like mandatoryDateField(form, "value", "leadtrustee.individual.dateOfBirth.error.required.all")
+
+        behave like dateFieldWithMax(form, "value",
+          max = max,
+          FormError("value", "leadtrustee.individual.dateOfBirth.error.future", List("day", "month", "year"))
+        )
+
+        behave like dateFieldWithMin(form, "value",
+          min = min,
+          FormError("value", "leadtrustee.individual.dateOfBirth.error.past", List("day", "month", "year"))
+        )
+
+      }
+    }
   }
 }

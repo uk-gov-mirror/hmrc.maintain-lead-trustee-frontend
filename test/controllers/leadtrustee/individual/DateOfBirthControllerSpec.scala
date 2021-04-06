@@ -37,9 +37,7 @@ import scala.concurrent.Future
 
 class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
-  //  TODO: need separate test cases for 4MLD and 5MLD
   val formProvider = new DateOfBirthFormProvider(frontendAppConfig)
-  private def form = formProvider.withConfig("leadtrustee.individual.dateOfBirth")
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -64,111 +62,225 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
         "value.year"  -> validAnswer.getYear.toString
       )
 
-  "DateOfBirth Controller" must {
+  "DateOfBirth Controller" when {
 
-    "return OK and the correct view for a GET" in {
+    "4MLD" must {
+      def form = formProvider.withConfig("leadtrustee.individual.dateOfBirth", false)
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      "return OK and the correct view for a GET" in {
 
-      val result = route(application, getRequest()).value
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val view = application.injector.instanceOf[DateOfBirthView]
+        val result = route(application, getRequest()).value
 
-      status(result) mustEqual OK
+        val view = application.injector.instanceOf[DateOfBirthView]
 
-      contentAsString(result) mustEqual
-        view(form, name.displayName)(getRequest, messages).toString
+        status(result) mustEqual OK
 
-      application.stop()
+        contentAsString(result) mustEqual
+          view(form, name.displayName)(getRequest, messages).toString
+
+        application.stop()
+      }
+
+      "populate the view correctly on a GET when the question has previously been answered" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(DateOfBirthPage, validAnswer).success.value
+          .set(NamePage, name).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+        val view = application.injector.instanceOf[DateOfBirthView]
+
+        val result = route(application, getRequest()).value
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form.fill(validAnswer), name.displayName)(getRequest(), messages).toString
+
+        application.stop()
+      }
+
+      "redirect to the next page when valid data is submitted" in {
+
+        val mockPlaybackRepository = mock[PlaybackRepository]
+
+        when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
+            )
+            .build()
+
+        val result = route(application, postRequest()).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual onwardRoute.url
+
+        application.stop()
+      }
+
+      "return a Bad Request and errors when invalid data is submitted" in {
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+        val request =
+          FakeRequest(POST, dateOfBirthRoute)
+            .withFormUrlEncodedBody(("value", "invalid value"))
+
+        val boundForm = form.bind(Map("value" -> "invalid value"))
+
+        val view = application.injector.instanceOf[DateOfBirthView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+
+        contentAsString(result) mustEqual
+          view(boundForm, name.displayName)(request, messages).toString
+
+        application.stop()
+      }
+
+      "redirect to Session Expired for a GET if no existing data is found" in {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        val result = route(application, getRequest()).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "redirect to Session Expired for a POST if no existing data is found" in {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        val result = route(application, postRequest()).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+
+        application.stop()
+      }
     }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
+    "5MLD" must {
 
-      val userAnswers = emptyUserAnswers
-        .set(DateOfBirthPage, validAnswer).success.value
-        .set(NamePage, name).success.value
+      def form = formProvider.withConfig("leadtrustee.individual.dateOfBirth", true)
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      "return OK and the correct view for a GET" in {
 
-      val view = application.injector.instanceOf[DateOfBirthView]
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val result = route(application, getRequest()).value
+        val result = route(application, getRequest()).value
 
-      status(result) mustEqual OK
+        val view = application.injector.instanceOf[DateOfBirthView]
 
-      contentAsString(result) mustEqual
-        view(form.fill(validAnswer), name.displayName)(getRequest(), messages).toString
+        status(result) mustEqual OK
 
-      application.stop()
-    }
+        contentAsString(result) mustEqual
+          view(form, name.displayName)(getRequest, messages).toString
 
-    "redirect to the next page when valid data is submitted" in {
+        application.stop()
+      }
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      "populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+        val userAnswers = emptyUserAnswers
+          .set(DateOfBirthPage, validAnswer).success.value
+          .set(NamePage, name).success.value
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
-          )
-          .build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val result = route(application, postRequest()).value
+        val view = application.injector.instanceOf[DateOfBirthView]
 
-      status(result) mustEqual SEE_OTHER
+        val result = route(application, getRequest()).value
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+        status(result) mustEqual OK
 
-      application.stop()
-    }
+        contentAsString(result) mustEqual
+          view(form.fill(validAnswer), name.displayName)(getRequest(), messages).toString
 
-    "return a Bad Request and errors when invalid data is submitted" in {
+        application.stop()
+      }
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      "redirect to the next page when valid data is submitted" in {
 
-      val request =
-        FakeRequest(POST, dateOfBirthRoute)
-          .withFormUrlEncodedBody(("value", "invalid value"))
+        val mockPlaybackRepository = mock[PlaybackRepository]
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+        when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val view = application.injector.instanceOf[DateOfBirthView]
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
+            )
+            .build()
 
-      val result = route(application, request).value
+        val result = route(application, postRequest()).value
 
-      status(result) mustEqual BAD_REQUEST
+        status(result) mustEqual SEE_OTHER
 
-      contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(request, messages).toString
+        redirectLocation(result).value mustEqual onwardRoute.url
 
-      application.stop()
-    }
+        application.stop()
+      }
 
-    "redirect to Session Expired for a GET if no existing data is found" in {
+      "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val result = route(application, getRequest()).value
+        val request =
+          FakeRequest(POST, dateOfBirthRoute)
+            .withFormUrlEncodedBody(("value", "invalid value"))
 
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      application.stop()
-    }
+        val view = application.injector.instanceOf[DateOfBirthView]
 
-    "redirect to Session Expired for a POST if no existing data is found" in {
+        val result = route(application, request).value
 
-      val application = applicationBuilder(userAnswers = None).build()
+        status(result) mustEqual BAD_REQUEST
 
-      val result = route(application, postRequest()).value
+        contentAsString(result) mustEqual
+          view(boundForm, name.displayName)(request, messages).toString
 
-      status(result) mustEqual SEE_OTHER
+        application.stop()
+      }
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      "redirect to Session Expired for a GET if no existing data is found" in {
 
-      application.stop()
+        val application = applicationBuilder(userAnswers = None).build()
+
+        val result = route(application, getRequest()).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "redirect to Session Expired for a POST if no existing data is found" in {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        val result = route(application, postRequest()).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+
+        application.stop()
+      }
     }
   }
 }
