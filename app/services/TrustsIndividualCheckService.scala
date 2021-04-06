@@ -46,6 +46,7 @@ class TrustsIndividualCheckService @Inject()(connector: TrustsIndividualCheckCon
             case SuccessfulOrUnsuccessfulMatchResponse(_, true) => SuccessfulMatchResponse
             case SuccessfulOrUnsuccessfulMatchResponse(_, false) => UnsuccessfulMatchResponse
             case AttemptLimitExceededResponse => LockedMatchResponse
+            case ServiceUnavailableResponse => ServiceUnavailableErrorResponse
             case _ => MatchingErrorResponse
           }
         case _ =>
