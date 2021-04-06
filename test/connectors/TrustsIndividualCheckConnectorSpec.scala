@@ -19,6 +19,7 @@ package connectors
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models._
+import org.mockito.Matchers.{eq => eqTo, any}
 import org.scalatest.{MustMatchers, OptionValues}
 import play.api.Application
 import play.api.http.Status
@@ -71,7 +72,7 @@ class TrustsIndividualCheckConnectorSpec extends SpecBase with MustMatchers with
                 )
             )
 
-            val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(idMatchRequest), Duration.Inf)
+            val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(eqTo(idMatchRequest))(any(), any()), Duration.Inf)
             result mustBe SuccessfulOrUnsuccessfulMatchResponse(id, idMatch)
           }
 
