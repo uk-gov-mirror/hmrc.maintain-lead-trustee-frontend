@@ -126,7 +126,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
         result.get(LiveInTheUkYesNoPage).get mustBe false
         result.get(UkAddressPage) mustBe None
         result.get(NonUkAddressPage).get mustBe nonUkAddress
-        result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
+        result.get(PassportOrIdCardDetailsYesNoPage).get mustBe false
         result.get(PassportOrIdCardDetailsPage) mustBe None
 
       }

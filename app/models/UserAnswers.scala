@@ -93,16 +93,6 @@ final case class UserAnswers(
 
 object UserAnswers {
 
-  def newSession(id: String, identifier: String, startDate: LocalDate, is5mldEnabled: Boolean, isTaxable: Boolean, isUnderlyingData5mld: Boolean) =
-    UserAnswers(
-      internalId = id,
-      identifier = identifier,
-      whenTrustSetup = startDate,
-      is5mldEnabled = is5mldEnabled,
-      isTaxable = isTaxable,
-      isUnderlyingData5mld = isUnderlyingData5mld
-    )
-
   implicit lazy val reads: Reads[UserAnswers] = {
 
     import play.api.libs.functional.syntax._

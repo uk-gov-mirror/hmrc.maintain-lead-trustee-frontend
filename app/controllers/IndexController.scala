@@ -18,6 +18,7 @@ package controllers
 
 import connectors.TrustConnector
 import controllers.actions.StandardActionSets
+
 import javax.inject.Inject
 import models.UserAnswers
 import play.api.Logging
@@ -27,32 +28,44 @@ import repositories.PlaybackRepository
 import services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  actions: StandardActionSets,
                                  cacheRepository : PlaybackRepository,
                                  connector: TrustConnector,
-                                 featureFlagService: FeatureFlagService)
-                               (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                 featureFlagService: FeatureFlagService
+                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(identifier: String): Action[AnyContent] = (actions.auth andThen actions.saveSession(identifier)).async {
-      implicit request =>
-        logger.info(s"[Session ID: ${utils.Session.id(hc)}][Identifier: $identifier]" +
-          s" user has started to maintain trustees")
-        for {
-          trustDetails <- connector.getTrustDetails(identifier)
-          is5mldEnabled <- featureFlagService.is5mldEnabled()
-          isUnderlyingData5mld <- connector.isTrust5mld(identifier)
-          _ <- cacheRepository.set(UserAnswers.newSession(
-            id = request.user.internalId,
-            identifier = identifier,
-            startDate = trustDetails.startDate,
-            is5mldEnabled = is5mldEnabled,
-            isTaxable = trustDetails.trustTaxable.getOrElse(true),
-            isUnderlyingData5mld = isUnderlyingData5mld)
-          )
-        } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-    }
+  def onPageLoad(identifier: String): Action[AnyContent] = (actions.auth andThen actions.saveSession(identifier) andThen actions.getData).async {
+    implicit request =>
+
+      logger.info(s"[Session ID: ${utils.Session.id(hc)}][Identifier: $identifier]" +
+        s" user has started to maintain trustees")
+
+      for {
+        trustDetails <- connector.getTrustDetails(identifier)
+        is5mldEnabled <- featureFlagService.is5mldEnabled()
+        isUnderlyingData5mld <- connector.isTrust5mld(identifier)
+        ua <- Future.successful {
+          request.userAnswers match {
+            case Some(userAnswers) => userAnswers.copy(
+              is5mldEnabled = is5mldEnabled,
+              isTaxable = trustDetails.isTaxable,
+              isUnderlyingData5mld = isUnderlyingData5mld
+            )
+            case None => UserAnswers(
+              internalId = request.user.internalId,
+              identifier = identifier,
+              whenTrustSetup = trustDetails.startDate,
+              is5mldEnabled = is5mldEnabled,
+              isTaxable = trustDetails.isTaxable,
+              isUnderlyingData5mld = isUnderlyingData5mld
+            )
+          }
+        }
+        _ <- cacheRepository.set(ua)
+      } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+  }
 }
