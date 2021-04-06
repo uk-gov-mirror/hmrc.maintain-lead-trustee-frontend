@@ -33,8 +33,6 @@ class TrustsStoreConnectorSpec extends SpecBase
   with IntegrationPatience
   with WireMockHelper {
 
-  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
-
   "trusts store connector" must {
 
     "return OK with the current task status" in {

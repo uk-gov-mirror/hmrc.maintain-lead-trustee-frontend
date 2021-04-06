@@ -17,7 +17,6 @@
 package base
 
 import java.time.LocalDate
-
 import controllers.actions._
 import navigation.FakeNavigator
 import org.scalatest.{BeforeAndAfter, TestSuite, TryValues}
@@ -28,6 +27,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.BodyParsers
 import repositories.{ActiveSessionRepository, PlaybackRepository}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.TestUserAnswers
 
 trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked with BeforeAndAfter with FakeTrustsApp {
@@ -36,9 +36,11 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
   final val ENGLISH = "en"
   final val WELSH = "cy"
 
+  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+
   def emptyUserAnswers = models.UserAnswers(TestUserAnswers.userInternalId, "UTRUTRUTR", LocalDate.now())
 
-  val bodyParsers = injector.instanceOf[BodyParsers.Default]
+  lazy val bodyParsers = injector.instanceOf[BodyParsers.Default]
 
   val fakeNavigator = new FakeNavigator()
 

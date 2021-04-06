@@ -19,7 +19,7 @@ package connectors
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models._
-import org.mockito.Matchers.{eq => eqTo, any}
+import org.mockito.Matchers.{any, eq => eqTo}
 import org.scalatest.{MustMatchers, OptionValues}
 import play.api.Application
 import play.api.http.Status
@@ -27,7 +27,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import utils.WireMockHelper
 
-import scala.concurrent.{Await}
+import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 class TrustsIndividualCheckConnectorSpec extends SpecBase with MustMatchers with OptionValues with WireMockHelper {
@@ -72,7 +72,7 @@ class TrustsIndividualCheckConnectorSpec extends SpecBase with MustMatchers with
                 )
             )
 
-            val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(eqTo(idMatchRequest))(any(), any()), Duration.Inf)
+            val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(idMatchRequest), Duration.Inf)
             result mustBe SuccessfulOrUnsuccessfulMatchResponse(id, idMatch)
           }
 
@@ -89,7 +89,7 @@ class TrustsIndividualCheckConnectorSpec extends SpecBase with MustMatchers with
                 )
             )
 
-            val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(eqTo(idMatchRequest))(any(), any()), Duration.Inf)
+            val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(idMatchRequest), Duration.Inf)
             result mustBe SuccessfulOrUnsuccessfulMatchResponse(id, idMatch)
           }
         }
@@ -107,7 +107,7 @@ class TrustsIndividualCheckConnectorSpec extends SpecBase with MustMatchers with
               )
           )
 
-          val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(eqTo(idMatchRequest))(any(), any()), Duration.Inf)
+          val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(idMatchRequest), Duration.Inf)
           result mustBe InvalidIdMatchResponse
         }
       }
@@ -124,7 +124,7 @@ class TrustsIndividualCheckConnectorSpec extends SpecBase with MustMatchers with
               )
           )
 
-          val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(eqTo(idMatchRequest))(any(), any()), Duration.Inf)
+          val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(idMatchRequest), Duration.Inf)
           result mustBe AttemptLimitExceededResponse
         }
       }
@@ -141,7 +141,7 @@ class TrustsIndividualCheckConnectorSpec extends SpecBase with MustMatchers with
               )
           )
 
-          val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(eqTo(idMatchRequest))(any(), any()), Duration.Inf)
+          val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(idMatchRequest), Duration.Inf)
           result mustBe NinoNotFoundResponse
         }
       }
@@ -157,7 +157,7 @@ class TrustsIndividualCheckConnectorSpec extends SpecBase with MustMatchers with
               )
           )
 
-          val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(eqTo(idMatchRequest))(any(), any()), Duration.Inf)
+          val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(idMatchRequest), Duration.Inf)
           result mustBe ServiceUnavailableResponse
         }
       }
@@ -173,7 +173,7 @@ class TrustsIndividualCheckConnectorSpec extends SpecBase with MustMatchers with
               )
           )
 
-          val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(eqTo(idMatchRequest))(any(), any()), Duration.Inf)
+          val result = Await.result[IdMatchResponse](connector.matchLeadTrustee(idMatchRequest), Duration.Inf)
           result mustBe InternalServerErrorResponse
         }
       }
@@ -196,7 +196,7 @@ class TrustsIndividualCheckConnectorSpec extends SpecBase with MustMatchers with
             )
         )
 
-        val result = Await.result[Int](connector.failedAttempts(id)(any(), any()), Duration.Inf)
+        val result = Await.result[Int](connector.failedAttempts(id), Duration.Inf)
         result mustBe numberOfFailedAttempts
       }
     }
