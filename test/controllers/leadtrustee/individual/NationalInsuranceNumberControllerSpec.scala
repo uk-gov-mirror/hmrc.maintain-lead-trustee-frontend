@@ -18,8 +18,8 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import forms.NationalInsuranceNumberFormProvider
-import models.Name
-import navigation.Navigator
+import models.{IssueBuildingPayloadResponse, LockedMatchResponse, Name, ServiceNotIn5mldModeResponse, ServiceUnavailableErrorResponse, SuccessfulMatchResponse, UnsuccessfulMatchResponse}
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -27,7 +27,7 @@ import pages.leadtrustee.individual.{NamePage, NationalInsuranceNumberPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.PlaybackRepository
+import services.TrustsIndividualCheckService
 import views.html.leadtrustee.individual.NationalInsuranceNumberView
 
 import scala.concurrent.Future
@@ -37,6 +37,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
   val form = new NationalInsuranceNumberFormProvider().withPrefix("leadtrustee.individual.nationalInsuranceNumber")
 
   val name = Name("Lead", None, "Trustee")
+
+  val nino = "JH123456C"
 
   lazy val nationalInsuranceNumberRoute = routes.NationalInsuranceNumberController.onPageLoad().url
 
@@ -83,26 +85,182 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "redirect to the next page when valid data is submitted" when {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      "in 4mld mode" in {
 
-      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+        val mockService = mock[TrustsIndividualCheckService]
 
-      val request =
-        FakeRequest(POST, nationalInsuranceNumberRoute)
-          .withFormUrlEncodedBody(("value", "JH123456C"))
+        when(mockService.matchLeadTrustee(any())(any(), any()))
+          .thenReturn(Future.successful(ServiceNotIn5mldModeResponse))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[Navigator].toInstance(fakeNavigator))
-        .build()
+        val userAnswers = emptyUserAnswers
+          .set(NationalInsuranceNumberPage, nino).success.value
 
-      val result = route(application, request).value
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(
+            bind[Navigator].toInstance(new FakeNavigator()),
+            bind[TrustsIndividualCheckService].toInstance(mockService)
+          ).build()
 
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+        val request = FakeRequest(POST, nationalInsuranceNumberRoute)
+          .withFormUrlEncodedBody(("value", nino))
 
-      application.stop()
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+        application.stop()
+      }
+
+      "in 5mld mode and SuccessfulMatchResponse" in {
+
+        val mockService = mock[TrustsIndividualCheckService]
+
+        when(mockService.matchLeadTrustee(any())(any(), any()))
+          .thenReturn(Future.successful(SuccessfulMatchResponse))
+
+        val userAnswers = emptyUserAnswers
+          .set(NationalInsuranceNumberPage, nino).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(
+            bind[Navigator].toInstance(new FakeNavigator()),
+            bind[TrustsIndividualCheckService].toInstance(mockService)
+          ).build()
+
+        val request = FakeRequest(POST, nationalInsuranceNumberRoute)
+          .withFormUrlEncodedBody(("value", nino))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+        application.stop()
+      }
+
+    }
+
+    "redirect to matching failed page" when {
+
+      "UnsuccessfulMatchResponse" in {
+
+        val mockService = mock[TrustsIndividualCheckService]
+
+        when(mockService.matchLeadTrustee(any())(any(), any()))
+          .thenReturn(Future.successful(UnsuccessfulMatchResponse))
+
+        when(mockService.failedAttempts(any())(any(), any()))
+          .thenReturn(Future.successful(1))
+
+        val userAnswers = emptyUserAnswers
+          .set(NationalInsuranceNumberPage, nino).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(
+            bind[TrustsIndividualCheckService].toInstance(mockService)
+          ).build()
+
+        val request = FakeRequest(POST, nationalInsuranceNumberRoute)
+          .withFormUrlEncodedBody(("value", nino))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          routes.MatchingFailedController.onPageLoad().url
+
+        application.stop()
+      }
+    }
+
+    "redirect to matching locked page" when {
+      "LockedMatchResponse" in {
+
+        val mockService = mock[TrustsIndividualCheckService]
+
+        when(mockService.matchLeadTrustee(any())(any(), any()))
+          .thenReturn(Future.successful(LockedMatchResponse))
+
+        val userAnswers = emptyUserAnswers
+          .set(NationalInsuranceNumberPage, nino).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(
+            bind[TrustsIndividualCheckService].toInstance(mockService)
+          ).build()
+
+        val request = FakeRequest(POST, nationalInsuranceNumberRoute)
+          .withFormUrlEncodedBody(("value", nino))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          routes.MatchingLockedController.onPageLoad().url
+
+        application.stop()
+      }
+    }
+
+    "return INTERNAL_SERVER_ERROR" when {
+
+      "IssueBuildingPayloadResponse" in {
+
+        val mockService = mock[TrustsIndividualCheckService]
+
+        when(mockService.matchLeadTrustee(any())(any(), any()))
+          .thenReturn(Future.successful(IssueBuildingPayloadResponse))
+
+        val userAnswers = emptyUserAnswers
+          .set(NationalInsuranceNumberPage, nino).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(
+            bind[TrustsIndividualCheckService].toInstance(mockService)
+          ).build()
+
+        val request = FakeRequest(POST, nationalInsuranceNumberRoute)
+          .withFormUrlEncodedBody(("value", nino))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual INTERNAL_SERVER_ERROR
+
+        application.stop()
+      }
+
+      "ServiceUnavailableErrorResponse" in {
+
+        val mockService = mock[TrustsIndividualCheckService]
+
+        when(mockService.matchLeadTrustee(any())(any(), any()))
+          .thenReturn(Future.successful(ServiceUnavailableErrorResponse))
+
+        val userAnswers = emptyUserAnswers
+          .set(NationalInsuranceNumberPage, nino).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(
+            bind[TrustsIndividualCheckService].toInstance(mockService)
+          ).build()
+
+        val request = FakeRequest(POST, nationalInsuranceNumberRoute)
+          .withFormUrlEncodedBody(("value", nino))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual INTERNAL_SERVER_ERROR
+
+        application.stop()
+      }
+
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

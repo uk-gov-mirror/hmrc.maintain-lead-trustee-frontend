@@ -19,12 +19,14 @@ package controllers.leadtrustee.individual
 import controllers.actions._
 import controllers.leadtrustee.actions.NameRequiredAction
 import forms.NationalInsuranceNumberFormProvider
+import models.{LockedMatchResponse, ServiceNotIn5mldModeResponse, SuccessfulMatchResponse, UnsuccessfulMatchResponse}
 import javax.inject.Inject
 import navigation.Navigator
 import pages.leadtrustee.individual.NationalInsuranceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
+import services.TrustsIndividualCheckService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.leadtrustee.individual.NationalInsuranceNumberView
 
@@ -36,6 +38,7 @@ class NationalInsuranceNumberController @Inject()(
                                         navigator: Navigator,
                                         standardActionSets: StandardActionSets,
                                         nameAction: NameRequiredAction,
+                                        service: TrustsIndividualCheckService,
                                         formProvider: NationalInsuranceNumberFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: NationalInsuranceNumberView
@@ -64,8 +67,18 @@ class NationalInsuranceNumberController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
+            matchingResponse <- service.matchLeadTrustee(updatedAnswers)
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswers))
+          } yield matchingResponse match {
+            case SuccessfulMatchResponse | ServiceNotIn5mldModeResponse =>
+              Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswers))
+            case UnsuccessfulMatchResponse =>
+              Redirect(routes.MatchingFailedController.onPageLoad())
+            case LockedMatchResponse =>
+              Redirect(routes.MatchingLockedController.onPageLoad())
+            case _ =>
+              InternalServerError
+          }
       )
   }
 }

@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TrustsIndividualCheckService @Inject()(connector: TrustsIndividualCheckConnector) extends Logging {
 
-  def matchLeadTrustee(userAnswers: UserAnswers, index: Int)
+  def matchLeadTrustee(userAnswers: UserAnswers)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustsIndividualCheckServiceResponse] = {
 
     if (userAnswers.is5mldEnabled) {
@@ -35,7 +35,7 @@ class TrustsIndividualCheckService @Inject()(connector: TrustsIndividualCheckCon
         id <- generateId(userAnswers.identifier)
         nino <- userAnswers.get(NationalInsuranceNumberPage)
         name <- userAnswers.get(NamePage)
-        dob <- userAnswers.get(TrusteesDateOfBirthPage(index))
+        dob <- userAnswers.get(TrusteesDateOfBirthPage)
       } yield {
         IdMatchRequest(id, nino, name.firstName.capitalize, name.lastName.capitalize, dob.toString)
       }
