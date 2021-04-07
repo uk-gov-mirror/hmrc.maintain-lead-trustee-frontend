@@ -58,10 +58,10 @@ class TrustsIndividualCheckService @Inject()(connector: TrustsIndividualCheckCon
     }
   }
 
-  def failedAttempts(draftId: String)
+  def failedAttempts(identifier: String)
                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
 
-    generateId(draftId) match {
+    generateId(identifier) match {
       case Some(id) =>
         connector.failedAttempts(id)
       case _ =>
@@ -69,9 +69,9 @@ class TrustsIndividualCheckService @Inject()(connector: TrustsIndividualCheckCon
     }
   }
 
-  private def generateId(draftId: String)(implicit hc: HeaderCarrier): Option[String] = {
+  private def generateId(identifier: String)(implicit hc: HeaderCarrier): Option[String] = {
     hc.sessionId map { sessionId =>
-      s"${sessionId.value}~$draftId"
+      s"${sessionId.value}~$identifier"
     }
   }
 }

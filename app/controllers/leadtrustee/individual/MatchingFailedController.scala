@@ -39,12 +39,12 @@ class MatchingFailedController @Inject()(
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private def actions() =
-    standardActionSets.identifiedUserWithData
+    standardActionSets.verifiedForUtr
 
   def onPageLoad(): Action[AnyContent] = actions().async {
     implicit request =>
 
-      service.failedAttempts("") map {
+      service.failedAttempts(request.userAnswers.identifier) map {
         case x if x < frontendAppConfig.maxMatchingAttempts =>
           Ok(view(x, frontendAppConfig.maxMatchingAttempts - x))
         case _ =>
