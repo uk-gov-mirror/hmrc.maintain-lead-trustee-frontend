@@ -34,7 +34,7 @@
     title = s"${errorPrefix(form)}${messages("leadTrustee.individual.trusteeDetailsChoice.title")}"
 ) {
 
-    @formHelper(action = TrusteeDetailsChoiceController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = DetailsChoiceController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 

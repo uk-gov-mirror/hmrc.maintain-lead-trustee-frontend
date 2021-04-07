@@ -27,7 +27,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.leadtrustee.individual.TrusteeDetailsChoiceView
 
-class TrusteeDetailsChoiceControllerSpec extends SpecBase {
+class DetailsChoiceControllerSpec extends SpecBase {
 
   val messageKeyPrefix = "leadTrustee.individual.trusteeDetailsChoice"
   val form: Form[DetailsChoice] = new DetailsChoiceFormProvider().withPrefix(messageKeyPrefix)
@@ -35,7 +35,7 @@ class TrusteeDetailsChoiceControllerSpec extends SpecBase {
   val index = 0
   val trusteeName: Name = Name("FirstName", None, "LastName")
 
-  lazy val trusteeDetailsChoiceUKRoute: String = controllers.leadtrustee.individual.routes.TrusteeDetailsChoiceController.onPageLoad().url
+  lazy val trusteeDetailsChoiceUKRoute: String = controllers.leadtrustee.individual.routes.DetailsChoiceController.onPageLoad().url
 
   val answersWithName: UserAnswers = emptyUserAnswers
     .set(NamePage, trusteeName).success.value

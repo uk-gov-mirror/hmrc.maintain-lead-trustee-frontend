@@ -33,7 +33,7 @@ import views.html.leadtrustee.individual.TrusteeDetailsChoiceView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrusteeDetailsChoiceController @Inject()(
+class DetailsChoiceController @Inject()(
                                                 override val messagesApi: MessagesApi,
                                                 implicit val frontendAppConfig: FrontendAppConfig,
                                                 registrationsRepository: PlaybackRepository,
