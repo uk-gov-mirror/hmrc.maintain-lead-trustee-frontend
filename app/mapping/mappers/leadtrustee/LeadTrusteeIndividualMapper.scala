@@ -34,7 +34,7 @@ class LeadTrusteeIndividualMapper extends LeadTrusteeMapper[LeadTrusteeIndividua
         case true => EmailAddressPage.path.read[String].map(Some(_))
         case false => Reads( _=> JsSuccess(None))
       } and
-      UkCitizenPage.path.read[Boolean].flatMap {
+      NinoYesNoPage.path.read[Boolean].flatMap {
         case true => NationalInsuranceNumberPage.path.read[String].map(NationalInsuranceNumber(_)).widen[IndividualIdentification]
         case false => PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].widen[IndividualIdentification]
       } and
