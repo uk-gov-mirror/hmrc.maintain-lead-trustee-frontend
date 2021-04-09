@@ -20,7 +20,7 @@ import controllers.actions.StandardActionSets
 import controllers.leadtrustee.actions.NameRequiredAction
 import models.DetailsChoice
 import models.DetailsChoice.{IdCard, Passport}
-import pages.leadtrustee.individual.{NinoYesNoPage, TrusteeDetailsChoicePage}
+import pages.leadtrustee.individual.{NinoYesNoPage, TrusteeDetailsChoicePage, UkCitizenPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.PlaybackRepository
@@ -55,7 +55,7 @@ class MatchingLockedController @Inject()(
   private def amendUserAnswersAndRedirect(detailsChoice: DetailsChoice,
                                           call: Call): Action[AnyContent] = actions().async { implicit request =>
       for {
-        ninoYesNoSet <- Future.fromTry(request.userAnswers.set(NinoYesNoPage, false))
+        ninoYesNoSet <- Future.fromTry(request.userAnswers.set(UkCitizenPage, false))
         detailsChoiceSet <- Future.fromTry(ninoYesNoSet.set(TrusteeDetailsChoicePage, detailsChoice))
         _ <- playbackRepository.set(detailsChoiceSet)
       } yield {
