@@ -71,6 +71,12 @@
 
     <p>@messages("leadTrustee.individual.matching.locked.paragraph5")</p>
 
-    @components.link_list(maintainATrustOverviewLink)
+    <p>
+        @components.link(
+            appConfig.maintainATrustOverview,
+            "return-to-trust-overview",
+            messages("leadTrustee.individual.matching.locked.trust_overview")
+        )
+    </p>
 
 }
