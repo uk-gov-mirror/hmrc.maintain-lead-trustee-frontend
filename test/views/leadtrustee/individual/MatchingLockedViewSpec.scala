@@ -53,8 +53,6 @@ class MatchingLockedViewSpec extends LinkListViewBehaviours {
     )
 
     behave like linkList(applyView, links)
-
-    behave like linkList(applyView, trustOverviewLink)
-
+    
   }
 }
