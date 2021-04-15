@@ -39,6 +39,9 @@ trait ViewSpecBase extends SpecBase {
   def assertEqualsMessage(doc: Document, cssSelector: String, expectedMessageKey: String, args: Any*): Assertion =
     assertEqualsValue(doc, cssSelector, ViewUtils.breadcrumbTitle(messages(expectedMessageKey, args: _*)))
 
+  def assertDoesNotContainText(doc: Document, text: String): Assertion =
+    assert(!doc.toString.contains(text), "\n\ntext " + text + " was rendered on the page.\n")
+
   def assertEqualsValue(doc : Document, cssSelector : String, expectedValue: String) = {
     val elements = doc.select(cssSelector)
 
@@ -46,6 +49,17 @@ trait ViewSpecBase extends SpecBase {
 
     //<p> HTML elements are rendered out with a carriage return on some pages, so discount for comparison
     assert(elements.first().html().replace("\n", "") == expectedValue)
+  }
+
+  def assertPageTitleWithCaptionEqualsMessages(doc: Document,
+                                               expectedCaptionMessageKey: String,
+                                               captionParam: String,
+                                               expectedMessageKey: String,
+                                               messageKeyParam: String): Assertion = {
+    val headers = doc.getElementsByTag("h1")
+    headers.size mustBe 1
+    headers.first.text.replaceAll("\u00a0", " ") mustBe
+      messages(expectedCaptionMessageKey, captionParam).replaceAll("&nbsp;", " ") + messages(expectedMessageKey, messageKeyParam).replaceAll("&nbsp;", " ")
   }
 
   def assertPageTitleEqualsMessage(doc: Document, expectedMessageKey: String, args: Any*) = {

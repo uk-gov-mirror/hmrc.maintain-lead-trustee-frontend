@@ -45,7 +45,7 @@ class DateOfBirthController @Inject()(
                                        view: DateOfBirthView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form: Form[LocalDate] = formProvider.withPrefix("trustee.individual.dateOfBirth")
+  private val form: Form[LocalDate] = formProvider.withConfig("trustee.individual.dateOfBirth")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>

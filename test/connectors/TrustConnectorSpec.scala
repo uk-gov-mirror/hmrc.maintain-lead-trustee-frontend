@@ -28,11 +28,9 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.{JsBoolean, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
 
 class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   with Inside with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {
-  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   private def getLeadTrusteeUrl(identifier: String): String = s"/trusts/trustees/$identifier/transformed/lead-trustee"
   private def getTrustDetailsUrl(identifier: String) = s"/trusts/$identifier/trust-details"

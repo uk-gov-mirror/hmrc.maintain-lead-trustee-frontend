@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
-package viewmodels
+package forms
 
-case class Link(text: String, url: String){
-  def cssText: String = text.toLowerCase.replaceAll(" ", "-")
+import forms.mappings.Mappings
+import models.DetailsChoice
+import play.api.data.Form
+
+import javax.inject.Inject
+
+class DetailsChoiceFormProvider @Inject() extends Mappings {
+
+  def withPrefix(prefix: String): Form[DetailsChoice] =
+    Form(
+      "value" -> enumerable[DetailsChoice](s"$prefix.error.required")
+    )
 }

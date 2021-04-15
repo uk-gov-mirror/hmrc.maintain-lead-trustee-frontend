@@ -19,6 +19,7 @@ package controllers.leadtrustee.individual
 import controllers.actions._
 import controllers.leadtrustee.actions.NameRequiredAction
 import forms.UkCitizenFormProvider
+
 import javax.inject.Inject
 import navigation.Navigator
 import pages.leadtrustee.individual.UkCitizenPage

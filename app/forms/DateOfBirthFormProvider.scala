@@ -16,24 +16,29 @@
 
 package forms
 
-import java.time.LocalDate
+import config.FrontendAppConfig
 
+import java.time.LocalDate
 import forms.mappings.Mappings
+
 import javax.inject.Inject
 import play.api.data.Form
 
-class DateOfBirthFormProvider @Inject() extends Mappings {
+class DateOfBirthFormProvider @Inject()(appConfig: FrontendAppConfig) extends Mappings {
 
-  def withPrefix(prefix: String): Form[LocalDate] =
+  // TRUS-3881
+  def withConfig(prefix: String, is5MldEnabled: Boolean = false): Form[LocalDate] = {
+    val minimumDate: LocalDate = if (is5MldEnabled) appConfig.minLeadTrusteeDob else appConfig.minDate
     Form(
       "value" -> localDate(
-        invalidKey     = s"$prefix.error.invalid",
+        invalidKey = s"$prefix.error.invalid",
         allRequiredKey = s"$prefix.error.required.all",
         twoRequiredKey = s"$prefix.error.required.two",
-        requiredKey    = s"$prefix.error.required"
+        requiredKey = s"$prefix.error.required"
       ).verifying(firstError(
         maxDate(LocalDate.now, s"$prefix.error.future", "day", "month", "year"),
-        minDate(LocalDate.of(1500,1,1), s"$prefix.error.past", "day", "month", "year")
+        minDate(minimumDate, s"$prefix.error.past", "day", "month", "year")
       ))
     )
+  }
 }

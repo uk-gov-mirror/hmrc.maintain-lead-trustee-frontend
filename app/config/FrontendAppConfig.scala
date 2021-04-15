@@ -17,12 +17,13 @@
 package config
 
 import java.net.{URI, URLEncoder}
-
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
 import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.{Call, Request}
+
+import java.time.LocalDate
 
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
@@ -66,6 +67,23 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val countdownLength: String = configuration.get[String]("timeout.countdown")
   lazy val timeoutLength: String = configuration.get[String]("timeout.length")
 
+  // TRUS-3881
+  private def getInt(path: String): Int = configuration.get[Int](path)
+
+  private def getDate(entry: String): LocalDate =
+    LocalDate.of(
+      getInt(s"dates.$entry.year"),
+      getInt(s"dates.$entry.month"),
+      getInt(s"dates.$entry.day")
+    )
+
+  lazy val minDate: LocalDate = getDate("minimum")
+  lazy val minLeadTrusteeDob: LocalDate = getDate("minLeadTrusteeDob")
+
+  lazy val trustsIndividualCheckUrl: String = configuration.get[Service]("microservice.services.trusts-individual-check").baseUrl
+
+  // TRUS-3881: update end
+
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang(ENGLISH),
     "cymraeg" -> Lang(WELSH)
@@ -80,4 +98,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     val userAction = URLEncoder.encode(new URI(request.uri).getPath, "UTF-8")
     s"$accessibilityBaseLinkUrl?userAction=$userAction"
   }
+
+  val maxMatchingAttempts: Int = getInt("individual-match.max-attempts")
+
 }

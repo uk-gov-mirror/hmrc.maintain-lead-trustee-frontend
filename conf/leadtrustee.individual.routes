@@ -48,3 +48,9 @@ POST       /telephone-number                        controllers.leadtrustee.indi
 GET        /check-details                           controllers.leadtrustee.individual.CheckDetailsController.onPageLoad()
 GET        /check-updated-details                   controllers.leadtrustee.individual.CheckDetailsController.onPageLoadUpdated()
 POST       /check-details                           controllers.leadtrustee.individual.CheckDetailsController.onSubmit()
+
+GET        /matching-failed                         controllers.leadtrustee.individual.MatchingFailedController.onPageLoad()
+POST       /matching-failed                         controllers.leadtrustee.individual.MatchingFailedController.onSubmit()
+
+GET        /matching-locked                         controllers.leadtrustee.individual.MatchingLockedController.onPageLoad()
+GET        /continue-with-passport-or-id-card       controllers.leadtrustee.individual.MatchingLockedController.continue()

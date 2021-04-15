@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-package viewmodels
+package pages.leadtrustee.individual
 
-case class Link(text: String, url: String){
-  def cssText: String = text.toLowerCase.replaceAll(" ", "-")
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+
+import java.time.LocalDate
+
+case object TrusteesDateOfBirthPage extends QuestionPage[LocalDate] {
+
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "dateOfBirth"
 }

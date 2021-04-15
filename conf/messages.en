@@ -21,6 +21,7 @@ site.complete = Completed
 site.error = Error:
 site.cannotRemove = Cannot remove
 site.cannotRemove-hidden = Cannot remove {0}
+site.try-again= Try again
 
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
@@ -636,3 +637,23 @@ trustee.whenRemoved.error.required = The date the trustee was removed from the t
 trustee.whenRemoved.error.invalid = Enter a real date when the trustee was removed from the trust
 trustee.whenRemoved.error.future = The date the trustee was removed from the trust must be today or in the past
 trustee.whenRemoved.error.past = The date the trustee was removed must be on or after the date they were added
+
+leadTrustee.individual.matching.failed.title = We cannot match the details you entered with our records
+leadTrustee.individual.matching.failed.heading = We cannot match the details you entered with our records
+leadTrustee.individual.matching.failed.caption = Failed attempt {0} of 3
+leadTrustee.individual.matching.failed.paragraph1 = Make sure you have entered the lead trustee’s details correctly.
+leadTrustee.individual.matching.failed.paragraph2.part1 = You have
+leadTrustee.individual.matching.failed.paragraph2.remainingAttempts = {0}
+leadTrustee.individual.matching.failed.paragraph2.part2.singular = attempt left to enter the correct details.
+leadTrustee.individual.matching.failed.paragraph2.part2.plural = attempts left to enter the correct details.
+
+leadTrustee.individual.matching.locked.caption = 3 failed matching attempts
+leadTrustee.individual.matching.locked.title = You need to provide more information to register the lead trustee
+leadTrustee.individual.matching.locked.heading = You need to provide more information to register the lead trustee
+leadTrustee.individual.matching.locked.paragraph1 = HMRC has not been able to match the information you have entered for {0} to the trust.
+leadTrustee.individual.matching.locked.paragraph2 = Check that you have entered {0}’s information correctly.
+leadTrustee.individual.matching.locked.paragraph3 = If you have entered {0}’s information correctly, you can check to see if HMRC holds a personal tax account (PTA) for {0} to help you verify the information.
+leadTrustee.individual.matching.locked.subheading1 = Providing other information for a lead trustee
+leadTrustee.individual.matching.locked.paragraph4 = To register {0} as the lead trustee, you need to provide their address, and
+leadTrustee.individual.matching.locked.paragraph4.a = provide their passport or id card details.
+leadTrustee.individual.matching.locked.trust_overview = Return to Trust Overview
