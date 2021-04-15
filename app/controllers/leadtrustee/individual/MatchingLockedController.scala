@@ -18,9 +18,7 @@ package controllers.leadtrustee.individual
 
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.actions.NameRequiredAction
-import models.DetailsChoice
-import models.DetailsChoice.{IdCard, Passport}
-import pages.leadtrustee.individual.{NinoYesNoPage, TrusteeDetailsChoicePage, UkCitizenPage}
+import pages.leadtrustee.individual.UkCitizenPage
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.PlaybackRepository

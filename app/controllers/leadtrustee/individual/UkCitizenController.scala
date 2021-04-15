@@ -22,7 +22,7 @@ import forms.UkCitizenFormProvider
 
 import javax.inject.Inject
 import navigation.Navigator
-import pages.leadtrustee.individual.{NinoYesNoPage, UkCitizenPage}
+import pages.leadtrustee.individual.UkCitizenPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -65,9 +65,8 @@ class UkCitizenController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UkCitizenPage, value))
-            answersWithNino <- Future.fromTry(updatedAnswers.set(NinoYesNoPage, value))
-            _ <- playbackRepository.set(answersWithNino)
-          } yield Redirect(navigator.nextPage(UkCitizenPage, answersWithNino))
+            _ <- playbackRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(UkCitizenPage, updatedAnswers))
       )
   }
 }

@@ -36,7 +36,6 @@ object IndividualLeadTrusteeNavigator extends LeadTrusteeNavigator {
     case CountryOfResidencePage => _ => NonUkAddressController.onPageLoad()
     case UkAddressPage | NonUkAddressPage => _ => EmailAddressYesNoController.onPageLoad()
     case EmailAddressPage => _ => TelephoneNumberController.onPageLoad()
-    case TrusteeDetailsChoicePage => _ => PassportOrIdCardController.onPageLoad()
     case TelephoneNumberPage => _ => CheckDetailsController.onPageLoadUpdated()
   }
 

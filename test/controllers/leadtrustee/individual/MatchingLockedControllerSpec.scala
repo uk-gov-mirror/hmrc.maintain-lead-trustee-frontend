@@ -17,12 +17,11 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import models.DetailsChoice.{IdCard, Passport}
 import models.{Name, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import pages.leadtrustee.individual.{NamePage, NationalInsuranceNumberPage, TrusteeDetailsChoicePage}
+import pages.leadtrustee.individual.{NamePage, NationalInsuranceNumberPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.leadtrustee.individual.MatchingLockedView
