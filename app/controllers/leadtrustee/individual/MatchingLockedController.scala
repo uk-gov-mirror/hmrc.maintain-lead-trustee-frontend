@@ -46,20 +46,12 @@ class MatchingLockedController @Inject()(
       Ok(view(request.leadTrusteeName))
   }
 
-  def continueWithPassport(): Action[AnyContent] =
-    amendUserAnswersAndRedirect(Passport, routes.PassportOrIdCardController.onPageLoad())
-
-  def continueWithIdCard(): Action[AnyContent] =
-    amendUserAnswersAndRedirect(IdCard, routes.PassportOrIdCardController.onPageLoad())
-
-  private def amendUserAnswersAndRedirect(detailsChoice: DetailsChoice,
-                                          call: Call): Action[AnyContent] = actions().async { implicit request =>
+  def continue(): Action[AnyContent] = actions().async { implicit request =>
       for {
         ninoYesNoSet <- Future.fromTry(request.userAnswers.set(UkCitizenPage, false))
-        detailsChoiceSet <- Future.fromTry(ninoYesNoSet.set(TrusteeDetailsChoicePage, detailsChoice))
-        _ <- playbackRepository.set(detailsChoiceSet)
+        _ <- playbackRepository.set(ninoYesNoSet)
       } yield {
-        Redirect(call)
+        Redirect(routes.PassportOrIdCardController.onPageLoad())
       }
   }
 }

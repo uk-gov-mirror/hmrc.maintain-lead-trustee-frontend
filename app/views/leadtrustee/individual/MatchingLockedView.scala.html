@@ -26,19 +26,6 @@
 
 @(name: String)(implicit request: Request[_], messages: Messages)
 
-@links = @{
-    List(
-        Link(
-            text = messages("leadTrustee.individual.matching.locked.link1"),
-            url = MatchingLockedController.continueWithPassport().url
-        ),
-        Link(
-            text = messages("leadTrustee.individual.matching.locked.link2"),
-            url = MatchingLockedController.continueWithIdCard().url
-        )
-    )
-}
-
 @maintainATrustOverviewLink = @{
     List(
         Link(
@@ -57,19 +44,23 @@
         optionalParam = Some(name)
     )
 
-    <p>@messages("leadTrustee.individual.matching.locked.paragraph1")</p>
+    <p>@messages("leadTrustee.individual.matching.locked.paragraph1", name)</p>
 
-    <p>@messages("leadTrustee.individual.matching.locked.paragraph2")</p>
+    <p>@messages("leadTrustee.individual.matching.locked.paragraph2", name)</p>
+
+    <p>@messages("leadTrustee.individual.matching.locked.paragraph3", name)</p>
 
     <h2>@messages("leadTrustee.individual.matching.locked.subheading1")</h2>
 
-    <p>@messages("leadTrustee.individual.matching.locked.paragraph3")</p>
+    <p>
+        @messages("leadTrustee.individual.matching.locked.paragraph4", name)
 
-    @components.link_list(links)
-
-    <p>@messages("leadTrustee.individual.matching.locked.paragraph4")</p>
-
-    <p>@messages("leadTrustee.individual.matching.locked.paragraph5")</p>
+        @components.link(
+            MatchingLockedController.continue().url,
+            "provide-passport-or-id-details",
+            messages("leadTrustee.individual.matching.locked.paragraph4.a")
+        )
+    </p>
 
     <p>
         @components.link(

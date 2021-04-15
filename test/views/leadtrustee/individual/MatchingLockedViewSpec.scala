@@ -28,10 +28,6 @@ class MatchingLockedViewSpec extends LinkListViewBehaviours {
   val index = 0
   val view: MatchingLockedView = viewFor[MatchingLockedView](Some(emptyUserAnswers))
 
-  val links: List[Link] = List(
-    Link("Passport and address", controllers.leadtrustee.individual.routes.MatchingLockedController.continueWithPassport().url),
-    Link("ID card and address", controllers.leadtrustee.individual.routes.MatchingLockedController.continueWithIdCard().url)
-  )
 
   val trustOverviewLink: List[Link] = List(
     Link("Return to Trust Overview", frontendAppConfig.maintainATrustOverview)
@@ -48,11 +44,8 @@ class MatchingLockedViewSpec extends LinkListViewBehaviours {
       view = applyView,
       messageKeyPrefix = prefix,
       messageKeyParam = name.toString,
-      captionParam = "",
-      expectedGuidanceKeys = "paragraph1", "paragraph2", "subheading1", "paragraph3", "paragraph4", "paragraph5"
+      captionParam = ""
     )
 
-    behave like linkList(applyView, links)
-    
   }
 }

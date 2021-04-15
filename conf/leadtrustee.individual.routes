@@ -56,5 +56,4 @@ GET        /matching-failed                         controllers.leadtrustee.indi
 POST       /matching-failed                         controllers.leadtrustee.individual.MatchingFailedController.onSubmit()
 
 GET        /matching-locked                         controllers.leadtrustee.individual.MatchingLockedController.onPageLoad()
-GET        /continue-with-passport                  controllers.leadtrustee.individual.MatchingLockedController.continueWithPassport()
-GET        /continue-with-id-card                   controllers.leadtrustee.individual.MatchingLockedController.continueWithIdCard()
+GET        /continue-with-passport-or-id-card       controllers.leadtrustee.individual.MatchingLockedController.continue()

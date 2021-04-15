@@ -80,9 +80,9 @@ class MatchingLockedControllerSpec extends SpecBase {
       }
     }
 
-    ".continueWithPassport" when {
+    ".continue" when {
 
-      lazy val continueWithPassportRoute = routes.MatchingLockedController.continueWithPassport().url
+      lazy val continueWithPassportRoute = routes.MatchingLockedController.continue().url
 
       "existing data found" must {
 
@@ -105,7 +105,6 @@ class MatchingLockedControllerSpec extends SpecBase {
           verify(playbackRepository).set(uaCaptor.capture)
 
           uaCaptor.getValue.get(NationalInsuranceNumberPage) mustBe None
-          uaCaptor.getValue.get(TrusteeDetailsChoicePage).get mustBe Passport
 
           application.stop()
         }
@@ -128,52 +127,5 @@ class MatchingLockedControllerSpec extends SpecBase {
       }
     }
 
-    ".continueWithIdCard" when {
-
-      lazy val continueWithIdCardRoute = routes.MatchingLockedController.continueWithIdCard().url
-
-      "existing data found" must {
-
-        "amend user answers and redirect to id card page" in {
-
-          reset(playbackRepository)
-          when(playbackRepository.set(any())).thenReturn(Future.successful(true))
-
-          val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
-
-          val request = FakeRequest(GET, continueWithIdCardRoute)
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual routes.PassportOrIdCardController.onPageLoad().url
-
-          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-          verify(playbackRepository).set(uaCaptor.capture)
-
-          uaCaptor.getValue.get(NationalInsuranceNumberPage) mustBe None
-          uaCaptor.getValue.get(TrusteeDetailsChoicePage).get mustBe IdCard
-
-          application.stop()
-        }
-      }
-
-      "no existing data found" must {
-        "redirect to Session Expired" in {
-
-          val application = applicationBuilder(userAnswers = None).build()
-
-          val request = FakeRequest(GET, continueWithIdCardRoute)
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
-
-          application.stop()
-        }
-      }
-    }
   }
 }
