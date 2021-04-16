@@ -19,15 +19,19 @@ package controllers.leadtrustee.individual
 import controllers.actions._
 import controllers.leadtrustee.actions.NameRequiredAction
 import forms.NationalInsuranceNumberFormProvider
+import handlers.ErrorHandler
 import models.{LockedMatchResponse, ServiceNotIn5mldModeResponse, SuccessfulMatchResponse, UnsuccessfulMatchResponse}
+
 import javax.inject.Inject
 import navigation.Navigator
 import pages.leadtrustee.individual.NationalInsuranceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.twirl.api.Html
 import repositories.PlaybackRepository
 import services.TrustsIndividualCheckService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.leadtrustee.individual.NationalInsuranceNumberView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,6 +45,7 @@ class NationalInsuranceNumberController @Inject()(
                                         service: TrustsIndividualCheckService,
                                         formProvider: NationalInsuranceNumberFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
+                                        errorHandler: ErrorHandler,
                                         view: NationalInsuranceNumberView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -77,8 +82,9 @@ class NationalInsuranceNumberController @Inject()(
             case LockedMatchResponse =>
               Redirect(routes.MatchingLockedController.onPageLoad())
             case _ =>
-              InternalServerError
+              InternalServerError(errorHandler.internalServerErrorTemplate)
           }
       )
   }
 }
+
