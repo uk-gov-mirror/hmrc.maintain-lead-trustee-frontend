@@ -98,7 +98,10 @@ class CheckDetailsController @Inject() (
       case Some(leadTrustee) =>
         connectorCall(userAnswers, identifier, leadTrustee).flatMap {
           case Right(response) =>
-            submitTransform(() => Future.successful(response), userAnswers)
+            logger.info(
+              s"$logInfo [CheckDetailsController][onSubmit] redirecting to AddATrusteeController from Individual"
+            )
+            Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad()))
           case Left(error)     =>
             logger.error(
               s"$logInfo [CheckDetailsController][onSubmit] Failed to update the lead trustee due to : $error"
@@ -111,16 +114,6 @@ class CheckDetailsController @Inject() (
         )
         errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
     }
-  }
-
-  private def submitTransform(transform: () => Future[HttpResponse], userAnswers: UserAnswers): Future[Result] = {
-    logger.info("[CheckDetailsController][submitTransform] Deleting lead trustee from user answers for Individual")
-    for {
-      _                  <- transform()
-      cleanedAnswers     <- Future.fromTry(userAnswers.remove(IsReplacingLeadTrusteePage))
-      updatedUserAnswers <- Future.fromTry(cleanedAnswers.deleteAtPath(pages.leadtrustee.basePath))
-      _                  <- repository.set(updatedUserAnswers)
-    } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
   }
 
   private def connectorCall(userAnswers: UserAnswers, identifier: String, leadTrustee: LeadTrusteeIndividual)(implicit
